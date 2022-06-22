@@ -1,0 +1,100 @@
+/* global langLbl, pkghours, fcom, labels */
+
+(function () {
+    goToSearchPage = function (pageno) {
+        var frm = document.frmSearchPaging;
+        $(frm.pageno).val(pageno);
+        search(frm);
+    };
+    search = function (frm) {
+        fcom.ajax(fcom.makeUrl("Packages", "search"), fcom.frmData(frm), function (response) {
+            $("#listing").html(response);
+        });
+    };
+    clearSearch = function () {
+        document.frmPackageSearch.reset();
+        search(document.frmPackageSearch);
+    };
+    form = function (packageId) {
+        fcom.ajax(fcom.makeUrl("Packages", "form"), {packageId: packageId}, function (res) {
+            $.facebox(res, "facebox-medium");
+        });
+    };
+    setup = function (form, langFrm) {
+        if (!$(form).validate()) {
+            return;
+        }
+        var data = new FormData(form);
+        fcom.ajaxMultipart(fcom.makeUrl('Packages', 'setup'), data, function (res) {
+            if (res.langId > 0 && langFrm) {
+                langForm(res.packageId, res.langId);
+            } else {
+                search(document.frmPackageSearch);
+                $.facebox.close();
+            }
+        }, {fOutMode: 'json'});
+    };
+    langForm = function (packageId, langId) {
+        fcom.ajax(fcom.makeUrl("Packages", "langForm"), {packageId: packageId, langId: langId}, function (res) {
+            $.facebox(res, "facebox-medium");
+        });
+    };
+    langSetup = function (form, langFrm) {
+        if (!$(form).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl("Packages", "setupLang"), fcom.frmData(form), function (res) {
+            if (res.langId > 0 && langFrm) {
+                langForm(res.packageId, res.langId);
+            } else {
+                search(document.frmPackageSearch);
+                $.facebox.close();
+            }
+        });
+    };
+    cancelSetup = function (packageId) {
+        if (!confirm(langLbl.confirmCancel)) {
+            return false;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Packages', 'cancelSetup'), {packageId: packageId}, function () {
+            search(document.frmPackageSearch);
+            $.facebox.close();
+        });
+    };
+    formatSlug = function (fld) {
+        var slug = $(fld).val();
+        slug = slug.trim(slug.toLowerCase());
+        slug = slug.replace(/[\s,<>\/\"&#%+?$@=]/g, "-");
+        slug = slug.replace(/[\s\s]+/g, "-");
+        slug = slug.replace(/[\-]+/g, "-");
+        $(fld).val(slug);
+        if (slug != "") {
+            checkUnique($(fld), "tbl_group_classes", "grpcls_slug", "grpcls_id", $("#grpcls_id"), []);
+        }
+    };
+    addClassRow = function () {
+        $(".more-container-js").append(getClassRow(counter + 1));
+        bindDatetimePicker('.datetime');
+        counter = 1 + counter;
+    };
+    removeClassRow = function (no) {
+        $(".class-row-" + no).remove();
+    };
+    getClassRow = function (no) {
+        return `<div class="row class-row-${no}">
+                <div class="col-md-8">
+                    <div class="field-set">
+                        <div class="caption-wraper"> <label class="field_label"> ${labels.CLASS_TITLE}-${no} <span class="spn_must_field">*</span> <a href="javascript:removeClassRow(${no})" class="color-secondary"> ${labels.REMOVE_CLASS}</a></label> </div>
+                        <div class="field-wraper"> <div class="field_cover"> <input data-field-caption="${labels.CLASS_TITLE}-${no}" data-fatreq="{&quot;required&quot;:true,&quot;lengthrange&quot;:[10,100]}" type="text" name="title[]" value=""> </div> </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field-set">
+                        <div class="caption-wraper"> <label class="field_label"> ${labels.START_TIME} <span class="spn_must_field">*</span> </label> </div>
+                        <div class="field-wraper"> <div class="field_cover"> <input class="datetime" autocomplete="off" readonly="readonly" data-field-caption="${labels.START_TIME}" data-fatreq="{&quot;required&quot;:true}" type="text" name="starttime[]" value=""> </div> </div>
+                    </div>
+                </div>
+            </div>`;
+    };
+
+})();

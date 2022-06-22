@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * This class is used to handle Url Rewrite
+ * 
+ * @package YoCoach
+ * @author Fatbit Team
+ */
+class SeoUrl extends MyAppModel
+{
+
+    const DB_TBL = 'tbl_seo_urls';
+    const DB_TBL_PREFIX = 'seourl_';
+    const HTTP_CODE_301 = 301;
+    const HTTP_CODE_302 = 302;
+
+    /**
+     * Initialize SEO URL
+     * 
+     * @param int $id
+     */
+    public function __construct(int $id = 0)
+    {
+        parent::__construct(static::DB_TBL, 'seourl_id', $id);
+    }
+
+    /**
+     * Get HTTP Codes
+     * 
+     * @return array
+     */
+    public static function getHttpCodes(): array
+    {
+        return [
+            static::HTTP_CODE_301 => Label::getLabel('LBL_301_REDIRECT_PERMANENTLY'),
+            static::HTTP_CODE_302 => Label::getLabel('LBL_302_REDIRECT_TEMPRARY'),
+        ];
+    }
+
+    /**
+     * Static Controllers
+     * 
+     * @return array
+     */
+    public static function staticControllers(): array
+    {
+        return array_merge(CONF_STATIC_FILE_CONTROLLERS, [
+            'checkunique', 'public', 'pwa', 'js-css', 'common-rtl.css.map', 'image',
+            'common-ltr.css.map', 'frontend-ltr.css.map', 'frontend-rtl.css.map'
+        ]);
+    }
+
+    /**
+     * Get Original Url
+     * 
+     * @param string $customUrl
+     * @return null|array
+     */
+    public static function getOriginalUrl(string $customUrl)
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->addFld(['seourl_lang_id', 'seourl_original', 'seourl_httpcode']);
+        $srch->addCondition('seourl_custom', '=', $customUrl);
+        if (defined('CONF_SITE_LANGUAGE')) {
+            $srch->addCondition('seourl_lang_id', '=', CONF_SITE_LANGUAGE);
+        }
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+
+    /**
+     * Get Custom Url
+     * 
+     * @param int $langId
+     * @param string $originalUrl
+     * @return null|array
+     */
+    public static function getCustomUrl(int $langId, string $originalUrl)
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->addFld(['seourl_custom', 'seourl_httpcode']);
+        $srch->addCondition('seourl_original', '=', $originalUrl);
+        $srch->addCondition('seourl_lang_id', '=', $langId);
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+
+    /**
+     * Get Canonical URL
+     * 
+     * @return type
+     */
+    public static function getCanonicalUrl()
+    {
+        return trim($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], "/");
+    }
+
+}
