@@ -108,7 +108,7 @@ class Statistics extends FatModel
     {
         $datetime = MyDate::getStartEndDate($duration, MyUtility::getSiteTimezone(), true);
         $srch = new SearchBase(Order::DB_TBL, 'orders');
-        $srch->joinTable(Order::DB_TBL_LESSON, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_LESSON . ' AND orders.order_id = ordles.ordles_order_id', 'ordles');
+        $srch->joinTable(Order::DB_TBL_LESSON, 'LEFT JOIN', 'orders.order_type IN (' . Order::TYPE_LESSON . ',' . Order::TYPE_SUBSCR . ') AND orders.order_id = ordles.ordles_order_id', 'ordles');
         $srch->joinTable(OrderClass::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_GCLASS . ' AND orders.order_id = ordcls.ordcls_order_id', 'ordcls');
         $srch->joinTable(GroupClass::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_GCLASS . ' AND ordcls.ordcls_grpcls_id = grpcls.grpcls_id', 'grpcls');
         $srch->joinTable(OrderPackage::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_PACKGE . ' AND orders.order_id = ordpkg.ordpkg_order_id', 'ordpkg');
@@ -116,7 +116,7 @@ class Statistics extends FatModel
         $cond = $srch->addCondition('ordles.ordles_teacher_id', '=', $this->userId);
         $cond->attachCondition('grpcls.grpcls_teacher_id', '=', $this->userId);
         $cond->attachCondition('packageCls.grpcls_teacher_id', '=', $this->userId);
-        $srch->addCondition('orders.order_type', 'IN', [Order::TYPE_LESSON, Order::TYPE_GCLASS, Order::TYPE_PACKGE]);
+        $srch->addCondition('orders.order_type', 'IN', [Order::TYPE_LESSON, Order::TYPE_GCLASS, Order::TYPE_PACKGE, Order::TYPE_SUBSCR]);
         $srch->addCondition('order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('order_status', '=', Order::STATUS_COMPLETED);
         $srch->addCondition('order_addedon', '>=', $datetime['startDate']);
@@ -182,5 +182,4 @@ class Statistics extends FatModel
             'upcomingSession' => $lessStatsCount['upcomingLesson'] + $schClassStats['upcomingClass']
         ];
     }
-
 }
