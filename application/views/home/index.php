@@ -155,7 +155,7 @@ if ($topRatedTeachers) {
                                                     <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating' ?>"></use>
                                                 </svg>
                                                 <span class="value"><?php echo $teacher['testat_ratings']; ?></span>
-                                                <span class="count"><?php echo $teacher['testat_reviewes'] . ' ' . Label::getLabel('LBL_REVIEW(S)'); ?></span>
+                                                <span class="count">(<?php echo $teacher['testat_reviewes']; ?>)</span>
                                             </div>
                                         </div>
                                         <div class="card__row--action ">

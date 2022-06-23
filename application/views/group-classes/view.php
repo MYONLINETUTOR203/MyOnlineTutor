@@ -41,6 +41,7 @@ $teacherName = $class['user_full_name'];
                                         <svg class="icon icon--rating">
                                             <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating'; ?>"></use>
                                         </svg>
+                                        &nbsp;
                                         <span class="value"><?php echo $class['testat_ratings']; ?></span>
                                         <span class="count"><?php echo $class['testat_reviewes'] . ' ' . Label::getLabel('LBL_REVIEW(s)'); ?></span>
                                     </div>
