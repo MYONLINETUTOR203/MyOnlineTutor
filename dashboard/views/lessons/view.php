@@ -58,18 +58,18 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                         <?php } ?>
                         <?php if ($lesson['ordles_status'] != Lesson::CANCELLED && $lesson['plan_id'] > 0) { ?>
                             <div class="session-resource">
-                                <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $lesson['plan_id']; ?>')" class="attachment-file">
+                                <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $lesson['plan_id']; ?>')" class="attachment-file padding-2">
                                     <svg class="icon icon--issue icon--attachement icon--xsmall color-black"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use></svg>
                                     <?php echo $lesson['plan_title'] ?>
                                 </a>
                                 <?php if ($siteUserType == User::TEACHER && ($lesson['ordles_starttime_unix'] - $lesson['ordles_currenttime_unix']) > 0) { ?>
-                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
-                                    <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
+                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
+                                    <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
                                 <?php } ?>
                             </div>
                         <?php } else if ($siteUserType == User::TEACHER && $lesson['ordles_status'] != Lesson::CANCELLED && ($lesson['ordles_starttime_unix'] - $lesson['ordles_currenttime_unix']) > 0) { ?>
                             <div class="session-resource">
-                                <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="btn btn--transparent btn--addition color-black btn--small"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
+                                <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
                             </div>
                         <?php } ?>
                     </div>
