@@ -242,8 +242,8 @@
                             <li><a href="javascript:generateSitemap();"><?php echo Label::getLabel('LBL_UPDATE_SITEMAP'); ?></a></li>
                         <?php }
                         if ($objPrivilege->canViewSiteMap(true)) { ?>
-                            <li><a href="<?php echo CONF_WEBROOT_FRONT_URL ?>sitemap.xml" target="_blank"><?php echo Label::getLabel('LBL_VIEW_XML_SITEMAP'); ?></a></li>
-                            <li><a href="<?php echo MyUtility::makeUrl('Sitemap', '', [], CONF_WEBROOT_FRONT_URL) ?>" target="_blank"><?php echo Label::getLabel('LBL_VIEW_HTML_SITEMAP'); ?></a></li>
+                            <li><a href="<?php echo CONF_WEBROOT_FRONT_URL ?>sitemap.xml" target="_blank"><?php echo Label::getLabel('LBL_XML_SITEMAP'); ?></a></li>
+                            <li><a href="<?php echo MyUtility::makeUrl('Sitemap', '', [], CONF_WEBROOT_FRONT_URL) ?>" target="_blank"><?php echo Label::getLabel('LBL_HTML_SITEMAP'); ?></a></li>
                         <?php } ?>
                     </ul>
                 </li>

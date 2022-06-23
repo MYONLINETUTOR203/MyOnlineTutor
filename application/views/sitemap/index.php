@@ -6,7 +6,7 @@
                     <h5 style="font-size:1.6em;"><?php echo $title; ?></h5>
                     <ol style="margin:0 0 30px 0; padding:0; list-style:inside decimal;">
                         <?php foreach ($urlData as $url) { ?>
-                            <li><a href="<?php echo $url['url'] ?>"><?php echo htmlentities($url['value']);  ?></a></li>
+                            <li><a href="<?php echo $url['url'] ?>"><?php echo $url['value'];  ?></a></li>
                         <?php } ?>
                     </ol>
                 </div>

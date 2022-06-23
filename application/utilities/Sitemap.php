@@ -22,7 +22,7 @@ class Sitemap
         $srch->addMultipleFields(['user_username', 'user_first_name', 'user_last_name']);
         $srch->applyPrimaryConditions();
         $srch->doNotCalculateRecords();
-        $srch->setPageNumber(20000);
+        $srch->setPageSize(20000);
         $resultSet = $srch->getResultSet();
         $urls = [];
         while ($row = FatApp::getDb()->fetch($resultSet)) {
@@ -39,7 +39,7 @@ class Sitemap
         $srch->applySearchConditions([]);
         $srch->addOrder('grpcls_start_datetime', 'asc');
         $srch->doNotCalculateRecords();
-        $srch->setPageNumber(20000);
+        $srch->setPageSize(20000);
         $resultSet = $srch->getResultSet();
         $urls = [];
         while ($row = FatApp::getDb()->fetch($resultSet)) {
@@ -60,7 +60,7 @@ class Sitemap
         $srch->addGroupBy('nlink_cpage_id');
         $srch->addGroupBy('nlink_url');
         $srch->doNotCalculateRecords();
-        $srch->setPageNumber(20000);
+        $srch->setPageSize(20000);
         $resultSet = $srch->getResultSet();
         $urls = [];
         while ($link = FatApp::getDb()->fetch($resultSet)) {
