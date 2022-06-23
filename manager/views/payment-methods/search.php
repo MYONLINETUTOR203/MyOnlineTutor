@@ -38,6 +38,9 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', [], $paymentMethodType[$row['pmethod_type']]);
                 break;
             case 'pmethod_active':
+                if ($row['pmethod_code'] == WalletPay::KEY) {
+                    break;
+                }
                 $active = "active";
                 $statucAct = '';
                 if ($row['pmethod_active'] == AppConstant::YES && $canEdit === true) {

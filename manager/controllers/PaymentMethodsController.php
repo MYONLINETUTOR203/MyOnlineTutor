@@ -138,7 +138,7 @@ class PaymentMethodsController extends AdminBaseController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $data = PaymentMethod::getAttributesById($pmethodId, ['pmethod_id', 'pmethod_active', 'pmethod_code']);
-        if ($data == false) {
+        if ($data == false || $data['pmethod_code'] == WalletPay::KEY) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $status = ($data['pmethod_active'] == AppConstant::ACTIVE) ? AppConstant::INACTIVE : AppConstant::ACTIVE;
@@ -180,4 +180,5 @@ class PaymentMethodsController extends AdminBaseController
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Save_Changes'));
         return $frm;
     }
+
 }
