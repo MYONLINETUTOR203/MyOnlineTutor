@@ -17,48 +17,44 @@ $submitField->addFieldTagAttribute('class', 'btn btn--primary btn--large btn--bl
     <div class="facebox-panel__body padding-bottom-0">
         <div class="selection selection--checkout selection--payment">
             <?php echo $form->getFormTag(); ?>
-            <div class="row">
+            <div class="row justify-content-between">
                 <div class="col-md-6 col-xl-6">
-                    <div class="selection-title">
-                        <p>
+                    <div class="field-set">
+                        <label class="field_label margin-bottom-2">
                             <?php echo $amount->getCaption(); ?>
                             <?php if ($amount->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
                             <?php  } ?>
-                        </p>
+                        </label>
+                        <?php echo $amount->getHTML(); ?>
                     </div>
-                    <div class="apply-coupon"><?php echo $amount->getHTML(); ?></div>
-                    <div class="selection-title">
-                        <p>
+                   
+                    <div class="field-set">
+                        <label class="field_label margin-bottom-2">
                             <?php echo $receiverName->getCaption(); ?>
                             <?php if ($receiverName->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
                             <?php  } ?>
-                        </p>
+                        </label>
+                        <?php echo $receiverName->getHTML(); ?>
                     </div>
-                    <div class="apply-coupon"><?php echo $receiverName->getHTML(); ?></div>
-                    <div class="selection-title">
-                        <p>
+                    
+                    <div class="field-set">
+                        <label class="field_label margin-bottom-2">
                             <?php echo $receiverEmail->getCaption(); ?>
                             <?php if ($receiverEmail->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
                             <?php  } ?>
-                        </p>
+                        </label>
+                        <?php echo $receiverEmail->getHTML(); ?>
                     </div>
-                    <div class="apply-coupon"><?php echo $receiverEmail->getHTML(); ?></div>
-                    <?php echo $submitField->getHTML(); ?>
-                    <p class="payment-note color-secondary">
-                        <?php
-                        $labelstr = Label::getLabel('LBL_*_ALL_PURCHASES_ARE_IN_{currencycode}._FOREIGN_TRANSACTION_FEES_MIGHT_APPLY,_ACCORDING_TO_YOUR_BANK_POLICIES');
-                        echo str_replace("{currencycode}", $currency['currency_code'], $labelstr);
-                        ?>
-                    </p>
+                    
                 </div>
-                <div class="col-md-6 col-xl-5 offset-xl-1">
+                <div class="col-md-5 col-xl-5">
                     <div class="selection-title">
-                        <p><?php echo Label::getLabel('LBL_PAYMENT_METHOD'); ?></p>
+                        <label class="field_label margin-bottom-2"><?php echo Label::getLabel('LBL_PAYMENT_METHOD'); ?> <span class="spn_must_field">*</span></label>
                     </div>
-                    <div class="payment-wrapper">
+                    <div class="payment-wrapper margin-bottom-4">
                         <?php foreach ($pmethodField->options as $id => $name) { ?>
                             <?php if ($walletBalance > 0 && $id == $walletPayId) { ?>
                                 <label class="selection-tabs__label add-and-pay-js" style="display: none;">
@@ -104,6 +100,13 @@ $submitField->addFieldTagAttribute('class', 'btn btn--primary btn--large btn--bl
                             <?php } ?>
                         <?php } ?>
                     </div>
+                    <?php echo $submitField->getHTML(); ?>
+                    <p class="payment-note color-secondary">
+                        <?php
+                        $labelstr = Label::getLabel('LBL_*_ALL_PURCHASES_ARE_IN_{currencycode}._FOREIGN_TRANSACTION_FEES_MIGHT_APPLY,_ACCORDING_TO_YOUR_BANK_POLICIES');
+                        echo str_replace("{currencycode}", $currency['currency_code'], $labelstr);
+                        ?>
+                    </p>
                 </div>
             </div>
             </form>
