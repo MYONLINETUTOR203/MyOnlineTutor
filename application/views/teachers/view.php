@@ -56,7 +56,7 @@ if ($siteUserId == $teacher['user_id']) {
                                 <h4><?php echo $teacher['user_first_name'] . ' ' . $teacher['user_last_name']; ?></h4>
                                 <div class="flag">
                                     <?php if ($teacher['user_country_id'] > 0) { ?>
-                                        <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.png'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" />
+                                    <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.svg'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" style="border: 1px solid #000;" />
                                     <?php } ?>
                                 </div>
                             </div>

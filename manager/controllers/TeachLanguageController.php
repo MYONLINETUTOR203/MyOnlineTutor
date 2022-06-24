@@ -146,7 +146,7 @@ class TeachLanguageController extends AdminBaseController
      */
     public function langSetup()
     {
-        $this->objPrivilege->canEditSpeakLanguage();
+        $this->objPrivilege->canEditTeachLanguage();
         $frm = $this->getLangForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));

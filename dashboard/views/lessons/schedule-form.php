@@ -41,7 +41,7 @@ $submit->addFieldTagAttribute('class', 'btn btn--secondary btn--small btn--wide'
     <div class="tooltipevent">
         <div class="booking-view -align-center">
             <h3 class="-display-inline"><?php echo ucwords($lesson['teacher_first_name'] . ' ' . $lesson['teacher_last_name']); ?></h3>
-            <span class="flag -display-inline"><img style="width: 40px;" src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($lesson['teacher_country_code']) . '.png'; ?>" /></span>
+            <span class="flag -display-inline"><img style="height: 22px;border: 1px solid #000;" src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($lesson['teacher_country_code']) . '.svg'; ?>" /></span>
             <?php
             echo $form->getFormTag();
             echo $form->getFieldHTML('ordles_id');

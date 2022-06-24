@@ -24,7 +24,7 @@
         <div class="booking-view -align-center">
             <div class="booking__head align-center">
                 <h3 class="-display-inline"><?php echo ucwords($teacher['user_first_name'] . " " . $teacher['user_last_name']); ?></h3>
-                <span class="flag -display-inline"><img style="width: 40px;" src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.png'; ?>" /></span>
+                <span class="flag -display-inline"><img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.svg'; ?>" style="height: 22px;border: 1px solid #000;" /></span>
             </div>
             <div class="booking__body">
                 <div class="inline-list">

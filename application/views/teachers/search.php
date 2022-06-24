@@ -95,7 +95,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                     <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$teacher['user_username']]) ?>" class="tutor-name">
                                         <h4><?php echo $teacher['user_first_name'] . ' ' . $teacher['user_last_name']; ?></h4>
                                         <div class="flag">
-                                            <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.png'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" />
+                                            <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.svg'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" style="height: 22px;border: 1px solid #000;" />
                                         </div>
                                     </a>
                                     <?php if (!empty($teacher['offers'])) { ?>
