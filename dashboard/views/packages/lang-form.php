@@ -22,7 +22,7 @@ if ($lastlangId == $tabLangId) {
     <div class="facebox-panel__head">
         <h4><?php echo Label::getLabel('LBL_SETUP_CLASS_PACKAGE'); ?></h4>
         <div class="tabs tabs--line border-bottom-0">
-            <ul>
+            <ul class="lang-list">
                 <li><a href="javascript:void(0);" onclick="form('<?php echo $packageId ?>');"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
                 <?php foreach ($languages as $langId => $language) { ?>
                     <li class="<?php echo ($langId == $tabLangId) ? 'is-active' : '' ?>"><a href="javascript:void(0)" <?php if ($packageId > 0) { ?> onclick="langForm(<?php echo $packageId ?>, <?php echo $langId; ?>);" <?php } ?>><?php echo $language; ?></a></li>

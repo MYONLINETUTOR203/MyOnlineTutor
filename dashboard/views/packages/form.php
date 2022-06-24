@@ -30,7 +30,7 @@ $counter = 1;
             <ul>
                 <li class="is-active"><a href="javascript:void(0);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
                 <?php foreach ($languages as $langId => $language) { ?>
-                    <li><a href="javascript:void(0)" <?php if ($packageId > 0) { ?> onclick="langForm(<?php echo $packageId ?>, <?php echo $langId; ?>);" <?php } ?>><?php echo $language; ?></a></li>
+                    <li><a href="javascript:void(0)" class="lang-li" data-id="<?php echo $langId; ?>" <?php if ($packageId > 0) { ?> onclick="langForm(<?php echo $packageId ?>, <?php echo $langId; ?>);" <?php } ?>><?php echo $language; ?></a></li>
                 <?php } ?>
             </ul>
         </div>
@@ -279,7 +279,7 @@ $counter = 1;
     </div>
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         counter = <?php echo $counter; ?>;
         bindDatetimePicker(".datetime");
     });

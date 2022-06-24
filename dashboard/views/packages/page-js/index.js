@@ -16,47 +16,48 @@
         search(document.frmPackageSearch);
     };
     form = function (packageId) {
-        fcom.ajax(fcom.makeUrl("Packages", "form"), {packageId: packageId}, function (res) {
+        fcom.ajax(fcom.makeUrl("Packages", "form"), { packageId: packageId }, function (res) {
             $.facebox(res, "facebox-medium");
         });
     };
-    setup = function (form, langFrm) {
+    setup = function (form, goToLangForm) {
         if (!$(form).validate()) {
             return;
         }
         var data = new FormData(form);
         fcom.ajaxMultipart(fcom.makeUrl('Packages', 'setup'), data, function (res) {
-            if (res.langId > 0 && langFrm) {
-                langForm(res.packageId, res.langId);
-            } else {
-                search(document.frmPackageSearch);
-                $.facebox.close();
+            search(document.frmPackageSearch);
+            if (goToLangForm && $('.lang-li').length > 0) {
+                langId = $('.lang-li').first().attr('data-id');
+                langForm(res.packageId, langId);
+                return;
             }
-        }, {fOutMode: 'json'});
+            $.facebox.close();
+        }, { fOutMode: 'json' });
     };
     langForm = function (packageId, langId) {
-        fcom.ajax(fcom.makeUrl("Packages", "langForm"), {packageId: packageId, langId: langId}, function (res) {
+        fcom.ajax(fcom.makeUrl("Packages", "langForm"), { packageId: packageId, langId: langId }, function (res) {
             $.facebox(res, "facebox-medium");
         });
     };
-    langSetup = function (form, langFrm) {
+    langSetup = function (form, goToNext) {
         if (!$(form).validate()) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl("Packages", "setupLang"), fcom.frmData(form), function (res) {
-            if (res.langId > 0 && langFrm) {
-                langForm(res.packageId, res.langId);
-            } else {
-                search(document.frmPackageSearch);
-                $.facebox.close();
+            search(document.frmClassSearch);
+            if (goToNext && $('.lang-list .is-active').next('li').length > 0) {
+                $('.lang-list .is-active').next('li').find('a').trigger('click');
+                return;
             }
+            $.facebox.close();
         });
     };
     cancelSetup = function (packageId) {
         if (!confirm(langLbl.confirmCancel)) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Packages', 'cancelSetup'), {packageId: packageId}, function () {
+        fcom.updateWithAjax(fcom.makeUrl('Packages', 'cancelSetup'), { packageId: packageId }, function () {
             search(document.frmPackageSearch);
             $.facebox.close();
         });
