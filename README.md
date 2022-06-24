@@ -141,6 +141,7 @@ GD with Free Font support, Zlib with zip support, DOM, Mbstring should be enable
 		crontab -e
 		*/2 * * * * /usr/bin/curl  -s https://yourdomain.com/cron > /dev/null 2>&1
     Save and Exit (Ctrl+x and Shift+y)
+
     **Note:** The command may vary depending upon the products and their version.
 
 10. **Create Procedure**

@@ -129,7 +129,7 @@ class WalletController extends DashboardController
         $str = Label::getLabel('LBL_ENTER_AMOUNT_TO_BE_ADDED_[{currencycode}]');
         $label = str_replace("{currencycode}", $currency['currency_code'], $str);
         $frm = new Form('frmAddMoney');
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_METHODS'), 'pmethod_id', $payins, array_key_first($payins));
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_METHODS'), 'pmethod_id', $payins, array_key_first($payins), [], '');
         $fld->requirements()->setRequired();
         $fld = $frm->addRequiredField($label, 'amount', '', ['placeholder' => $placeHolder]);
         $fld->requirements()->setFloatPositive();

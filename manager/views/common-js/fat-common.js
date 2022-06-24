@@ -100,7 +100,7 @@ var fcom = {
                 }
                 switch (jqXHR.status) {
                     case 401:
-                        return signinForm();
+                        return window.location.href = fcom.makeUrl('AdminGuest', 'loginForm');
                     default:
                         console.log("Http Error: " + jqXHR.status + ' ' + error);
                 }
@@ -234,7 +234,7 @@ var fcom = {
                 }
                 switch (jqXHR.status) {
                     case 401:
-                        return signinForm();
+                        return window.location.href = fcom.makeUrl('AdminGuest', 'loginForm');
                     default:
                         console.log("Http Error: " + jqXHR.status + ' ' + error);
                 }
