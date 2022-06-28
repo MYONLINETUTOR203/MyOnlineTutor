@@ -179,7 +179,7 @@ class AdminUsersController extends AdminBaseController
         $data = AdminUsers::getAttributesById($adminId);
         $frm->fill(['admin_id' => $adminId]);
         $this->set('frm', $frm);
-        $this->set('canEdit',  $this->objPrivilege->canEditAdminPermissions(true));
+        $this->set('canEdit', $this->objPrivilege->canEditAdminPermissions(true));
         $this->set('admin_id', $adminId);
         $this->set('allAccessfrm', $allAccessfrm);
         $this->set('data', $data);
@@ -202,7 +202,7 @@ class AdminUsersController extends AdminBaseController
         $permissionModules = AdminPrivilege::getPermissionModules();
         $this->set('arr_listing', $permissionModules);
         $this->set('userData', $userData);
-        $this->set('canEdit',  $this->objPrivilege->canEditAdminPermissions(true));
+        $this->set('canEdit', $this->objPrivilege->canEditAdminPermissions(true));
         $this->set('canViewAdminPermissions', $this->objPrivilege->canViewAdminPermissions(true));
         $this->_template->render(false, false);
     }
@@ -303,7 +303,6 @@ class AdminUsersController extends AdminBaseController
         $frm = new Form('frmAllAccess');
         $frm->setFormTagAttribute('class', 'web_form form_horizontal');
         $fld = $frm->addSelectBox(Label::getLabel('LBL_Select_permission_for_all_modules'), 'permissionForAll', AdminPrivilege::getPermissions(), '', ['class' => 'permissionForAll'], Label::getLabel('LBL_Select'));
-        $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Apply_to_All'), ['onclick' => 'updatePermission(0);return false;']);
         return $frm;
     }
