@@ -244,7 +244,7 @@ class Order extends MyAppModel
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $commission = FatApp::getConfig('CONF_TEACHER_COMMISSION');
+        $commission = 0;
         foreach ($courseIds as $courseId) {
             array_push($this->courses, [
                 'ordcrs_course_id' => $courseId,

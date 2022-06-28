@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 21, 2022 at 10:48 AM
+-- Generation Time: Jun 28, 2022 at 12:54 PM
 -- Server version: 8.0.29-0ubuntu0.20.04.3
 -- PHP Version: 7.4.29
 
@@ -10659,17 +10659,9 @@ CREATE TABLE `tbl_configurations` (
 --
 
 INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
-('add_availability_last_id', '99', 0),
-('admin_logo', '', 0),
 ('ANALYTICS_GOOGLE_TOKEN', '', 0),
-('apple_touch_icon', '', 0),
-('apply_to_teach_banner', '', 0),
-('BACKEND_DATE_FORMAT', 'M d, Y', 0),
-('blog_img', '', 0),
 ('CONF_ABOUT_US_PAGE', '2', 0),
 ('CONF_ACTIVE_THEME', '1', 0),
-('CONF_ADDITIONAL_ALERT_EMAILS', '', 0),
-('conf_address_', '', 0),
 ('CONF_ADDRESS_1', 'ITC 3, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062', 0),
 ('CONF_ADDRESS_2', 'ITC 3, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062', 0),
 ('CONF_ADMIN_APPROVAL_REGISTRATION', '0', 0),
@@ -10683,19 +10675,15 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_ALLOW_TEACHER_END_LESSON', '4', 0),
 ('CONF_ANALYTICS_TABLE_ID', '', 0),
 ('CONF_AUTO_CLOSE_ALERT_TIME', '3', 0),
-('conf_auto_close_system_messages', '0', 0),
 ('CONF_AUTO_LOGIN_REGISTRATION', '0', 0),
 ('conf_auto_restore_on', '0', 0),
 ('CONF_AVAILABILITY_UPDATE_WEEK_NO', '30', 0),
-('CONF_AWEBER_SIGNUP_CODE', '', 0),
-('conf_calendar_schedule_before', '0', 0),
 ('CONF_CANCEL_ORDER_DURATION', '10', 0),
 ('CONF_CLASS_BOOKING_GAP', '0', 0),
 ('CONF_CLASS_CANCEL_DURATION', '10', 0),
 ('CONF_CLASS_REFUND_DURATION', '4', 0),
 ('CONF_CLASS_REFUND_PERCENTAGE_AFTER_DURATION', '20', 0),
 ('CONF_CLASS_REFUND_PERCENTAGE_BEFORE_DURATION', '50', 0),
-('CONF_COMMISSION_INCLUDING_TAX', '0', 0),
 ('CONF_CONTACT_EMAIL', 'sales@fatbit.com', 0),
 ('CONF_COOKIES_BUTTON_LINK', '3', 0),
 ('CONF_COOKIES_TEXT_1', 'The website uses cookies to provide the best user experience while browsing safely. You can read more about cookies in the Privacy Policy.', 0),
@@ -10706,9 +10694,7 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_DATEPICKER_FORMAT', 'Y-m-d', 0),
 ('CONF_DATEPICKER_FORMAT_TIME', 'H:i', 0),
 ('CONF_DEFAULT_LANG', '1', 0),
-('CONF_DEFAULT_ORDER_STATUS', '1', 0),
 ('CONF_DEFAULT_PAID_LESSON_DURATION', '30', 0),
-('CONF_DEFAULT_PAID_ORDER_STATUS', '2', 0),
 ('CONF_DEFAULT_REVIEW_STATUS', '1', 0),
 ('CONF_DELETE_ATTACHMENT_ALLOWED_DURATION', '30', 0),
 ('CONF_EMAIL_VERIFICATION_REGISTRATION', '1', 0),
@@ -10718,7 +10704,6 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_ENABLE_LIVECHAT', '0', 0),
 ('CONF_ENABLE_NEWSLETTER_SUBSCRIPTION', '1', 1),
 ('CONF_ENABLE_PWA', '1', 0),
-('CONF_ENABLE_TUTOR_SUBSCRIPTION_MODULE', '1', 0),
 ('CONF_ENABLE_UNREAD_MSG_NOTIFICATION', '0', 0),
 ('CONF_ESCALATED_ISSUE_HOURS_AFTER_RESOLUTION', '4', 1),
 ('CONF_FACEBOOK_APP_ID', '', 0),
@@ -10748,8 +10733,6 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_MAINTENANCE', '0', 0),
 ('conf_maintenance_text_1', '', 0),
 ('conf_maintenance_text_2', '', 0),
-('CONF_MAX_COMMISSION', '15', 0),
-('CONF_MAX_HOURS_GROUP_CLASS', '10', 0),
 ('CONF_MAX_TEACHER_REQUEST_ATTEMPT', '4', 0),
 ('CONF_MIN_INTERVAL_WITHDRAW_REQUESTS', '1', 0),
 ('CONF_MIN_WITHDRAW_LIMIT', '10', 0),
@@ -10764,11 +10747,10 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_RECURRING_SUBSCRIPTION_WEEKS', '4', 1),
 ('CONF_REPLY_TO_EMAIL', 'yocoach@dummyid.com', 0),
 ('CONF_REPORT_ISSUE_HOURS_AFTER_COMPLETION', '4', 1),
-('conf_restore_schedule_time', '2021-02-24 13:44:03', 0),
+('conf_restore_schedule_time', '', 0),
 ('CONF_RESTORED_SUCCESSFULLY', '1', 0),
-('CONF_SALES_REPORT_GENERATED_DATE', '2022-06-20', 0),
+('CONF_SALES_REPORT_GENERATED_DATE', '2022-06-28', 0),
 ('CONF_SALES_REPORT_GENERATED_TIME', '2021-01-01 00:00:00', 0),
-('CONF_SCH_MAX_SESS_DAY', '10', 0),
 ('CONF_SEARCH_PRICE_OPTIONS', '{\"1\":[1,10],\"2\":[11,20],\"3\":[21,50],\"4\":[51,100],\"5\":[101,200],\"6\":[201,500]}', 1),
 ('CONF_SEND_EMAIL', '0', 0),
 ('CONF_SEND_SMTP_EMAIL', '0', 0),
@@ -10784,12 +10766,7 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_SMTP_PORT', '', 0),
 ('CONF_SMTP_SECURE', 'tls', 0),
 ('CONF_SMTP_USERNAME', '', 0),
-('CONF_SUBSCRIPTION_MONTHLY_AVAILABILITY_CHECK', '2', 0),
-('CONF_SUBSCRIPTION_STRIPE_PRODUCT_ID', 'prod_Jjam76ZE4mms9t', 0),
-('CONF_TEACHER_COMMISSION', '10', 1),
-('CONF_TEACHER_NO_OF_LESSON', '1,3,5,10,15,20,25', 0),
 ('CONF_TERMS_AND_CONDITIONS_PAGE', '2', 0),
-('conf_time_auto_close_system_messages', '3', 0),
 ('CONF_TOTAL_SLIDES_HOME_PAGE', '4', 0),
 ('CONF_TRANSACTION_MODE', '0', 0),
 ('CONF_TRIAL_LESSON_DURATION', '30', 0),
@@ -10798,22 +10775,13 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_USE_SSL', '0', 0),
 ('CONF_USER_REMEMBER_ME_DAYS', '30', 0),
 ('CONF_USER_REMEMBER_ME_IP_ENABLE', '0', 0),
-('conf_website_name_', '', 0),
 ('CONF_WEBSITE_NAME_1', 'Yo!Coach', 0),
 ('CONF_WEBSITE_NAME_2', 'Yo!Coach', 0),
 ('CONF_WELCOME_EMAIL_REGISTRATION', '1', 0),
-('CONF_YOCOACH_VERSION', 'TV-3.0.17.14062022', 1),
-('email_logo', '', 0),
-('favicon', '', 0),
-('front_logo', '', 0),
-('front_white_logo', '', 0),
+('CONF_YOCOACH_VERSION', 'RV-3.0.0', 1),
 ('FRONTEND_DATE_FORMAT', 'M d, Y', 0),
-('lesson_img', '', 0),
 ('MINIMUM_GIFT_CARD_AMOUNT', '10', 1),
-('MINIMUM_WALLET_RECHARGE_AMOUNT', '99', 1),
-('mobile_logo', '', 0),
-('payment_page_logo', '', 0),
-('social_feed_image', '', 0);
+('MINIMUM_WALLET_RECHARGE_AMOUNT', '99', 1);
 
 -- --------------------------------------------------------
 
@@ -18251,7 +18219,10 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (12654, 1, 'LBL_EXPIRE', 'Expire'),
 (12655, 1, 'MSG_WRITE_PERMISSION_DENIED', 'Write Permission Denied'),
 (12656, 1, 'LBL_FACEBOOK_LOGIN', 'Facebook Login'),
-(12657, 1, 'LBL_NOT_CONFIGURED_PLEASE_CONTACT_SUPPORT', 'Not Configured Please Contact Support');
+(12657, 1, 'LBL_NOT_CONFIGURED_PLEASE_CONTACT_SUPPORT', 'Not Configured Please Contact Support'),
+(12661, 1, 'LBL_XML_SITEMAP', 'Xml Sitemap'),
+(12662, 1, 'LBL_HTML_SITEMAP', 'Html Sitemap'),
+(12685, 1, 'LBL_{MINUTES}_MINUTES', '{minutes} Minutes');
 
 -- --------------------------------------------------------
 
@@ -18289,9 +18260,9 @@ CREATE TABLE `tbl_meeting_tools` (
 --
 
 INSERT INTO `tbl_meeting_tools` (`metool_id`, `metool_code`, `metool_status`, `metool_settings`, `metool_info`) VALUES
-(1, 'AtomChat', 0, '[{\"key\": \"api_key\", \"value\": \"API Key\"}, {\"key\": \"api_id\", \"value\": \"API ID\"}, {\"key\": \"chat_auth\", \"value\": \"Chat Auth\"}]', 'https://help.atomchat.com//v1/docs/installing-atomchat-on-basic-javascript\r\n\r\nAdd AtomChat to your Basic Javascript website\r\n\r\nAtomChat is the easiest way to add text chat and video calling to your website\r\nWhether you want to build an online community, a marketplace, a forum, or a social network, add must-have features like text and video chatting easily with AtomChat.'),
-(2, 'LessonSpace', 0, '[{\"key\": \"api_key\", \"value\": \"API Key\"}]', 'https://www.thelessonspace.com/docs/introduction\r\n\r\nAuthentication in the Launch API is done using your organisation\'s API key which can be found in the developer settings of your organisation\'s dashboard.  You\'re not currently logged in to Lessonspace. If you log in and your organisation has access to it\'s API key then it will automatically be added to and used in all the examples in these docs. A placeholder of xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx has been used in the mean time.'),
-(3, 'ZoomMeeting', 1, '[{\"key\": \"api_key\", \"value\": \"API Key\"}, {\"key\": \"api_secret\", \"value\": \"API Secret\"}, {\"key\": \"jwt_token\", \"value\": \"JWT Token\"}]', 'https://marketplace.zoom.us/docs/guides/\r\n\r\nZoom Developer Platform\r\nThe Zoom Developer Platform is an open platform that allows third-party developers to build applications and integrations upon Zoom’s video-first unified communications platform. Leverage APIs, Webhooks and SDKs to build custom applications and super-power your business with a powerful collaboration suite.\r\n');
+(1, 'AtomChat', 0, '[{\"key\": \"api_key\", \"value\": \"API Key\"}, {\"key\": \"api_id\", \"value\": \"API ID\"}, {\"key\": \"chat_auth\", \"value\": \"Chat Auth\"}]', '<a target=\"_blank\" href=\"https://help.atomchat.com/v1/docs/installing-atomchat-on-basic-javascript\">Documentation</a>\r\n\r\nAdd AtomChat to your Basic Javascript website\r\n\r\nAtomChat is the easiest way to add text chat and video calling to your website\r\nWhether you want to build an online community, a marketplace, a forum, or a social network, add must-have features like text and video chatting easily with AtomChat.'),
+(2, 'LessonSpace', 0, '[{\"key\": \"api_key\", \"value\": \"API Key\"}]', '<a target=\"_blank\" href=\"https://www.thelessonspace.com/docs/introduction\">Documentation</a>\r\n\r\nAuthentication in the Launch API is done using your organisation\'s API key which can be found in the developer settings of your organisation\'s dashboard.  You\'re not currently logged in to Lessonspace. If you log in and your organisation has access to it\'s API key then it will automatically be added to and used in all the examples in these docs. A placeholder of xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx has been used in the mean time.'),
+(3, 'ZoomMeeting', 1, '[{\"key\": \"api_key\", \"value\": \"API Key\"}, {\"key\": \"api_secret\", \"value\": \"API Secret\"}, {\"key\": \"jwt_token\", \"value\": \"JWT Token\"}]', '<a target=\"_blank\" href=\"https://marketplace.zoom.us/docs/guides/\">Documentation</a>\r\n\r\nZoom Developer Platform\r\nThe Zoom Developer Platform is an open platform that allows third-party developers to build applications and integrations upon Zoom’s video-first unified communications platform. Leverage APIs, Webhooks and SDKs to build custom applications and super-power your business with a powerful collaboration suite.\r\n');
 
 -- --------------------------------------------------------
 
@@ -31091,7 +31062,7 @@ ALTER TABLE `tbl_languages`
 -- AUTO_INCREMENT for table `tbl_language_labels`
 --
 ALTER TABLE `tbl_language_labels`
-  MODIFY `label_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12658;
+  MODIFY `label_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12686;
 
 --
 -- AUTO_INCREMENT for table `tbl_meetings`

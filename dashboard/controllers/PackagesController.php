@@ -69,7 +69,6 @@ class PackagesController extends DashboardController
         $this->set('frm', $frm);
         $this->set('packageId', $packageId);
         $this->set('classes', PackageSearch::getClasses($packageId));
-        $this->set('packageHours', FatApp::getConfig('CONF_MAX_HOURS_GROUP_CLASS'));
         $this->_template->render(false, false);
     }
 
