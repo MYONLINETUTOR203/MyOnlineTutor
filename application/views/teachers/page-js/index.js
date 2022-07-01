@@ -1,4 +1,4 @@
-/* global fcom, langLbl, range */
+/* global fcom, langLbl, range, LABELS */
 $(document).ready(function () {
 
     $('input[name="keyword"]').on('keyup', function (event) {
@@ -41,11 +41,11 @@ $(document).ready(function () {
         });
         if (language.length > 0) {
             var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + language.join(', ') +
-                '</span><span class="selected-filters__action" onclick="clearLanguage();"></span></div>';
+                    '</span><span class="selected-filters__action" onclick="clearLanguage();"></span></div>';
             $('input[name="teach_language"]').val('').trigger('keyup');
             $('.teachlang-placeholder-js').html(placeholder);
         } else {
-            $('.teachlang-placeholder-js').html('All Language');
+            $('.teachlang-placeholder-js').html(LABELS.allLanguages);
         }
         search(document.frmSearch);
         $("body").trigger('click');
@@ -58,17 +58,17 @@ $(document).ready(function () {
         });
         if (language.length > 0) {
             var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + language.join(', ') +
-                '</span><span class="selected-filters__action" onclick="clearLanguage();"></span></div>';
+                    '</span><span class="selected-filters__action" onclick="clearLanguage();"></span></div>';
             $('input[name="teach_language"]').val('').trigger('keyup');
             $('.teachlang-placeholder-js').html(placeholder);
         } else {
-            $('.teachlang-placeholder-js').html('All Language');
+            $('.teachlang-placeholder-js').html(LABELS.allLanguages);
         }
     };
 
     clearLanguage = function () {
         $('input[name="teach_language"]').val('').trigger('keyup');
-        $('.teachlang-placeholder-js').html('All Language');
+        $('.teachlang-placeholder-js').html(LABELS.allLanguages);
         $('input[name="teachs[]"]').prop('checked', false);
         search(document.frmSearch);
         $("body").trigger('click');
@@ -87,17 +87,17 @@ $(document).ready(function () {
         });
         if (price.length > 0) {
             var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + price.join(', ') +
-                '</span><span class="selected-filters__action" onclick="clearPrice();"></span></div>';
+                    '</span><span class="selected-filters__action" onclick="clearPrice();"></span></div>';
             $('.price-placeholder-js').html(placeholder);
         } else {
-            $('.price-placeholder-js').html('All Prices');
+            $('.price-placeholder-js').html(LABELS.allPrices);
         }
         search(document.frmSearch);
         $("body").trigger('click');
     };
 
     clearPrice = function () {
-        $('.price-placeholder-js').html('All Prices');
+        $('.price-placeholder-js').html(LABELS.allPrices);
         $('input[name="price[]"]').prop('checked', false);
         $('input[name="price_from"]').val('');
         $('input[name="price_till"]').val('');
@@ -112,17 +112,17 @@ $(document).ready(function () {
         });
         if (avaialbility.length > 0) {
             var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + avaialbility.join(', ') +
-                '</span><span class="selected-filters__action" onclick="clearAvailbility();"></span></div>';
+                    '</span><span class="selected-filters__action" onclick="clearAvailbility();"></span></div>';
             $('.availbility-placeholder-js').html(placeholder);
         } else {
-            $('.availbility-placeholder-js').html('Select Timing');
+            $('.availbility-placeholder-js').html(LABELS.selectTiming);
         }
         search(document.frmSearch);
         $("body").trigger('click');
     };
 
     clearAvailbility = function () {
-        $('.availbility-placeholder-js').html('Select Timing');
+        $('.availbility-placeholder-js').html(LABELS.selectTiming);
         $('input[name="days[]"]').prop('checked', false);
         $('input[name="slots[]"]').prop('checked', false);
         search(document.frmSearch);
@@ -166,9 +166,9 @@ $(document).ready(function () {
     clearAllMobile = function () {
         $(".filter-item__search-submit").show();
         $(".filter-item__search-reset").hide();
-        $('.teachlang-placeholder-js').html('All Language');
-        $('.price-placeholder-js').html('All Prices');
-        $('.availbility-placeholder-js').html('Select Timing');
+        $('.teachlang-placeholder-js').html(LABELS.allLanguages);
+        $('.price-placeholder-js').html(LABELS.allPrices);
+        $('.availbility-placeholder-js').html(LABELS.selectTiming);
         $('input[name="keyword"]').prop('value', '');
         $('input[name="teachs[]"]').prop('checked', false);
         $('input[name="price[]"]').prop('checked', false);
@@ -326,7 +326,7 @@ $(document).ready(function () {
     };
 
     viewCalendar = function (teacherId) {
-        fcom.ajax(fcom.makeUrl('Teachers', 'viewCalendar'), { teacherId: teacherId }, function (response) {
+        fcom.ajax(fcom.makeUrl('Teachers', 'viewCalendar'), {teacherId: teacherId}, function (response) {
             $.facebox(response, 'facebox-large');
         });
     };
