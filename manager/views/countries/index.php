@@ -19,13 +19,6 @@ $search->getField('btn_clear')->addFieldtagAttribute('onclick', 'clearSearch();'
                             <h5><?php echo Label::getLabel('LBL_Manage_Countries'); ?> </h5>
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
-                        <?php if ($canEdit) { ?>
-                            <div class="col-lg-auto">
-                                <div class="buttons-group">
-                                    <a href="javascript:void(0);" onclick="addCountryForm(0);" class="btn-primary"><?php echo Label::getLabel('LBL_ADD_NEW'); ?></a>
-                                </div>
-                            </div>
-                        <?php } ?>
                     </div>
                 </div>
                 <section class="section searchform_filter">
