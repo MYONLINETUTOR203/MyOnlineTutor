@@ -155,7 +155,7 @@
                             </g>
                         </svg>
                     </div>
-                    <h5><?php echo Label::getLabel('LBL_Hello'); ?> <?php echo $user['user_first_name']; ?></h5>
+                    <h5><?php echo Label::getLabel('LBL_Hello'); ?> <?php echo implode(" ", [$request['tereq_first_name'], $request['tereq_last_name']]); ?></h5>
                     <p><?php echo Label::getLabel('LBL_Thank_You_For_Submitting_Your_Application'); ?></p>
                     <div class="application-no">
                         <?php echo Label::getLabel('LBL_Application_Reference') ?>: <span id="reg-no"><?php echo $request['tereq_reference']; ?></span>

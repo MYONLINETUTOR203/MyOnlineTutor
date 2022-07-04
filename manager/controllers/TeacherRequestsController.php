@@ -42,7 +42,7 @@ class TeacherRequestsController extends AdminBaseController
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user.user_id = tereq.tereq_user_id', 'user');
         $srch->addMultipleFields([
             'user_username', 'user_email', 'user_deleted', 'user_first_name', 'user_last_name', 'tereq_id',
-            'tereq_user_id', 'tereq_status', 'tereq_date', 'tereq_reference',
+            'tereq_user_id', 'tereq_status', 'tereq_date', 'tereq_reference', 'tereq_first_name', 'tereq_last_name'
         ]);
         $srch->addCondition('tereq.tereq_step', '=', 5);
         $srch->addOrder('tereq_id', 'desc');
