@@ -167,8 +167,8 @@ $durationType = MyDate::getDurationTypesArr();
                 <div class="box__body space">
                     <div>
                         <ul class="nav nav--floated -clearfix theme--hovercolor statistics-nav-js">
-                            <li><a class="active" rel="tabs_1" data-chart="true" href="javascript:void(0)"><?php echo Label::getLabel('LBL_TOTAL_COMMISSIONS_FROM_LESSONS'); ?></a></li>
-                            <li><a rel="tabs_2" data-chart="true" href="javascript:void(0)"><?php echo Label::getLabel('LBL_TOTAL_COMMISSIONS_FROM_CLASS'); ?></a></li>
+                            <li><a class="active" rel="tabs_1" data-chart="true" href="javascript:void(0)"><?php echo Label::getLabel('LBL_COMMISSION_FROM_LESSONS'); ?></a></li>
+                            <li><a rel="tabs_2" data-chart="true" href="javascript:void(0)"><?php echo Label::getLabel('LBL_COMMISSION_FROM_CLASSES'); ?></a></li>
                             <li><a rel="tabs_3" data-chart="true" href="javascript:void(0)"><?php echo Label::getLabel('LBL_TOTAL_SIGN_UPS'); ?></a></li>
                         </ul>
                         <div class="tabs_panel_wrap statistics-tab-js">

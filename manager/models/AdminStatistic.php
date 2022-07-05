@@ -445,7 +445,7 @@ class AdminStatistic
                 $srch->addFld("DATE_FORMAT(slstat_date, '%Y-%m-%d') as groupDate");
                 break;
         }
-        $srch->addMultipleFields(['sum(IFNULL(slstat_les_sales,0)) as les_sales']);
+        $srch->addMultipleFields(['sum(IFNULL(slstat_les_earnings,0)) as les_earnings']);
         $srch->addGroupBy("groupDate");
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
@@ -474,10 +474,11 @@ class AdminStatistic
                 $srch->addFld("DATE_FORMAT(slstat_date, '%Y-%m-%d') as groupDate");
                 break;
         }
-        $srch->addMultipleFields(['sum(IFNULL(slstat_cls_sales,0)) as cls_sales']);
+        $srch->addMultipleFields(['sum(IFNULL(slstat_cls_earnings,0)) as cls_earnings']);
         $srch->addGroupBy("groupDate");
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'groupDate');
     }
+
 }

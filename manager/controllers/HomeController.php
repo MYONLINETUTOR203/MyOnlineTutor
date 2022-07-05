@@ -46,8 +46,8 @@ class HomeController extends AdminBaseController
     public function dashboardStatChart()
     {
         $userData = array_column(AdminStatistic::getUsersStat(MyDate::TYPE_LAST_12_MONTH), 'totalUser', 'groupDate');
-        $lessonData = array_column(AdminStatistic::getAdminLessonEarningStats(MyDate::TYPE_LAST_12_MONTH), 'les_sales', 'groupDate');
-        $classData = array_column(AdminStatistic::getAdminClassEarningStats(MyDate::TYPE_LAST_12_MONTH), 'cls_sales', 'groupDate');
+        $lessonData = array_column(AdminStatistic::getAdminLessonEarningStats(MyDate::TYPE_LAST_12_MONTH), 'les_earnings', 'groupDate');
+        $classData = array_column(AdminStatistic::getAdminClassEarningStats(MyDate::TYPE_LAST_12_MONTH), 'cls_earnings', 'groupDate');
         FatUtility::dieJsonSuccess(['userData' => $userData, 'lessonData' => $lessonData, 'classData' => $classData]);
     }
 
