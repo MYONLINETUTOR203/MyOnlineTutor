@@ -755,9 +755,9 @@ class UserAuth extends FatModel
     public static function getSigninForm(): Form
     {
         $frm = new Form('signinFrm');
-        $fld = $frm->addEmailField(Label::getLabel('LBL_Email'), 'username', '', ['placeholder' => Label::getLabel('LBL_EMAIL_ADDRESS')]);
+        $fld = $frm->addEmailField(Label::getLabel('LBL_Email'), 'username', (MyUtility::isDemoUrl() ? 'john.hettinger@dummyid.com' : ''), ['placeholder' => Label::getLabel('LBL_EMAIL_ADDRESS')]);
         $fld->requirements()->setRequired();
-        $pwd = $frm->addPasswordField(Label::getLabel('LBL_Password'), 'password', '', ['placeholder' => Label::getLabel('LBL_PASSWORD')]);
+        $pwd = $frm->addPasswordField(Label::getLabel('LBL_Password'), 'password', (MyUtility::isDemoUrl() ? 'John@123' : ''), ['placeholder' => Label::getLabel('LBL_PASSWORD')]);
         $pwd->requirements()->setRequired();
         $frm->addCheckbox(Label::getLabel('LBL_Remember_Me'), 'remember_me', 1, [], false, 0);
         $frm->addHtml('', 'forgot', '');

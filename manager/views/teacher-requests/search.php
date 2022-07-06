@@ -1,4 +1,5 @@
 <?php
+
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arrFlds = [
     'listserial' => Label::getLabel('LBL_srNo'),
@@ -25,7 +26,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', [], $srNo);
                 break;
             case 'user_full_name':
-                $td->appendElement('plaintext', [], CommonHelper::htmlEntitiesDecode($row['user_first_name'] . ' ' . $row['user_last_name']));
+                $td->appendElement('plaintext', [], CommonHelper::htmlEntitiesDecode(implode(" ", [$row['tereq_first_name'], $row['tereq_last_name']])));
                 break;
             case 'status':
                 $td->appendElement('plaintext', [], TeacherRequest::getStatuses($row['tereq_status']), true);

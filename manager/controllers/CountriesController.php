@@ -25,7 +25,6 @@ class CountriesController extends AdminBaseController
      */
     public function index()
     {
-        $this->set("canEdit", $this->objPrivilege->canEditCountries(true));
         $this->set("search", $this->getSearchForm($this->siteLangId));
         $this->_template->render();
     }

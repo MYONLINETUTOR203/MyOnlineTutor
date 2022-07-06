@@ -31,7 +31,7 @@ foreach ($arr_listing as $sn => $row) {
                 $td->appendElement('plaintext', [], $sr_no);
                 break;
             case 'country_flag':
-                $td->appendElement('img', ['src' => CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($row['country_code']) . '.png', 'style' => 'border:1px solid #DDD;width:30px;'], '');
+                $td->appendElement('img', ['src' => CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($row['country_code']) . '.svg', 'style' => 'border:1px solid #DDD;width:30px;'], '');
                 break;
             case 'action':
                 $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);

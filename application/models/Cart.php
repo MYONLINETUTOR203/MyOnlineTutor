@@ -306,9 +306,9 @@ class Cart extends FatModel
     /**
      * Get Cart Items
      *
-     * @return array
+     * @return bool|array
      */
-    public function getItems(): array
+    public function getItems()
     {
         if ($this->getCount() < 1) {
             $this->error = Label::getLabel('LBL_CART_IS_EMPTY');
