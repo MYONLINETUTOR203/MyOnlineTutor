@@ -10,6 +10,9 @@ switch ($order['order_type']) {
     case Order::TYPE_GCLASS:
         $oderTypeLabel = 'LBL_GROUP_CLASS_DETAILS';
         break;
+    case Order::TYPE_COURSE:
+        $oderTypeLabel = 'LBL_COURSE_DETAILS';
+        break;
     case Order::TYPE_PACKGE:
         $oderTypeLabel = 'LBL_PACKAGE_CLASS_DETAILS';
         break;
@@ -188,6 +191,15 @@ $payins[0] = Label::getLabel('LBL_N/A');
                                                 <strong><?php echo Label::getLabel('LBL_GIFTCARD_STATUS'); ?> : </strong><?php echo Giftcard::getStatuses($childeOrderDetails['ordgift_status']); ?><br>
                                                 <strong><?php echo Label::getLabel('LBL_AMOUNT'); ?> : </strong><?php echo MyUtility::formatMoney($order['order_net_amount']); ?><br>
                                                 <strong><a href="<?php echo MyUtility::makeUrl('Giftcards', 'index') . '?order_id=' . $order['order_id']; ?>"><?php echo Label::getLabel('LBL_VIEW_GIFTCARD_ORDER'); ?></a></strong><br>
+                                                <?php
+                                                break;
+                                            case Order::TYPE_COURSE:
+                                                ?>
+                                                <strong><?php echo Label::getLabel('LBL_COURSE_TITLE'); ?> : </strong><?php echo $childeOrderDetails['course_title']; ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_TEACHER_NAME'); ?> : </strong><?php echo ucwords($childeOrderDetails['user_first_name']. ' ' .$childeOrderDetails['user_last_name']); ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_TEACHER_EMAIL'); ?> : </strong><?php echo $childeOrderDetails['user_email']; ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_COURSE_STATUS'); ?> : </strong><?php echo OrderCourse::getStatuses($childeOrderDetails['ordcrs_status']); ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_AMOUNT'); ?> : </strong><?php echo MyUtility::formatMoney($order['order_net_amount']); ?><br>
                                                 <?php
                                                 break;
                                         }

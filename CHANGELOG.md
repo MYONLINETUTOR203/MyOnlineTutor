@@ -1,29 +1,34 @@
-# YoCoach V3
+# YoCoach V4 (YoCoach RV-3.0)
 
-## RV-3.0.0 (28-06-2022) 
-
+## TV-4.0.0.20220706
 
 Features:
 
-    Bank Transfer Payment Method
-    One on One Lesson Subscription 
-    Group Class Packages
-    Scheduling in Order Flow
-    Multiple Lessons Scheduling
-    Theme Management
+	Task-96951 - Course Search
+	Task-97084 - Course Detail Page
+	Task-97454 - Course Booking by Learner
+	Task-99007 - Preview Course for Admin
+	Task-99141 - Course Listing Page Design Integration
+	Task-99318 - Course Detail Page Design Integration
+	Task-97743 - Notes & Material
+	Task-97455 - Course Learning Page - Content Area
+	Task-97808 - Course Completion Page
+	Task-97809 - Course Certificate Page
+	Task-98337 - Design Integration
+	Task-98407 - Learner Course Pages design integration
+	Task-98526 - Course Certificate Design Integration
+	Task-97847 - Course Cancellation
+	Task-95823 - Course Categories Management
+	Task-95945 - Course Orders Listing in All Orders
+	Task-95824 - Course Approval Requests
+	Task-96006 - Course Listing for Admin
+	Task-96109 - Certificate Templates Management
+	Task-96122 - Refunds Cancellation Request
+	Task-96269 - Create a Course(Tutor)
+	Task-96198 - Resource Management in Tutor Dashboard
+	Task-96270 - Create Course Curriculum
+	Task-96804 - Course Pricing Settings and Content Creation
+	Task-98164 - Design Integration Tutor Dashboard
 
-Enhancements:
-    
-    Complete Yo!Coach platform has been refactored and upgraded to follow industry standard coding practices.
-    Settlements reports has been added to view the refunds, commission and teacher payouts.
-    Admin theme has been uplifted and the UI/UX has been improved by categorizing the features in the relevant menu.
-    Details regarding transactions, users and time have been added in orders listing.
-    More details on the admin dashboard have been provided for a summarized view.
-    Group classes images as thumbnails and banners have been added in group classes for an aesthetic view.
-    Classes and lessons are now segregated as different entities for transactions and report purposes.
-    Email templates have been updated with new one’s introduced at various triggers. 
-    Learners can also withdraw money from the wallet in case balance is available.
-    Teacher & Group Class Search Filters on front end listings have been updated with new UI/UX.
-    Users will now get unread message notifications in case they miss a message.
-    Flashcard module has been updated to notes which will let learners take notes on the platform.
-    
+Note:
+	This repository is moved from YoCoach V2 repository on 06th July 2022

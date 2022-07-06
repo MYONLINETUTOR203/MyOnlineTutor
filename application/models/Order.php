@@ -233,24 +233,29 @@ class Order extends MyAppModel
      * @param array $courseIds
      * @return bool
      */
-    private function addCourses(array $courseIds): bool
+    private function addCourses(array $courses): bool
     {
+        if (empty($courses)) {
+            return true;
+        }
+
+        $courseIds = array_keys($courses);
         $srch = new SearchBase(Course::DB_TBL, 'course');
         $srch->addCondition('course.course_id', 'IN', $courseIds);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addMultipleFields(['course_id', 'course_amount']);
+        $srch->addMultipleFields(['course_id', 'course_price']);
         $rows = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
         if (count($rows) < count($courseIds)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $commission = 0;
+        $commission = FatApp::getConfig('CONF_TEACHER_COMMISSION');
         foreach ($courseIds as $courseId) {
             array_push($this->courses, [
                 'ordcrs_course_id' => $courseId,
                 'ordcrs_amount' => $rows[$courseId],
                 'ordcrs_commission' => $commission,
-                'ordcrs_status' => Lesson::SCHEDULED,
+                'ordcrs_status' => OrderCourse::COMPLETED,
                 'ordcrs_payment' => AppConstant::UNPAID,
             ]);
         }
@@ -1099,6 +1104,29 @@ class Order extends MyAppModel
                 ]);
                 break;
             case Order::TYPE_COURSE:
+                $srch->joinTable(OrderCourse::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_COURSE . ' AND orders.order_id = ordcrs.ordcrs_order_id', 'ordcrs');
+                $srch->joinTable(Course::DB_TBL, 'LEFT JOIN', 'course.course_id = ordcrs.ordcrs_course_id', 'course');
+                $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'course.course_id = crslang.crslang_course_id AND crslang.crslang_lang_id = ' . $langId, 'crslang');
+                $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+                $srch->joinTable(TeachLanguage::DB_TBL, 'INNER JOIN', 'tlang.tlang_id = course.course_tlang_id', 'tlang');
+                $srch->joinTable(
+                    TeachLanguage::DB_TBL_LANG,
+                    'LEFT JOIN',
+                    'tlang.tlang_id = tlanglang.tlanglang_tlang_id AND tlanglang.tlanglang_lang_id = ' . $langId,
+                    'tlanglang'
+                );
+                $srch->addMultipleFields([
+                    'crslang.course_title',
+                    'teacher.user_first_name',
+                    'teacher.user_last_name',
+                    'teacher.user_timezone',
+                    'teacher.user_country_id',
+                    'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) AS tlang_name',
+                    'course.course_duration',
+                    'ordcrs.ordcrs_amount',
+                    'teacher.user_email',
+                    'ordcrs.ordcrs_status'
+                ]);
                 break;
             case Order::TYPE_WALLET:
                 break;

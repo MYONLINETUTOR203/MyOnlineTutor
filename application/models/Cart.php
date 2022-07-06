@@ -216,15 +216,30 @@ class Cart extends FatModel
      */
     public function addCourse(int $courseId): bool
     {
-        $srch = new SearchBase(Course::DB_TBL, 'course');
-        $srch->addCondition('course.course_id', '=', $courseId);
-        $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $course = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->clear();
+        $srch = new CourseSearch($this->langId, $this->userId, 0);
+        $srch->applyPrimaryConditions();
+        $srch->applySearchConditions([
+            'course_status' => Course::PUBLISHED,
+            'course_id' => $courseId
+        ]);
+        $srch->addMultipleFields([
+            'crslang.course_title AS course_title',
+            'course_tlang_id',
+            'course_cate_id',
+            'course_subcate_id',
+            'course.course_price AS course_price',
+            'course.course_currency_id AS course_currency_id',
+            'course_id',
+        ]);
+        $courses = $srch->fetchAndFormat();
+        $course = current($courses);
         if (empty($course)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $this->items[static::COURSE][$courseId] = $courseId;
+        $course['total_amount'] = $course['course_price'];
+        $this->items[static::COURSE][$courseId] = $course;
         return $this->refresh();
     }
 

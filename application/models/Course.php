@@ -2,27 +2,1008 @@
 
 /**
  * This class is used to handle Course
- * 
+ *
  * @package YoCoach
  * @author Fatbit Team
  */
 class Course extends MyAppModel
 {
-
-    const DB_TBL = 'tbl_order_course';
-    const DB_TBL_PREFIX = 'ordcrs_';
-
+    const DB_TBL = 'tbl_courses';
+    const DB_TBL_PREFIX = 'course_';
+    const DB_TBL_LANG = 'tbl_courses_lang';
+    const DB_TBL_APPROVAL_REQUEST = 'tbl_course_approval_requests';
+    const DB_TBL_REFUND_REQUEST = 'tbl_course_refund_requests';
+    const DB_TBL_TAGS = 'tbl_courses_tags';
+    const DB_TBL_INTENDED_LEARNERS = 'tbl_courses_intended_learners';
+    
     /* Course Status */
-    const PUBLISHED = 1;
+    const DRAFTED = 1;
+    const SUBMITTED = 2;
+    const PUBLISHED = 3;
+
+    /* Course Request Status */
+    const REQUEST_PENDING = 0;
+    const REQUEST_APPROVED = 1;
+    const REQUEST_DECLINED = 2;
+
+    /* Course Refund Status */
+    const REFUND_PENDING = 0;
+    const REFUND_APPROVED = 1;
+    const REFUND_DECLINED = 2;
+
+    /* Course Price Type */
+    const TYPE_FREE = 1;
+    const TYPE_PAID = 2;
+
+    /* Filter Types */
+    const FILTER_COURSE = 1;
+    const FILTER_TEACHER = 2;
+    const FILTER_TAGS = 3;
+
+    private $userId;
+    private $userType;
+    private $langId;
 
     /**
      * Initialize Course
-     * 
+     *
      * @param int $id
+     * @param int $userId
+     * @param int $userType
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, int $userId = 0, int $userType = 0, int $langId = 0)
     {
-        parent::__construct(static::DB_TBL, 'ordcrs_id', $id);
+        $this->userId = $userId;
+        $this->userType = $userType;
+        $this->langId = $langId;
+        parent::__construct(static::DB_TBL, 'course_id', $id);
     }
 
+    /**
+     * Function to check if course is not sent for the approval
+     *
+     * @return boolean
+     */
+    public function canEditCourse()
+    {
+        if ($this->getMainTableRecordId() > 0) {
+            $course = static::getAttributesById($this->getMainTableRecordId(), [
+                'course_status',
+                'course_user_id'
+            ]);
+            if (!$course) {
+                $this->error = Label::getLabel('LBL_COURSE_NOT_FOUND');
+                return false;
+            }
+            if ($course['course_user_id'] != $this->userId) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+                return false;
+            }
+            if (!$course['course_status']) {
+                $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+                return false;
+            }
+            if (static::SUBMITTED == $course['course_status']) {
+                $this->error = Label::getLabel('LBL_ACTION_NOT_ALLOWED._COURSE_APPROVAL_REQUEST_IS_IN_PROCESS');
+                return false;
+            }
+            if (static::PUBLISHED == $course['course_status']) {
+                $this->error = Label::getLabel('LBL_ACTION_NOT_ALLOWED._COURSE_IS_ALREADY_PUBLISHED');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * GetCourse Status List
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getStatuses(int $key = null)
+    {
+        $arr = [
+            static::DRAFTED => Label::getLabel('LBL_DRAFTED'),
+            static::SUBMITTED => Label::getLabel('LBL_SUBMITTED_FOR_APPROVAL'),
+            static::PUBLISHED => Label::getLabel('LBL_PUBLISHED')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get Approval Requests Status List
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getRequestStatuses(int $key = null)
+    {
+        $arr = [
+            static::REQUEST_PENDING => Label::getLabel('LBL_PENDING'),
+            static::REQUEST_APPROVED => Label::getLabel('LBL_APPROVED'),
+            static::REQUEST_DECLINED => Label::getLabel('LBL_DECLINED')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get Refund Requests Status List
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getRefundStatuses(int $key = null)
+    {
+        $arr = [
+            static::REFUND_PENDING => Label::getLabel('LBL_REFUND_PENDING'),
+            static::REFUND_APPROVED => Label::getLabel('LBL_REFUND_APPROVED'),
+            static::REFUND_DECLINED => Label::getLabel('LBL_REFUND_DECLINED')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get Types List
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getTypes(int $key = null)
+    {
+        $arr = [
+            static::TYPE_FREE => Label::getLabel('LBL_FREE'),
+            static::TYPE_PAID => Label::getLabel('LBL_PAID')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get course levels list or value
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getCourseLevels(int $key = null)
+    {
+        $levelList = json_decode(FatApp::getConfig('CONF_COURSE_LEVELS'));
+        $arr = [];
+        foreach ($levelList as $level) {
+            $arr[$level->id] = Label::getLabel('LBL_' . $level->name);
+        }
+        return AppConstant::returArrValue($arr, $key);
+    }
+    
+    /**
+     * Get Course Filter Types
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getFilterTypes(int $key = null)
+    {
+        $arr = [
+            static::FILTER_COURSE => Label::getLabel('LBL_COURSES'),
+            static::FILTER_TEACHER => Label::getLabel('LBL_TEACHERS'),
+            static::FILTER_TAGS => Label::getLabel('LBL_TAGS')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+    
+    /**
+     * Get Course Rating Filters
+     *
+     * @return array
+     */
+    public static function getRatingFilters()
+    {
+        return [
+            '4.5' => Label::getLabel('LBL_4.5_&_UP'),
+            '4.0' => Label::getLabel('LBL_4.0_&_UP'),
+            '3.5' => Label::getLabel('LBL_3.5_&_UP'),
+            '3.0' => Label::getLabel('LBL_3.0_&_UP'),
+        ];
+    }
+
+    /**
+     * Update course requests status
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function updateRequestStatus(array $data)
+    {
+        $requestId = FatUtility::int($data['coapre_id']);
+        $status = FatUtility::int($data['coapre_status']);
+        if ($requestId < 1 || $status < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->startTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        if (!$this->setupRequest($requestId, $data)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        /* update course status */
+        $courseStatus = ($status == static::REQUEST_APPROVED) ? static::PUBLISHED : static::DRAFTED;
+        if (!$this->updateStatus($courseStatus)) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        if ($courseStatus == static::PUBLISHED && !$this->setStatsCount()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->sendRequestUpdateMailToTeacher($data)) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        if (!$db->commitTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    private function updateStatus($status)
+    {
+        $this->setFldValue('course_status', $status);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * function to send request status update email to teacher
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function sendRequestUpdateMailToTeacher(array $data)
+    {
+        $mail = new FatMailer($this->langId, 'course_request_update_email_to_teacher');
+        $vars = [
+            '{username}' => ucwords($data['user_first_name'] . ' ' . $data['user_last_name']),
+            '{course_title}' => ucwords($data['course_title']),
+            '{request_status}' => static::getRequestStatuses($data['coapre_status']),
+            '{admin_comment}' => empty($data['coapre_remark']) ? Label::getLabel('LBL_NA') : $data['coapre_remark'],
+        ];
+        $mail->setVariables($vars);
+        if (!$mail->sendMail([$data['user_email']])) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Update course refund requests status
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function updateRefundRequestStatus(array $data)
+    {
+        $requestId = FatUtility::int($data['corere_id']);
+        $status = FatUtility::int($data['corere_status']);
+        if ($requestId < 1 || $status < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $srch = new CourseRefundRequestSearch($this->langId, 0, 0);
+        $srch->addSearchListingFields();
+        $srch->applySearchConditions(['corere_id' => $requestId]);
+        $srch->joinUser();
+        $srch->addFld('user_lang_id');
+        if (!$request = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $order = new OrderCourse($request['ordcrs_id'], $request['user_id'], User::SUPPORT, $request['user_lang_id']);
+        if (!$orderData = $order->getCourseToCancel()) {
+            $this->error = $order->getError();
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $refundData = [
+            'corere_status' => $status,
+            'corere_updated' => date('Y-m-d H:i:s')
+        ];
+        $where = ['smt' => 'corere_id = ?', 'vals'  => [$requestId]];
+        if (!$db->updateFromArray(self::DB_TBL_REFUND_REQUEST, $refundData, $where)) {
+            $this->error = $db->getError();
+            return false;
+        }
+        if ($status == static::REFUND_APPROVED) {
+            $order->setFldValue('ordcrs_status', OrderCourse::CANCELLED);
+            $order->setFldValue('ordcrs_updated', date('Y-m-d H:i:s'));
+            if (!$order->save()) {
+                $db->rollbackTransaction();
+                $order->error = $order->getError();
+                return false;
+            }
+            if (!$order->refundToLearner($orderData)) {
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+        $request['corere_remark'] = $data['corere_remark'];
+        $request = array_merge($request, $refundData);
+        $this->sendRefundStatusMailToLearner($request);
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * function to send refund request status update email to learner
+     *
+     * @param array $data
+     * @return void
+     */
+    private function sendRefundStatusMailToLearner(array $data)
+    {
+        $mail = new FatMailer($data['user_lang_id'], 'course_refund_update_email_to_learner');
+        $vars = [
+            '{username}' => ucwords($data['user_first_name'] . ' ' . $data['user_last_name']),
+            '{course_title}' => ucwords($data['course_title']),
+            '{request_status}' => static::getRefundStatuses($data['corere_status']),
+            '{admin_comment}' => empty($data['corere_remark']) ? Label::getLabel('LBL_NA') : $data['corere_remark'],
+        ];
+        $mail->setVariables($vars);
+        $mail->sendMail([$data['user_email']]);
+    }
+
+    /**
+     * Setup basic details
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function setupGeneralData(array $data)
+    {
+        if (!$this->canEditCourse()) {
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->startTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        if ($data['course_id'] < 1) {
+            $this->setFldValue('course_created', date('Y-m-d H:i:s'));
+        }
+        $this->setFldValue('course_user_id', $this->userId);
+        $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
+        $this->setFldValue('course_status', Course::DRAFTED);
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        $assignValues = [
+            'crslang_id' => $data['crslang_id'],
+            'crslang_lang_id' => $data['crslang_lang_id'],
+            'crslang_course_id' => $this->getMainTableRecordId(),
+            'course_title' => $data['course_title'],
+            'course_subtitle' => $data['course_subtitle'],
+            'course_details' => $data['course_details'],
+        ];
+        if (!$this->setupLangData($assignValues)) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * Setup Course Basic Lang Data
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupLangData(array $data)
+    {
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_LANG, $data, false, [], $data)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup basic details
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function setupSettings(array $data)
+    {
+        if (!$this->canEditCourse()) {
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->startTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
+        $this->setFldValue('course_certificate', $data['course_certificate']);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        $langData = [
+            'course_welcome' => $data['course_welcome'],
+            'course_congrats' => $data['course_congrats'],
+            'crslang_id' => $data['crslang_id'],
+        ];
+        if (!$this->setupLangData($langData)) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        $tagsData = [
+            'tags' => $data['course_tags'],
+            'lang_id' => $data['crslang_lang_id'],
+        ];
+        if (!$this->setupTags($tagsData)) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$db->commitTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup Course Tags Data
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupTags(array $data)
+    {
+        $courseId = $this->getMainTableRecordId();
+        if ($courseId < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $tagsList = explode(',', $data['tags']);
+        if (count($tagsList) < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $tagsData = [
+            'crstag_lang_id' => $data['lang_id'],
+            'crstag_course_id' => $courseId,
+            'crstag_srchtags' => json_encode($tagsList)
+        ];
+        /* get course tag id */
+        if ($tagId = $this->getTags()) {
+            $tagsData['crstag_id'] = $tagId['crstag_id'];
+        }
+        /* save/update */
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_TAGS, $tagsData, false, [], $tagsData)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Function to remove course
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        if ($this->getMainTableRecordId() < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        if (!$this->canEditCourse() || !$this->canDeleteCourse()) {
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        /* mark course deleted */
+        $this->setFldValue('course_deleted', date('Y-m-d H:i:s'));
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->deleteMedia()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    private function canDeleteCourse()
+    {
+        $courseId = $this->getMainTableRecordId();
+        $courseDeleted = static::getAttributesById($courseId, ['course_deleted']);
+        if ((int)$courseDeleted['course_deleted'] > 0) {
+            $this->error = Label::getLabel('LBL_COURSE_ALREADY_DELETED');
+            return false;
+        }
+        /* check if course order is in progress */
+        $srch = new SearchBase(OrderCourse::DB_TBL);
+        $srch->addCondition('ordcrs_course_id', '=', $courseId);
+        $srch->addCondition('ordcrs_status', '!=', OrderCourse::COMPLETED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_CANNOT_DELETE_AS_THE_COURSE_IS_ASSOCIATED_WITH_ORDERS');
+            return false;
+        }
+        return true;
+    }
+    
+    private function deleteMedia()
+    {
+        $courseId = $this->getMainTableRecordId();
+        /* delete course images */
+        $files = new Afile(Afile::TYPE_COURSE_IMAGE);
+        $filesList = $files->getFilesByType($courseId);
+        if ($filesList) {
+            foreach ($filesList as $file) {
+                if (!$files->removeById($file['file_id'], true)) {
+                    $this->error = $files->getError();
+                    return false;
+                }
+            }
+        }
+        /* delete course preview video */
+        $files = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
+        $filesList = $files->getFilesByType($courseId);
+        if ($filesList) {
+            foreach ($filesList as $file) {
+                if (!$files->removeById($file['file_id'], true)) {
+                    $this->error = $files->getError();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Get Course Tags
+     *
+     * @return array
+     */
+    public function getTags()
+    {
+        $srch = new SearchBase(static::DB_TBL_TAGS);
+        $srch->addCondition('crstag_lang_id', '=', $this->langId);
+        $srch->addCondition('crstag_course_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addMultipleFields([
+            'crstag_id',
+            'crstag_lang_id',
+            'crstag_course_id',
+            'crstag_srchtags',
+        ]);
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+    
+    /**
+     * Check and send eligibility status for approval
+     *
+     * @return array
+     */
+    public function isEligibleForApproval()
+    {
+        $courseId = $this->getMainTableRecordId();
+        $criteria = json_decode(FatApp::getConfig('CONF_COURSE_APPROVAL_ELIGIBILITY_CRITERIA'));
+        $criteria = array_fill_keys($criteria, 0);
+        /* get course curriculum and price tabs data */
+        $courseData = Course::getAttributesById($courseId, [
+            'IF(course_sections > 0, 1, 0) as course_sections',
+            'IF(course_lectures > 0, 1, 0) as course_lectures',
+            'IF(course_type = ' . Course::TYPE_FREE . ' OR course_currency_id > 0, 1, 0) as course_currency_id',
+            'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
+        ]);
+        if ($courseData) {
+            $criteria = array_merge($criteria, $courseData);
+        }
+        /* get course lang data */
+        $srch = new SearchBase(Course::DB_TBL_LANG);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('crslang_course_id', '=', $courseId);
+        $srch->addMultipleFields([
+            'IF(crslang_id IS NULL, 0, 1) as course_lang',
+            'IF(course_welcome IS NULL, 0, 1) as course_welcome',
+            'IF(course_congrats IS NULL, 0, 1) as course_congrats'
+        ]);
+        if ($courseLang = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $criteria = array_merge($criteria, $courseLang);
+        }
+        /* get course tags data */
+        $srch = new SearchBase(Course::DB_TBL_TAGS);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('crstag_course_id', '=', $courseId);
+        $srch->addFld('crstag_id');
+        $criteria['course_tags'] = (FatApp::getDb()->fetch($srch->getResultSet())) ? 1 : 0;
+        /* get course intended learners data */
+        $srch = new SearchBase(IntendedLearner::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('coinle_course_id', '=', $courseId);
+        $srch->addFld('coinle_id');
+        $criteria['courses_intended_learners'] = (FatApp::getDb()->fetch($srch->getResultSet())) ? 1 : 0;
+        /* get course image and video */
+        $afile = new Afile(Afile::TYPE_COURSE_IMAGE);
+        $criteria['course_image'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
+        $afile = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
+        $criteria['course_preview_video'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
+        $criteria['course_is_eligible'] = true;
+        if (!empty(array_search(0, $criteria))) {
+            $criteria['course_is_eligible'] = false;
+        }
+        return $criteria;
+    }
+
+    /**
+     * Submit course for approval from admin
+     *
+     * @return bool
+     */
+    public function submitApprovalRequest()
+    {
+        if (!$this->canEditCourse()) {
+            return false;
+        }
+        $eligibility = $this->isEligibleForApproval();
+        if ($eligibility['course_is_eligible'] == false) {
+            $this->error = Label::getLabel('LBL_COURSE_IS_NOT_ELIGIBILE_FOR_REVIEW._PLEASE_COMPLETE_THE_DETAILS');
+            return false;
+        }
+        $db = FatApp::getDb();
+        if (!$db->startTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        if (!$this->setupRequest(0)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        /* update course status */
+        if (!$this->updateStatus(static::SUBMITTED)) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->sendApprovalRequestEmailToAdmin()) {
+            $db->rollbackTransaction();
+            $this->error = $db->getError();
+            return false;
+        }
+        if (!$db->commitTransaction()) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Add/Edit Approval Request
+     *
+     * @param int   $requestId
+     * @param array $data
+     * @return bool
+     */
+    private function setupRequest(int $requestId, array $data = [])
+    {
+        $db = FatApp::getDb();
+        if ($requestId < 1) {
+            $data = [
+                'coapre_course_id' => $this->getMainTableRecordId(),
+                'coapre_status' => static::REQUEST_PENDING,
+                'coapre_created' => date('Y-m-d H:i:s'),
+            ];
+        } else {
+            $data = [
+                'coapre_id' => $requestId,
+                'coapre_status' => $data['coapre_status'],
+                'coapre_remark' => $data['coapre_remark'],
+                'coapre_updated' => date('Y-m-d H:i:s')
+            ];
+        }
+        if (!$db->insertFromArray(static::DB_TBL_APPROVAL_REQUEST, $data, false, [], $data)) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * function to send approval request email to admin
+     *
+     * @return bool
+     */
+    private function sendApprovalRequestEmailToAdmin()
+    {
+        $srch = new SearchBase(static::DB_TBL, 'course');
+        $srch->addCondition('course_id' , '=', $this->getMainTableRecordId());
+        $srch->joinTable(
+            static::DB_TBL_LANG,
+            'LEFT JOIN',
+            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->langId,
+            'crslang'
+        );
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('course.course_user_id', '=', $this->userId);
+        $srch->addMultipleFields([
+            'teacher.user_first_name AS teacher_first_name',
+            'teacher.user_last_name AS teacher_last_name',
+            'crslang.course_title AS course_title',
+        ]);
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        $mail = new FatMailer($this->langId, 'course_approval_request_email_to_admin');
+        $vars = [
+            '{username}' => ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
+            '{course_title}' => ucwords($data['course_title']),
+            '{course_link}' => MyUtility::makeFullUrl('CourseRequests', '', [], CONF_WEBROOT_BACKEND),
+        ];
+        $mail->setVariables($vars);
+        if (!$mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')])) {
+            $this->error = $mail->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Update duration
+     *
+     * @return bool
+     */
+    public function setDuration()
+    {
+        $srch = new SearchBase(Section::DB_TBL);
+        $srch->addCondition('section_course_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addFld('SUM(section_duration) AS course_duration');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        /* update duration */
+        $this->assignValues($row);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Function to set students count in courses
+     *
+     * @param int $courseId
+     * @return bool
+     */
+    public function setStudentCount()
+    {
+        /* get count*/
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordcrs.ordcrs_order_id', 'orders');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('COUNT(ordcrs_order_id) AS course_students');
+        $srch->addCondition('ordcrs_course_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('order_payment_status', '=', Order::ISPAID);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        /* update student count */
+        $this->assignValues($row);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get course data by id
+     *
+     * @return array|false
+     */
+    public function get()
+    {
+        $srch = new SearchBase(static::DB_TBL, 'course');
+        $srch->joinTable(
+            static::DB_TBL_LANG,
+            'LEFT JOIN',
+            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->langId,
+            'crslang'
+        );
+        $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('course_id', '=', $this->getMainTableRecordId());
+        $srch->addMultipleFields([
+            'crslang.course_title',
+            'crslang.course_details',
+            'course.course_id',
+            'course.course_lectures',
+            'course.course_user_id',
+            'course.course_reviews',
+            'course.course_ratings',
+            'course.course_lectures',
+            'course.course_certificate',
+        ]);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+
+    
+    /**
+     * Feedback Course
+     * 
+     * @param array $post
+     * @return bool
+     */
+    public function feedback(array $post): bool
+    {
+        $ordcrs = new OrderCourse($post['ordcrs_id'], $this->userId, $this->userType, $this->langId);
+        if (!$course = $ordcrs->getCourseToFeedback()) {
+            $this->error = $ordcrs->getError();
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $ratingReview = new CourseRatingReview($course['course_user_id'], $this->userId);
+        $post['ratrev_lang_id'] = $this->langId;
+        if (!$ratingReview->addReview(AppConstant::COURSE, $this->getMainTableRecordId(), $post)) {
+            $db->rollbackTransaction();
+            $this->error = $ratingReview->getError();
+            return false;
+        }
+        $record = new OrderCourse($course['ordcrs_id']);
+        $record->assignValues(['ordcrs_reviewed' => AppConstant::YES, 'ordcrs_updated' => date('Y-m-d H:i:s')]);
+        if (!$record->save()) {
+            $this->error = $record->getError();
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        if (FatApp::getConfig('CONF_DEFAULT_REVIEW_STATUS') == CourseRatingReview::STATUS_APPROVED) {
+            $ratingReview->sendMailToTeacher($course);
+        } else {
+            $ratingReview->sendMailToAdmin($course);
+        }
+        return true;
+    }
+
+    /**
+     * Set rating & reviews count
+     *
+     * @return bool
+     */
+    public function setRatingReviewCount()
+    {
+        $srch = new SearchBase(CourseRatingReview::DB_TBL, 'ratrev');
+        $srch->addMultipleFields([
+            'COUNT(*) as course_reviews',
+            'ROUND(AVG(ratrev.ratrev_overall), 2) as course_ratings'
+        ]);
+        $srch->addCondition('ratrev.ratrev_status', '=', CourseRatingReview::STATUS_APPROVED);
+        $srch->addCondition('ratrev.ratrev_type_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('ratrev.ratrev_type', '=', AppConstant::COURSE);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $data = ['course_ratings' => 0, 'course_reviews' => 0];
+        }
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Update stats for category and students
+     *
+     * @return bool
+     */
+    private function setStatsCount()
+    {
+        /* update category course count */
+        $courseData = static::getAttributesById($this->getMainTableRecordId(), ['course_cate_id', 'course_user_id']);
+        $srch = new SearchBase(Course::DB_TBL);
+        $srch->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('course_status', '=', static::PUBLISHED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+
+        /* update student count */
+        $srch->addCondition('course_cate_id', '=', $courseData['course_cate_id']);
+        $srch->addFld('COUNT(course_id) AS cate_courses');
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        $category = new Category($courseData['course_cate_id']);
+        $category->assignValues($row);
+        if (!$category->save()) {
+            $this->error = $category->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Settle payment for completed courses
+     *
+     * @return void
+     */
+    public function completedCourseSettlement()
+    {
+        $hours = FatApp::getConfig('CONF_COURSE_CANCEL_DURATION');
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
+        $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::COMPLETED);
+        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $hours . ' HOUR) < "' . date('Y-m-d H:i:s') . '"', 'AND');
+        $srch->addDirectCondition('ordcrs.ordcrs_teacher_paid IS NULL');
+        $srch->addOrder('ordcrs.ordcrs_id', 'ASC');
+        $srch->addMultipleFields([
+            'ordcrs_commission',
+            'ordcrs_amount',
+            'ordcrs_discount',
+            'ordcrs_id',
+            'order_id',
+            'teacher.user_id as teacher_id'
+        ]);
+        $srch->doNotCalculateRecords();
+        $resultSet = $srch->getResultSet();
+        $db = FatApp::getDb();
+        while ($course = $db->fetch($resultSet)) {
+            $db->startTransaction();
+            $commission = ($course['ordcrs_commission'] / 100) * $course['ordcrs_amount'];
+            $teacherAmount = round(($course['ordcrs_amount'] - $commission), 2);
+            if ($teacherAmount > 0) {
+                $comment = Label::getLabel('LBL_PAYMENT_ON_COURSE_{orderid}');
+                $comment = str_replace('{orderid}', $course['order_id'], $comment);
+                $txn = new Transaction($course['teacher_id'], Transaction::TYPE_TEACHER_PAYMENT);
+                if (!$txn->credit($teacherAmount, $comment)) {
+                    $this->error = $txn->getError();
+                    $db->rollbackTransaction();
+                    return false;
+                }
+            }
+            $orderCourse = new OrderCourse($course['ordcrs_id']);
+            $orderCourse->setFldValue('ordcrs_teacher_paid', $teacherAmount);
+            $earnings = $course['ordcrs_amount'] - ($course['ordcrs_discount'] + $teacherAmount);
+            $orderCourse->setFldValue('ordcrs_earnings', FatUtility::float($earnings));
+            if (!$orderCourse->save()) {
+                $this->error = $orderCourse->getError();
+                $db->rollbackTransaction();
+                return false;
+            }
+            $db->commitTransaction();
+        }
+        return true;
+    }
 }

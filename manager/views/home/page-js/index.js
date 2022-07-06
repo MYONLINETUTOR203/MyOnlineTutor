@@ -16,6 +16,13 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
             $('.languageDurationType-js2').text(intervalText);
         });
     };
+    getTopCourseCategories = function (interval, intervalText) {
+        $('.topCourseCategories').html('<li>' + fcom.getLoader() + '</li>');
+        fcom.ajax(fcom.makeUrl('Home', 'topCourseCategories'), {interval: interval}, function (response) {
+            $('.topCourseCategories').html(response);
+            $('.languageDurationType-js2').text(intervalText);
+        });
+    };
     getStatisticsData = function () {
         $("#lessonEarning--js").html(fcom.getLoader());
         fcom.updateWithAjax(fcom.makeUrl('Home', 'dashboardStatChart'), '', function (response) {
@@ -71,6 +78,7 @@ $(document).ready(function () {
     getGoogleAnalytics();
     getTopClassLanguage();
     getTopLessonLanguage();
+    getTopCourseCategories();
     $('.carousel--oneforth-js').slick(getSlickSliderSettings(4));
     $('.statistics-nav-js li a').click(function () {
         $('.statistics-tab-js .tabs_panel').hide();
@@ -84,6 +92,8 @@ $(document).ready(function () {
             } else if (activeTab == 'tabs_2') {
                 callChart('classEarning--js', Object.keys(chartData.classData), Object.values(chartData.classData), position);
             } else if (activeTab == 'tabs_3') {
+                callChart('courseEarning--js', Object.keys(chartData.courseData), Object.values(chartData.courseData), position);
+            } else if (activeTab == 'tabs_4') {
                 callChart('userSignups--js', Object.keys(chartData.userData), Object.values(chartData.userData), position);
             }
         }

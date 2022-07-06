@@ -50,10 +50,10 @@ class SalesReportController extends AdminBaseController
         }
         $srch->addMultipleFields([
             'slstat_date',
-            '(IFNULL(slstat_les_sales,0) + IFNULL(slstat_cls_sales,0) + IFNULL(slstat_les_discount,0) '
-                . ' + IFNULL(slstat_cls_discount,0)) AS slstat_total_sales',
-            '(IFNULL(slstat_les_sales,0) + IFNULL(slstat_cls_sales,0)) AS slstat_net_sales',
-            '(IFNULL(slstat_les_discount,0) + IFNULL(slstat_cls_discount,0)) AS slstat_discount',
+            '(IFNULL(slstat_les_sales,0) + IFNULL(slstat_cls_sales,0) + IFNULL(slstat_crs_sales,0) + IFNULL(slstat_les_discount,0) '
+            . ' + IFNULL(slstat_cls_discount,0) + IFNULL(slstat_crs_discount,0)) AS slstat_total_sales',
+            '(IFNULL(slstat_les_sales,0) + IFNULL(slstat_cls_sales,0) + IFNULL(slstat_crs_sales,0)) AS slstat_net_sales',
+            '(IFNULL(slstat_les_discount,0) + IFNULL(slstat_cls_discount,0) + IFNULL(slstat_crs_discount,0)) AS slstat_discount',
         ]);
         $srch->setPageNumber($post['pageno']);
         $srch->setPageSize($post['pagesize']);

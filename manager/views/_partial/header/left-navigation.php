@@ -50,6 +50,52 @@
                     </ul>
                 </li>
             <?php } ?>
+            
+            <?php
+            if (
+                $objPrivilege->canViewCourses(true) ||
+                $objPrivilege->canViewCategories(true) ||
+                $objPrivilege->canViewCourseRequests(true) ||
+                $objPrivilege->canViewCertificates(true) ||
+                $objPrivilege->canViewCourseRefundRequests(true) || 
+                $objPrivilege->canViewCourseReviews(true)
+            ) { ?>
+                <li class="haschild">
+                    <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_COURSES'); ?></a>
+                    <ul>
+                        <?php if ($objPrivilege->canViewCategories(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CATEGORIES'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewCourses(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Courses'); ?>"><?php echo Label::getLabel('LBL_MANAGE_COURSES'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewCourseRequests(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('CourseRequests'); ?>"><?php echo Label::getLabel('LBL_MANAGE_APPROVAL_REQUESTS'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewCertificates(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CERTIFICATES'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewCourseReviews(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('RatingReviews', 'index', [AppConstant::COURSE]); ?>"><?php echo Label::getLabel('LBL_COURSE_REVIEWS'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewCourseRefundRequests(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('CourseRefundRequests'); ?>"><?php echo Label::getLabel('LBL_MANAGE_REFUND_REQUESTS'); ?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </li>
+            <?php } ?>
             <?php
             if (
                 $objPrivilege->canViewOrders(true) || $objPrivilege->canViewLessonsOrders(true) || $objPrivilege->canViewPackagesOrders(true) ||
@@ -70,6 +116,8 @@
                         <?php }
                         if ($objPrivilege->canViewClassesOrders(true)) { ?>
                             <li><a href="<?php echo MyUtility::makeUrl('Classes'); ?>"><?php echo Label::getLabel('LBL_CLASSES_ORDERS'); ?></a></li>
+                        <?php } if ($objPrivilege->canViewCoursesOrders(true)) { ?>
+                            <li><a href="<?php echo MyUtility::makeUrl('CourseOrders'); ?>"><?php echo Label::getLabel('LBL_COURSE_ORDERS'); ?></a></li>
                         <?php }
                         if ($objPrivilege->canViewPackagesOrders(true)) { ?>
                             <li><a href="<?php echo MyUtility::makeUrl('Packages'); ?>"><?php echo Label::getLabel('LBL_PACKAGES_ORDERS'); ?></a></li>

@@ -23,6 +23,7 @@ class User extends MyAppModel
     const DB_TBL_LANG_PREFIX = 'userlang_';
     const DB_TBL_USER_TO_SPOKEN_LANGUAGES = 'tbl_user_speak_languages';
     const DB_TBL_TEACHER_FAVORITE = 'tbl_user_favourite_teachers';
+    const DB_TBL_COURSE_FAVORITE = 'tbl_user_favourite_courses';
     const GENDER_MALE = 1;
     const GENDER_FEMALE = 2;
     const LESSION_EMAIL_BEFORE_12_HOUR = 12;
@@ -572,4 +573,19 @@ class User extends MyAppModel
         return empty($teacher) ? false : $teacher;
     }
 
+    /**
+     * Setup Favorite Course
+     *
+     * @param int $courseId
+     * @return bool
+     */
+    public function setupFavoriteCourse(int $courseId): bool
+    {
+        $data = ['ufc_user_id' => $this->getMainTableRecordId(), 'ufc_course_id' => $courseId];
+        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_COURSE_FAVORITE, $data)) {
+            $this->error = FatApp::getDb()->getError();
+            return false;
+        }
+        return true;
+    }
 }

@@ -283,7 +283,7 @@ img {
 
 .message-display__media {
     display: table;
-    margin: 0 auto 30px
+    margin: 0 auto 30px; max-width: 500px;
 }
 
 .message-display__icon {

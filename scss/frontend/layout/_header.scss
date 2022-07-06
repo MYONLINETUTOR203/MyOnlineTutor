@@ -313,7 +313,7 @@ $header-dropdown--arrow: 'header-dropdown--arrow';
 
 
 .header-dropdown__target {
-    min-width: 240px;
+    min-width: 200px;
     z-index: 2;
     #{theme('direction.right','value')}: 0;
     top: 100%;

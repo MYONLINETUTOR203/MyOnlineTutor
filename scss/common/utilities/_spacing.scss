@@ -54,9 +54,11 @@ $margin: 'm';
 .padding-4{padding: theme('padding.4')!important;}
 .padding-5{padding: theme('padding.5')!important;}
 .padding-6{padding: theme('padding.6')!important;}
-
 .padding-8{padding: theme('padding.8')!important;}
 .padding-10{padding: theme('padding.10')!important;}
+.padding-12{padding: theme('padding.12')!important;}
+.padding-14{padding: theme('padding.14')!important;}
+.padding-16{padding: theme('padding.16')!important;}
 
 
 
@@ -74,6 +76,11 @@ $margin: 'm';
 .padding-left-4{padding-#{theme('direction.left','value')}: theme('padding.4')!important;}
 .padding-left-5{padding-#{theme('direction.left','value')}: theme('padding.5')!important;}
 .padding-left-6{padding-#{theme('direction.left','value')}: theme('padding.6')!important;}
+.padding-left-8{padding-#{theme('direction.left','value')}: theme('padding.8')!important;}
+.padding-left-10{padding-#{theme('direction.left','value')}: theme('padding.10')!important;}
+.padding-left-12{padding-#{theme('direction.left','value')}: theme('padding.12')!important;}
+.padding-left-14{padding-#{theme('direction.left','value')}: theme('padding.14')!important;}
+.padding-left-16{padding-#{theme('direction.left','value')}: theme('padding.16')!important;}
 
 .padding-right-0{padding-#{theme('direction.right','value')}: theme('padding.0')!important;}
 .padding-right-1{padding-#{theme('direction.right','value')}: theme('padding.1')!important;}
@@ -82,6 +89,11 @@ $margin: 'm';
 .padding-right-4{padding-#{theme('direction.right','value')}: theme('padding.4')!important;}
 .padding-right-5{padding-#{theme('direction.right','value')}: theme('padding.5')!important;}
 .padding-right-6{padding-#{theme('direction.right','value')}: theme('padding.6')!important;}
+.padding-right-8{padding-#{theme('direction.right','value')}: theme('padding.8')!important;}
+.padding-right-10{padding-#{theme('direction.right','value')}: theme('padding.10')!important;}
+.padding-right-12{padding-#{theme('direction.right','value')}: theme('padding.12')!important;}
+.padding-right-14{padding-#{theme('direction.right','value')}: theme('padding.14')!important;}
+.padding-right-16{padding-#{theme('direction.right','value')}: theme('padding.16')!important;}
 
 .padding-bottom-0{padding-bottom: theme('padding.0')!important;}
 .padding-bottom-1{padding-bottom: theme('padding.1')!important;}
@@ -89,6 +101,14 @@ $margin: 'm';
 .padding-bottom-3{padding-bottom: theme('padding.3')!important;}
 .padding-bottom-4{padding-bottom: theme('padding.4')!important;}
 .padding-bottom-5{padding-bottom: theme('padding.5')!important;}
+.padding-bottom-6{padding-bottom: theme('padding.6')!important;}
+.padding-bottom-8{padding-bottom: theme('padding.8')!important;}
+.padding-bottom-10{padding-bottom: theme('padding.10')!important;}
+.padding-bottom-12{padding-bottom: theme('padding.12')!important;}
+.padding-bottom-14{padding-bottom: theme('padding.14')!important;}
+.padding-bottom-16{padding-bottom: theme('padding.16')!important;}
+.padding-bottom-18{padding-bottom: theme('padding.18')!important;}
+.padding-bottom-20{padding-bottom: theme('padding.20')!important;}
 
 
 .margin-auto{margin:auto!important;}
@@ -125,6 +145,9 @@ $margin: 'm';
 .margin-top-6{margin-top:theme('margin.6')!important;}
 .margin-top-8{margin-top:theme('margin.8')!important;}
 .margin-top-10{margin-top:theme('margin.10')!important;}
+.margin-top-12{margin-top:theme('margin.12')!important;}
+.margin-top-14{margin-top:theme('margin.14')!important;}
+.margin-top-16{margin-top:theme('margin.16')!important;}
 
 .margin-top-0{margin-top:0!important;}
 .margin-top-1{margin-top:theme('margin.1')!important;}

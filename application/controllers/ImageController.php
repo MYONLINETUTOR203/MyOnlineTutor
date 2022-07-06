@@ -26,9 +26,10 @@ class ImageController extends MyAppController
      * @param int $recordId
      * @param string $size
      */
-    public function show($fileType, $recordId = 0, $size = '')
+    public function show($fileType, $recordId = 0, $size = '', $langId = 0)
     {
-        $file = new Afile(FatUtility::int($fileType), MyUtility::getSiteLangId());
+        $langId = ($langId < 1) ? MyUtility::getSiteLangId() : $langId;
+        $file = new Afile(FatUtility::int($fileType), $langId);
         $file->showByRecordId($size, FatUtility::int($recordId));
     }
 
@@ -81,4 +82,15 @@ class ImageController extends MyAppController
         Afile::displayOriginalImage('editor/' . $fileNamewithPath);
     }
 
+    /**
+     * Show Image
+     * 
+     * @param int $fileType
+     * @param int $recordId
+     */
+    public function showVideo($fileType, $recordId, $langId)
+    {
+        $file = new Afile(FatUtility::int($fileType), $langId);
+        $file->showVideo(FatUtility::int($recordId));
+    }
 }

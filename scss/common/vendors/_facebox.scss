@@ -46,7 +46,7 @@
     }
     .content.facebox-medium{
         @media(min-width: theme('breakpoints.lg','value')) {
-            min-width: 920px; display: block;padding:20px; overflow: auto;
+            min-width: 920px; display: block;padding:0; overflow: auto;
         }
     }
 }
@@ -232,7 +232,7 @@ $facebox-panel: "facebox-panel";
     }
 
     @media(min-width: theme('breakpoints.sm','value')){
-            &{ min-width: 600px; }
+            &{ min-width: 600px;}
     }
 
     @media(min-width: theme('breakpoints.xl','value')){

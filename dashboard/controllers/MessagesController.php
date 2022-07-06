@@ -300,7 +300,6 @@ class MessagesController extends DashboardController
     /**
      * Function to delete attachments and its physical file
      *
-     * @return void
      */
     public function deleteAttachment(): json
     {
@@ -351,9 +350,8 @@ class MessagesController extends DashboardController
     /**
      * Function to download messages attachments
      *
-     * @param integer $fileId
+     * @param int $fileId
      * 
-     * @return void
      */
     public function downloadAttachment(int $fileId)
     {

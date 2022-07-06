@@ -458,4 +458,17 @@ class Cronjob
         return true;
     }
 
+    /**
+     * Completed Course Settlement
+     * 
+     * @return string
+     */
+    public function completedCourseSettlement(): string
+    {
+        $course = new Course();
+        if (!$course->completedCourseSettlement()) {
+            return $course->getError();
+        }
+        return 'Courses settlement successful';
+    }
 }

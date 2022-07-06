@@ -394,7 +394,7 @@ class AppConstant
     /**
      * Get Price Range Options
      * 
-     * @return string
+     * @return array
      */
     public static function getPriceRangeOptions()
     {
@@ -404,5 +404,4 @@ class AppConstant
         }
         return $arr;
     }
-
 }

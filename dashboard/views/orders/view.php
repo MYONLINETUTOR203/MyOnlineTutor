@@ -20,7 +20,9 @@ $subOrder = current($subOrders);
                     </div>
                 </div>
             </div>
-            <?php if (in_array($order['order_type'], $techOrders)) { ?>
+            <?php
+            $orderTypes = array_merge($techOrders, [Order::TYPE_COURSE]);
+            if (in_array($order['order_type'], $orderTypes)) { ?>
                 <div class="detail-list__item">
                     <div class="detail-info">
                         <div class="detail-info__title detail-title">
@@ -79,6 +81,20 @@ $subOrder = current($subOrders);
                                 </div>
                                 <?php
                                 break;
+                            case Order::TYPE_COURSE:
+                                ?>
+                                <div class="detail-info__row"><?php echo $subOrder['course_title']; ?></div>
+                                <div class="detail-info__row">
+                                    <?php echo $subOrder['tlang_name']; ?>,
+                                    <?php echo YouTube::convertDuration($subOrder['course_duration']); ?>
+                                </div>
+                                <div class="detail-info__row">
+                                    <?php echo Label::getLabel('LBL_PRICE'); ?>:
+                                    <?php echo MyUtility::formatMoney($subOrder['ordcrs_amount']); ?>/
+                                    <?php echo Label::getLabel('LBL_COURSE'); ?>
+                                </div>
+                                <?php
+                                break;
                             case Order::TYPE_WALLET:
                                 ?>
                                 <div class="detail-info__row"><?php echo Label::getLabel('LBL_AMOUNT_ADDED'); ?>: <?php echo MyUtility::formatMoney($order['order_net_amount']); ?></div>
@@ -101,7 +117,8 @@ $subOrder = current($subOrders);
             </div>
         </div>
     </div>
-    <?php if (in_array($order['order_type'], $techOrders) && count($subOrders)) { ?>
+    <?php
+    if (in_array($order['order_type'], $techOrders) && count($subOrders)) { ?>
         <div class="target-data__group">
             <div class="table-panel">
                 <div class="table-panel__head panel__head-trigger panel__head-trigger-js">

@@ -67,8 +67,14 @@ class AdminPrivilege
     const SECTION_GDPR_REQUESTS = 59;
     const SECTION_LANGUAGE = 60;
     const SECTION_THEME_MANAGEMENT = 61;
-    const SECTION_PACKAGE_CLASSES = 62;
-    const SECTION_SETTLEMENTS_REPORT = 63;
+    const SECTION_CATEGORIES = 62;
+    const SECTION_COURSE = 63;
+    const SECTION_MANAGE_CERTIFICATES = 64;
+    const SECTION_COURSE_REQUESTS = 65;
+    const SECTION_COURSE_REFUND_REQUESTS = 66;
+    const SECTION_PACKAGE_CLASSES = 67;
+    const SECTION_COURSE_REVIEWS = 68;
+    const SECTION_SETTLEMENTS_REPORT = 69;
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -1435,7 +1441,114 @@ class AdminPrivilege
     }
 
     /**
-     * Can View Themes
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCategories(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCategories(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Courses
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Courses
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Course Requests
+     */
+    public function canViewCourseRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REQUESTS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Requests
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Course Cancellation Requests
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourseRefundRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REFUND_REQUESTS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Cancellation Requests
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseRefundRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REFUND_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Package Classes
      * 
      * @param bool $returnResult
      * @return type
@@ -1446,7 +1559,7 @@ class AdminPrivilege
     }
 
     /**
-     * Can Edit Themes
+     * Can Edit Package Classes
      * 
      * @param bool $returnResult
      * @return type
@@ -1456,4 +1569,25 @@ class AdminPrivilege
         return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
     }
 
+    /**
+     * Can View Course Reviews
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourseReviews(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REVIEWS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Reviews
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseReviews(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REVIEWS, static::PRIVILEGE_WRITE, $returnResult);
+    }
 }

@@ -224,7 +224,6 @@ class OrdersController extends AdminBaseController
     private function getSearchForm(): Form
     {
         $orderType = Order::getTypeArr();
-        unset($orderType[Order :: TYPE_COURSE]);
         $frm = new Form('frmOrderSearch');
         $frm->addHiddenField('', 'order_user_id', '', ['id' => 'order_user_id', 'autocomplete' => 'off']);
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '', ['placeholder' => Label::getLabel('LBL_Search_By_Keyword')]);

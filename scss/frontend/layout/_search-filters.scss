@@ -31,7 +31,7 @@ $section-filters: "section-filters";
 
 
 
-.is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .teachers.teachers-languages{
+.is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .courses.courses-index{
     @media (min-width:theme('breakpoints.sm','value')){
         .header.nav-up{transform: translateY(0);}
         .header{position: relative;}
@@ -418,6 +418,22 @@ $select-list: "select-list";
                 &__item{border-bottom: none;}
             }
         }
+
+
+        & > ul{
+            & > li{
+                & ul{padding: theme('padding.3'); border-bottom: 1px solid theme('color.gray.200');
+                
+                    @media(min-width:theme('breakpoints.sm','value')){
+                        & .#{$select-option}{
+                            &__item{border: none; }
+                
+                        }
+                   }
+                }
+            }
+        }
+
     }  
 
 
@@ -818,7 +834,7 @@ $sorting-action: "sorting-action";
         }
 
         @media (min-width:theme('breakpoints.sm','value')){
-            &:before{position: absolute;#{theme('direction.right','value')}:0.5rem;top: 50%; width:8px; height:8px; content: "";border-right: 2px solid #999; border-bottom: 2px solid #999; transform: translateY(-50%) rotate(45deg); pointer-events: none;}
+            &:before{position: absolute;#{theme('direction.right','value')}:0.5rem;top: 46%; width:8px; height:8px; content: "";border-right: 2px solid theme('color.gray.1000'); border-bottom: 2px solid theme('color.gray.1000'); transform: translateY(-50%) rotate(45deg); pointer-events: none;}
         }
         &.is-active:after{position: fixed; inset: 0; background-color: rgba(0,0,0,0.5);content: "";z-index: 11;}
     }
@@ -845,6 +861,8 @@ $sorting-action: "sorting-action";
 
     }
 }
+
+
 
 body.sort-active{position: fixed; left: 0; right: 0; top: 0;bottom: 0; overflow: hidden;
     .header{z-index: inherit;}
@@ -951,7 +969,7 @@ $selected-filters: "selected-filters";
         }
 
 
-        &__item{display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 170px; text-transform: capitalize;
+        &__item{display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;max-width: 170px;
         
             @media (max-width:theme('breakpoints.lg','value')){
                 &{max-width: 120px;}

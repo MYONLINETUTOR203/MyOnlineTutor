@@ -374,6 +374,10 @@ class MyUtility extends FatUtility
             'lessonNotAvailable' => Label::getLabel('LBL_LESSON_NOT_AVAILABLE'),
             'currencyLeft' => self::getCurrencyLeftSymbol(),
             'currencyRight' => self::getCurrencyRightSymbol(),
+            'courseSrchPlaceholder' => Label::getLabel('LBL_BY_COURSE_NAME,_TEACHER_NAME,_TAGS'),
+            'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?'),
+            'courseProgressPercent' => Label::getLabel('LBL_{percent}%_COMPLETED'),
+            'confirmCourseSubmission' => Label::getLabel('LBL_PLEASE_CONFIRM_YOU_WANT_TO_SUBMIT_COURSE_FOR_APPROVAL?')
         ];
     }
 

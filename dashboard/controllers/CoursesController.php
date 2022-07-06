@@ -1,0 +1,806 @@
+<?php
+
+/**
+ * This Controller is used for handling courses
+ *
+ * @package YoCoach
+ * @author Fatbit Team
+ */
+class CoursesController extends DashboardController
+{
+
+    /**
+     * Initialize Courses
+     *
+     * @param string $action
+     */
+    public function __construct(string $action)
+    {
+        parent::__construct($action);
+    }
+
+    /**
+     * Render Search Form
+     *
+     */
+    public function index()
+    {
+        $frm = $this->getSearchForm();
+        $this->set('frm', $frm);
+        $this->_template->addJs('js/jquery.barrating.min.js');
+        $this->_template->render();
+    }
+
+    /**
+     * Search & List Plans
+     */
+    public function search()
+    {
+        $frm = $this->getSearchForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        /* get courses list */
+        if ($this->siteUserType == User::LEARNER) {
+            $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+            $srch->addOrder('ordcrs_id', 'DESC');
+            $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+            $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+            $srch->addSearchListingFields();
+            $srch->applyPrimaryConditions();
+            $srch->applySearchConditions($post);
+            $srch->addMultipleFields([
+                'course.course_id',
+                'course.course_price',
+                'course.course_currency_id',
+                'course.course_lectures',
+                'course.course_type',
+                'course.course_students',
+                'crslang.course_subtitle',
+                'crslang.course_title',
+                'course.course_ratings',
+            ]);
+        } else {
+            $srch = new CourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+            $srch->addOrder('course_id', 'DESC');
+            $srch->applyPrimaryConditions();
+            $srch->addSearchListingFields();
+            $srch->applySearchConditions($post);
+        }
+        $srch->setPageSize($post['pagesize']);
+        $srch->setPageNumber($post['page']);
+        $this->sets([
+            'courses' => $srch->fetchAndFormat(),
+            'post' => $post,
+            'recordCount' => $srch->recordCount(),
+            'courseStatuses' => Course::getStatuses(),
+            'courseTypes' => Course::getTypes(),
+            'orderStatuses' => OrderCourse::getStatuses(),
+        ]);
+        $this->_template->render(false, false);
+    }
+    /**
+     * Render Course Manage Page
+     *
+     * @param int $courseId
+     */
+    public function form(int $courseId = 0)
+    {
+        if ($this->siteUserType == User::LEARNER) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        if ($courseId > 0) {
+            $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+            if (!$course->canEditCourse()) {
+                FatUtility::exitWithErrorCode(404);
+            }
+        }
+        $this->set('courseId', $courseId);
+        $this->set("includeEditor", true);
+        $this->_template->addJs('js/jquery.tagit.js');
+        $this->_template->render();
+    }
+
+    /**
+     * Render Basic Details Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function generalForm(int $courseId = 0, int $langId = 0)
+    {
+        $langId = ($langId < 1) ? $this->siteLangId : $langId;
+        $course = [];
+        if ($courseId > 0) {
+            $srch = new CourseSearch($langId, $this->siteUserId, User::TEACHER);
+            $srch->applyPrimaryConditions();
+            $srch->addMultipleFields([
+                'course_title',
+                'course_subtitle',
+                'course_cate_id',
+                'course_subcate_id',
+                'course_tlang_id',
+                'course_level',
+                'course_details',
+                'course_id',
+                'crslang_id',
+                'crslang_lang_id',
+            ]);
+            $srch->addCondition('course.course_id', '=', $courseId);
+            $srch->setPageSize(1);
+            if (!$course = FatApp::getDb()->fetch($srch->getResultSet())) {
+                FatUtility::exitWithErrorCode(404);
+            }
+        }
+        $course['crslang_lang_id'] = $langId;
+        $frm = $this->getGeneralForm();
+        $frm->fill($course);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Fetch sub categories for selected category
+     *
+     * @param int $catgId
+     * @param int $subCatgId
+     * @return html
+     */
+    public function getSubcategories(int $catgId, int $subCatgId = 0)
+    {
+        $catgId = FatUtility::int($catgId);
+        $subcategories = [];
+        if ($catgId > 0) {
+            $subcategories = Category::getCategoriesByParentId($this->siteLangId, $catgId);
+        }
+        $this->set('subCatgId', $subCatgId);
+        $this->set('subcategories', $subcategories);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup basic details
+     *
+     * @return json
+     */
+    public function setup()
+    {
+        $frm = $this->getGeneralForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_subcate_id'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->setupGeneralData($post)) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess([
+            'msg' => Label::getLabel('LBL_SETUP_SUCCESSFUL'),
+            'courseId' => $course->getMainTableRecordId(),
+            'langId' => $post['crslang_lang_id'],
+            'title' => $post['course_title'],
+        ]);
+    }
+
+    /**
+     * Render Media Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function mediaForm(int $courseId, int $langId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /* validate course id */
+        if (!Course::getAttributesById($courseId, 'course_id')) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /* get form and fill */
+        $frm = $this->getMediaForm();
+        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        /* get course image required dimensions */
+        $file = new Afile(Afile::TYPE_COURSE_IMAGE, $langId);
+        $image = $file->getFile($courseId);
+        $dimensions = $file->getImageSizes(Afile::SIZE_LARGE);
+        /* get video url */
+        $file = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO, $langId);
+        $previewVideo = $file->getFile($courseId);
+        $this->sets([
+            'frm' => $frm,
+            'courseId' => $courseId,
+            'langId' => $langId,
+            'extensions' => Afile::getAllowedExts(Afile::TYPE_COURSE_IMAGE),
+            'dimensions' => $dimensions,
+            'previewVideo' => $previewVideo,
+            'image' => $image,
+        ]);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup course media
+     *
+     * @return json
+     */
+    public function setupMedia()
+    {
+        $frm = $this->getMediaForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        if (!$course->canEditCourse()) {
+            FatUtility::dieWithError($course->getError());
+        }
+        if (empty($_FILES['course_image']['name']) && empty($_FILES['course_preview_video']['name'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_NO_MEDIA_SELECTED'));
+        }
+        $type = '';
+        $files = [];
+        if (!empty($_FILES['course_image']['name'])) {
+            $type = Afile::TYPE_COURSE_IMAGE;
+            $files = $_FILES['course_image'];
+        }
+        if (!empty($_FILES['course_preview_video']['name'])) {
+            $type = Afile::TYPE_COURSE_PREVIEW_VIDEO;
+            $files = $_FILES['course_preview_video'];
+        }
+        $file = new Afile($type, $post['crslang_lang_id']);
+        if (!$file->saveFile($files, $post['course_id'], 0, true)) {
+            FatUtility::dieJsonError($file->getError());
+        }
+        FatUtility::dieJsonSuccess([
+            'courseId' => $post['course_id'],
+            'langId' => $post['crslang_lang_id'],
+            'msg' => Label::getLabel('MSG_FILE_UPLOADED_SUCCESSFULLY')
+        ]);
+    }
+
+    /**
+     * Remove course media files
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function removeMedia(int $courseId, int $langId)
+    {
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        if (!$course->canEditCourse()) {
+            FatUtility::dieWithError($course->getError());
+        }
+        $type = FatApp::getPostedData('type');
+        $file = new Afile($type, $langId);
+        if (!$file->removeFile($courseId, 0, true)) {
+            FatUtility::dieJsonError($file->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_FILE_REMOVED_SUCCESSFULLY'));
+    }
+
+    /**
+     * Render Intended Learners Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function intendedLearnersForm(int $courseId, int $langId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        if (!$course->get()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+        }
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        /* get form and fill */
+        $frm = $this->getIntendedLearnersForm();
+        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        /* get saved responses */
+        $learner = new IntendedLearner();
+        $responses = $learner->get($courseId, $langId);
+        $this->sets([
+            'frm' => $frm,
+            'courseId' => $courseId,
+            'responses' => $responses,
+        ]);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup Intended Learners Data
+     *
+     */
+    public function setupIntendedLearners()
+    {
+        $frm = $this->getIntendedLearnersForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        $intended = new IntendedLearner();
+        if (!$intended->setup($post)) {
+            FatUtility::dieJsonError($intended->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * Updating Intended Learner Records sort order
+     *
+     * @return json
+     */
+    public function updateIntendedOrder()
+    {
+        $ids = FatApp::getPostedData('order');
+        $intended = new IntendedLearner();
+        if (!$intended->updateOrder($ids)) {
+            FatUtility::dieJsonError($intended->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_ORDER_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * function to delete course intended learner
+     *
+     * @param int $indLearnerId
+     * @return json
+     */
+    public function deleteIntendedLearner(int $indLearnerId)
+    {
+        if ($indLearnerId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /*  check if record exists */
+        if (!$data = IntendedLearner::getAttributesById($indLearnerId, ['coinle_course_id', 'coinle_lang_id'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course(
+            $data['coinle_course_id'],
+            $this->siteUserId,
+            $this->siteUserType,
+            $data['coinle_lang_id']
+        );
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        $intended = new IntendedLearner($indLearnerId);
+        if (!$intended->delete()) {
+            FatUtility::dieJsonError($intended->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_REMOVED_SUCCESSFULLY'));
+    }
+
+    /**
+     * Render Pricing Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function priceForm(int $courseId, int $langId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /* validate course id */
+        $data = ['course_id' => $courseId, 'crslang_lang_id' => $langId];
+        if (!$course = Course::getAttributesById($courseId, ['course_type', 'course_currency_id', 'course_price'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+        }
+        $courseObj = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        if (!$courseObj->canEditCourse()) {
+            FatUtility::dieJsonError($courseObj->getError());
+        }
+        $data = array_merge($data, $course);
+
+        /* get form and fill */
+        $frm = $this->getPriceForm($langId);
+        $data['course_price'] = round(CourseUtility::convertToCurrency($data['course_price'], $data['course_currency_id']), 2);
+        $frm->fill($data);
+        $this->set('frm', $frm);
+        $this->set('courseId', $courseId);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Get Prices Data
+     *
+     * @return json
+     */
+    public function setupPrice()
+    {
+        $frm = $this->getPriceForm(FatApp::getPostedData('crslang_lang_id'));
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
+        $course->assignValues([
+            'course_type' => $post['course_type'],
+            'course_currency_id' => $post['course_currency_id'],
+            'course_price' => $price,
+        ]);
+        if (!$course->save()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * Render Curriculum Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function curriculumForm(int $courseId, int $langId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        /* validate course id */
+        if (!$course->get()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+        }
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        /* get form and fill */
+        $frm = $this->getCurriculumForm();
+        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        $this->set('frm', $frm);
+        $this->set('courseId', $courseId);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Render Settings Page
+     *
+     * @param int $courseId
+     * @param int $langId
+     */
+    public function settingsForm(int $courseId, int $langId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /* validate course id */
+        if (!$courseData = Course::getAttributesById($courseId, ['course_id', 'course_certificate'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        if (!$course->canEditCourse()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        /* create form data */
+        $data = [
+            'course_id' => $courseId,
+            'crslang_lang_id' => $langId,
+            'course_certificate' => $courseData['course_certificate']
+        ];
+        /* get form data from lang table */
+        $srch = new SearchBase(Course::DB_TBL_LANG);
+        $srch->addCondition('crslang_course_id', '=', $courseId);
+        $srch->addCondition('crslang_lang_id', '=', $langId);
+        $srch->addMultipleFields(['course_welcome', 'course_congrats', 'crslang_id']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if ($course = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $data = array_merge($data, $course);
+        }
+        /* get form data from tags table */
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        if ($tag = $course->getTags()) {
+            $crsTags = json_decode($tag['crstag_srchtags']);
+            $data['course_tags'] = implode(',', $crsTags);
+        }
+        /* get form and fill */
+        $frm = $this->getSettingForm();
+        $frm->fill($data);
+        $this->set('frm', $frm);
+        $this->set('courseId', $courseId);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup Course Settings Data
+     *
+     * @return json
+     */
+    public function setupSettings()
+    {
+        $frm = $this->getSettingForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        if (!$course->setupSettings($post)) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * function to delete course
+     *
+     * @param int $courseId
+     * @return json
+     */
+    public function remove(int $courseId)
+    {
+        $courseId = FatUtility::int($courseId);
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->delete()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_REMOVED_SUCCESSFULLY'));
+    }
+
+    /**
+     * Function to get eligibility status for all course steps.
+     *
+     * @param int $courseId
+     * @return json
+     */
+    public function getEligibilityStatus(int $courseId)
+    {
+        $course = new Course($courseId);
+        $criteria = $course->isEligibleForApproval();
+        FatUtility::dieJsonSuccess(['criteria' => $criteria]);
+    }
+
+    /**
+     * Submitting course for approval from admin
+     *
+     * @param int $courseId
+     * @return bool
+     */
+    public function submitForApproval(int $courseId)
+    {
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->submitApprovalRequest()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_APPROVAL_REQUEST_SUCCESSFULLY'));
+    }
+
+    /**
+     * Add/Remove Course from user favorites list
+     *
+     * @return json
+     */
+    public function toggleFavorite()
+    {
+        $courseId = FatApp::getPostedData('course_id', FatUtility::VAR_INT, 0);
+        if ($courseId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $db = FatApp::getDb();
+        /* validate course id */
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->get()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+        }
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, AppConstant::NO);
+        if ($status == AppConstant::NO) {
+            /* add to favorites */
+            $user = new User($this->siteUserId);
+            if (!$user->setupFavoriteCourse($courseId)) {
+                FatUtility::dieJsonError($user->getError());
+            }
+            FatUtility::dieJsonSuccess(Label::getLabel('LBL_SETUP_SUCCESSFUL'));
+        }
+        /* remove from favorites */
+        $where = [
+            'smt' => 'ufc_user_id = ? AND ufc_course_id = ?',
+            'vals' => [$this->siteUserId, $courseId]
+        ];
+        if (!$db->deleteRecords(User::DB_TBL_COURSE_FAVORITE, $where)) {
+            FatUtility::dieJsonError($db->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * Render cancellation popup
+     */
+    public function cancelForm()
+    {
+        $ordcrsId = FatApp::getPostedData('ordcrs_id', FatUtility::VAR_INT, 0);
+        $order = new OrderCourse($ordcrsId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$order->getCourseToCancel()) {
+            FatUtility::dieJsonError($order->getError());
+        }
+        $frm = $this->getCancelForm();
+        $frm->fill(['ordcrs_id' => $ordcrsId]);
+        $this->sets(['frm' => $frm]);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup cancellation request
+     *
+     * @return bool
+     */
+    public function cancelSetup()
+    {
+        $frm = $this->getCancelForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $order = new OrderCourse($post['ordcrs_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$order->cancel($post['comment'])) {
+            FatUtility::dieJsonError($order->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_CANCELLATION_REQUEST_SUBMITTED_SUCCESSFULLY'));
+    }
+
+    /**
+     * Get Cancel Form
+     *
+     */
+    private function getCancelForm(): Form
+    {
+        $frm = new Form('cancelFrm');
+        $comment = $frm->addTextArea(Label::getLabel('LBL_COMMENTS'), 'comment');
+        $comment->requirements()->setLength(10, 300);
+        $comment->requirements()->setRequired();
+        $frm->addHiddenField('', 'ordcrs_id')->requirements()->setRequired();
+        $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SUBMIT'));
+        return $frm;
+    }
+
+    /**
+     * Get Search Form
+     *
+     */
+    private function getSearchForm(): Form
+    {
+        $frm = new Form('frmSearch');
+        $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword');
+        if ($this->siteUserType == User::TEACHER) {
+            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses());
+        }
+        $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
+        $frm->addHiddenField('', 'page', 1)->requirements()->setInt();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
+        $frm->addResetButton('', 'btn_reset', Label::getLabel('LBL_RESET'));
+        return $frm;
+    }
+
+    /**
+     * Basic Details Form
+     *
+     */
+    private function getGeneralForm(): Form
+    {
+        $frm = new Form('frmCourses');
+        $frm->addTextBox(Label::getLabel('LBL_COURSE_TITLE'), 'course_title')->requirements()->setRequired();
+        $frm->addTextBox(Label::getLabel('LBL_COURSE_SUBTITLE'), 'course_subtitle')->requirements()->setRequired();
+        $categories = Category::getCategoriesByParentId($this->siteLangId);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categories);
+        $fld->requirements()->setRequired();
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', []);
+        $langsList = (new UserTeachLanguage($this->siteUserId))->getTeachLangs($this->siteLangId);
+        $teachLangs  = array_column($langsList, 'tlang_name', 'tlang_id');
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_tlang_id', $teachLangs);
+        $fld->requirements()->setRequired();
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'course_level', Course::getCourseLevels());
+        $fld->requirements()->setRequired();
+        $frm->addHtmlEditor(Label::getLabel('LBL_DESCRIPTION'), 'course_details')->requirements()->setRequired();
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang_id', Language::getAllNames(), '', [], '')->requirements()->setRequired();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
+        return $frm;
+    }
+
+    /**
+     * Get Course Media Form
+     *
+     */
+    private function getMediaForm(): Form
+    {
+        $frm = new Form('frmCourses');
+        $frm->addFileUpload(Label::getLabel('LBl_COURSE_IMAGE'), 'course_image');
+        $frm->addFileUpload(Label::getLabel('LBl_PREVIEW_VIDEO'), 'course_preview_video');
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
+        $frm->addButton('', 'btn_next', Label::getLabel('LBL_SAVE_&_NEXT'));
+        return $frm;
+    }
+
+    /**
+     * Get Intended Learners Form
+     *
+     */
+    private function getIntendedLearnersForm(): Form
+    {
+        $frm = new Form('frmCourses');
+        $frm->addTextBox('', 'type_learnings[]')->requirements()->setRequired();
+        $frm->addTextBox('', 'type_requirements[]')->requirements()->setRequired();
+        $frm->addTextBox('', 'type_learners[]')->requirements()->setRequired();
+        $frm->addHiddenField('', 'type_learnings_ids[]');
+        $frm->addHiddenField('', 'type_requirements_ids[]');
+        $frm->addHiddenField('', 'type_learners_ids[]');
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
+        return $frm;
+    }
+
+    /**
+     * Get Prices Form
+     *
+     * @param int $langId
+     */
+    private function getPriceForm($langId): Form
+    {
+        $frm = new Form('frmCourses');
+        $fld = $frm->addRadioButtons(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes());
+        $fld->requirements()->setRequired();
+        $frm->addSelectBox(
+            Label::getLabel('LBL_CURRENCY'),
+            'course_currency_id',
+            Currency::getCurrencyNameWithCode($langId)
+        );
+        $frm->addTextBox(Label::getLabel('LBL_PRICE'), 'course_price');
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
+        return $frm;
+    }
+
+    /**
+     * Get Curriculum Form
+     *
+     */
+    private function getCurriculumForm(): Form
+    {
+        $frm = new Form('frmCourses');
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
+        $frm->addButton('', 'btn_next', Label::getLabel('LBL_SAVE_&_NEXT'));
+        return $frm;
+    }
+
+    /**
+     * Get Setting Form
+     *
+     */
+    private function getSettingForm(): Form
+    {
+        $frm = new Form('frmCourses');
+        $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
+        $fld->requirements()->setRequired();
+        $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
+        $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
+        $fld->requirements()->setRequired();
+        $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
+        $frm->addHiddenField('', 'course_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
+        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
+        $frm->addHiddenField('', 'crslang_id')->requirements()->setInt();
+        $frm->addSubmitButton('', 'btn_save', Label::getLabel('LBL_SAVE'));
+        $frm->addButton('', 'btn_approval', Label::getLabel('LBL_SUBMIT_FOR_APPROVAL'));
+        return $frm;
+    }
+}

@@ -41,22 +41,16 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-    return merge(common, frontend, dashboard);
-}
-
-function svg() {
-    var frontend = src('application/views/images/sprite/*.svg')
-            .pipe(svgSprite(config))
-            .pipe(dest('application/views/images'));
-    var dashboard = src('dashboard/views/images/sprite/*.svg')
-            .pipe(svgSprite(config))
-            .pipe(dest('dashboard/views/images'));
-    return merge(frontend, dashboard);
+    var course = src('scss/course-personal*.scss')
+            .pipe(sass())
+            .pipe(autoprefixer())
+            .pipe(dest('dashboard/views/css'));
+    return merge(common, frontend, dashboard, course);
 }
 
 function watchFiles() {
     watch(['scss'], parallel(css));
 }
 
-exports.default = parallel(css, svg);
+exports.default = parallel(css);
 exports.watch = watchFiles;

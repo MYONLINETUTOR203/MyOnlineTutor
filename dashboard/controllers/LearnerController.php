@@ -27,12 +27,14 @@ class LearnerController extends DashboardController
     {
         $lessStatsCount = (new Lesson(0, $this->siteUserId, $this->siteUserType))->getLessStatsCount();
         $schClassStats = (new OrderClass(0, $this->siteUserId, $this->siteUserType))->getSchedClassStats();
+        $courseStats = (new OrderCourse(0, $this->siteUserId, $this->siteUserType, $this->siteLangId))->getCourseStats();
         $frmSrch = static::getSearchForm();
         $this->sets([
             'frmSrch' => $frmSrch,
             'schLessonCount' => $lessStatsCount['schLessonCount'],
             'totalLesson' => $lessStatsCount['totalLesson'],
             'totalClasses' => $schClassStats['totalClasses'],
+            'totalCourses' => $courseStats['totalCourses'],
             'walletBalance' => User::getWalletBalance($this->siteUserId),
             'setMonthAndWeekNames' => true,
         ]);

@@ -48,7 +48,13 @@ class HomeController extends AdminBaseController
         $userData = array_column(AdminStatistic::getUsersStat(MyDate::TYPE_LAST_12_MONTH), 'totalUser', 'groupDate');
         $lessonData = array_column(AdminStatistic::getAdminLessonEarningStats(MyDate::TYPE_LAST_12_MONTH), 'les_sales', 'groupDate');
         $classData = array_column(AdminStatistic::getAdminClassEarningStats(MyDate::TYPE_LAST_12_MONTH), 'cls_sales', 'groupDate');
-        FatUtility::dieJsonSuccess(['userData' => $userData, 'lessonData' => $lessonData, 'classData' => $classData]);
+        $courseData = array_column(AdminStatistic::getAdminCourseEarningStats(MyDate::TYPE_LAST_12_MONTH), 'crs_sales', 'groupDate');
+        FatUtility::dieJsonSuccess([
+            'userData' => $userData,
+            'lessonData' => $lessonData,
+            'classData' => $classData,
+            'courseData' => $courseData
+        ]);
     }
 
     /**
@@ -70,6 +76,17 @@ class HomeController extends AdminBaseController
         $interval = FatApp::getPostedData('interval', FatUtility::VAR_INT, MyDate::TYPE_ALL);
         $interval = (!array_key_exists($interval, MyDate::getDurationTypesArr())) ? MyDate::TYPE_ALL : $interval;
         $this->set('statsInfo', AdminStatistic::lessonTopLanguage($this->siteLangId, $interval, 50));
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Dashboard Stats
+     */
+    public function topCourseCategories()
+    {
+        $interval = FatApp::getPostedData('interval', FatUtility::VAR_INT, MyDate::TYPE_ALL);
+        $interval = (!array_key_exists($interval, MyDate::getDurationTypesArr())) ? MyDate::TYPE_ALL : $interval;
+        $this->set('statsInfo', AdminStatistic::courseTopCategories($this->siteLangId, $interval, 50));
         $this->_template->render(false, false);
     }
 

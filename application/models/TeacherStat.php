@@ -272,4 +272,28 @@ class TeacherStat extends FatModel
         FatApp::getDb()->query("UPDATE " . TeacherStat::DB_TBL . " LEFT JOIN (SELECT userSpokenLang.`uslang_user_id` AS spokenUserId,  IF(COUNT(userSpokenLang.`uslang_user_id`) > 0, 1, 0) AS userSpokenCount FROM " . UserSpeakLanguage::DB_TBL . " AS userSpokenLang INNER JOIN " . SpeakLanguage::DB_TBL . " AS slanguage ON slanguage.slang_id = userSpokenLang.uslang_slang_id GROUP BY userSpokenLang.`uslang_user_id`) teacherSpoken ON teacherSpoken.spokenUserId = `testat_user_id` SET `testat_speaklang` = IFNULL(teacherSpoken.userSpokenCount,0)");
     }
 
+    /**
+     * Set sold courses count
+     *
+     * @return bool
+     */
+    public function setCoursesCount(): bool
+    {
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordcrs.ordcrs_order_id', 'orders');
+        $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->addCondition('course_user_id', '=', $this->userId);
+        $srch->addFld('COUNT(course_id) AS testat_courses');
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        /* update courses count */
+        $stats = new TableRecord(TeacherStat::DB_TBL);
+        $stats->assignValues($row);
+        $where = ['smt' => 'testat_user_id = ?', 'vals' => [$this->userId]];
+        if (!$stats->update($where)) {
+            $this->error = $stats->getError();
+            return false;
+        }
+        return true;
+    }
 }

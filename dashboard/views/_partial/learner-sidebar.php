@@ -49,6 +49,14 @@
                     <span><?php echo Label::getLabel('LBL_CLASS_PACKAGES'); ?></span>
                 </a>
             </li>
+            <li class="menu__item <?php echo ($controllerName == "Courses") ? 'is-active' : ''; ?>">
+                <a href="<?php echo MyUtility::makeUrl('Courses'); ?>">
+                    <svg class="icon icon--group-classes margin-right-2">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#group-classes'; ?>"></use>
+                    </svg>
+                    <span><?php echo Label::getLabel('LBL_COURSES'); ?></span>
+                </a>
+            </li>
             <li class="menu__item <?php echo ('Subscriptions' == $controllerName && 'index' == $action) ? 'is-active' : ''; ?>">
                 <a href="<?php echo MyUtility::makeUrl('Subscriptions'); ?>">
                     <svg class="icon icon--lesson margin-right-2">

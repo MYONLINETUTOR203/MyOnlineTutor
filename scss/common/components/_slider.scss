@@ -176,10 +176,17 @@
         display: inline-block;
         vertical-align: top;
          margin-#{theme('direction.right','value')}: 10px;
+         @media(max-width: theme('breakpoints.sm','value')){
+            &{ margin-#{theme('direction.right','value')}: 5px; margin-top: 1rem; margin-bottom: 1rem;}
+         }
         button{
             width: 30px;
             height: 6px;
             border: none; font-size: 0; background: rgba(0, 0, 0, 0.2);
+
+            @media(max-width: theme('breakpoints.sm','value')){
+                &{width: 20px;}
+            }
             
         }
         &.slick-active{
@@ -217,6 +224,32 @@
         &::before{
            transform: rotate(225deg) translate(15%, -10%);
         }
+    }
+
+}
+
+
+.slider-onethird {
+
+    @media(min-width: theme('breakpoints.xl','value')){
+        &{
+            .slick-arrow{background-color: transparent; color: theme('color.black'); top: 50%;
+                &:before{border-color: currentColor;}
+            }
+            .slick-next{right: -4%;}
+            .slick-prev{left: -4%;}
+        }   
+    
+    }
+
+    @media(max-width:1299px){
+        &{
+            .slick-arrow{top: calc(50% - 120px); background-color: theme('color.white'); border-radius: 0;
+                &:before{width: 16px; height: 16px; margin-top: -8px;}
+            }
+            .slick-next{right: 1%;}
+            .slick-prev{left: 1%;}
+        } 
     }
 
 }

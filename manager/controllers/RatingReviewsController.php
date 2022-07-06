@@ -23,9 +23,12 @@ class RatingReviewsController extends AdminBaseController
     /**
      * Render Search Form
      */
-    public function index()
+    public function index($type = 0)
     {
-        $this->set("search", $this->getSearchForm($this->siteLangId));
+        $frm = $this->getSearchForm($this->siteLangId);
+        $frm->fill(['ratrev_type' => $type]);
+        $this->set("search", $frm);
+        $this->set('type', $type);
         $this->_template->render();
     }
 
@@ -65,6 +68,11 @@ class RatingReviewsController extends AdminBaseController
         }
         if (isset($post['ratrev_status']) && $post['ratrev_status'] != '') {
             $srch->addCondition('ratrev_status', '=', $post['ratrev_status']);
+        }
+        if (isset($post['ratrev_type']) && $post['ratrev_type'] > 0) {
+            $srch->addCondition('ratrev_type', '=', $post['ratrev_type']);
+        } else {
+            $srch->addCondition('ratrev_type', '!=', AppConstant::COURSE);
         }
         $srch->addOrder('ratrev_status', 'ASC');
         $srch->addOrder('ratrev_id', 'DESC');
@@ -119,6 +127,9 @@ class RatingReviewsController extends AdminBaseController
         }
         $teacherId = FatUtility::int($data['ratrev_teacher_id']);
         (new TeacherStat($teacherId))->setRatingReviewCount();
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            (new Course($data['ratrev_type_id']))->setRatingReviewCount();
+        }
         if ($data['ratrev_teacher_notify'] == AppConstant::NO && $post['ratrev_status'] == RatingReview::STATUS_APPROVED) {
             $ratingReview->sendMailToTeacher($data);
         }
@@ -142,6 +153,7 @@ class RatingReviewsController extends AdminBaseController
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ratrev_status', RatingReview::getStatues(), '', [], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $frm->addHiddenField('', 'pageno', 1);
+        $frm->addHiddenField('', 'ratrev_type');
         $submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
         $submit->attachField($frm->addButton("", "btn_clear", "Clear", ['onclick' => 'clearSearch();']));
         return $frm;

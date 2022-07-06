@@ -499,6 +499,18 @@ class ConfigurationsController extends AdminBaseController
                 $fld3 = $frm->addFloatField(Label::getLabel("LBL_UNSCHEDULE_LESSON_REFUND_PERCENTAGE"), "CONF_UNSCHEDULE_LESSON_REFUND_PERCENTAGE");
                 $fld3->requirements()->setRange(0, 100);
                 $fld3->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_UNSCHEDULE_LESSON_REFUND_PERCENTAGE_TEXT") . "</small>";
+                /* Course Configurations[ */
+                $frm->addHtml('', 'Course', '<h3>' . Label::getLabel("LBL_COURSE") . '</h3>');
+                $fld3 = $frm->addTextBox(Label::getLabel("LBL_COURSE_CANCELLATION_DURATION(DAYS)"), "CONF_COURSE_CANCEL_DURATION");
+                $fld3->requirements()->setRange(0, 100);
+                $fld3->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_COURSE_CANCELLATION_DURATION_TEXT") . ".</small>";
+                $reviewStatus = [
+                    Course::REFUND_PENDING => Label::getLabel('STATUS_PENDING'),
+                    Course::REFUND_APPROVED => Label::getLabel('STATUS_APPROVED')
+                ];
+                $fld = $frm->addRadioButtons(Label::getLabel("LBL_COURSE_DEFAULT_CANCELLATION_STATUS"), 'CONF_COURSE_DEFAULT_CANCELLATION_STATUS', $reviewStatus, '', ['class' => 'list-inline']);
+                $fld->htmlAfterField = "<small>" . Label::getLabel("LBL_SET_THE_DEFAULT_STATUS_WHEN_A_COURSE_CANCELLATION_REQUEST_IS_PLACED") . "</small>";
+                /* ] */
                 $frm->addHtml('', 'Account', '<h3>' . Label::getLabel("LBL_Account") . '</h3>');
                 $fld5 = $frm->addCheckBox(Label::getLabel("LBL_Activate_Admin_Approval_After_Registration_(Sign_Up)"), 'CONF_ADMIN_APPROVAL_REGISTRATION', 1, [], false, 0);
                 $fld5->htmlAfterField = '<br><small>' . Label::getLabel("LBL_On_enabling_this_feature,_admin_need_to_approve_each_user_after_registration_(User_cannot_login_until_admin_approves)") . '</small>';
@@ -584,6 +596,9 @@ class ConfigurationsController extends AdminBaseController
                 $fld->htmlAfterField = "<small>" . Label::getLabel("LBL_This_is_the_application_Site_key_used_for_Google_Recaptcha.") . "</small>";
                 $fld = $frm->addTextBox(Label::getLabel("LBL_Secret_Key"), 'CONF_RECAPTCHA_SECRETKEY');
                 $fld->htmlAfterField = "<small>" . Label::getLabel("LBL_This_is_the_application_Secret_key_used_for_Google_Recaptcha.") . "</small>";
+                $frm->addHtml('', '', '<h3>' . Label::getLabel("LBL_YOUTUBE_DATA_API") . '</h3>');
+                $fld2 = $frm->addTextBox(Label::getLabel('LBL_YOUTUBE_DATA_API_KEY'), 'CONF_YOUTUBE_DATA_API_KEY');
+                $fld2->htmlAfterField = '<small>' . Label::getLabel("LBL_YOUTUBE_API_KEY_MESSAGE") . '</small>';
                 $frm->addHtml('', '', '<h3>' . Label::getLabel("LBL_Google_Client_Json") . '</h3>');
                 $fld2 = $frm->addTextarea(Label::getLabel('LBL_Google_Client_Json'), 'CONF_GOOGLE_CLIENT_JSON');
                 $fld2->htmlAfterField = '<small>' . Label::getLabel("LBL_GOOGLE_JSON_MESSAGE") . '</small>';

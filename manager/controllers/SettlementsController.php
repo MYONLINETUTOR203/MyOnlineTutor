@@ -50,9 +50,9 @@ class SettlementsController extends AdminBaseController
         }
         $srch->addMultipleFields([
             'slstat_date',
-            '(IFNULL(slstat_les_refund,0) + IFNULL(slstat_cls_refund,0)) AS slstat_refund',
-            '(IFNULL(slstat_les_earnings,0) + IFNULL(slstat_cls_earnings,0)) AS slstat_earnings',
-            '(IFNULL(slstat_les_teacher_paid,0) + IFNULL(slstat_cls_teacher_paid,0)) AS slstat_teacher_paid',
+            '(IFNULL(slstat_les_refund,0) + IFNULL(slstat_cls_refund,0) + IFNULL(slstat_crs_refund,0)) AS slstat_refund',
+            '(IFNULL(slstat_les_earnings,0) + IFNULL(slstat_cls_earnings,0) + IFNULL(slstat_crs_earnings,0)) AS slstat_earnings',
+            '(IFNULL(slstat_les_teacher_paid,0) + IFNULL(slstat_cls_teacher_paid,0) + IFNULL(slstat_crs_teacher_paid,0)) AS slstat_teacher_paid',
         ]);
         $srch->setPageNumber($post['pageno']);
         $srch->setPageSize($post['pagesize']);

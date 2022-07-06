@@ -1,0 +1,96 @@
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="slider slider-onethird slider-onethird-js">
+    <?php foreach ($moreCourses as $crs) { ?>
+        <!-- [ SLIDER ITEM ========= -->
+        <div>
+            <!-- [ COURSE CARD ========= -->
+            <div class="card-tile-cover">
+                <div class="card-tile">
+                    <div class="card-tile__head">
+                        <div class="course-media ratio ratio--16by9">
+                            <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$crs['course_id']]); ?>">
+                                <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $crs['course_id'], 'MEDIUM', $siteLangId], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?>" alt="<?php echo $crs['course_title']; ?>">
+                            </a>
+                        </div>
+                        <?php if ($siteUserId > 0) { ?>
+                            <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $crs['course_id'] ?>', this)" class="mark-option <?php echo ($crs['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $crs['is_favorite']; ?>" tabindex="0">
+                                <svg class="icon icon--heart icon--small">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-heart"></use>
+                                </svg>
+                            </a>
+                        <?php } ?>
+                        <span class="course-tag">
+                            <?php if ($crs['course_certificate'] == AppConstant::YES) { ?>
+                                <svg class="icon icon--award margin-right-1">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-course-certificate">
+                                    </use>
+                                </svg>
+                                <span>
+                                    <?php echo Label::getLabel('LBL_CERTIFICATE_OF_COMPLETION'); ?>
+                                </span>
+                            <?php } ?>
+                        </span>
+                    </div>
+                    <div class="card-tile__body">
+                        <span class="card-tile__label">
+                            <?php echo $crs['cate_name']; ?>
+                            <?php
+                            if (!empty($crs['subcate_name'])) {
+                                echo ' / ' . $crs['subcate_name'];
+                            }
+                            ?>
+                        </span>
+                        <h5 class="card-tile__title">
+                            <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$crs['course_id']]); ?>" class="snakeline-hover">
+                                <?php echo $crs['course_title']; ?>
+                            </a>
+                        </h5>
+                        <div class="card-element">
+                            <div class="card-element__item">
+                                <span class="icon-element__label">
+                                    <?php echo YouTube::convertDuration($crs['course_duration']); ?>
+                                </span>
+                            </div>
+                            <div class="card-element__item">
+                                <span class="icon-element__label">
+                                    <?php echo $crs['course_lectures'] . ' ' . Label::getLabel('LBL_LECTURES'); ?>
+                                </span>
+                            </div>
+                            <div class="card-element__item">
+                                <span class="icon-element__label">
+                                    <?php echo $crs['course_students'] . ' ' . Label::getLabel('LBL_STUDENTS'); ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-tile__footer">
+                        <div class="d-flex align-items-center">
+                            <div class="padding-right-4">
+                                <h4 class="color-primary bold-700">
+                                    <?php
+                                    echo CourseUtility::formatMoney($crs['course_price']);
+                                    ?>
+                                </h4>
+                            </div>
+                            <div>
+                                <div class="rating">
+                                    <svg class="rating__media">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#rating"></use>
+                                    </svg>
+                                    <span class="rating__value">
+                                        <?php echo $crs['course_ratings']; ?>
+                                    </span>
+                                    <span class="rating__count">
+                                        <?php echo '(' . $crs['course_reviews'] . ' ' . Label::getLabel('LBL_REVIEWS') . ')'; ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ] -->
+        </div>
+        <!-- ] -->
+    <?php } ?>
+</div>

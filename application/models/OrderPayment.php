@@ -570,16 +570,39 @@ class OrderPayment extends FatModel
     /**
      * Update Course Order:
      * 
-     * 1. Update Course counts in (tbl_offer_prices)
-     * 2. Update Course counts in (tbl_teacher_stats)
-     * 3. Update Student counts in (tbl_teacher_stats)
-     * 4. Update Course booked counts in (tbl_courses)
+     * 1. Update Course students counts in (tbl_courses)
      * 
      * @return bool
      */
     private function updateCourseData(): bool
     {
-        /* Not required as of now */
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->addCondition('ordcrs_order_id', '=', $this->order['order_id']);
+        $srch->addMultipleFields([
+            'ordcrs_course_id',
+            'course_user_id'
+        ]);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('ordcrs_course_id');
+        if (!$orderCourse = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $courseId = $orderCourse['ordcrs_course_id'];
+        $course = new Course($courseId);
+        if (!$course->setStudentCount()) {
+            $this->error = $course->getError();
+            return false;
+        }
+        /* update count in teachers stats */
+        $teacherStats = new TeacherStat($orderCourse['course_user_id']);
+        if (!$teacherStats->setCoursesCount()) {
+            $this->error = $teacherStats->getError();
+            return false;
+        }
         return true;
     }
 

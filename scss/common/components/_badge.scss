@@ -21,7 +21,7 @@ $badge: "badge";
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
-  user-select: none;
+  user-select: none; transition: all 0.4s;
   
 
   > svg, 
@@ -47,7 +47,11 @@ $badge: "badge";
     pointer-events: none;
   }
   &:not(:first-child){margin-#{theme('direction.right','value')}: theme('margin.1')}
-  &:before{background-color: currentColor; position: absolute; left: 0; right: 0; top: 0; bottom: 0;content: ""; pointer-events: none;opacity: 0.1;}
+  &:before{background-color: currentColor; position: absolute; left: 0; right: 0; top: 0; bottom: 0;content: ""; pointer-events: none;opacity: 0.06;transition: all 0.4s;}
+  @media (min-width: theme("breakpoints.sm","value")) {
+    &:hover:before{opacity: 0.14;}
+  }
+
 
   &--curve {
     border-radius: 0.4rem;
