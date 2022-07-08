@@ -501,7 +501,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld3->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_UNSCHEDULE_LESSON_REFUND_PERCENTAGE_TEXT") . "</small>";
                 $frm->addHtml('', 'Account', '<h3>' . Label::getLabel("LBL_Account") . '</h3>');
                 $fld5 = $frm->addCheckBox(Label::getLabel("LBL_Activate_Admin_Approval_After_Registration_(Sign_Up)"), 'CONF_ADMIN_APPROVAL_REGISTRATION', 1, [], false, 0);
-                $fld5->htmlAfterField = '<br><small>' . Label::getLabel("LBL_On_enabling_this_feature,_admin_need_to_approve_each_user_after_registration_(User_cannot_login_until_admin_approves)") . '</small>';
+                $fld5->htmlAfterField = '<br><small>' . Label::getLabel("LBL_On_enabling_this_feature,_admin_need_to_approve_each_learner_after_registration_(Learner_cannot_login_until_admin_approves)") . '</small>';
                 $fld7 = $frm->addCheckBox(Label::getLabel("LBL_Activate_Email_Verification_After_Registration"), 'CONF_EMAIL_VERIFICATION_REGISTRATION', 1, [], false, 0);
                 $fld7->htmlAfterField = "<br><small>" . Label::getLabel("LBL_user_need_to_verify_their_email_address_provided_during_registration") . " </small>";
                 $fld9 = $frm->addCheckBox(Label::getLabel("LBL_Activate_Auto_Login_After_Registration"), 'CONF_AUTO_LOGIN_REGISTRATION', 1, [], false, 0);
