@@ -556,3 +556,7 @@ ALTER TABLE `tbl_sales_stats`
     ADD `slstat_crs_earnings` DECIMAL(10,2) NULL  AFTER `slstat_crs_discount`;
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.0.0.20220706' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+
+ALTER TABLE `tbl_courses` ADD `course_slug` VARCHAR(255) NOT NULL AFTER `course_id`;
+UPDATE tbl_courses INNER JOIN( SELECT course_title, crslang_course_id FROM tbl_courses_lang ) crslang ON course_id = crslang.crslang_course_id SET course_slug = REPLACE(LOWER(crslang.course_title), " ", "-");

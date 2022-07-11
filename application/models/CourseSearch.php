@@ -73,6 +73,7 @@ class CourseSearch extends YocoachSearch
         return [
             'course.course_id' => 'course_id',
             'course.course_user_id' => 'course_teacher_id',
+            'course.course_slug' => 'course_slug',
             'crslang.course_title' => 'course_title',
             'crslang.crslang_id' => 'crslang_id',
             'crslang.course_subtitle' => 'course_subtitle',

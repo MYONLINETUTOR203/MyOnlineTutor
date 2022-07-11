@@ -108,7 +108,7 @@ $priceSorting = AppConstant::getSortbyArr();
                                 ?>
                             </span>
                             <h4 class="course-card__title">
-                                <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$course['course_id']]); ?>" class="snakeline-hover">
+                                <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$course['course_slug']]); ?>" class="snakeline-hover">
                                     <?php echo $course['course_title']; ?>
                                 </a>
                             </h4>
@@ -208,7 +208,7 @@ $priceSorting = AppConstant::getSortbyArr();
                                             <?php } ?>
                                         </div>
                                         <div class="course-controls__item">
-                                            <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$course['course_id']]); ?>" class="btn btn--bordered color-gray-500">
+                                            <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$course['course_slug']]); ?>" class="btn btn--bordered color-gray-500">
                                                 <span class="color-black">
                                                     <?php echo Label::getLabel('LBL_VIEW_DETAILS'); ?>
                                                 </span>

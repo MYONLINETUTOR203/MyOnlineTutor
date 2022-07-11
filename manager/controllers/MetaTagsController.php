@@ -442,6 +442,15 @@ class MetaTagsController extends AdminBaseController
                 $post['meta_action'] = $tabsArr[$metaType]['action'];
                 $post['meta_record_id'] = $groupDetails['grpcls_slug'];
                 break;
+            case MetaTag::META_GROUP_COURSE:
+                $groupDetails = Course::getCourseBySlug($post['meta_record_id']);
+                if (!$groupDetails) {
+                    return false;
+                }
+                $post['meta_controller'] = $tabsArr[$metaType]['controller'];
+                $post['meta_action'] = $tabsArr[$metaType]['action'];
+                $post['meta_record_id'] = $groupDetails['course_slug'];
+                break;
             default:
                 $post['meta_controller'] = $tabsArr[$metaType]['controller'];
                 $post['meta_action'] = $tabsArr[$metaType]['action'];
@@ -523,6 +532,15 @@ class MetaTagsController extends AdminBaseController
                     'action' => Label::getLabel('LBL_Action'),
                 ];
                 break;
+            case MetaTag::META_GROUP_COURSE;
+                $columnsArr = [
+                    'listserial' => Label::getLabel('LBL_SRNO'),
+                    'course_title' => Label::getLabel('LBL_Course_Title'),
+                    'meta_title' => Label::getLabel('LBL_Meta_Title'),
+                    'has_tag_associated' => Label::getLabel('LBL_Tags_Associated'),
+                    'action' => Label::getLabel('LBL_Action'),
+                ];
+                break;
         }
         return $columnsArr;
     }
@@ -555,6 +573,9 @@ class MetaTagsController extends AdminBaseController
             case MetaTag::META_GROUP_BLOG_POST;
                 $dbcolumnsArr = array_merge($dbcolumnsArr, ['IFNULL(post_title,post_identifier) as post_identifier ', 'post_id']);
                 break;
+            case MetaTag::META_GROUP_COURSE;
+                $dbcolumnsArr = array_merge($dbcolumnsArr, ['course_title', 'course_id', 'course_slug']);
+                break;
         }
         return $dbcolumnsArr;
     }
@@ -574,7 +595,9 @@ class MetaTagsController extends AdminBaseController
             MetaTag::META_GROUP_TEACHER => 'user_username',
             MetaTag::META_GROUP_BLOG_CATEGORY => 'bpcategory_id',
             MetaTag::META_GROUP_BLOG_POST => 'post_id',
-            MetaTag::META_GROUP_GRP_CLASS => 'grpcls_slug'
+            MetaTag::META_GROUP_GRP_CLASS => 'grpcls_slug',
+            MetaTag::META_GROUP_GRP_CLASS => 'grpcls_slug',
+            MetaTag::META_GROUP_COURSE => 'course_slug',
         ];
         return $metaRecordColumns[$metaType];
     }

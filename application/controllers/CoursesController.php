@@ -69,20 +69,19 @@ class CoursesController extends MyAppController
     /**
      * View course detail
      *
-     * @param int $courseId
+     * @param string $slug
      * @return void
      */
-    public function view(int $courseId)
+    public function view(string $slug)
     {
-        $courseId = FatUtility::int($courseId);
-        if ($courseId < 1) {
+        if (empty($slug)) {
             FatUtility::exitWithErrorCode(404);
         }
         /* get course details */
         $srch = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
         $srch->addSearchDetailFields();
         $srch->applyPrimaryConditions();
-        $srch->addCondition('course_id', '=', $courseId);
+        $srch->addCondition('course_slug', '=', $slug);
         $srch->joinTable(TeacherStat::DB_TBL, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
         $srch->joinTable(
             User::DB_TBL_LANG,
@@ -98,15 +97,15 @@ class CoursesController extends MyAppController
         $course = current($courses);
         /* get more course by the same teacher */
         $courseObj = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
-        $moreCourses = $courseObj->getMoreCourses($course['course_teacher_id'], $courseId);
+        $moreCourses = $courseObj->getMoreCourses($course['course_teacher_id'], $course['course_id']);
         /* get intended learner section details */       
         $intended = new IntendedLearner();
-        $intendedLearners = $intended->get($courseId, $this->siteLangId);
+        $intendedLearners = $intended->get($course['course_id'], $this->siteLangId);
         /* get curriculum */
-        $curriculum = $this->curriculum($courseId);
+        $curriculum = $this->curriculum($course['course_id']);
         /* fetch rating data */
         $revObj = new CourseRatingReview();
-        $reviews = $revObj->getRatingStats($courseId);
+        $reviews = $revObj->getRatingStats($course['course_id']);
         /* Get order course data */
         $orderCourse = OrderCourse::getAttributesById($course['ordcrs_id'], ['ordcrs_status', 'ordcrs_reviewed']);
         $canRate = false;
@@ -115,7 +114,7 @@ class CoursesController extends MyAppController
         }
         /* Get and fill form data */
         $frm = $this->getReviewSrchForm();
-        $frm->fill(['course_id' => $courseId]);
+        $frm->fill(['course_id' => $course['course_id']]);
         /* checkout form */
         $cart = new Cart($this->siteUserId, $this->siteLangId);
         $checkoutForm = $cart->getCheckoutForm([0 => Label::getLabel('LBL_NA')]);

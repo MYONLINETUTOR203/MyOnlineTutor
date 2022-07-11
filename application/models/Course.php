@@ -380,6 +380,7 @@ class Course extends MyAppModel
         if ($data['course_id'] < 1) {
             $this->setFldValue('course_created', date('Y-m-d H:i:s'));
         }
+        $this->setFldValue('course_slug', CommonHelper::seoUrl($data['course_title']));
         $this->setFldValue('course_user_id', $this->userId);
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_status', Course::DRAFTED);
@@ -1005,5 +1006,20 @@ class Course extends MyAppModel
             $db->commitTransaction();
         }
         return true;
+    }
+
+    /**
+     * Get course data by slug
+     *
+     * @param string $slug
+     * @return array|null
+     */
+    public static function getCourseBySlug(string $slug)
+    {
+        $srch = new SearchBase(Course::DB_TBL, 'crs');
+        $srch->addMultipleFields(['course_id', 'crs.course_slug']);
+        $srch->addCondition('course_slug', '=', $slug);
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetch($srch->getResultSet());
     }
 }

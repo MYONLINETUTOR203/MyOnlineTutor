@@ -78,6 +78,18 @@ class MetaTagSearch extends SearchBase
     }
 
     /**
+     * Join Courses
+     * 
+     * @param int $langId
+     * @param int $metaType
+     */
+    public function joinCourses(int $langId, int $metaType = MetaTag::META_GROUP_DEFAULT)
+    {
+        $this->joinTable(Course::DB_TBL, 'RIGHT OUTER JOIN', 'mt.meta_record_id = crs.course_slug AND mt.meta_type=' . $metaType, 'crs');
+        $this->joinTable(Course::DB_TBL_LANG, 'LEFT OUTER JOIN', 'crslang.crslang_course_id = crs.course_id and crslang.crslang_lang_id=' . $langId, 'crslang');
+    }
+
+    /**
      * Search By Criteria
      * 
      * @param array $criteria
@@ -138,6 +150,13 @@ class MetaTagSearch extends SearchBase
                     $condition->attachCondition('mt_l.meta_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
                 }
                 $this->addCondition('mt.meta_type', '=', $metaType);
+                break;
+            case MetaTag::META_GROUP_COURSE:
+                $this->joinCourses($langId, $metaType);
+                $this->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+                if (isset($condition) && $condition) {
+                    $condition->attachCondition('crslang.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
+                }
                 break;
         }
         if (isset($criteria['hasTagsAssociated'])) {
