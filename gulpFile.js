@@ -1,12 +1,11 @@
-const {src, dest, watch, series, parallel} = require('gulp');
-const sass = require('gulp-sass');
+const {src, dest, watch, parallel} = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
 sass.compiler = require('node-sass');
-const babel = require('gulp-babel');
+
 
 const autoprefixer = require('gulp-autoprefixer');
 const svgSprite = require('gulp-svg-sprite');
-const concat = require('gulp-concat');
-const merge = require('merge-stream');
+
 
 const config = {
     shape: {
@@ -41,7 +40,7 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-    return merge(common, frontend, dashboard);
+    return (common, frontend, dashboard);
 }
 
 function svg() {

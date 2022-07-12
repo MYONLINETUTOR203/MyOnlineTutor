@@ -150,15 +150,39 @@
     }
 
     /* preview header */
-    .preview-header{background-color:#000; color: #fff;position: relative;z-index: 11;width: 100%;}
+    .preview-header{background-color:#000; color: #fff;position: sticky;top: 0; z-index: 11;width: 100%; height: 60px;}
     .preview-header a {color: inherit;}
-    .preview-progress__head{display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem;}
+    .preview-progress__head{display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding-bottom: 0.4rem;}
     .progress-count{font-weight: 800; color: #ff793d;}
 
     .preview-container{ min-height: 40px;display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 
+    @media(min-width:576px){
+    .is-preview-on .header.nav-up,.is-preview-on .header.nav-down{transform: translateY(inherit);-webkit-transform: translateY(inherit);}
+        .is-preview-on .header{top: 60px;}
+
+
+        .is-tutor-listing.is-preview-on .header, .is-group-classes.is-preview-on .header, .teachers.teachers-index.is-preview-on .header, .groupclasses.groupclasses-index.is-preview-on .header, .teachers.teachers-languages.is-preview-on .header
+         {position: sticky;}
+
+         .is-preview-on .header .header-primary{box-shadow: none;}
+
+    }
+  
+    .is-preview-on #header{top: 60px;}
+    .is-preview-on .leftside{padding-top: 132px;}
+
+    @media(min-width:1199px){
+        .is-preview-on.is-filter-fixed .section-filters{top: 142px;}
+    }
+
+    
+
+
     @media(min-width:1199px){
         .preview-container__cell{-webkit-box-flex: 1;-ms-flex: 1;flex: 1;}  
+
+       
     }
 
     .preview-container__cell{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
@@ -168,24 +192,28 @@
 
     .preview-controls{position: relative; margin: 0 auto;
                       display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center;}
-    .preview-controls__action{width: 42px; height: 42px; position: relative;
+    .preview-controls__action{width: 60px; height: 60px; position: relative;
                               display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; margin: 0 0.3rem;}
     .preview-controls__action .control-svg{opacity: 0.6;}
     .preview-controls__action.is-active{background-color:rgba(255,255,255,0.3);}
     .preview-controls__action.is-active .control-svg{opacity: 1;}
     .preview-controls__action:hover .control-svg{opacity: 1;}
 
-    .control-svg{width: 24px; height: 24px; position: relative; overflow: hidden;}
+    .control-svg{width: 32px; height: 32px; position: relative; overflow: hidden;}
     .control-svg svg{width:100%; height:100%; display: block; overflow: hidden; fill: currentColor;}
 
-    .preview-button{display: inline-flex; padding: 0.3rem 1rem; background-color: #ff5317; border: 1px solid transparent; font-size: 12px; border-radius:3px;}
+    .preview-button{display: inline-flex; padding: 0.7rem 1.2rem; background-color: #ff5317; border: 1px solid transparent; font-size: 13px; border-radius:3px;}
+    .preview-button:hover{background-color:#0037B4;}
     .buttons-bucket{margin-left: auto;}
 
-    .preview-close{width: 42px; height: 42px; position: relative; margin-left: 1rem; text-align: center; line-height: 42px; overflow: hidden;}
-    .preview-close::before{position: absolute; left: 0;right: 0;top: 0; bottom: 0; margin: auto; content: "+"; font-size: 2rem; font-weight: 700; transform: rotate(45deg);-webkit-transform: rotate(45deg);}
+    .preview-close{width: 60px; height: 60px; position: relative; margin-left: 1rem; text-align: center; line-height: 60px; overflow: hidden;}
+    .preview-close::before{position: absolute; left: 0;right: 0;top: 0; bottom: 0; margin: auto; content: "+"; font-size:3rem; font-weight: 500; transform: rotate(45deg);-webkit-transform: rotate(45deg);}
 
     .progress-ui {width: 100%;height: 0.3rem;background-color:#eee;min-width: 120px;overflow: hidden; border-radius: 60px;}
     .progress-ui__bar { -webkit-transition: width .6s ease;    -o-transition: width .6s ease;    transition: width .6s ease;    background-color: #ff793d;    display: -webkit-box;    display: -ms-flexbox;    display: flex;    -webkit-box-pack: end;        -ms-flex-pack: end;            justify-content: flex-end;    -webkit-box-align: center;-ms-flex-align: center;   align-items: center; border-radius: 60px;    height: 100%;    font-size: 11px;}
+
+
+    .preview-controls__action--admin .control-svg{width: 30px; height: 30px;}
 
     @media(max-width:1199px){
         .preview-container__cell.preview-container__middle{display: none;}
@@ -219,9 +247,16 @@
         <div class="preview-container__cell preview-container__middle">
             <div class="preview-controls">
                 <?php $view = explode("/", trim($_SERVER['REQUEST_URI'], "/"))[0] ?? ''; ?>
-                <a href="<?php echo MyUtility::makeUrl('', '', [], CONF_WEBROOT_BACKEND); ?>" class="preview-controls__action <?php echo ($view == 'admin') ? 'is-active' : '' ?>" title="Admin View">
+                <a href="<?php echo MyUtility::makeUrl('', '', [], CONF_WEBROOT_BACKEND); ?>" class="preview-controls__action preview-controls__action--admin <?php echo ($view == 'admin') ? 'is-active' : '' ?>" title="Admin View">
                     <span class="control-svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 21V11h8v10h-8zM3 13V3h8v10H3zm6-2V5H5v6h4zM3 21v-6h8v6H3zm2-2h4v-2H5v2zm10 0h4v-6h-4v6zM13 3h8v6h-8V3zm2 2v2h4V5h-4z"/></svg>
+                       
+                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -16 384 384">
+                            <path d="m80 0h-80v352h384v-352zm-48 32h48v40h-48zm320 288h-320v-216h320zm0-248h-240v-40h240zm0 0" />
+                            <path d="m64 192h32v96h-32zm0 0" />
+                            <path d="m120 160h32v128h-32zm0 0" />
+                            <path d="m232 224h32v64h-32zm0 0" />
+                            <path d="m288 136h32v152h-32zm0 0" />
+                        </svg>
                     </span>
                 </a>
                 <a href="<?php echo MyUtility::makeUrl('', '', [], CONF_WEBROOT_FRONTEND); ?>" class="preview-controls__action <?php echo ($view == '') ? 'is-active' : '' ?>" title="Desktop View">

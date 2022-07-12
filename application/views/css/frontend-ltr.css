@@ -1668,26 +1668,26 @@ p {
         .filter-item__search input[type="text"]::-webkit-input-placeholder {
           /* WebKit, Blink, Edge */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium); }
+          font-weight: var(--font-weight-normal); }
         .filter-item__search input[type="text"]::-moz-placeholder {
           /* Mozilla Firefox 19+ */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]::-ms-input-placeholder {
           /* Microsoft Edge */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]:-ms-input-placeholder {
           /* Most modern browsers support this now. */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]::placeholder {
           /* Most modern browsers support this now. */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; } }
 
 .filter-item__search-action {
@@ -1748,7 +1748,7 @@ p {
   position: relative;
   height: 30px;
   line-height: 30px;
-  font-weight: var(--font-weight-medium); }
+  font-weight: var(--font-weight-normal); }
   .filter-item__select--arrow {
     padding-right: var(--padding-5); }
     .filter-item__select--arrow:after {
