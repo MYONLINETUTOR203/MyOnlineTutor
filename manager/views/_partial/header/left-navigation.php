@@ -63,6 +63,11 @@
                 <li class="haschild">
                     <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_COURSES'); ?></a>
                     <ul>
+                        <?php if ($objPrivilege->canViewCourseLanguage(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('CourseLanguages'); ?>"><?php echo Label::getLabel('LBL_MANAGE_COURSE_LANGUAGES'); ?></a>
+                            </li>
+                        <?php } ?>
                         <?php if ($objPrivilege->canViewCategories(true)) { ?>
                             <li>
                                 <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CATEGORIES'); ?></a>

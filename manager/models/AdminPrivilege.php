@@ -75,6 +75,7 @@ class AdminPrivilege
     const SECTION_PACKAGE_CLASSES = 67;
     const SECTION_COURSE_REVIEWS = 68;
     const SECTION_SETTLEMENTS_REPORT = 69;
+    const SECTION_COURSE_LANGUAGES = 70;
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -1589,5 +1590,27 @@ class AdminPrivilege
     public function canEditCourseReviews(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_COURSE_REVIEWS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Course Language
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourseLanguage(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_LANGUAGES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Language
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseLanguage(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_LANGUAGES, static::PRIVILEGE_WRITE, $returnResult);
     }
 }
