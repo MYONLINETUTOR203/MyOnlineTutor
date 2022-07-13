@@ -125,7 +125,7 @@ class CertificatesController extends MyAppController
             'teacher_first_name' => 'John',
             'teacher_last_name' => 'Doe',
             'course_title' => 'English Language Learning - Beginners',
-            'course_tlang_name' => 'English',
+            'course_clang_name' => 'English',
             'user_lang_id' => $this->siteLangId,
             'cert_number' => 'YC_h34uwh9e72w',
             'crspro_completed' => date('Y-m-d H:i:s'),

@@ -14,15 +14,12 @@ $catgFld = $frm->getField('course_cate_id');
 $catgFld->setFieldTagAttribute('onchange', 'getSubCategories(this.value)');
 $subCatFld = $frm->getField('course_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCategories');
-$langFld = $frm->getField('course_tlang_id');
+$langFld = $frm->getField('course_clang_id');
 $levelFld = $frm->getField('course_level');
 $descFld = $frm->getField('course_details');
 $descFld->setFieldTagAttribute('class', 'field-count__wrap');
 $courseIdFld = $frm->getField('course_id');
 $courseId = $courseIdFld->value;
-
-$fld = $frm->getField('crslang_lang_id');
-$fld->setFieldTagAttribute('onchange', 'changeLanguage(this.value)');
 ?>
 
 <?php echo $frm->getFormTag(); ?>
@@ -179,7 +176,6 @@ $fld->setFieldTagAttribute('onchange', 'changeLanguage(this.value)');
 </div>
 <?php
 echo $frm->getFieldHtml('course_id');
-echo $frm->getFieldHtml('crslang_id');
 ?>
 </form>
 <?php

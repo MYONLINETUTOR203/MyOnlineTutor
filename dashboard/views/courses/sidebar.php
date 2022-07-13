@@ -1,16 +1,5 @@
 <div class="page-layout__sticky">
-        <div class="page-panel page-settings padding-6">
-            <?php echo $frm->getFieldHtml('crslang_lang_id') ?>
-            <?php
-            if ($frm->getField('crslang_lang')) {
-                $fld = $frm->getField('crslang_lang');
-                $fld->setFieldTagAttribute('disabled', 'disabled');
-                $fld->value = $frm->getField('crslang_lang_id')->value;
-                echo $fld->getHtml();
-            }
-            ?>
-        </div>
-    <div class="page-steps margin-top-6 margin-bottom-6 tabs-scrollable-js">
+    <div class="page-steps margin-bottom-6 tabs-scrollable-js">
         <ul>
             <li class="is-active general-info-js is-progress">
                 <a href="javascript:void(0)" <?php if ($courseId > 0) { ?> onclick="generalForm();" <?php } ?>>

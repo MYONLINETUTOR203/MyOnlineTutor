@@ -1,20 +1,20 @@
 var lectureId;
 $(function () {
     generalForm = function () {
-        fcom.ajax(fcom.makeUrl('Courses', 'generalForm', [courseId, langId]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Courses', 'generalForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             getCourseEligibility();
         });
     };
     
     mediaForm = function () {
-        fcom.ajax(fcom.makeUrl('Courses', 'mediaForm', [courseId, langId]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Courses', 'mediaForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             getCourseEligibility();
         });
     };
     intendedLearnersForm = function () {
-        fcom.ajax(fcom.makeUrl('Courses', 'intendedLearnersForm', [courseId, langId]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Courses', 'intendedLearnersForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             getCourseEligibility();
         });
@@ -59,7 +59,7 @@ $(function () {
         }
     };
     priceForm = function () {
-        fcom.ajax(fcom.makeUrl('Courses', 'priceForm', [courseId, langId]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Courses', 'priceForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             updatePriceForm($('input[name="course_type"]:checked').val());
             getCourseEligibility();
@@ -86,7 +86,7 @@ $(function () {
         });
     };
     curriculumForm = function () {
-        fcom.ajax(fcom.makeUrl('Courses', 'curriculumForm', [courseId, langId]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Courses', 'curriculumForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             searchSections();
             getCourseEligibility();
@@ -122,7 +122,6 @@ $(function () {
             $('#mainHeadingJs').text(res.title);
             window.history.pushState('page', document.title, fcom.makeUrl('Courses', 'form', [res.courseId]));
             courseId = res.courseId;
-            langId = res.langId;
             mediaForm();
             getCourseEligibility();
         });
@@ -134,7 +133,7 @@ $(function () {
         frm.reset();
         fcom.ajaxMultipart(fcom.makeUrl('Courses', 'setupMedia'), data, function (res) {
             if (res.status == 1) {
-                mediaForm(res.courseId, res.langId);
+                mediaForm();
                 getCourseEligibility();
             }
         }, { fOutMode: 'json' });
@@ -142,7 +141,7 @@ $(function () {
     removeMedia = function(type) {
         if (confirm(langLbl.confirmRemove)) {
             fcom.updateWithAjax(fcom.makeUrl('Courses', 'removeMedia', [courseId, langId]), {type}, function (res) {
-                mediaForm(courseId, langId);
+                mediaForm();
                 getCourseEligibility();
             });
         }
@@ -224,7 +223,7 @@ $(function () {
         }
     };
     searchSections = function (sectionId) {
-        fcom.ajax(fcom.makeUrl('Sections', 'search', [courseId, langId]), { 'section_id': sectionId }, function (res) {
+        fcom.ajax(fcom.makeUrl('Sections', 'search', [courseId]), { 'section_id': sectionId }, function (res) {
             if (sectionId > 0) {
                 $('#sectionId' + sectionId).html(res);
                 return;

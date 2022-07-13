@@ -86,7 +86,7 @@ class MetaTagSearch extends SearchBase
     public function joinCourses(int $langId, int $metaType = MetaTag::META_GROUP_DEFAULT)
     {
         $this->joinTable(Course::DB_TBL, 'RIGHT OUTER JOIN', 'mt.meta_record_id = crs.course_slug AND mt.meta_type=' . $metaType, 'crs');
-        $this->joinTable(Course::DB_TBL_LANG, 'LEFT OUTER JOIN', 'crslang.crslang_course_id = crs.course_id and crslang.crslang_lang_id=' . $langId, 'crslang');
+        $this->joinTable(Course::DB_TBL_LANG, 'LEFT OUTER JOIN', 'crsdetail.course_id = crs.course_id', 'crsdetail');
     }
 
     /**

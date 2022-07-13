@@ -134,8 +134,6 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
     </div>
 </div>
 <?php echo $frm->getFieldHtml('course_id'); ?>
-<?php echo $frm->getFieldHtml('crslang_lang_id'); ?>
-<?php echo $frm->getFieldHtml('crslang_id'); ?>
 </form>
 <?php echo $frm->getExternalJS(); ?>
 <script>

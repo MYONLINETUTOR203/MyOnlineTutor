@@ -96,7 +96,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_LANGUAGE'); ?>
                                     </label>
-                                    : <strong><?php echo $courseData['course_tlang_name']; ?></strong>
+                                    : <strong><?php echo $courseData['course_clang_name']; ?></strong>
                                 </div>
                             </div>
                         </div>

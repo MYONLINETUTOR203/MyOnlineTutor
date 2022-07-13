@@ -10,7 +10,7 @@ class Course extends MyAppModel
 {
     const DB_TBL = 'tbl_courses';
     const DB_TBL_PREFIX = 'course_';
-    const DB_TBL_LANG = 'tbl_courses_lang';
+    const DB_TBL_LANG = 'tbl_course_details';
     const DB_TBL_APPROVAL_REQUEST = 'tbl_course_approval_requests';
     const DB_TBL_REFUND_REQUEST = 'tbl_course_refund_requests';
     const DB_TBL_TAGS = 'tbl_courses_tags';
@@ -391,9 +391,7 @@ class Course extends MyAppModel
             return false;
         }
         $assignValues = [
-            'crslang_id' => $data['crslang_id'],
-            'crslang_lang_id' => $data['crslang_lang_id'],
-            'crslang_course_id' => $this->getMainTableRecordId(),
+            'course_id' => $this->getMainTableRecordId(),
             'course_title' => $data['course_title'],
             'course_subtitle' => $data['course_subtitle'],
             'course_details' => $data['course_details'],
@@ -448,7 +446,6 @@ class Course extends MyAppModel
         $langData = [
             'course_welcome' => $data['course_welcome'],
             'course_congrats' => $data['course_congrats'],
-            'crslang_id' => $data['crslang_id'],
         ];
         if (!$this->setupLangData($langData)) {
             $db->rollbackTransaction();
@@ -622,7 +619,7 @@ class Course extends MyAppModel
             'IF(course_lectures > 0, 1, 0) as course_lectures',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_currency_id > 0, 1, 0) as course_currency_id',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
-        ]);
+        ]);//pr(Course::getAttributesById($courseId));
         if ($courseData) {
             $criteria = array_merge($criteria, $courseData);
         }
@@ -630,9 +627,9 @@ class Course extends MyAppModel
         $srch = new SearchBase(Course::DB_TBL_LANG);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addCondition('crslang_course_id', '=', $courseId);
+        $srch->addCondition('course_id', '=', $courseId);
         $srch->addMultipleFields([
-            'IF(crslang_id IS NULL, 0, 1) as course_lang',
+            'IF(course_id IS NULL, 0, 1) as course_lang',
             'IF(course_welcome IS NULL, 0, 1) as course_welcome',
             'IF(course_congrats IS NULL, 0, 1) as course_congrats'
         ]);
@@ -747,19 +744,14 @@ class Course extends MyAppModel
     {
         $srch = new SearchBase(static::DB_TBL, 'course');
         $srch->addCondition('course_id' , '=', $this->getMainTableRecordId());
-        $srch->joinTable(
-            static::DB_TBL_LANG,
-            'LEFT JOIN',
-            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->langId,
-            'crslang'
-        );
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_user_id', '=', $this->userId);
         $srch->addMultipleFields([
             'teacher.user_first_name AS teacher_first_name',
             'teacher.user_last_name AS teacher_last_name',
-            'crslang.course_title AS course_title',
+            'crsdetail.course_title AS course_title',
         ]);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         $mail = new FatMailer($this->langId, 'course_approval_request_email_to_admin');
@@ -833,17 +825,12 @@ class Course extends MyAppModel
     public function get()
     {
         $srch = new SearchBase(static::DB_TBL, 'course');
-        $srch->joinTable(
-            static::DB_TBL_LANG,
-            'LEFT JOIN',
-            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->langId,
-            'crslang'
-        );
+        $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addCondition('course_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('course.course_id', '=', $this->getMainTableRecordId());
         $srch->addMultipleFields([
-            'crslang.course_title',
-            'crslang.course_details',
+            'crsdetail.course_title',
+            'crsdetail.course_details',
             'course.course_id',
             'course.course_lectures',
             'course.course_user_id',

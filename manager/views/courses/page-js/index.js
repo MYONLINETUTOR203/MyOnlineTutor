@@ -2,7 +2,7 @@
 $(document).ready(function () {
     search(document.frmSearch);
 
-    $("input[name='course_tlang']").autocomplete({
+    $("input[name='course_clang']").autocomplete({
         'source': function (request, response) {
             $.ajax({
                 url: fcom.makeUrl('TeachLanguage', 'autoCompleteJson'),
@@ -11,18 +11,18 @@ $(document).ready(function () {
                 type: 'post',
                 success: function (result) {
                     response($.map(result.data, function (item) {
-                        return { label: escapeHtml(item['tlang_name']), value: item['tlang_id'], name: item['tlang_name'] };
+                        return { label: escapeHtml(item['clang_name']), value: item['clang_id'], name: item['clang_name'] };
                     }));
                 },
             });
         },
         'select': function (item) {
-            $("input[name='course_tlang_id']").val(item.value);
-            $("input[name='course_tlang']").val(item.name);
+            $("input[name='course_clang_id']").val(item.value);
+            $("input[name='course_clang']").val(item.name);
         }
     });
-    $("input[name='course_tlang']").keyup(function () {
-        $("input[name='course_tlang_id']").val('');
+    $("input[name='course_clang']").keyup(function () {
+        $("input[name='course_clang_id']").val('');
     });
 });
 (function () {
@@ -40,7 +40,7 @@ $(document).ready(function () {
     };
     clearSearch = function () {
         document.frmSearch.reset();
-        $("input[name='course_tlang_id']").val('');
+        $("input[name='course_clang_id']").val('');
         search(document.frmSearch);
     };
 

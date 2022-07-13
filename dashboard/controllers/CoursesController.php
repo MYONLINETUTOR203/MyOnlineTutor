@@ -105,26 +105,22 @@ class CoursesController extends DashboardController
      * Render Basic Details Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function generalForm(int $courseId = 0, int $langId = 0)
+    public function generalForm(int $courseId = 0)
     {
-        $langId = ($langId < 1) ? $this->siteLangId : $langId;
         $course = [];
         if ($courseId > 0) {
-            $srch = new CourseSearch($langId, $this->siteUserId, User::TEACHER);
+            $srch = new CourseSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
             $srch->applyPrimaryConditions();
             $srch->addMultipleFields([
                 'course_title',
                 'course_subtitle',
                 'course_cate_id',
                 'course_subcate_id',
-                'course_tlang_id',
+                'course_clang_id',
                 'course_level',
                 'course_details',
-                'course_id',
-                'crslang_id',
-                'crslang_lang_id',
+                'course.course_id',
             ]);
             $srch->addCondition('course.course_id', '=', $courseId);
             $srch->setPageSize(1);
@@ -132,7 +128,6 @@ class CoursesController extends DashboardController
                 FatUtility::exitWithErrorCode(404);
             }
         }
-        $course['crslang_lang_id'] = $langId;
         $frm = $this->getGeneralForm();
         $frm->fill($course);
         $this->set('frm', $frm);
@@ -176,7 +171,6 @@ class CoursesController extends DashboardController
         FatUtility::dieJsonSuccess([
             'msg' => Label::getLabel('LBL_SETUP_SUCCESSFUL'),
             'courseId' => $course->getMainTableRecordId(),
-            'langId' => $post['crslang_lang_id'],
             'title' => $post['course_title'],
         ]);
     }
@@ -185,9 +179,8 @@ class CoursesController extends DashboardController
      * Render Media Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function mediaForm(int $courseId, int $langId)
+    public function mediaForm(int $courseId)
     {
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -198,18 +191,17 @@ class CoursesController extends DashboardController
         }
         /* get form and fill */
         $frm = $this->getMediaForm();
-        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        $frm->fill(['course_id' => $courseId]);
         /* get course image required dimensions */
-        $file = new Afile(Afile::TYPE_COURSE_IMAGE, $langId);
+        $file = new Afile(Afile::TYPE_COURSE_IMAGE);
         $image = $file->getFile($courseId);
         $dimensions = $file->getImageSizes(Afile::SIZE_LARGE);
         /* get video url */
-        $file = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO, $langId);
+        $file = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
         $previewVideo = $file->getFile($courseId);
         $this->sets([
             'frm' => $frm,
             'courseId' => $courseId,
-            'langId' => $langId,
             'extensions' => Afile::getAllowedExts(Afile::TYPE_COURSE_IMAGE),
             'dimensions' => $dimensions,
             'previewVideo' => $previewVideo,
@@ -229,7 +221,7 @@ class CoursesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieWithError($course->getError());
         }
@@ -246,15 +238,11 @@ class CoursesController extends DashboardController
             $type = Afile::TYPE_COURSE_PREVIEW_VIDEO;
             $files = $_FILES['course_preview_video'];
         }
-        $file = new Afile($type, $post['crslang_lang_id']);
-        if (!$file->saveFile($files, $post['course_id'], 0, true)) {
+        $file = new Afile($type);
+        if (!$file->saveFile($files, $post['course_id'], true)) {
             FatUtility::dieJsonError($file->getError());
         }
-        FatUtility::dieJsonSuccess([
-            'courseId' => $post['course_id'],
-            'langId' => $post['crslang_lang_id'],
-            'msg' => Label::getLabel('MSG_FILE_UPLOADED_SUCCESSFULLY')
-        ]);
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_FILE_UPLOADED_SUCCESSFULLY'));
     }
 
     /**
@@ -281,14 +269,13 @@ class CoursesController extends DashboardController
      * Render Intended Learners Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function intendedLearnersForm(int $courseId, int $langId)
+    public function intendedLearnersForm(int $courseId)
     {
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->get()) {
             FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
         }
@@ -297,10 +284,10 @@ class CoursesController extends DashboardController
         }
         /* get form and fill */
         $frm = $this->getIntendedLearnersForm();
-        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        $frm->fill(['course_id' => $courseId]);
         /* get saved responses */
         $learner = new IntendedLearner();
-        $responses = $learner->get($courseId, $langId);
+        $responses = $learner->get($courseId);
         $this->sets([
             'frm' => $frm,
             'courseId' => $courseId,
@@ -319,7 +306,7 @@ class CoursesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
         }
@@ -357,15 +344,10 @@ class CoursesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /*  check if record exists */
-        if (!$data = IntendedLearner::getAttributesById($indLearnerId, ['coinle_course_id', 'coinle_lang_id'])) {
+        if (!$courseId = IntendedLearner::getAttributesById($indLearnerId, 'coinle_course_id')) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $course = new Course(
-            $data['coinle_course_id'],
-            $this->siteUserId,
-            $this->siteUserType,
-            $data['coinle_lang_id']
-        );
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
         }
@@ -380,26 +362,25 @@ class CoursesController extends DashboardController
      * Render Pricing Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function priceForm(int $courseId, int $langId)
+    public function priceForm(int $courseId)
     {
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /* validate course id */
-        $data = ['course_id' => $courseId, 'crslang_lang_id' => $langId];
+        $data = ['course_id' => $courseId];
         if (!$course = Course::getAttributesById($courseId, ['course_type', 'course_currency_id', 'course_price'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
         }
-        $courseObj = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        $courseObj = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$courseObj->canEditCourse()) {
             FatUtility::dieJsonError($courseObj->getError());
         }
         $data = array_merge($data, $course);
 
         /* get form and fill */
-        $frm = $this->getPriceForm($langId);
+        $frm = $this->getPriceForm();
         $data['course_price'] = round(CourseUtility::convertToCurrency($data['course_price'], $data['course_currency_id']), 2);
         $frm->fill($data);
         $this->set('frm', $frm);
@@ -414,7 +395,7 @@ class CoursesController extends DashboardController
      */
     public function setupPrice()
     {
-        $frm = $this->getPriceForm(FatApp::getPostedData('crslang_lang_id'));
+        $frm = $this->getPriceForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
@@ -422,7 +403,10 @@ class CoursesController extends DashboardController
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
         }
-        $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
+        $price = 0;
+        if ($post['course_price'] > 0) {
+            $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
+        }
         $course->assignValues([
             'course_type' => $post['course_type'],
             'course_currency_id' => $post['course_currency_id'],
@@ -438,14 +422,13 @@ class CoursesController extends DashboardController
      * Render Curriculum Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function curriculumForm(int $courseId, int $langId)
+    public function curriculumForm(int $courseId)
     {
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         /* validate course id */
         if (!$course->get()) {
             FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
@@ -455,7 +438,7 @@ class CoursesController extends DashboardController
         }
         /* get form and fill */
         $frm = $this->getCurriculumForm();
-        $frm->fill(['course_id' => $courseId, 'crslang_lang_id' => $langId]);
+        $frm->fill(['course_id' => $courseId]);
         $this->set('frm', $frm);
         $this->set('courseId', $courseId);
         $this->_template->render(false, false);
@@ -488,9 +471,9 @@ class CoursesController extends DashboardController
         ];
         /* get form data from lang table */
         $srch = new SearchBase(Course::DB_TBL_LANG);
-        $srch->addCondition('crslang_course_id', '=', $courseId);
+        $srch->addCondition('course_id', '=', $courseId);
         $srch->addCondition('crslang_lang_id', '=', $langId);
-        $srch->addMultipleFields(['course_welcome', 'course_congrats', 'crslang_id']);
+        $srch->addMultipleFields(['course_welcome', 'course_congrats']);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         if ($course = FatApp::getDb()->fetch($srch->getResultSet())) {
@@ -695,16 +678,13 @@ class CoursesController extends DashboardController
         $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categories);
         $fld->requirements()->setRequired();
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', []);
-        $langsList = (new UserTeachLanguage($this->siteUserId))->getTeachLangs($this->siteLangId);
-        $teachLangs  = array_column($langsList, 'tlang_name', 'tlang_id');
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_tlang_id', $teachLangs);
+        $langsList = (new CourseLanguage())->getAllLangs($this->siteLangId, true);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_clang_id', $langsList);
         $fld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'course_level', Course::getCourseLevels());
         $fld->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_DESCRIPTION'), 'course_details')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang_id', Language::getAllNames(), '', [], '')->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
@@ -719,8 +699,6 @@ class CoursesController extends DashboardController
         $frm->addFileUpload(Label::getLabel('LBl_COURSE_IMAGE'), 'course_image');
         $frm->addFileUpload(Label::getLabel('LBl_PREVIEW_VIDEO'), 'course_preview_video');
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
         $frm->addButton('', 'btn_next', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
@@ -739,8 +717,6 @@ class CoursesController extends DashboardController
         $frm->addHiddenField('', 'type_requirements_ids[]');
         $frm->addHiddenField('', 'type_learners_ids[]');
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
@@ -748,9 +724,8 @@ class CoursesController extends DashboardController
     /**
      * Get Prices Form
      *
-     * @param int $langId
      */
-    private function getPriceForm($langId): Form
+    private function getPriceForm(): Form
     {
         $frm = new Form('frmCourses');
         $fld = $frm->addRadioButtons(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes());
@@ -758,12 +733,10 @@ class CoursesController extends DashboardController
         $frm->addSelectBox(
             Label::getLabel('LBL_CURRENCY'),
             'course_currency_id',
-            Currency::getCurrencyNameWithCode($langId)
+            Currency::getCurrencyNameWithCode($this->siteLangId)
         );
         $frm->addTextBox(Label::getLabel('LBL_PRICE'), 'course_price');
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
@@ -776,8 +749,6 @@ class CoursesController extends DashboardController
     {
         $frm = new Form('frmCourses');
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
         $frm->addButton('', 'btn_next', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
@@ -796,9 +767,6 @@ class CoursesController extends DashboardController
         $fld->requirements()->setRequired();
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'crslang_lang_id')->requirements()->setInt();
-        $frm->addSelectBox('', 'crslang_lang', Language::getAllNames(), '', [], '');
-        $frm->addHiddenField('', 'crslang_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_save', Label::getLabel('LBL_SAVE'));
         $frm->addButton('', 'btn_approval', Label::getLabel('LBL_SUBMIT_FOR_APPROVAL'));
         return $frm;

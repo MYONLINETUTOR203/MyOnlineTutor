@@ -76,7 +76,6 @@ class IntendedLearner extends MyAppModel
         }
         $respData = [
             'coinle_course_id' => $data['course_id'],
-            'coinle_lang_id' => $data['crslang_lang_id'],
             'coinle_created' => date('Y-m-d H:i:s'),
         ];
         $db = FatApp::getDb();
@@ -133,12 +132,12 @@ class IntendedLearner extends MyAppModel
     /**
      * Get Intended Learners Formatted Data
      *
+     * @param int $courseId
      * @return array
      */
-    public function get($courseId, $langId)
+    public function get(int $courseId)
     {
         $srch = new SearchBase(static::DB_TBL);
-        $srch->addCondition('coinle_lang_id', '=', $langId);
         $srch->addCondition('coinle_course_id', '=', $courseId);
         $srch->addCondition('coinle_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
@@ -146,7 +145,6 @@ class IntendedLearner extends MyAppModel
             'coinle_id',
             'coinle_type',
             'coinle_course_id',
-            'coinle_lang_id',
             'coinle_response',
         ]);
         $srch->addOrder('coinle_type', 'ASC');

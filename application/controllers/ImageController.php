@@ -88,7 +88,7 @@ class ImageController extends MyAppController
      * @param int $fileType
      * @param int $recordId
      */
-    public function showVideo($fileType, $recordId, $langId)
+    public function showVideo($fileType, $recordId, $langId = 0)
     {
         $file = new Afile(FatUtility::int($fileType), $langId);
         $file->showVideo(FatUtility::int($recordId));

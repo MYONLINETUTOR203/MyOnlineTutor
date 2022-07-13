@@ -6,7 +6,7 @@ $priceSorting = $srchFrm->getField('price_sorting');
 $category = $srchFrm->getField('course_cate_id');
 $level = $srchFrm->getField('course_level');
 $ratings = $srchFrm->getField('course_ratings');
-$language = $srchFrm->getField('course_tlang_id');
+$language = $srchFrm->getField('course_clang_id');
 $price = $srchFrm->getField('price');
 $priceFrom = $srchFrm->getField('price_from');
 $priceFrom->setFieldTagAttribute('placeholder', Label::getLabel('LBL_PRICE_FROM'));
@@ -391,7 +391,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                             foreach ($options as $id => $option) { ?>
                                                                                 <li>
                                                                                     <label class="select-option">
-                                                                                        <input class="select-option__input" type="checkbox" name="course_tlang_id[]" value="<?php echo $id; ?>">
+                                                                                        <input class="select-option__input" type="checkbox" name="course_clang_id[]" value="<?php echo $id; ?>">
                                                                                         <span class="select-option__item langSelectOptJs">
                                                                                             <?php echo strtolower($option) ?>
                                                                                         </span>

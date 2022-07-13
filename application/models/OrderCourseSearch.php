@@ -25,7 +25,7 @@ class OrderCourseSearch extends YocoachSearch
         $this->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
         $this->joinTable(User::DB_TBL, 'INNER JOIN', 'orders.order_user_id = learner.user_id', 'learner');
         $this->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
-        $this->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $langId, 'crslang');
+        $this->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $this->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
     }
 
@@ -40,7 +40,7 @@ class OrderCourseSearch extends YocoachSearch
         if (!empty($post['keyword'])) {
             $keyword = trim($post['keyword']);
 
-            $cond = $this->addCondition('crslang.course_title', 'LIKE', '%' . $keyword . '%');
+            $cond = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
             if ($this->userType === User::SUPPORT) {
                 $cond->attachCondition('mysql_func_CONCAT(learner.user_first_name, " ", learner.user_last_name)', 'LIKE', '%' . $keyword . '%', 'OR', true);
                 $cond->attachCondition('mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)', 'LIKE', '%' . $keyword . '%', 'OR', true);
@@ -109,7 +109,7 @@ class OrderCourseSearch extends YocoachSearch
             'course.course_lectures' => 'course_lectures',
             'course.course_duration' => 'course_duration',
             'course.course_certificate' => 'course_certificate',
-            'crslang.course_title' => 'course_title',
+            'crsdetail.course_title' => 'course_title',
             'orders.order_addedon' => 'order_addedon',
             'orders.order_pmethod_id' => 'order_pmethod_id',
             'orders.order_addedon' => 'order_created',

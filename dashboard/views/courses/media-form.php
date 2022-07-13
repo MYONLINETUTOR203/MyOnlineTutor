@@ -48,7 +48,7 @@ echo $frm->getFormTag(); ?>
                                     <!-- [ UPLOADED MEDIA ========= -->
                                     <?php if ($image) { ?>
                                         <div class="media-placeholder__preview">
-                                            <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $courseId, 'LARGE', $langId], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?> alt="">
+                                            <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $courseId, 'LARGE'], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?> alt="">
                                             <a href=" javascript:void(0)" class="close" onclick="removeMedia('<?php echo Afile::TYPE_COURSE_IMAGE ?>');"></a>
                                         </div>
                                     <?php } else { ?>
@@ -88,7 +88,7 @@ echo $frm->getFormTag(); ?>
                                     <?php if ($previewVideo) { ?>
                                         <div class="media-placeholder__preview">
                                             <video width="387" height="218" controls>
-                                                <source src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_COURSE_PREVIEW_VIDEO, $courseId, $langId], CONF_WEBROOT_FRONT_URL) . '?t=' . time(); ?>" type="video/mp4">
+                                                <source src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_COURSE_PREVIEW_VIDEO, $courseId], CONF_WEBROOT_FRONT_URL) . '?t=' . time(); ?>" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>
                                             <a href=" javascript:void(0)" class="close" onclick="removeMedia('<?php echo Afile::TYPE_COURSE_PREVIEW_VIDEO ?>');"></a>
@@ -130,6 +130,5 @@ echo $frm->getFormTag(); ?>
     </div>
 </div>
 <?php echo $frm->getFieldHtml('course_id'); ?>
-<?php echo $frm->getFieldHtml('crslang_lang_id'); ?>
 </form>
 <?php echo $frm->getExternalJS(); ?>

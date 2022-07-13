@@ -118,13 +118,13 @@ class CoursesController extends AdminBaseController
         );
         $frm->addTextBox(
             Label::getLabel('LBL_LANGUAGE'),
-            'course_tlang',
+            'course_clang',
             '',
-            ['id' => 'course_tlang_id', 'autocomplete' => 'off']
+            ['id' => 'course_clang_id', 'autocomplete' => 'off']
         );
         $categoryList = Category::getCategoriesByParentId($this->siteLangId);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categoryList);
-        $frm->addHiddenField('', 'course_tlang_id', '', ['id' => 'course_tlang_id', 'autocomplete' => 'off']);
+        $frm->addHiddenField('', 'course_clang_id', '', ['id' => 'course_clang_id', 'autocomplete' => 'off']);
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses())
         ->requirements()
         ->setIntPositive();

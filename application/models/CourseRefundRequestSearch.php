@@ -18,12 +18,7 @@ class CourseRefundRequestSearch extends YocoachSearch
         parent::__construct($langId, $userId, $userType);
         $this->joinTable(OrderCourse::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_id = corere.corere_ordcrs_id', 'ordcrs');
         $this->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
-        $this->joinTable(
-            Course::DB_TBL_LANG,
-            'INNER JOIN',
-            'course_l.crslang_course_id = course.course_id AND course_l.crslang_lang_id = ' . $langId,
-            'course_l'
-        );
+        $this->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
     }
 
     /**
@@ -38,8 +33,8 @@ class CourseRefundRequestSearch extends YocoachSearch
             $this->addCondition('corere_id', '=', $post['corere_id']);
         }
         if (!empty($post['keyword'])) {
-            $cnd = $this->addCondition('course_l.course_title', 'LIKE', '%' . $post['keyword'] . '%');
-            $cnd->attachCondition('course_l.course_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
+            $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('crsdetail.course_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
     }
 
@@ -70,13 +65,13 @@ class CourseRefundRequestSearch extends YocoachSearch
             'corere.corere_created' => 'corere_created',
             'ordcrs.ordcrs_id ' => 'ordcrs_id',
             'ordcrs.ordcrs_course_id ' => 'ordcrs_course_id',
-            'course_l.course_title' => 'course_title',
-            'course_l.course_subtitle' => 'course_subtitle',
+            'crsdetail.course_title' => 'course_title',
+            'crsdetail.course_subtitle' => 'course_subtitle',
             'course.course_price' => 'course_price',
             'course.course_currency_id' => 'course_currency_id',
             'course.course_duration' => 'course_duration',
             'course.course_status' => 'course_status',
-            'course_l.course_details' => 'course_details',
+            'crsdetail.course_details' => 'course_details',
             'u.user_id' => 'user_id',
             'u.user_first_name' => 'user_first_name',
             'u.user_last_name' => 'user_last_name',

@@ -151,10 +151,10 @@ class CoursesController extends MyAppController
         $srch->joinTable(
             Course::DB_TBL_LANG,
             'LEFT JOIN',
-            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->siteLangId,
-            'crslang'
+            'crsdetail.course_id = course.course_id',
+            'crsdetail'
         );
-        $srch->addFld('crslang.course_title');
+        $srch->addFld('crsdetail.course_title');
         $srch->addCondition('course_id', '=', $courseId);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -356,14 +356,14 @@ class CoursesController extends MyAppController
         $srch->joinTable(
             Course::DB_TBL_LANG,
             'LEFT JOIN',
-            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $this->siteLangId,
-            'crslang'
+            'crsdetail.course_id = course.course_id',
+            'crsdetail'
         );
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addMultiplefields(['course_id as id', 'crslang.course_title as name']);
+        $srch->addMultiplefields(['course_id as id', 'crsdetail.course_title as name']);
         if (!empty($keyword)) {
-            $srch->addCondition('crslang.course_title', 'LIKE', '%' . $keyword . '%');
+            $srch->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
         }
         $srch->setPageSize(5);
         $srch->doNotCalculateRecords();

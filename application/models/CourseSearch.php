@@ -25,12 +25,12 @@ class CourseSearch extends YocoachSearch
         $this->joinTable(
             Course::DB_TBL_LANG,
             'LEFT JOIN',
-            'crslang.crslang_course_id = course.course_id AND crslang.crslang_lang_id = ' . $langId,
-            'crslang'
+            'crsdetail.course_id = course.course_id',
+            'crsdetail'
         );
         $this->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $this->joinTable(Category::DB_TBL, 'INNER JOIN', 'cate.cate_id = course.course_cate_id', 'cate');
-        $this->joinTable(TeachLanguage::DB_TBL, 'INNER JOIN', 'tlang.tlang_id = course.course_tlang_id', 'tlang');
+        $this->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
     }
 
     /**
@@ -74,9 +74,8 @@ class CourseSearch extends YocoachSearch
             'course.course_id' => 'course_id',
             'course.course_user_id' => 'course_teacher_id',
             'course.course_slug' => 'course_slug',
-            'crslang.course_title' => 'course_title',
-            'crslang.crslang_id' => 'crslang_id',
-            'crslang.course_subtitle' => 'course_subtitle',
+            'crsdetail.course_title' => 'course_title',
+            'crsdetail.course_subtitle' => 'course_subtitle',
             'teacher.user_id' => 'teacher_id',
             'teacher.user_first_name' => 'teacher_first_name',
             'teacher.user_last_name' => 'teacher_last_name',
@@ -84,8 +83,8 @@ class CourseSearch extends YocoachSearch
             'course.course_status' => 'course_status',
             'course.course_cate_id' => 'course_cate_id',
             'course.course_subcate_id' => 'course_subcate_id',
-            'tlang.tlang_identifier' => 'tlang_identifier',
-            'course.course_tlang_id' => 'course_tlang_id',
+            'clang.clang_identifier' => 'clang_identifier',
+            'course.course_clang_id' => 'course_clang_id',
             'course.course_price' => 'course_price',
             'course.course_type' => 'course_type',
             'course.course_duration' => 'course_duration',
@@ -98,10 +97,10 @@ class CourseSearch extends YocoachSearch
             'course.course_certificate' => 'course_certificate',
             'course.course_level' => 'course_level',
             'course.course_currency_id' => 'course_currency_id',
-            'crslang.course_details' => 'course_details',
-            'crslang.course_features' => 'course_features',
-            'crslang.course_welcome' => 'course_welcome',
-            'crslang.course_congrats' => 'course_congrats',
+            'crsdetail.course_details' => 'course_details',
+            'crsdetail.course_features' => 'course_features',
+            'crsdetail.course_welcome' => 'course_welcome',
+            'crsdetail.course_congrats' => 'course_congrats',
         ];
     }
 
@@ -115,7 +114,7 @@ class CourseSearch extends YocoachSearch
     {
         if (!empty($post['keyword'])) {
             $keyword = trim($post['keyword']);
-            $cnd = $this->addCondition('crslang.course_title', 'LIKE', '%' . $keyword . '%');
+            $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
             $cnd->attachCondition('teacher.user_first_name', 'LIKE', '%' . $keyword . '%', 'OR');
             $cnd->attachCondition('teacher.user_last_name', 'LIKE', '%' . $keyword . '%', 'OR');
             /* @TODO : tag search */
@@ -146,11 +145,11 @@ class CourseSearch extends YocoachSearch
         if (isset($post['course_level']) && count($post['course_level']) > 0) {
             $this->addCondition('course.course_level', 'IN', $post['course_level']);
         }
-        if (isset($post['course_tlang_id'])) {
-            if (is_array($post['course_tlang_id']) && count($post['course_tlang_id']) > 0) {
-                $this->addCondition('course.course_tlang_id', 'IN', $post['course_tlang_id']);
-            } elseif (!is_array($post['course_tlang_id']) && $post['course_tlang_id'] > 0) {
-                $this->addCondition('course.course_tlang_id', '=', $post['course_tlang_id']);
+        if (isset($post['course_clang_id'])) {
+            if (is_array($post['course_clang_id']) && count($post['course_clang_id']) > 0) {
+                $this->addCondition('course.course_clang_id', 'IN', $post['course_clang_id']);
+            } elseif (!is_array($post['course_clang_id']) && $post['course_clang_id'] > 0) {
+                $this->addCondition('course.course_clang_id', '=', $post['course_clang_id']);
             }
         }
         $pricesql = [];
@@ -259,7 +258,7 @@ class CourseSearch extends YocoachSearch
         }
         $courseIds = array_keys($rows);
         $teachLangIds = array_map(function($val) {
-            return $val['course_tlang_id'];
+            return $val['course_clang_id'];
         }, $rows);
         $categoryIds = [];
         array_map(function($val) use(&$categoryIds){
@@ -280,7 +279,7 @@ class CourseSearch extends YocoachSearch
             $row['is_favorite'] = isset($favorites[$key]) ? AppConstant::YES : AppConstant::NO;
             $row['is_purchased'] = isset($purchasedCourses[$key]);
             $row['ordcrs_id'] = isset($purchasedCourses[$key]) ? $purchasedCourses[$key]['ordcrs_id'] : 0;
-            $row['course_tlang_name'] = array_key_exists($row['course_tlang_id'], $teachLangs) ? $teachLangs[$row['course_tlang_id']] : $row['tlang_identifier'];
+            $row['course_clang_name'] = array_key_exists($row['course_clang_id'], $teachLangs) ? $teachLangs[$row['course_clang_id']] : $row['clang_identifier'];
             $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
             $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
             if ($single) {
@@ -320,7 +319,7 @@ class CourseSearch extends YocoachSearch
         $frm->addRadioButtons(Label::getLabel('LBL_RATING'), 'course_ratings', Course::getRatingFilters());
         $frm->addCheckBoxes(
             Label::getLabel('LBL_LANGUAGES'),
-            'course_tlang_id',
+            'course_clang_id',
             TeachLanguage::getAllLangs($langId, true)
         );
         $frm->addCheckBoxes(Label::getLabel('LBL_PRICE'), 'price', AppConstant::getPriceRangeOptions());

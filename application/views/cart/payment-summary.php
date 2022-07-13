@@ -140,7 +140,7 @@ $steps = Cart::getSteps();
                                 <div>
                                     <b><?php echo $course['course_title']; ?></b>
                                     <p><?php echo str_replace('{itemprice}', CourseUtility::formatMoney($course['course_price']), Label::getLabel('LBL_ITEM_PRICE:_{itemprice}/COURSE')); ?></p>
-                                    <p><?php echo Label::getLabel('LBL_LANGUAGE') . ' : ' . $course['course_tlang_name']; ?> </p>
+                                    <p><?php echo Label::getLabel('LBL_LANGUAGE') . ' : ' . $course['course_clang_name']; ?> </p>
                                 </div>
                                 <div><b><?php echo CourseUtility::formatMoney($course['course_price']); ?></b></div>
                             </div>

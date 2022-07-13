@@ -92,18 +92,18 @@ class Certificate extends MyAppModel
     {
         $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
         $srch->joinTable(CourseProgress::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_id = crspro.crspro_ordcrs_id', 'crspro');
-        $srch->joinTable(TeachLanguage::DB_TBL, 'INNER JOIN', 'tlang.tlang_id = course.course_tlang_id', 'tlang');
+        $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
         $srch->joinTable(
-            TeachLanguage::DB_TBL_LANG,
+            CourseLanguage::DB_TBL_LANG,
             'LEFT JOIN',
-            'tlang.tlang_id = tlanglang.tlanglang_tlang_id AND tlanglang.tlanglang_lang_id = ' . $this->langId,
-            'tlanglang'
+            'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
+            'clanglang'
         );
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         $srch->addMultipleFields([
             'crspro_completed',
-            'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) AS course_tlang_name',
+            'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
             'learner.user_lang_id'
         ]);
         $srch->addCondition('ordcrs_id', '=', $ordcrsId);
@@ -138,7 +138,7 @@ class Certificate extends MyAppModel
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
                 '<span class=\"courseNameJs\">' . $data['course_title'] . '</span>',
-                $data['course_tlang_name'],
+                $data['course_clang_name'],
                 MyDate::formatDate($data['crspro_completed']),
                 $data['cert_number']
             ],

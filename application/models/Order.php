@@ -1106,22 +1106,22 @@ class Order extends MyAppModel
             case Order::TYPE_COURSE:
                 $srch->joinTable(OrderCourse::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_COURSE . ' AND orders.order_id = ordcrs.ordcrs_order_id', 'ordcrs');
                 $srch->joinTable(Course::DB_TBL, 'LEFT JOIN', 'course.course_id = ordcrs.ordcrs_course_id', 'course');
-                $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'course.course_id = crslang.crslang_course_id AND crslang.crslang_lang_id = ' . $langId, 'crslang');
+                $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'course.course_id = crsdetail.course_id', 'crsdetail');
                 $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
-                $srch->joinTable(TeachLanguage::DB_TBL, 'INNER JOIN', 'tlang.tlang_id = course.course_tlang_id', 'tlang');
+                $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
                 $srch->joinTable(
-                    TeachLanguage::DB_TBL_LANG,
+                    CourseLanguage::DB_TBL_LANG,
                     'LEFT JOIN',
-                    'tlang.tlang_id = tlanglang.tlanglang_tlang_id AND tlanglang.tlanglang_lang_id = ' . $langId,
-                    'tlanglang'
+                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $langId,
+                    'clanglang'
                 );
                 $srch->addMultipleFields([
-                    'crslang.course_title',
+                    'crsdetail.course_title',
                     'teacher.user_first_name',
                     'teacher.user_last_name',
                     'teacher.user_timezone',
                     'teacher.user_country_id',
-                    'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) AS tlang_name',
+                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS clang_name',
                     'course.course_duration',
                     'ordcrs.ordcrs_amount',
                     'teacher.user_email',

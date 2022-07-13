@@ -225,7 +225,7 @@ class Cart extends FatModel
         ]);
         $srch->addMultipleFields([
             'crslang.course_title AS course_title',
-            'course_tlang_id',
+            'course_clang_id',
             'course_cate_id',
             'course_subcate_id',
             'course.course_price AS course_price',

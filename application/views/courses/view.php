@@ -71,7 +71,7 @@ $levels = Course::getCourseLevels();
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-globe"></use>
                                 </svg>
                             </div>
-                            <div class="course-info__title"><strong><?php echo $course['course_tlang_name']; ?></strong> </div>
+                            <div class="course-info__title"><strong><?php echo $course['course_clang_name']; ?></strong> </div>
                         </div>
                     </div>
                     <div class="course-counts__item">

@@ -22,4 +22,29 @@ class CourseLanguage extends MyAppModel
     {
         parent::__construct(static::DB_TBL, 'clang_id', $id);
     }
+
+    /**
+     * Get All Languages
+     * 
+     * @param int $langId
+     * @param bool $active
+     * @return array
+     */
+    public static function getAllLangs(int $langId, bool $active = false): array
+    {
+        $srch = new SearchBase(static::DB_TBL, 'clang');
+        $srch->joinTable(
+            static::DB_TBL_LANG,
+            'LEFT JOIN',
+            'clanglang.clanglang_clang_id = clang.clang_id AND clanglang.clanglang_lang_id = ' . $langId,
+            'clanglang'
+        );
+        if ($active) {
+            $srch->addCondition('clang.clang_active', '=', AppConstant::ACTIVE);
+        }
+        $srch->addMultiplefields(['clang_id', 'IFNULL(clang_name, clang_identifier) as clang_name']);
+        $srch->doNotCalculateRecords();
+        $srch->addOrder('clang_order');
+        return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+    }
 }
