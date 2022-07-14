@@ -76,6 +76,7 @@ class CourseSearch extends YocoachSearch
             'course.course_slug' => 'course_slug',
             'crsdetail.course_title' => 'course_title',
             'crsdetail.course_subtitle' => 'course_subtitle',
+            'crsdetail.course_srchtags' => 'course_srchtags',
             'teacher.user_id' => 'teacher_id',
             'teacher.user_first_name' => 'teacher_first_name',
             'teacher.user_last_name' => 'teacher_last_name',
@@ -98,7 +99,6 @@ class CourseSearch extends YocoachSearch
             'course.course_level' => 'course_level',
             'course.course_currency_id' => 'course_currency_id',
             'crsdetail.course_details' => 'course_details',
-            'crsdetail.course_features' => 'course_features',
             'crsdetail.course_welcome' => 'course_welcome',
             'crsdetail.course_congrats' => 'course_congrats',
         ];
@@ -183,13 +183,7 @@ class CourseSearch extends YocoachSearch
                 $this->addCondition('course.course_user_id', '=', $post['record_id']);
             }
             if ($post['type'] == Course::FILTER_TAGS) {
-                $srch = new SearchBase(Course::DB_TBL_TAGS);
-                $srch->addFld('crstag_course_id');
-                $srch->addDirectCondition('JSON_CONTAINS(crstag_srchtags, ' . '\'"' . $post['record_id'] . '"\')');
-                $srch->doNotCalculateRecords();
-                $srch->doNotLimitRecords();
-                $subTable = '(' . $srch->getQuery() . ')';
-                $this->joinTable($subTable, 'INNER JOIN', 'crstag.crstag_course_id = course.course_id', 'crstag');
+                $this->addDirectCondition('JSON_CONTAINS(course_srchtags, ' . '\'"' . $post['record_id'] . '"\')');
             }
         }
         if (isset($post['course_ratings']) && $post['course_ratings'] > 0) {
@@ -282,14 +276,7 @@ class CourseSearch extends YocoachSearch
             $row['course_clang_name'] = array_key_exists($row['course_clang_id'], $teachLangs) ? $teachLangs[$row['course_clang_id']] : $row['clang_identifier'];
             $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
             $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
-            if ($single) {
-                $row['course_tags'] = [];
-                $course = new Course($key, 0, 0, $this->langId);
-                $tags = $course->getTags();
-                if (!empty($tags)) {
-                    $row['course_tags'] = json_decode($tags['crstag_srchtags']);
-                }
-            }
+            $row['course_tags'] = json_decode($row['course_srchtags']);
             $rows[$key] = $row;
         }
         return $rows;
@@ -320,7 +307,7 @@ class CourseSearch extends YocoachSearch
         $frm->addCheckBoxes(
             Label::getLabel('LBL_LANGUAGES'),
             'course_clang_id',
-            TeachLanguage::getAllLangs($langId, true)
+            (new CourseLanguage())->getAllLangs($langId, true)
         );
         $frm->addCheckBoxes(Label::getLabel('LBL_PRICE'), 'price', AppConstant::getPriceRangeOptions());
         $frm->addTextBox(Label::getLabel('LBL_PRICE_FROM'), 'price_from', '');
@@ -343,7 +330,7 @@ class CourseSearch extends YocoachSearch
     {
         $this->addSearchListingFields();
         $this->applyPrimaryConditions();
-        $this->addCondition('course_id', '!=', $courseId);
+        $this->addCondition('course.course_id', '!=', $courseId);
         $this->addCondition('user_id', '=', $teacherId);
         $this->applyOrderBy(0);
         $this->setPageSize(AppConstant::PAGESIZE);
@@ -362,10 +349,15 @@ class CourseSearch extends YocoachSearch
         if ($langId == 0 || count($teachLangIds) == 0) {
             return [];
         }
-        $srch = new SearchBase(TeachLanguage::DB_TBL_LANG);
-        $srch->addMultipleFields(['tlanglang_tlang_id', 'tlang_name']);
-        $srch->addCondition('tlanglang_tlang_id', 'IN', $teachLangIds);
-        $srch->addCondition('tlanglang_lang_id', '=', $langId);
+        $srch = new SearchBase(CourseLanguage::DB_TBL);
+        $srch->joinTable(
+            CourseLanguage::DB_TBL_LANG,
+            'LEFT JOIN',
+            'clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $langId,
+            'clanglang'
+        );
+        $srch->addMultipleFields(['clang_id', 'IFNULL(clang_name, clang_identifier) AS clang_name']);
+        $srch->addCondition('clang_id', 'IN', $teachLangIds);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }

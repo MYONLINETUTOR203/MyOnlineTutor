@@ -56,8 +56,8 @@ class CoursesController extends DashboardController
                 'course.course_lectures',
                 'course.course_type',
                 'course.course_students',
-                'crslang.course_subtitle',
-                'crslang.course_title',
+                'crsdetail.course_subtitle',
+                'crsdetail.course_title',
                 'course.course_ratings',
             ]);
         } else {
@@ -249,16 +249,15 @@ class CoursesController extends DashboardController
      * Remove course media files
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function removeMedia(int $courseId, int $langId)
+    public function removeMedia(int $courseId)
     {
-        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieWithError($course->getError());
         }
         $type = FatApp::getPostedData('type');
-        $file = new Afile($type, $langId);
+        $file = new Afile($type);
         if (!$file->removeFile($courseId, 0, true)) {
             FatUtility::dieJsonError($file->getError());
         }
@@ -448,9 +447,8 @@ class CoursesController extends DashboardController
      * Render Settings Page
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function settingsForm(int $courseId, int $langId)
+    public function settingsForm(int $courseId)
     {
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -459,31 +457,28 @@ class CoursesController extends DashboardController
         if (!$courseData = Course::getAttributesById($courseId, ['course_id', 'course_certificate'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
         }
         /* create form data */
         $data = [
             'course_id' => $courseId,
-            'crslang_lang_id' => $langId,
             'course_certificate' => $courseData['course_certificate']
         ];
         /* get form data from lang table */
         $srch = new SearchBase(Course::DB_TBL_LANG);
         $srch->addCondition('course_id', '=', $courseId);
-        $srch->addCondition('crslang_lang_id', '=', $langId);
-        $srch->addMultipleFields(['course_welcome', 'course_congrats']);
+        $srch->addMultipleFields(['course_welcome', 'course_congrats', 'course_srchtags']);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         if ($course = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $crsTags = [];
+            if (!empty($course['course_srchtags'])) {
+                $crsTags = json_decode($course['course_srchtags']);
+            }
+            $course['course_tags'] = implode(',', $crsTags);
             $data = array_merge($data, $course);
-        }
-        /* get form data from tags table */
-        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $langId);
-        if ($tag = $course->getTags()) {
-            $crsTags = json_decode($tag['crstag_srchtags']);
-            $data['course_tags'] = implode(',', $crsTags);
         }
         /* get form and fill */
         $frm = $this->getSettingForm();
@@ -504,7 +499,7 @@ class CoursesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $post['crslang_lang_id']);
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->setupSettings($post)) {
             FatUtility::dieJsonError($course->getError());
         }

@@ -48,7 +48,6 @@ class CoursesController extends MyAppController
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $courses = $srch->fetchAndFormat();
-        // pr($courses);
         $recordCount = $srch->recordCount();
         /* checkout form */
         $cart = new Cart($this->siteUserId, $this->siteLangId);
@@ -155,7 +154,7 @@ class CoursesController extends MyAppController
             'crsdetail'
         );
         $srch->addFld('crsdetail.course_title');
-        $srch->addCondition('course_id', '=', $courseId);
+        $srch->addCondition('course.course_id', '=', $courseId);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $this->set('course', FatApp::getDb()->fetch($srch->getResultSet()));
@@ -244,13 +243,13 @@ class CoursesController extends MyAppController
         }
         $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE, 'lecsrc');
         $srch->joinTable(
-            Lecture::DB_TBL_LANG,
+            Lecture::DB_TBL,
             'INNER JOIN',
-            'leclang.leclang_lecture_id = lecsrc.lecsrc_lecture_id AND leclang.leclang_lang_id = ' . $this->siteLangId,
-            'leclang'
+            'lecture.lecture_id = lecsrc.lecsrc_lecture_id',
+            'lecture'
         );
         $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addMultipleFields(['lecsrc_link', 'leclang.lecture_title', 'lecsrc_course_id', 'lecsrc_id', 'lecsrc_lecture_id']);
+        $srch->addMultipleFields(['lecsrc_link', 'lecture.lecture_title', 'lecsrc_course_id', 'lecsrc_id', 'lecsrc_lecture_id']);
         $srch->doNotCalculateRecords();
         $srch1 = clone $srch;
 
@@ -300,7 +299,7 @@ class CoursesController extends MyAppController
         if (count($tagsList)) {
             $child = [];
             foreach ($tagsList as $tags) {
-                $tags = json_decode($tags['crstag_srchtags']);
+                $tags = json_decode($tags['course_srchtags']);
                 if (count($tags) > 0) {
                     foreach ($tags as $tag) {
                         $child[] = [
@@ -361,7 +360,7 @@ class CoursesController extends MyAppController
         );
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addMultiplefields(['course_id as id', 'crsdetail.course_title as name']);
+        $srch->addMultiplefields(['course.course_id as id', 'crsdetail.course_title as name']);
         if (!empty($keyword)) {
             $srch->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
         }
@@ -405,11 +404,11 @@ class CoursesController extends MyAppController
      */
     private function getTags($keyword = '')
     {
-        $srch = new SearchBase(Course::DB_TBL_TAGS);
+        $srch = new SearchBase(Course::DB_TBL_LANG);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
-        $srch->addDirectCondition('JSON_CONTAINS(crstag_srchtags, ' . '\'"' . $keyword . '"\')');
-        $srch->addFld('crstag_srchtags');
+        $srch->addDirectCondition('JSON_CONTAINS(course_srchtags, ' . '\'"' . $keyword . '"\')');
+        $srch->addFld('course_srchtags');
         $tagsList = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (!empty($tagsList)) {
             return $tagsList;

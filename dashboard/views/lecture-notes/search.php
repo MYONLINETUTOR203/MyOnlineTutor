@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (count($notes) == 0) {
-    $this->includeTemplate('_partial/no-record-found-notes.php');
+    $this->includeTemplate('_partial/no-record-found-notes.php', ['isPreview' => $isPreview]);
     return;
 }
 ?>
@@ -14,22 +14,24 @@ if (count($notes) == 0) {
             </div>
             <div class="notes__actions">
                 <div class="actions-group">
-                    <a href="javascript:void(0);" onclick="notesForm('<?php echo $note['lecnote_id']; ?>');" class="btn btn--equal btn--transparent color-black is-hover">
-                        <svg class="icon icon--edit icon--small">
-                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#edit"></use>
-                        </svg>
-                        <div class="tooltip tooltip--top bg-black">
-                            <?php echo Label::getLabel('LBL_EDIT'); ?>
-                        </div>
-                    </a>
-                    <a href="javascript:void(0);" onclick="removeNotes('<?php echo $note['lecnote_id']; ?>');" class="btn btn--equal btn--transparent color-black is-hover">
-                        <svg class="icon icon--edit icon--small">
-                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#delete-icon"></use>
-                        </svg>
-                        <div class="tooltip tooltip--top bg-black">
-                            <?php echo Label::getLabel('LBL_DELETE'); ?>
-                        </div>
-                    </a>
+                    <?php if ($isPreview == 0) { ?>
+                        <a href="javascript:void(0);" onclick="notesForm('<?php echo $note['lecnote_id']; ?>');" class="btn btn--equal btn--transparent color-black is-hover">
+                            <svg class="icon icon--edit icon--small">
+                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#edit"></use>
+                            </svg>
+                            <div class="tooltip tooltip--top bg-black">
+                                <?php echo Label::getLabel('LBL_EDIT'); ?>
+                            </div>
+                        </a>
+                        <a href="javascript:void(0);" onclick="removeNotes('<?php echo $note['lecnote_id']; ?>');" class="btn btn--equal btn--transparent color-black is-hover">
+                            <svg class="icon icon--edit icon--small">
+                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#delete-icon"></use>
+                            </svg>
+                            <div class="tooltip tooltip--top bg-black">
+                                <?php echo Label::getLabel('LBL_DELETE'); ?>
+                            </div>
+                        </a>
+                    <?php } ?>
                 </div>
             </div>
         </div>

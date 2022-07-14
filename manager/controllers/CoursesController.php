@@ -92,9 +92,6 @@ class CoursesController extends AdminBaseController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $course = current($courses);
-        $features = json_decode($course['course_features'], 1) ?? [];
-        $course['course_features'] = $features;
-
         $this->sets([
             'courseData' => $course,
             'canEdit' => $this->objPrivilege->canEditCourses(true),

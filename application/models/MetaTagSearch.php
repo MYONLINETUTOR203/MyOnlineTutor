@@ -155,7 +155,7 @@ class MetaTagSearch extends SearchBase
                 $this->joinCourses($langId, $metaType);
                 $this->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
                 if (isset($condition) && $condition) {
-                    $condition->attachCondition('crslang.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
+                    $condition->attachCondition('crsdetail.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
                 }
                 break;
         }

@@ -62,8 +62,6 @@ if ($sectionId > 0) { ?>
     <?php
     echo $frm->getFieldHtml('section_id');
     echo $frm->getFieldHtml('section_course_id');
-    echo $frm->getFieldHtml('seclang_lang_id');
-    echo $frm->getFieldHtml('seclang_id');
     ?>
     </form>
 <?php echo $frm->getExternalJs();
@@ -116,8 +114,6 @@ if ($sectionId > 0) { ?>
                         <?php
                         echo $frm->getFieldHtml('section_id');
                         echo $frm->getFieldHtml('section_course_id');
-                        echo $frm->getFieldHtml('seclang_lang_id');
-                        echo $frm->getFieldHtml('seclang_id');
                         ?>
                         </form>
                         <?php echo $frm->getExternalJs(); ?>

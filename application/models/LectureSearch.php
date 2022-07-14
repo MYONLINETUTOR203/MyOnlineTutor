@@ -15,19 +15,12 @@ class LectureSearch extends YocoachSearch
      * @param int $userId
      * @param int $userType
      */
-    public function __construct(int $langId, int $userId = 0, int $userType = 0)
+    public function __construct(int $langId =0, int $userId = 0, int $userType = 0)
     {
         $this->table = Lecture::DB_TBL;
         $this->alias = 'lecture';
         
         parent::__construct($langId, $userId, $userType);
-
-        $this->joinTable(
-            Lecture::DB_TBL_LANG,
-            'LEFT JOIN',
-            'leclang.leclang_lecture_id = lecture.lecture_id AND leclang.leclang_lang_id = ' . $langId,
-            'leclang'
-        );
     }
 
     /**
@@ -57,10 +50,8 @@ class LectureSearch extends YocoachSearch
             'lecture.lecture_course_id' => 'lecture_course_id',
             'lecture.lecture_is_trial' => 'lecture_is_trial',
             'lecture.lecture_duration' => 'lecture_duration',
-            'leclang.leclang_id' => 'leclang_id',
-            'leclang.leclang_lang_id' => 'leclang_lang_id',
-            'leclang.lecture_title' => 'lecture_title',
-            'leclang.lecture_details' => 'lecture_details',
+            'lecture.lecture_title' => 'lecture_title',
+            'lecture.lecture_details' => 'lecture_details',
         ];
     }
 
@@ -116,7 +107,6 @@ class LectureSearch extends YocoachSearch
     {
         $this->applyPrimaryConditions();
         $this->applySearchConditions(['lecture_id' => $lectureId]);
-        $this->addCondition('leclang.leclang_lang_id', '=', $this->langId);
         if (count($flds) > 0) {
             $this->addMultipleFields($flds);
         } else {

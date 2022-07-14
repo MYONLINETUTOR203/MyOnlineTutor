@@ -38,7 +38,15 @@ $btnReset->addFieldTagAttribute('onclick', 'clearNotesSearch()');
                     </div>
                 </div>
                 <div class="search-view__small">
-                    <a href="javascript:void(0);" onclick="notesForm(0);" class="btn btn--secondary">
+                    <?php
+                    $disableClass = '';
+                    $event = 'notesForm(0);';
+                    if ($isPreview == 1) {
+                        $disableClass = 'btn--disabled';
+                        $event = '';
+                    }
+                    ?>
+                    <a href="javascript:void(0);" onclick="<?php echo $event; ?>" class="btn btn--secondary <?php echo $disableClass; ?>">
                         <svg class="icon">
                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#plus-more"></use>
                         </svg>

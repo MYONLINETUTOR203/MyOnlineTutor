@@ -23,14 +23,11 @@ class LecturesController extends DashboardController
      * Search Lecture
      *
      * @param int $lectureId
-     * @param int $langId
      */
-    public function search(int $lectureId, int $langId)
+    public function search(int $lectureId)
     {
-        $sectionId = FatApp::getPostedData('section_id', FatUtility::VAR_INT, 0);
-
         /* get lectures list */
-            $obj = new LectureSearch($langId);
+            $obj = new LectureSearch();
             $lecture = $obj->getById($lectureId);
             $this->set('lecture', $lecture);
 
@@ -41,12 +38,10 @@ class LecturesController extends DashboardController
      * Render Lecture Forms
      *
      * @param int $sectionId
-     * @param int $langId
      */
-    public function form(int $sectionId, int $langId)
+    public function form(int $sectionId)
     {
         $sectionId = FatUtility::int($sectionId);
-        $langId = FatUtility::int($langId);
         if ($sectionId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
@@ -62,17 +57,15 @@ class LecturesController extends DashboardController
             'lecture_section_id' => $sectionId,
             'lecture_course_id' => $courseId,
             'lecture_id' => $lectureId,
-            'leclang_lang_id' => $langId
         ];
 
         if ($lectureId > 0) {
-            $srch = new LectureSearch($langId);
+            $srch = new LectureSearch();
             $srch->applyPrimaryConditions();
             $srch->applySearchConditions([
                 'lecture_id' => $lectureId,
                 'section_id' => $sectionId
             ]);
-            $srch->addCondition('leclang.leclang_lang_id', '=', $langId);
             $srch->addSearchListingFields();
             $srch->setPageSize(1);
             $data = FatApp::getDb()->fetch($srch->getResultSet());
@@ -100,11 +93,9 @@ class LecturesController extends DashboardController
     private function getForm(): Form
     {
         $frm = new Form('frmLecture');
-
         $frm->addTextBox(Label::getLabel('LBl_TITLE'), 'lecture_title')->requirements()->setRequired();
         $frm->addCheckBox(Label::getLabel('LBl_FOR_PREVIEW'), 'lecture_is_trial', AppConstant::YES, [], false, AppConstant::NO);
         $frm->addHtmlEditor(Label::getLabel('LBl_DESCRIPTION'), 'lecture_details')->requirements()->setRequired();
-
         $fld = $frm->addHiddenField('', 'lecture_section_id');
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
@@ -112,10 +103,6 @@ class LecturesController extends DashboardController
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
         $fld = $frm->addHiddenField('', 'lecture_id')->requirements()->setInt();
-
-        $frm->addHiddenField('', 'leclang_lang_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'leclang_id')->requirements()->setInt();
-        
         $frm->addButton('', 'btn_cancel', Label::getLabel('LBL_CANCEL'));
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;
@@ -167,18 +154,16 @@ class LecturesController extends DashboardController
      * Render Lecture Media Form
      *
      * @param int $lectureId
-     * @param int $langId
      */
-    public function mediaForm(int $lectureId, int $langId)
+    public function mediaForm(int $lectureId)
     {
         $lectureId = FatUtility::int($lectureId);
-        $langId = FatUtility::int($langId);
         if ($lectureId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
         /* validate lecture id */
-        $obj = new LectureSearch($langId);
+        $obj = new LectureSearch();
         if (!$lecture = $obj->getById($lectureId, ['lecture_title', 'lecture_section_id', 'lecture_order'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }

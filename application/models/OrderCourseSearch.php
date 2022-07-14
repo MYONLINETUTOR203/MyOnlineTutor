@@ -164,6 +164,7 @@ class OrderCourseSearch extends YocoachSearch
             $cancelReqs = FatApp::getDb()->fetchAll($srch->getResultSet(), 'corere_ordcrs_id');
         }
         foreach ($rows as $key => $row) {
+            $row['crspro_completed'] = '';
             if (isset($progress[$row['ordcrs_id']])) {
                 $row['crspro_completed'] = $progress[$row['ordcrs_id']]['crspro_completed'];
             }
@@ -235,7 +236,10 @@ class OrderCourseSearch extends YocoachSearch
         if (FatApp::getConfig('CONF_ALLOW_REVIEWS') != AppConstant::YES) {
             return false;
         }
-        if ($course['ordcrs_status'] != OrderCourse::COMPLETED || $course['ordcrs_reviewed'] == AppConstant::YES) {
+        if ($course['ordcrs_status'] == OrderCourse::CANCELLED) {
+            return false;
+        }
+        if (empty($course['crspro_completed']) || $course['ordcrs_reviewed'] == AppConstant::YES) {
             return false;
         }
         return true;

@@ -141,8 +141,6 @@ $descLength = 300;
                     echo $frm->getFieldHtml('lecture_section_id');
                     echo $frm->getFieldHtml('lecture_course_id');
                     echo $frm->getFieldHtml('lecture_id');
-                    echo $frm->getFieldHtml('leclang_lang_id');
-                    echo $frm->getFieldHtml('leclang_id');
                     ?>
                     </form>
                     <?php echo $frm->getExternalJs(); ?>

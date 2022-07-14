@@ -1149,10 +1149,22 @@ INSERT INTO `tbl_course_languages_lang` (`clanglang_clang_id`, `clanglang_lang_i
 (182, 1, 'Zulu'),
 (182, 2, 'الزولوية');
 
- RENAME TABLE `tbl_courses_lang` TO `tbl_course_details`; 
- ALTER TABLE `tbl_courses` CHANGE `course_tlang_id` `course_clang_id` INT(11) NOT NULL; 
- ALTER TABLE `tbl_course_details` CHANGE `crslang_course_id` `course_id` INT(11) NOT NULL; 
- ALTER TABLE `tbl_course_details` ADD PRIMARY KEY(`course_id`);
- ALTER TABLE `tbl_course_details` DROP `crslang_id`;
- ALTER TABLE `tbl_course_details` DROP `crslang_lang_id`;
- ALTER TABLE `tbl_courses_intended_learners` DROP `coinle_lang_id`;
+RENAME TABLE `tbl_courses_lang` TO `tbl_course_details`; 
+ALTER TABLE `tbl_courses` CHANGE `course_tlang_id` `course_clang_id` INT(11) NOT NULL; 
+ALTER TABLE `tbl_course_details` CHANGE `crslang_course_id` `course_id` INT(11) NOT NULL; 
+ALTER TABLE `tbl_course_details` ADD PRIMARY KEY(`course_id`);
+ALTER TABLE `tbl_course_details` DROP `crslang_id`;
+ALTER TABLE `tbl_course_details` DROP `crslang_lang_id`;
+ALTER TABLE `tbl_courses_intended_learners` DROP `coinle_lang_id`;
+ALTER TABLE `tbl_sections`  ADD `section_title` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `section_course_id`,  ADD `section_details` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `section_title`;
+DROP TABLE `tbl_sections_lang`;
+ALTER TABLE `tbl_sections` DROP `section_status`;
+ALTER TABLE `tbl_courses` DROP `course_access`;
+ALTER TABLE `tbl_course_details` DROP `course_features`;
+ALTER TABLE `tbl_lectures`
+  DROP `lecture_type`,
+  DROP `lecture_status`; 
+ALTER TABLE `tbl_lectures`  ADD `lecture_title` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `lecture_id`,  ADD `lecture_details` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `lecture_title`;
+DROP TABLE ` tbl_lectures_lang`;
+ALTER TABLE `tbl_course_details` ADD `course_srchtags` JSON NULL AFTER `course_congrats`;
+DROP TABLE ` tbl_courses_tags`;

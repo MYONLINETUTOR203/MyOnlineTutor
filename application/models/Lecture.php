@@ -10,8 +10,6 @@ class Lecture extends MyAppModel
 {
     const DB_TBL = 'tbl_lectures';
     const DB_TBL_PREFIX = 'lecture_';
-    const DB_TBL_LANG = 'tbl_lectures_lang';
-    const DB_TBL_LANG_PREFIX = 'leclang_';
     const DB_TBL_LECTURE_RESOURCE = 'tbl_lectures_resources';
     const DB_TBL_LECTURE_RESOURCE_PREFIX = 'lecsrc_';
 
@@ -46,6 +44,8 @@ class Lecture extends MyAppModel
             'lecture_section_id' => $data['lecture_section_id'],
             'lecture_course_id' => $data['lecture_course_id'],
             'lecture_is_trial' => $data['lecture_is_trial'],
+            'lecture_title' => $data['lecture_title'],
+            'lecture_details' => $data['lecture_details'],
             'lecture_updated' => date('Y-m-d H:i:s'),
             'lecture_duration' => ceil(str_word_count(strip_tags($data['lecture_details'])) / 100) * 60,
         ]);
@@ -70,11 +70,6 @@ class Lecture extends MyAppModel
             $this->error = $course->getError();
             return false;
         }
-        if (!$this->setupLangData($data)) {
-            $db->rollbackTransaction();
-            $this->error = $this->getError();
-            return false;
-        }
         /* reset section order */
         if (!$this->resetOrder($data['lecture_course_id'])) {
             $db->rollbackTransaction();
@@ -85,28 +80,6 @@ class Lecture extends MyAppModel
             return false;
         }
         $db->commitTransaction();
-        return true;
-    }
-
-    /**
-     * Setup Basic Lang Data
-     *
-     * @param array $data
-     * @return bool
-     */
-    private function setupLangData(array $data)
-    {
-        $assignValues = [
-            'leclang_id' => $data['leclang_id'],
-            'leclang_lang_id' => $data['leclang_lang_id'],
-            'leclang_lecture_id' => $this->getMainTableRecordId(),
-            'lecture_title' => $data['lecture_title'],
-            'lecture_details' => $data['lecture_details'],
-        ];
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_LANG, $assignValues, false, [], $assignValues)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        }
         return true;
     }
 

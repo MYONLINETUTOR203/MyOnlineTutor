@@ -103,7 +103,7 @@ $(function () {
     };
     getNotes = function () {
         if (notes == false) {
-            fcom.ajax(fcom.makeUrl('LectureNotes', 'index'), { 'course_id': courseId }, function (res) {
+            fcom.ajax(fcom.makeUrl('LectureNotes', 'index'), { 'course_id': courseId, 'is_preview' : 1 }, function (res) {
                 $('.notesJs').html(res);
                 notesSearch(document.frmNotesSearch);
                 notes = true;
@@ -114,6 +114,7 @@ $(function () {
     };
     notesSearch = function (frm) {
         var data = fcom.frmData(frm);
+        data += '&is_preview=1';
         fcom.ajax(fcom.makeUrl('LectureNotes', 'search'), data, function (res) {
             $('.notesListingJs').html(res);
         });

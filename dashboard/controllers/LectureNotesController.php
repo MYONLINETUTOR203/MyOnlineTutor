@@ -32,6 +32,7 @@ class LectureNotesController extends DashboardController
         $frm = $this->getSearchForm();
         $frm->fill(['course_id' => $courseId]);
         $this->set('frm', $frm);
+        $this->set('isPreview', FatApp::getPostedData('is_preview', FatUtility::VAR_INT, 0));
         $this->_template->render(false, false);
     }
 
@@ -46,12 +47,6 @@ class LectureNotesController extends DashboardController
         /* get notes list */
         $srch = new SearchBase(LectureNote::DB_TBL, 'lecnote');
         $srch->joinTable(Lecture::DB_TBL, 'INNER JOIN', 'lecnote.lecnote_lecture_id = lec.lecture_id', 'lec');
-        $srch->joinTable(
-            Lecture::DB_TBL_LANG,
-            'LEFT JOIN',
-            'leclang.leclang_lecture_id = lec.lecture_id AND leclang.leclang_lang_id = ' . $this->siteLangId,
-            'leclang'
-        );
         $srch->addCondition('lecnote_course_id', '=', $post['course_id']);
         $srch->addCondition('lecnote_user_id', '=', $this->siteUserId);
         $srch->addCondition('lecnote_notes', 'LIKE', '%' . $post['keyword'] . '%');
@@ -69,7 +64,8 @@ class LectureNotesController extends DashboardController
         $this->sets([
             'notes' => $notes,
             'post' => $post,
-            'recordCount' => $srch->recordCount()
+            'recordCount' => $srch->recordCount(),
+            'isPreview' => FatApp::getPostedData('is_preview', FatUtility::VAR_INT, 0)
         ]);
         $this->_template->render(false, false);
     }
@@ -160,9 +156,8 @@ class LectureNotesController extends DashboardController
         $frm->addHiddenField('', 'lecnote_course_id');
         $frm->addHiddenField('', 'lecnote_lecture_id');
         $frm->addHiddenField('', 'lecnote_id');
-        $fldSubmit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
-        $fldCancel = $frm->addResetButton('', 'btn_cancel', Label::getLabel('LBL_CANCEL'));
-        // $fldSubmit->attachField($fldCancel);
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
+        $frm->addResetButton('', 'btn_cancel', Label::getLabel('LBL_CANCEL'));
         return $frm;
     }
 

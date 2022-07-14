@@ -21,13 +21,6 @@ class SectionSearch extends YocoachSearch
         $this->alias = 'section';
 
         parent::__construct($langId, $userId, $userType);
-
-        $this->joinTable(
-            Section::DB_TBL_LANG,
-            'LEFT JOIN',
-            'seclang.seclang_section_id = section.section_id AND seclang.seclang_lang_id = ' . $langId,
-            'seclang'
-        );
     }
 
     /**
@@ -55,10 +48,8 @@ class SectionSearch extends YocoachSearch
             'section.section_order' => 'section_order',
             'section.section_lectures' => 'section_lectures',
             'section.section_duration' => 'section_duration',
-            'seclang.seclang_lang_id' => 'seclang_lang_id',
-            'seclang.seclang_id' => 'seclang_id',
-            'seclang.section_title' => 'section_title',
-            'seclang.section_details' => 'section_details',
+            'section.section_title' => 'section_title',
+            'section.section_details' => 'section_details',
         ];
     }
 
@@ -70,18 +61,9 @@ class SectionSearch extends YocoachSearch
      */
     public function applySearchConditions(array $post): void
     {
-        if (isset($post['seclang_section_id']) && $post['seclang_section_id'] > 0) {
-            $this->addCondition('seclang.seclang_section_id', '=', $post['seclang_section_id']);
-        }
-
-        if (isset($post['seclang_lang_id']) && $post['seclang_lang_id'] > 0) {
-            $this->addCondition('seclang.seclang_lang_id', '=', $post['seclang_lang_id']);
-        }
-
         if (isset($post['course_id']) && $post['course_id'] > 0) {
             $this->addCondition('section.section_course_id', '=', $post['course_id']);
         }
-        
         if (isset($post['section_id']) && $post['section_id'] > 0) {
             $this->addCondition('section.section_id', '=', $post['section_id']);
         }
@@ -109,17 +91,14 @@ class SectionSearch extends YocoachSearch
         if (count($rows) == 0) {
             return [];
         }
-        $langId = current($rows)['seclang_lang_id'];
-        $langId = ($langId < 1) ? $this->langId : $langId;
         $sectionIds = array_keys($rows);
         /* get lectures list */
         $lectureIds = $lectures = $resources = [];
         if (!empty($sectionIds)) {
-            $srch = new LectureSearch($langId);
+            $srch = new LectureSearch();
             $srch->applyPrimaryConditions();
             $srch->addSearchListingFields();
             $srch->addDirectCondition('lecture_section_id IN (' . implode(',', $sectionIds) . ')');
-            $srch->addCondition('leclang.leclang_lang_id', '=', $langId);
             $srch->addOrder('lecture_order', 'ASC');
             $lectures = $srch->fetchAndFormat();
             $lectureIds = array_keys($lectures);

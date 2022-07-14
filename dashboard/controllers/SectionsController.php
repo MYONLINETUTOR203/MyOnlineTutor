@@ -32,13 +32,12 @@ class SectionsController extends DashboardController
      * Search Sections
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function search(int $courseId, int $langId)
+    public function search(int $courseId)
     {
         $sectionId = FatApp::getPostedData('section_id', FatUtility::VAR_INT, 0);
 
-        $srch = new SectionSearch($langId, $this->siteUserId, User::TEACHER);
+        $srch = new SectionSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         if ($sectionId > 0) {
@@ -58,12 +57,10 @@ class SectionsController extends DashboardController
      * Render Section Forms
      *
      * @param int $courseId
-     * @param int $langId
      */
-    public function form(int $courseId, int $langId)
+    public function form(int $courseId)
     {
         $courseId = FatUtility::int($courseId);
-        $langId = FatUtility::int($langId);
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
@@ -78,15 +75,13 @@ class SectionsController extends DashboardController
         $section = [];
         $formData = [
             'section_course_id' => $courseId,
-            'seclang_lang_id' => $langId,
             'section_id' => $sectionId,
         ];
         if ($sectionId > 0) {
-            $srch = new SectionSearch($langId, $this->siteUserId, User::TEACHER);
+            $srch = new SectionSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
             $srch->applyPrimaryConditions();
             $srch->applySearchConditions([
-                'seclang_section_id' => $sectionId,
-                'seclang_lang_id' => $langId,
+                'section_id' => $sectionId,
                 'course_id' => $courseId
             ]);
             $srch->addSearchListingFields();
@@ -106,8 +101,6 @@ class SectionsController extends DashboardController
         $this->_template->render(false, false);
     }
 
-    
-
     /**
      * Get Form
      *
@@ -115,15 +108,10 @@ class SectionsController extends DashboardController
     private function getForm(): Form
     {
         $frm = new Form('frmSection');
-
         $frm->addTextBox(Label::getLabel('LBl_TITLE'), 'section_title')->requirements()->setRequired();
         $frm->addTextArea(Label::getLabel('LBl_DESCRIPTION'), 'section_details')->requirements()->setRequired();
-
         $frm->addHiddenField('', 'section_id')->requirements()->setInt();
         $frm->addHiddenField('', 'section_course_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'seclang_lang_id')->requirements()->setInt();
-        $frm->addHiddenField('', 'seclang_id')->requirements()->setInt();
-        
         $frm->addButton('', 'btn_cancel', Label::getLabel('LBL_CANCEL'));
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;

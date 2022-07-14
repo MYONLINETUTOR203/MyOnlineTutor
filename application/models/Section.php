@@ -10,8 +10,6 @@ class Section extends MyAppModel
 {
     const DB_TBL = 'tbl_sections';
     const DB_TBL_PREFIX = 'section_';
-    const DB_TBL_LANG = 'tbl_sections_lang';
-    const DB_TBL_LANG_PREFIX = 'seclang_';
     
     /**
      * Initialize Section
@@ -38,17 +36,14 @@ class Section extends MyAppModel
         }
         $this->assignValues([
             'section_course_id' => $data['section_course_id'],
-            'section_updated' => date('Y-m-d H:i:s')
+            'section_updated' => date('Y-m-d H:i:s'),
+            'section_title' => $data['section_title'],
+            'section_details' => $data['section_details'],
         ]);
         if ($data['section_id'] < 1) {
             $this->setFldValue('section_created', date('Y-m-d H:i:s'));
         }
         if (!$this->save($data)) {
-            $db->rollbackTransaction();
-            $this->error = $this->getError();
-            return false;
-        }
-        if (!$this->setupLangData($data)) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
             return false;
@@ -63,28 +58,6 @@ class Section extends MyAppModel
             return false;
         }
         $db->commitTransaction();
-        return true;
-    }
-
-    /**
-     * Setup Section Basic Lang Data
-     *
-     * @param array $data
-     * @return bool
-     */
-    private function setupLangData(array $data)
-    {
-        $assignValues = [
-            'seclang_id' => $data['seclang_id'],
-            'seclang_lang_id' => $data['seclang_lang_id'],
-            'seclang_section_id' => $this->getMainTableRecordId(),
-            'section_title' => $data['section_title'],
-            'section_details' => $data['section_details'],
-        ];
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_LANG, $assignValues, false, [], $assignValues)) {
-            $this->error = FatApp::getDb()->getError();
-            return false;
-        }
         return true;
     }
 
@@ -140,14 +113,14 @@ class Section extends MyAppModel
      */
     public function deleteAssociatedData(int $sectionId)
     {
-        /* reset section order */
+        /* get lectures */
         $srch = new LectureSearch(0);
         $srch->addFld('lecture_id');
         $srch->applySearchConditions(['section_id' => $sectionId]);
         $srch->applyPrimaryConditions();
         $lectures = $srch->fetchAndFormat();
         $lectureIds = array_column($lectures, 'lecture_id');
-        /* return if no record avaiable for ordering */
+        /* return if no lecture avaiable */
         if (count($lectureIds) < 1) {
             return true;
         }

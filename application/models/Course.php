@@ -13,7 +13,6 @@ class Course extends MyAppModel
     const DB_TBL_LANG = 'tbl_course_details';
     const DB_TBL_APPROVAL_REQUEST = 'tbl_course_approval_requests';
     const DB_TBL_REFUND_REQUEST = 'tbl_course_refund_requests';
-    const DB_TBL_TAGS = 'tbl_courses_tags';
     const DB_TBL_INTENDED_LEARNERS = 'tbl_courses_intended_learners';
     
     /* Course Status */
@@ -443,61 +442,20 @@ class Course extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+        $tagsList = explode(',', $data['course_tags']);
         $langData = [
+            'course_id' => $this->getMainTableRecordId(),
             'course_welcome' => $data['course_welcome'],
             'course_congrats' => $data['course_congrats'],
+            'course_srchtags' => json_encode($tagsList),
         ];
         if (!$this->setupLangData($langData)) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
             return false;
         }
-        $tagsData = [
-            'tags' => $data['course_tags'],
-            'lang_id' => $data['crslang_lang_id'],
-        ];
-        if (!$this->setupTags($tagsData)) {
-            $db->rollbackTransaction();
-            $this->error = $this->getError();
-            return false;
-        }
         if (!$db->commitTransaction()) {
             $this->error = $db->getError();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Setup Course Tags Data
-     *
-     * @param array $data
-     * @return bool
-     */
-    private function setupTags(array $data)
-    {
-        $courseId = $this->getMainTableRecordId();
-        if ($courseId < 1) {
-            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
-            return false;
-        }
-        $tagsList = explode(',', $data['tags']);
-        if (count($tagsList) < 1) {
-            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
-            return false;
-        }
-        $tagsData = [
-            'crstag_lang_id' => $data['lang_id'],
-            'crstag_course_id' => $courseId,
-            'crstag_srchtags' => json_encode($tagsList)
-        ];
-        /* get course tag id */
-        if ($tagId = $this->getTags()) {
-            $tagsData['crstag_id'] = $tagId['crstag_id'];
-        }
-        /* save/update */
-        if (!FatApp::getDb()->insertFromArray(static::DB_TBL_TAGS, $tagsData, false, [], $tagsData)) {
-            $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;
@@ -583,27 +541,6 @@ class Course extends MyAppModel
     }
     
     /**
-     * Get Course Tags
-     *
-     * @return array
-     */
-    public function getTags()
-    {
-        $srch = new SearchBase(static::DB_TBL_TAGS);
-        $srch->addCondition('crstag_lang_id', '=', $this->langId);
-        $srch->addCondition('crstag_course_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addMultipleFields([
-            'crstag_id',
-            'crstag_lang_id',
-            'crstag_course_id',
-            'crstag_srchtags',
-        ]);
-        return FatApp::getDb()->fetch($srch->getResultSet());
-    }
-    
-    /**
      * Check and send eligibility status for approval
      *
      * @return array
@@ -619,7 +556,7 @@ class Course extends MyAppModel
             'IF(course_lectures > 0, 1, 0) as course_lectures',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_currency_id > 0, 1, 0) as course_currency_id',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
-        ]);//pr(Course::getAttributesById($courseId));
+        ]);
         if ($courseData) {
             $criteria = array_merge($criteria, $courseData);
         }
@@ -631,18 +568,12 @@ class Course extends MyAppModel
         $srch->addMultipleFields([
             'IF(course_id IS NULL, 0, 1) as course_lang',
             'IF(course_welcome IS NULL, 0, 1) as course_welcome',
-            'IF(course_congrats IS NULL, 0, 1) as course_congrats'
+            'IF(course_congrats IS NULL, 0, 1) as course_congrats',
+            'IF(course_srchtags IS NULL, 0, 1) as course_tags',
         ]);
         if ($courseLang = FatApp::getDb()->fetch($srch->getResultSet())) {
             $criteria = array_merge($criteria, $courseLang);
         }
-        /* get course tags data */
-        $srch = new SearchBase(Course::DB_TBL_TAGS);
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addCondition('crstag_course_id', '=', $courseId);
-        $srch->addFld('crstag_id');
-        $criteria['course_tags'] = (FatApp::getDb()->fetch($srch->getResultSet())) ? 1 : 0;
         /* get course intended learners data */
         $srch = new SearchBase(IntendedLearner::DB_TBL);
         $srch->doNotCalculateRecords();
@@ -743,7 +674,7 @@ class Course extends MyAppModel
     private function sendApprovalRequestEmailToAdmin()
     {
         $srch = new SearchBase(static::DB_TBL, 'course');
-        $srch->addCondition('course_id' , '=', $this->getMainTableRecordId());
+        $srch->addCondition('course.course_id' , '=', $this->getMainTableRecordId());
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);

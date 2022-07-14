@@ -239,33 +239,6 @@ $yesNoArr = AppConstant::getYesNoArr();
                         </div>
                     </div>
                 </div>
-                <?php
-                if (count($courseData['course_features']) > 0) {
-                    ?>
-                    <div class="sectionhead">
-                        <h4><?php echo Label::getLabel('LBL_FEATURES') ?></h4>
-                    </div>
-                    <div class="tabs_panel">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table--details">
-                                    <tbody>
-                                        <?php
-                                        foreach ($courseData['course_features'] as $feature) {
-                                            ?>
-                                            <tr>
-                                                <td><strong><?php echo $feature['key']; ?></strong></td>
-                                                <td><?php echo $feature['value']; ?></td>
-                                            </tr><?php
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div><?php
-                }
-                ?>
             </div>
         </div>
     </div>

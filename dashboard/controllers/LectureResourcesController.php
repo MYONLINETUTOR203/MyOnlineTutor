@@ -23,19 +23,17 @@ class LectureResourcesController extends DashboardController
      * Render Lecture Resource Form
      *
      * @param int $lectureId
-     * @param int $langId
      * @return void
      */
-    public function index(int $lectureId, int $langId)
+    public function index(int $lectureId)
     {
         $lectureId = FatUtility::int($lectureId);
-        $langId = FatUtility::int($langId);
         if ($lectureId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
         /* validate lecture id */
-        $obj = new LectureSearch($langId);
+        $obj = new LectureSearch();
         if (!$lecture = $obj->getById($lectureId, ['lecture_title', 'lecture_section_id', 'lecture_order'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
@@ -58,7 +56,6 @@ class LectureResourcesController extends DashboardController
             'lectureId' => $lectureId,
             'resources' => $resources,
         ]);
-
         $this->_template->render(false, false);
     }
 
