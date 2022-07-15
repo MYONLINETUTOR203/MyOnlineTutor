@@ -90,7 +90,7 @@ class CategoriesController extends AdminBaseController
             'pageCount' => $srch->pages(),
             'recordCount' => $srch->recordCount(),
             'canEdit' => $this->objPrivilege->canEditCategories(true),
-            'types' => Category::getCategoriesTypes()
+            /* 'types' => Category::getCategoriesTypes() */
         ]);
         $this->_template->render(false, false);
     }
@@ -227,7 +227,7 @@ class CategoriesController extends AdminBaseController
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
-        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes());
+        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes()); */
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
