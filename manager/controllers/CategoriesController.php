@@ -160,6 +160,7 @@ class CategoriesController extends AdminBaseController
      */
     public function delete(int $cateId)
     {
+        $this->objPrivilege->canEditCategories();
         $cateId = FatUtility::int($cateId);
 
         $category = new Category($cateId);
@@ -244,6 +245,7 @@ class CategoriesController extends AdminBaseController
      */
     public function updateStatus(int $cateId, int $status)
     {
+        $this->objPrivilege->canEditCategories();
         $cateId = FatUtility::int($cateId);
         $status = FatUtility::int($status);
         $status = ($status == AppConstant::YES) ? AppConstant::NO : AppConstant::YES;

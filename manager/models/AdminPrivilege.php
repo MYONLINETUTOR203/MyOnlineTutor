@@ -189,6 +189,7 @@ class AdminPrivilege
             static::SECTION_LESSON_STATS => Label::getLabel('MSG_LESSON_STATS', $langId),
             static::SECTION_SALES_REPORT => Label::getLabel('MSG_SALE_REPORT', $langId),
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
+            static::SECTION_CATEGORIES => Label::getLabel('MSG_SECTION_CATEGORIES', $langId)
         ];
         return $arr;
     }
