@@ -17,7 +17,7 @@ class CourseRequestsController extends AdminBaseController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        $this->objPrivilege->canViewCourses();
+        $this->objPrivilege->canViewCourseRequests();
     }
 
     /**
@@ -25,7 +25,7 @@ class CourseRequestsController extends AdminBaseController
      */
     public function index()
     {
-        $this->set("canEdit", $this->objPrivilege->canEditCourses(true));
+        $this->set("canEdit", $this->objPrivilege->canEditCourseRequests(true));
         $this->set("frmSearch", $this->getSearchForm($this->siteLangId));
 
         $this->_template->render();
@@ -75,7 +75,7 @@ class CourseRequestsController extends AdminBaseController
             'pageSize' => $post['pagesize'],
             'pageCount' => $srch->pages(),
             'recordCount' => $srch->recordCount(),
-            'canEdit' => $this->objPrivilege->canEditCourses(true),
+            'canEdit' => $this->objPrivilege->canEditCourseRequests(true),
         ]);
         $this->_template->render(false, false);
     }

@@ -17,7 +17,7 @@ class CoursesController extends AdminBaseController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        $this->objPrivilege->canViewClassesOrders();
+        $this->objPrivilege->canViewCourses();
     }
 
     /**
@@ -59,7 +59,6 @@ class CoursesController extends AdminBaseController
             'pageSize' => $post['pagesize'],
             'pageCount' => $srch->pages(),
             'recordCount' => $srch->recordCount(),
-            'canEdit' => $this->objPrivilege->canEditCourses(true),
         ]);
         $this->_template->render(false, false);
     }
@@ -74,7 +73,7 @@ class CoursesController extends AdminBaseController
     {
         $srch = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
 
-        $srch->addCondition('course_id', '=', $courseId);
+        $srch->addCondition('course.course_id', '=', $courseId);
         $srch->applyPrimaryConditions();
 
         $srch->joinTable(Category::DB_TBL, 'INNER JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');

@@ -7,10 +7,8 @@ $arrFlds = [
     'user_name' => Label::getLabel('LBL_LEARNER_NAME'),
     'corere_status' => Label::getLabel('LBL_STATUS'),
     'corere_created' => Label::getLabel('LBL_REQUESTED_ON'),
+    'action' => Label::getLabel('LBL_ACTION'),
 ];
-if ($canEdit) {
-    $arrFlds['action'] = Label::getLabel('LBL_ACTION');
-}
 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive']);
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arrFlds as $val) {

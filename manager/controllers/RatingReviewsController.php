@@ -17,7 +17,6 @@ class RatingReviewsController extends AdminBaseController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        $this->objPrivilege->canViewTeacherReviews();
     }
 
     /**
@@ -25,6 +24,11 @@ class RatingReviewsController extends AdminBaseController
      */
     public function index($type = 0)
     {
+        if ($type == AppConstant::COURSE) {
+            $this->objPrivilege->canViewCourseReviews();
+        } else {
+            $this->objPrivilege->canViewTeacherReviews();
+        }
         $frm = $this->getSearchForm($this->siteLangId);
         $frm->fill(['ratrev_type' => $type]);
         $this->set("search", $frm);
@@ -37,6 +41,13 @@ class RatingReviewsController extends AdminBaseController
      */
     public function search()
     {
+        if (FatApp::getPostedData('ratrev_type') == AppConstant::COURSE) {
+            $this->objPrivilege->canViewCourseReviews();
+            $canEdit = $this->objPrivilege->canEditCourseReviews(true);
+        } else {
+            $this->objPrivilege->canViewTeacherReviews();
+            $canEdit = $this->objPrivilege->canEditTeacherReviews(true);
+        }
         $srchFrm = $this->getSearchForm();
         if (!$post = $srchFrm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($srchFrm->getValidationErrors()));
@@ -80,7 +91,7 @@ class RatingReviewsController extends AdminBaseController
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $this->sets([
             'reviews' => FatApp::getDb()->fetchAll($srch->getResultSet()),
-            'canEdit' => $this->objPrivilege->canEditTeacherReviews(true),
+            'canEdit' => $canEdit,
             'recordCount' => $srch->recordCount(),
             'pageCount' => $srch->pages(),
             'postedData' => $post
@@ -92,13 +103,17 @@ class RatingReviewsController extends AdminBaseController
      * Render Rating Reviews Form
      */
     public function form()
-    {
-        $this->objPrivilege->canEditTeacherReviews();
+    {   
         $ratrevId = FatApp::getPostedData('ratrevId', FatUtility::VAR_INT, 0);
         $ratingReview = new RatingReview(0, 0, $ratrevId);
         $data = $ratingReview->getDetail();
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            $this->objPrivilege->canEditCourseReviews();
+        } else {
+            $this->objPrivilege->canEditTeacherReviews();
         }
         $frm = $this->getForm();
         $frm->fill($data);
@@ -111,7 +126,6 @@ class RatingReviewsController extends AdminBaseController
      */
     public function setup()
     {
-        $this->objPrivilege->canEditTeacherReviews();
         $frm = $this->getForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -121,6 +135,12 @@ class RatingReviewsController extends AdminBaseController
         if (empty($data)) {
             FatUtility::dieJsonError($this->str_invalid_request);
         }
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            $this->objPrivilege->canEditCourseReviews();
+        } else {
+            $this->objPrivilege->canEditTeacherReviews();
+        }
+        
         $ratingReview->assignValues(['ratrev_status' => $post['ratrev_status']]);
         if (!$ratingReview->save()) {
             FatUtility::dieJsonError($ratingReview->getError());
