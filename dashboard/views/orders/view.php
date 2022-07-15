@@ -85,7 +85,7 @@ $subOrder = current($subOrders);
                                 ?>
                                 <div class="detail-info__row"><?php echo $subOrder['course_title']; ?></div>
                                 <div class="detail-info__row">
-                                    <?php echo $subOrder['tlang_name']; ?>,
+                                    <?php echo $subOrder['clang_name']; ?>,
                                     <?php echo YouTube::convertDuration($subOrder['course_duration']); ?>
                                 </div>
                                 <div class="detail-info__row">
