@@ -75,6 +75,8 @@ $(document).ready(function () {
     });
     (function () {
         var uri = window.location.pathname;
+        uri = uri.split('/');
+        uri = uri[0] + '/' + uri[1] + '/' + uri[2];
         var parentCat = null;
         $('aside.leftside ul.leftmenu li').each(function () {
             if ($(this).hasClass('haschild')) {
