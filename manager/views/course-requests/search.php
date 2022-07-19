@@ -30,6 +30,9 @@ foreach ($arrListing as $sn => $row) {
             case 'coapre_status':
                 $td->appendElement('plaintext', [], $requestStatus[$row['coapre_status']]);
                 break;
+            case 'coapre_created':
+                $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]));
+                break;
             case 'action':
                 $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
                 $li = $ul->appendElement("li", ['class' => 'droplink']);
