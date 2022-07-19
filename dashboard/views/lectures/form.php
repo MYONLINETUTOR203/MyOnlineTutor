@@ -20,7 +20,7 @@ $fld->setFieldTagAttribute('onclick', $action);
 $titleLength = 255;
 $descLength = 300;
 ?>
-<div class="card-box card-group-js is-active" id="sectionLectures<?php echo $lectureDivId ?>">
+<div class="card-box card-group-js is-active <?php echo ($lecture['lecture_id'] > 0) ? 'lecturePanelJs' : ''; ?>" id="sectionLectures<?php echo $lectureDivId ?>" <?php if ($lecture['lecture_id'] > 0) { ?> data-id="<?php echo $lecture['lecture_id'] ?>" <?php } ?>>
     <!-- [ LECTURE TITLE ========= -->
     <div class="card-box__head">
         <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move">
