@@ -75,7 +75,7 @@ class CourseOrdersController extends AdminBaseController
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ordcrs_status', OrderCourse::getStatuses())->requirements()->setIntPositive();
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'order_addedon_from', '', ['readonly' => 'readonly']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'order_addedon_till', '', ['readonly' => 'readonly']);
-        $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setIntPositive();
+        $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();
 
         $btnSubmit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Search'));

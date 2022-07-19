@@ -6,7 +6,7 @@ $(document).ready(function () {
     var dv = '#listing';
     goToSearchPage = function (pageno) {
         var frm = document.frmCourseSearchPaging;
-        $(frm.pageno).val(pageno);
+        $(frm.page).val(pageno);
         search(frm);
     };
     search = function (form) {
