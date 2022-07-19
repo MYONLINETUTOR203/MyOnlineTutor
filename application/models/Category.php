@@ -301,7 +301,7 @@ class Category extends MyAppModel
             'catg.cate_id = catg_l.catelang_cate_id AND catg_l.catelang_lang_id = ' . $langId,
             'catg_l'
         );
-        $srch->addCondition('mysql_func_LOWER(cate_name)', '=', strtolower($name), 'AND', true);
+        $srch->addCondition('mysql_func_LOWER(cate_name)', '=', strtolower(trim($name)), 'AND', true);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate_parent', '=', $parent);
         if ($this->getMainTableRecordId() > 0) {
