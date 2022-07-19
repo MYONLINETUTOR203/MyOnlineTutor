@@ -98,6 +98,11 @@ class Section extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
+        $lecture = new Lecture();
+        if (!$lecture->setLectureCount($sectionId)) {
+            $db->rollbackTransaction();
+            return false;
+        }
         if (!$db->commitTransaction()) {
             $this->error = $db->getError();
             return false;

@@ -236,19 +236,21 @@ class Lecture extends MyAppModel
      * @param int $sectionId
      * @return bool
      */
-    private function setLectureCount(int $sectionId)
+    public function setLectureCount(int $sectionId)
     {
         /* get count*/
         $srch = new SearchBase(static::DB_TBL);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('COUNT(lecture_id) AS section_lectures');
-        $srch->addCondition('lecture_section_id', '=', $sectionId);
         $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+
+        $srch->addFld('COUNT(lecture_id) AS section_lectures');
+        $srch->addFld('lecture_course_id');
+        $srch->addCondition('lecture_section_id', '=', $sectionId);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
         /* update lectures count */
         $section = new Section($sectionId);
-        $section->assignValues($row);
+        $section->setFldValue('section_lectures', $row['section_lectures']);
         if (!$section->save()) {
             $this->error = $section->getError();
             return false;
@@ -271,14 +273,13 @@ class Lecture extends MyAppModel
     {
         /* get course id to update course lectures count */
         $courseId = Section::getAttributesById($sectionId, 'section_course_id');
-        $srch = new SearchBase(Section::DB_TBL);
+        $srch = new SearchBase(static::DB_TBL);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('SUM(section_lectures) AS course_lectures');
-        $srch->addCondition('section_course_id', '=', $courseId);
-        $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addFld('COUNT(lecture_id) AS course_lectures');
+        $srch->addCondition('lecture_course_id', '=', $courseId);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
-        /* update lectures count */
         $course = new Course($courseId);
         $course->assignValues($row);
         if (!$course->save()) {
