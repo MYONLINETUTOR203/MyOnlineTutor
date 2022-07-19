@@ -65,7 +65,9 @@ class Category extends MyAppModel
 
         /* save category data */
         $this->assignValues($data);
-        $this->setFldValue('cate_created', date('Y-m-d H:i:s'));
+        if ($this->mainTableRecordId < 1) {
+            $this->setFldValue('cate_created', date('Y-m-d H:i:s'));
+        }
         $this->setFldValue('cate_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
