@@ -97,6 +97,7 @@ class Resource extends MyAppModel
 
         $lbl = Label::getLabel('LBL_MB');
         foreach ($resources['name'] as $key => $file) {
+            $this->mainTableRecordId = 0;
             /* validate uploaded files [ */
             $data = [
                 'name' => $file,
