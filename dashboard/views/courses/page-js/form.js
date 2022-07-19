@@ -383,6 +383,7 @@ $(document).ready(function(){
             var limit = max - strLen;
             if (limit < 0) {
                 $(this).val($(this).val().substring(0, max));
+                $(ele).attr('field-count', 0);
                 return;
             }
             $(ele).attr('field-count', limit);
