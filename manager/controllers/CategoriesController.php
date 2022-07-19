@@ -114,7 +114,7 @@ class CategoriesController extends AdminBaseController
             }
             $data['catelang_lang_id'] = $langId;
         }
-        $frm = $this->getForm($langId);
+        $frm = $this->getForm($langId, $categoryId);
         $frm->fill($data);
         
         $this->sets([
@@ -172,7 +172,7 @@ class CategoriesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(int $langId): Form
+    private function getForm(int $langId, $catgId = 0): Form
     {
 
         $frm = new Form('frmCategory');
@@ -203,7 +203,10 @@ class CategoriesController extends AdminBaseController
         $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
 
         $parentCategories = Category::getCategoriesByParentId($langId);
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', []);
+        if ($catgId > 0) {
+            unset($parentCategories[$catgId]);
+        }
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories);
         $fld->requirements()->setInt();
 
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'cate_status', AppConstant::getActiveArr(), '', [], '')
