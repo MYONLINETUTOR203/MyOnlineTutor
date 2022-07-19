@@ -78,6 +78,7 @@ class CategoriesController extends AdminBaseController
             ]
         );
         $srch->doNotCalculateRecords();
+        $srch->addOrder('cate_status', 'DESC');
         $srch->addOrder('cate_order');
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
 
