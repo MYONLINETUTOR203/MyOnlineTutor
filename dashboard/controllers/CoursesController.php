@@ -730,7 +730,7 @@ class CoursesController extends DashboardController
             'course_currency_id',
             Currency::getCurrencyNameWithCode($this->siteLangId)
         );
-        $frm->addTextBox(Label::getLabel('LBL_PRICE'), 'course_price');
+        $frm->addTextBox(Label::getLabel('LBL_PRICE'), 'course_price')->requirements()->setFloat();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
