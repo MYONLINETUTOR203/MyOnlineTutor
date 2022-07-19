@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 (function () {
     goToSearchPage = function (page) {
-        var frm = document.frmCategoryPaging;
+        var frm = document.requestSearch;
         $(frm.page).val(page);
         search(frm);
     };

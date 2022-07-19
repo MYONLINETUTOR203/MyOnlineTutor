@@ -60,5 +60,5 @@ if (count($arrListing) == 0) {
 }
 echo $tbl->getHtml();
 echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmCommPaging']);
-$pagingArr = ['pageCount' => $pageCount, 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount];
+$pagingArr = ['pageCount' => ceil($recordCount / $pageSize), 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount];
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
