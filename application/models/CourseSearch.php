@@ -117,6 +117,7 @@ class CourseSearch extends YocoachSearch
             $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
             $cnd->attachCondition('teacher.user_first_name', 'LIKE', '%' . $keyword . '%', 'OR');
             $cnd->attachCondition('teacher.user_last_name', 'LIKE', '%' . $keyword . '%', 'OR');
+            $cnd->attachCondition('mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)', 'LIKE', '%' . $keyword . '%', 'OR', true);
             /* @TODO : tag search */
         }
         if (!empty($post['course_status'])) {
