@@ -50,7 +50,7 @@ if (count($resources) == 0) {
                 <div class="flex-cell">
                     <div class="flex-cell__label"> <?php echo $dateLabel; ?> </div>
                     <div class="flex-cell__content">
-                        <?php echo $resrc['resrc_created']; ?>
+                        <?php echo MyDate::formatDate($resrc['resrc_created']); ?>
                     </div>
                 </div>
             </td>
