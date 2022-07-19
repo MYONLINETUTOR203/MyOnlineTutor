@@ -672,7 +672,8 @@ class CoursesController extends DashboardController
         $categories = Category::getCategoriesByParentId($this->siteLangId);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categories);
         $fld->requirements()->setRequired();
-        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', []);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', []);
+        $fld->requirements()->setInt();
         $langsList = (new CourseLanguage())->getAllLangs($this->siteLangId, true);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_clang_id', $langsList);
         $fld->requirements()->setRequired();
