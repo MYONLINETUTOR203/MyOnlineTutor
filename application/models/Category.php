@@ -81,7 +81,6 @@ class Category extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-
         /* update sub categories count */
         if (count($catgIds) > 0) {
             $catgIds = array_unique($catgIds);
@@ -161,7 +160,7 @@ class Category extends MyAppModel
                         COUNT(cate_id) AS cate_subcategories,
                         cate_parent
                     FROM `" . static::DB_TBL . "` 
-                    WHERE `cate_parent` IN(" . implode(',', $catgIds) . ") 
+                    WHERE `cate_parent` IN(" . implode(',', $catgIds) . ") AND cate_deleted IS NULL
                     GROUP BY `cate_parent`
                 ) c 
                 ON cate.cate_id = c.cate_parent 
