@@ -77,18 +77,13 @@ class CategoriesController extends AdminBaseController
                 'catg_l.catelang_lang_id',
             ]
         );
-        $srch->setPageNumber($post['page']);
-        $srch->setPageSize($post['pagesize']);
+        $srch->doNotCalculateRecords();
         $srch->addOrder('cate_order');
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
 
         $this->sets([
             'arrListing' => $data,
-            'page' => $post['page'],
             'postedData' => $post,
-            'pageSize' => $post['pagesize'],
-            'pageCount' => $srch->pages(),
-            'recordCount' => $srch->recordCount(),
             'canEdit' => $this->objPrivilege->canEditCategories(true),
             /* 'types' => Category::getCategoriesTypes() */
         ]);
@@ -226,13 +221,9 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
-        $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
         /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes()); */
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $fld_cancel = $frm->addButton("", "btn_clear", Label::getLabel('LBL_CLEAR'));
-        $fld_submit->attachField($fld_cancel);
         return $frm;
     }
 

@@ -2,9 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmSearch->setFormTagAttribute('onsubmit', 'search(this); return(false);');
 $frmSearch->setFormTagAttribute('id', 'search');
-$frmSearch->setFormTagAttribute('class', 'web_form');
-$btn = $frmSearch->getField('btn_clear');
-$btn->setFieldTagAttribute('onClick', 'clearSearch()');
+$frmSearch->setFormTagAttribute('style', 'display:none');
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -32,12 +30,7 @@ $btn->setFieldTagAttribute('onClick', 'clearSearch()');
                     </div>
                 </div>
                 <section class="section searchform_filter">
-                    <div class="sectionhead">
-                        <h4> <?php echo Label::getLabel('LBL_SEARCH'); ?></h4>
-                    </div>
-                    <div class="sectionbody space togglewrap" style="display:none;">
-                        <?php echo $frmSearch->getFormHtml(); ?>
-                    </div>
+                    <?php echo $frmSearch->getFormHtml(); ?>
                 </section>
                 <section class="section">
                     <div class="sectionbody">
