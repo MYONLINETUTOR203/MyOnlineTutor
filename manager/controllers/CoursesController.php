@@ -76,10 +76,10 @@ class CoursesController extends AdminBaseController
         $srch->addCondition('course.course_id', '=', $courseId);
         $srch->applyPrimaryConditions();
 
-        $srch->joinTable(Category::DB_TBL, 'INNER JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');
+        $srch->joinTable(Category::DB_TBL, 'LEFT JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');
         $srch->joinTable(
             Category::DB_LANG_TBL,
-            'INNER JOIN',
+            'LEFT JOIN',
             'subcate.cate_id = subcatelang.catelang_cate_id AND subcatelang.catelang_lang_id = ' . $this->siteLangId,
             'subcatelang'
         );
