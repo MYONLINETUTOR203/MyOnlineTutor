@@ -213,7 +213,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong><?php echo $courseData['course_details']; ?></strong>
+                                    : <strong><?php echo CommonHelper::renderHtml($courseData['course_details']); ?></strong>
                                 </div>
                             </div>
                         </div>
