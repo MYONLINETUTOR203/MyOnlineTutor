@@ -34,7 +34,7 @@ $(document).ready(function () {
         });
     };
     remove = function (cateId) {
-        if (confirm(langLbl.confirmRemoveCategory)) {
+        if (confirm(langLbl.confirmRemove)) {
             fcom.updateWithAjax(fcom.makeUrl('Categories', 'delete', [cateId]), '', function (response) {
                 search(document.categorySearch);
             });
