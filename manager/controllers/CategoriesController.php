@@ -203,7 +203,8 @@ class CategoriesController extends AdminBaseController
         $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
 
         $parentCategories = Category::getCategoriesByParentId($langId);
-        $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', []);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', []);
+        $fld->requirements()->setInt();
 
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'cate_status', AppConstant::getActiveArr(), '', [], '')
         ->requirements()
