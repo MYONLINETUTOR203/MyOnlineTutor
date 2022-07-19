@@ -20,6 +20,7 @@ $(document).ready(function () {
     categoryForm = function (categoryId, langId) {
         fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId, langId]), '', function (response) {
             $.facebox(response, 'faceboxWidth');
+            document.frmCategory.cate_parent.value = document.categorySearch.parent_id.value;
         });
     };
     setup = function (frm) {
