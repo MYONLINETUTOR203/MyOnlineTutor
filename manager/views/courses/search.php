@@ -31,7 +31,7 @@ foreach ($arrListing as $row) {
                 $innerLiEdit = $innerUl->appendElement('li');
                 $innerLiEdit->appendElement('a', ['href' => 'javascript:void(0);', 'onclick' => 'view("'.$row['course_id'].'")', 'class' => 'button small green', 'title' => Label::getLabel('LBL_VIEW')], Label::getLabel('LBL_VIEW'), true);
                 $innerLiEdit = $innerUl->appendElement('li');
-                $innerLiEdit->appendElement('a', ['href' => 'javascript:void(0);', 'onclick' => 'userLogin("' . $row['course_teacher_id'] . '", "' . $row['course_id'] . '", "preview")', 'class' => 'button small green', 'title' => Label::getLabel('LBL_PREVIEW'), 'target' => '_blank'], Label::getLabel('LBL_PREVIEW'), true);
+                $innerLiEdit->appendElement('a', ['href' => 'javascript:void(0);', 'onclick' => 'userLogin("' . $row['course_teacher_id'] . '", "' . $row['course_id'] . '", "preview")', 'class' => 'button small green', 'title' => Label::getLabel('LBL_PREVIEW')], Label::getLabel('LBL_PREVIEW'), true);
                 /* if ($canEdit && $row['course_status'] != Course::PUBLISHED) {
                     $innerLiEdit = $innerUl->appendElement('li');
                     $innerLiEdit->appendElement('a', ['href' => 'javascript:void(0);', 'class' => 'button small green', 'title' => Label::getLabel('LBL_VIEW'), 'onclick' => 'userLogin("'.$row['course_teacher_id'].'", "'.$row['course_id'].'", "edit")'], Label::getLabel('LBL_Edit'), true);
