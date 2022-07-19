@@ -84,7 +84,7 @@ class CoursesController extends MyAppController
         $srch->joinTable(TeacherStat::DB_TBL, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
         $srch->joinTable(
             User::DB_TBL_LANG,
-            'INNER JOIN',
+            'LEFT JOIN',
             'userlang.userlang_user_id = teacher.user_id AND userlang.userlang_lang_id = ' . $this->siteLangId,
             'userlang'
         );
