@@ -189,13 +189,13 @@ class AdminPrivilege
             static::SECTION_LESSON_STATS => Label::getLabel('MSG_LESSON_STATS', $langId),
             static::SECTION_SALES_REPORT => Label::getLabel('MSG_SALE_REPORT', $langId),
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
-            static::SECTION_CATEGORIES => Label::getLabel('MSG_SECTION_CATEGORIES', $langId),
-            static::SECTION_COURSE => Label::getLabel('MSG_SECTION_COURSE', $langId),
-            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_SECTION_MANAGE_CERTIFICATES', $langId),
-            static::SECTION_COURSE_REQUESTS => Label::getLabel('MSG_SECTION_COURSE_REQUESTS', $langId),
-            static::SECTION_COURSE_REFUND_REQUESTS => Label::getLabel('MSG_SECTION_COURSE_REFUND_REQUESTS', $langId),
-            static::SECTION_COURSE_REVIEWS => Label::getLabel('MSG_SECTION_COURSE_REVIEWS', $langId),
-            static::SECTION_COURSE_LANGUAGES => Label::getLabel('MSG_SECTION_COURSE_LANGUAGES', $langId),
+            static::SECTION_CATEGORIES => Label::getLabel('MSG_CATEGORIES', $langId),
+            static::SECTION_COURSE => Label::getLabel('MSG_COURSE', $langId),
+            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_MANAGE_CERTIFICATES', $langId),
+            static::SECTION_COURSE_REQUESTS => Label::getLabel('MSG_COURSE_REQUESTS', $langId),
+            static::SECTION_COURSE_REFUND_REQUESTS => Label::getLabel('MSG_COURSE_REFUND_REQUESTS', $langId),
+            static::SECTION_COURSE_REVIEWS => Label::getLabel('MSG_COURSE_REVIEWS', $langId),
+            static::SECTION_COURSE_LANGUAGES => Label::getLabel('MSG_COURSE_LANGUAGES', $langId),
         ];
         return $arr;
     }
