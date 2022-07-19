@@ -239,7 +239,7 @@ class Category extends MyAppModel
         );
         $srch->addMultipleFields(
             [
-                'catelang_cate_id',
+                'cate_id',
                 'cate_name'
             ]
         );
