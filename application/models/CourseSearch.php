@@ -130,6 +130,7 @@ class CourseSearch extends YocoachSearch
             $end = $post['course_addedon_till'] . ' 23:59:59';
             $this->addCondition('course.course_created', '<=', MyDate::formatToSystemTimezone($end));
         }
+        /* for frontend filters */
         if (!empty($post['course_cate_id'])) {
             if (is_array($post['course_cate_id'])) {
                 $cnd = $this->addCondition('course.course_cate_id', 'IN', $post['course_cate_id']);
@@ -139,6 +140,14 @@ class CourseSearch extends YocoachSearch
                 $cnd->attachCondition('course.course_subcate_id', '=', $post['course_cate_id'], 'OR');
             }
         }
+        /* for dashboard filters [ */
+        if (isset($post['course_cateid']) && !empty($post['course_cateid'])) {
+            $this->addCondition('course.course_cate_id', '=', $post['course_cateid']);
+        }
+        if (isset($post['course_subcateid']) && !empty($post['course_subcateid'])) {
+            $this->addCondition('course.course_subcate_id', '=', $post['course_subcateid']);
+        }
+        /* ] */
         if (isset($post['course_id']) && !empty($post['course_id'])) {
             $this->addCondition('course.course_id', '=', $post['course_id']);
         }
@@ -190,6 +199,9 @@ class CourseSearch extends YocoachSearch
         }
         if (isset($post['course_ratings']) && $post['course_ratings'] > 0) {
             $this->addCondition('course.course_ratings', '>=', $post['course_ratings']);
+        }
+        if (isset($post['course_type']) && $post['course_type'] > 0) {
+            $this->addCondition('course.course_type', '=', $post['course_type']);
         }
     }
 

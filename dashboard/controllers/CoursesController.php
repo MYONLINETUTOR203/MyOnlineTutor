@@ -37,7 +37,7 @@ class CoursesController extends DashboardController
     public function search()
     {
         $frm = $this->getSearchForm();
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_subcateid'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         /* get courses list */
@@ -652,7 +652,13 @@ class CoursesController extends DashboardController
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword');
         if ($this->siteUserType == User::TEACHER) {
             $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses());
+        } else {
+            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ordcrs_status', OrderCourse::getStatuses());
         }
+        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes());
+        $categoryList = Category::getCategoriesByParentId($this->siteLangId);
+        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList);
+        $frm->addSelectBox(Label::getLabel('LBL_SUB_CATEGORY'), 'course_subcateid', []);
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField('', 'page', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));

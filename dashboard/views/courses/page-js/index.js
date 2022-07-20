@@ -71,4 +71,10 @@ $(function () {
             });
         }
     };
+    getSubCategories = function (id) {
+        id = (id == '') ? 0 : id;
+        fcom.ajax(fcom.makeUrl('Courses', 'getSubcategories', [id]), '', function (res) {
+            $("#subCategories").html(res);
+        });
+    };
 });

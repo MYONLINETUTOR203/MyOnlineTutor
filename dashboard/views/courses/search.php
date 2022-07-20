@@ -70,13 +70,7 @@ $requestStatuses = Course::getRefundStatuses();
                         if ($siteUserType == User::TEACHER) {
                             echo $courseStatuses[$course['course_status']];
                         } else {
-                            if ($course['ordcrs_status'] == OrderCourse::CANCELLED) {
-                                echo $orderStatuses[$course['ordcrs_status']];
-                            } elseif (!empty($course['crspro_completed'])) {
-                                echo Label::getLabel('LBL_COMPLETED');
-                            } else {
-                                echo Label::getLabel('LBL_IN_PROGRESS');
-                            }
+                            echo $orderStatuses[$course['ordcrs_status']];
                         }
                         ?>
                     </span>

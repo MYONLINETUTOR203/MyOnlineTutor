@@ -60,7 +60,12 @@ class OrderCourseSearch extends YocoachSearch
         if (!empty($post['ordcrs_status'])) {
             $this->addCondition('ordcrs.ordcrs_status', '=', $post['ordcrs_status']);
         }
-
+        if (!empty($post['course_cateid'])) {
+            $this->addCondition('course.course_cate_id', '=', $post['course_cateid']);
+        }
+        if (!empty($post['course_subcateid'])) {
+            $this->addCondition('course.course_subcate_id', '=', $post['course_subcateid']);
+        }
         if (!empty($post['order_addedon_from'])) {
             $start = $post['order_addedon_from'] . ' 00:00:00';
             $this->addCondition('orders.order_addedon', '>=', MyDate::formatToSystemTimezone($start));
@@ -68,6 +73,9 @@ class OrderCourseSearch extends YocoachSearch
         if (!empty($post['order_addedon_till'])) {
             $end = $post['order_addedon_till'] . ' 23:59:59';
             $this->addCondition('orders.order_addedon', '<=', MyDate::formatToSystemTimezone($end));
+        }
+        if (isset($post['course_type']) && $post['course_type'] > 0) {
+            $this->addCondition('course.course_type', '=', $post['course_type']);
         }
     }
 
@@ -155,7 +163,7 @@ class OrderCourseSearch extends YocoachSearch
             $srch->addDirectCondition('crspro_ordcrs_id IN (' . implode(', ', $ordcrsIds) . ')');
             $srch->doNotCalculateRecords();
             $srch->doNotLimitRecords();
-            $srch->addMultipleFields(['crspro_completed', 'crspro_ordcrs_id', 'crspro_id']);
+            $srch->addMultipleFields(['crspro_completed', 'crspro_progress', 'crspro_ordcrs_id', 'crspro_id']);
             $progress = FatApp::getDb()->fetchAll($srch->getResultSet(), 'crspro_ordcrs_id');
             /* get cancellation request data */
             $srch = new SearchBase(Course::DB_TBL_REFUND_REQUEST);
@@ -173,6 +181,7 @@ class OrderCourseSearch extends YocoachSearch
             $row['crspro_completed'] = '';
             if (isset($progress[$row['ordcrs_id']])) {
                 $row['crspro_completed'] = $progress[$row['ordcrs_id']]['crspro_completed'];
+                $row['crspro_progress'] = $progress[$row['ordcrs_id']]['crspro_progress'];
             }
             if (isset($cancelReqs[$row['ordcrs_id']])) {
                 $row['corere_status'] = $cancelReqs[$row['ordcrs_id']]['corere_status'];
@@ -263,6 +272,9 @@ class OrderCourseSearch extends YocoachSearch
             return false;
         }
         if (!isset($ordcrs['crspro_completed']) || !$ordcrs['crspro_completed']) {
+            return false;
+        }
+        if ($ordcrs['crspro_completed'] && $ordcrs['crspro_progress'] < 1) {
             return false;
         }
         if ($ordcrs['ordcrs_status'] == OrderCourse::CANCELLED) {

@@ -4,7 +4,11 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'search(this); return(false);');
 $keywordFld = $frm->getField('keyword');
 $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_KEYWORD...'));
-$levelFld = $frm->getField('plan_level');
+$typeFld = $frm->getField('course_type');
+$catgFld = $frm->getField('course_cateid');
+$catgFld->addFieldTagAttribute('onchange', 'getSubCategories(this.value)');
+$subcatgFld = $frm->getField('course_subcateid');
+$subcatgFld->setFieldTagAttribute('id', 'subCategories');
 $btnReset = $frm->getField('btn_reset');
 $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
 ?>
@@ -41,7 +45,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
         <div class="search-filter slide-target-js" style="display: none;">
             <?php echo $frm->getFormTag(); ?>
             <div class="row">
-                <div class="col-md-<?php echo ($siteUserType == User::TEACHER) ? '4' : '8'; ?>">
+                <div class="col-md-4">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -55,8 +59,67 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php echo $catgFld->getCaption(); ?>
+                            </label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $catgFld->getHtml(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php echo $subcatgFld->getCaption(); ?>
+                            </label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $subcatgFld->getHtml(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php echo $typeFld->getCaption(); ?>
+                            </label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $typeFld->getHtml(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <?php if ($siteUserType == User::TEACHER) {
                     $status = $frm->getField('course_status');
+                    ?>
+                    <div class="col-md-4">
+                        <div class="field-set">
+                            <div class="caption-wraper">
+                                <label class="field_label">
+                                    <?php echo $status->getCaption(); ?>
+                                </label>
+                            </div>
+                            <div class="field-wraper">
+                                <div class="field_cover">
+                                    <?php echo $status->getHtml(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } else {
+                    $status = $frm->getField('ordcrs_status');
                     ?>
                     <div class="col-md-4">
                         <div class="field-set">
