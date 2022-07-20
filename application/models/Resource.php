@@ -62,8 +62,9 @@ class Resource extends MyAppModel
                 return 'png-attachment';
             case 'jpg':
             case 'jpeg':
-            case 'gif':
                 return 'jpg-attachment';
+            case 'gif':
+                return 'gif-attachment';
             case 'txt':
                 return 'txt-attachment';
             case 'pdf':
