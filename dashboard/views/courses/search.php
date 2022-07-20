@@ -18,10 +18,11 @@ $requestStatuses = Course::getRefundStatuses();
             <div class="card-course__colum card-course__colum--second">
                 <div class="card-course__head">
                     <small class="card-course__subtitle uppercase color-gray-900">
-                        <?php echo $course['course_title'] ?>
+                        <?php echo $course['cate_name'] ?>
+                        <?php echo !empty($course['subcate_name']) ? ' / ' . $course['subcate_name'] : ''; ?>
                     </small>
                     <span class="card-course__title">
-                        <?php echo $course['course_subtitle'] ?>
+                        <?php echo $course['course_title'] ?>
                     </span>
                 </div>
                 <div class="card-course__body">
