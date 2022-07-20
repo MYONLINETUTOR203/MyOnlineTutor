@@ -82,13 +82,17 @@ class CoursesController extends DashboardController
     /**
      * Render Course Manage Page
      *
-     * @param int $courseId
+     * @param mixed $courseId
      */
-    public function form(int $courseId = 0)
+    public function form($courseId = 0)
     {
         if ($this->siteUserType == User::LEARNER) {
             FatUtility::exitWithErrorCode(404);
         }
+        if (!empty($courseId) && FatUtility::int($courseId) < 1) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        $courseId = FatUtility::int($courseId);
         if ($courseId > 0) {
             $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
             if (!$course->canEditCourse()) {
