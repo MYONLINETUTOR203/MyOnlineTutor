@@ -109,6 +109,8 @@ class OrderCourseSearch extends YocoachSearch
             'course.course_lectures' => 'course_lectures',
             'course.course_duration' => 'course_duration',
             'course.course_certificate' => 'course_certificate',
+            'course.course_cate_id' => 'course_cate_id',
+            'course.course_subcate_id' => 'course_subcate_id',
             'crsdetail.course_title' => 'course_title',
             'orders.order_addedon' => 'order_addedon',
             'orders.order_pmethod_id' => 'order_pmethod_id',
@@ -163,7 +165,11 @@ class OrderCourseSearch extends YocoachSearch
             $srch->addMultipleFields(['corere_ordcrs_id', 'corere_id', 'corere_status']);
             $cancelReqs = FatApp::getDb()->fetchAll($srch->getResultSet(), 'corere_ordcrs_id');
         }
+        $categoryIds = array_merge(array_column($rows, 'course_cate_id'), array_column($rows, 'course_subcate_id'));
+        $categories = CourseSearch::getCategoryNames($this->langId, array_unique($categoryIds));
         foreach ($rows as $key => $row) {
+            $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
+            $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
             $row['crspro_completed'] = '';
             if (isset($progress[$row['ordcrs_id']])) {
                 $row['crspro_completed'] = $progress[$row['ordcrs_id']]['crspro_completed'];
