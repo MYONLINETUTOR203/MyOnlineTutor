@@ -81,9 +81,25 @@ class CategoriesController extends AdminBaseController
         $srch->addOrder('cate_status', 'DESC');
         $srch->addOrder('cate_order');
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
-
+        $categoryIds = array_keys($data);
+        $courses = [];
+        if (count($categoryIds) > 0) {
+            $srchCrs = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
+            $srchCrs->applyPrimaryConditions();
+            if (isset($post['parent_id']) && $post['parent_id'] > 0) {
+                $field = 'course_subcate_id';
+            } else {
+                $field = 'course_cate_id';
+            }
+            $srchCrs->addCondition('course.' . $field, 'IN', $categoryIds);
+            $srchCrs->addCondition('course.course_status', '=', Course::PUBLISHED);
+            $srchCrs->addMultipleFields(['COUNT(course.course_id) as course_count', $field]);
+            $srchCrs->addGroupBy('course.' . $field);
+            $courses = FatApp::getDb()->fetchAll($srchCrs->getResultSet(), $field);
+        }
         $this->sets([
             'arrListing' => $data,
+            'courses' => $courses,
             'postedData' => $post,
             'canEdit' => $this->objPrivilege->canEditCategories(true),
             /* 'types' => Category::getCategoriesTypes() */

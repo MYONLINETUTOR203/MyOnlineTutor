@@ -7,6 +7,7 @@ $arrFlds = [
     'cate_name' => Label::getLabel('LBL_NAME'),
     /* 'cate_type' => Label::getLabel('LBL_TYPE'), */
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
+    'courses' => Label::getLabel('LBL_COURSES'),
     'cate_created' => Label::getLabel('LBL_ADDED_ON'),
     'status' => Label::getLabel('LBL_STATUS'),
 ];
@@ -42,6 +43,17 @@ foreach ($arrListing as $sn => $row) {
             /* case 'cate_type':
                 $td->appendElement('plaintext', [], $types[$row['cate_type']]);
                 break; */
+            case 'courses':
+                if (isset($courses[$row['cate_id']])) {
+                    $qryString = '?course_cateid=' . $row['cate_id'];
+                    if ($postedData['parent_id'] > 0) {
+                        $qryString = '?course_cateid=' . $postedData['parent_id'] . '&course_subcateid=' . $row['cate_id'];
+                    }
+                    $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $courses[$row['cate_id']]['course_count'], true);
+                } else {
+                    $td->appendElement('plaintext', [], 0);
+                }
+                break;
             case 'cate_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['cate_created']));
                 break;

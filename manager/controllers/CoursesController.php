@@ -26,7 +26,9 @@ class CoursesController extends AdminBaseController
     public function index()
     {
         $frm = $this->getSearchForm();
+        $frm->fill(FatApp::getQueryStringData());
         $this->set('srchFrm', $frm);
+        $this->set('params', FatApp::getQueryStringData());
         $this->_template->render();
     }
 
@@ -36,7 +38,7 @@ class CoursesController extends AdminBaseController
     public function search()
     {
         $frm = $this->getSearchForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        $post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_subcateid']);
         
         $srch = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->applySearchConditions($post);
@@ -99,6 +101,48 @@ class CoursesController extends AdminBaseController
     }
 
     /**
+     * Fetch sub categories for selected category
+     *
+     * @param int $catgId
+     * @param int $subCatgId
+     * @return html
+     */
+    public function getSubcategories(int $catgId, int $subCatgId = 0)
+    {
+        $catgId = FatUtility::int($catgId);
+        $subcategories = [];
+        if ($catgId > 0) {
+            $subcategories = Category::getCategoriesByParentId($this->siteLangId, $catgId);
+        }
+        $this->set('subCatgId', $subCatgId);
+        $this->set('subcategories', $subcategories);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Auto Complete JSON
+     */
+    public function autoCompleteJson()
+    {
+        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        if (empty($keyword)) {
+            FatUtility::dieJsonSuccess(['data' => []]);
+        }
+        $srch = new SearchBase(CourseLanguage::DB_TBL, 'clang');
+        $srch->joinTable(CourseLanguage::DB_TBL_LANG, 'LEFT JOIN', 'clanglang.clanglang_clang_id = clang.clang_id AND clanglang.clanglang_lang_id = ' . $this->siteLangId, 'clanglang');
+        $srch->addMultiplefields(['clang_id', 'IFNULL(clanglang.clang_name, clang.clang_identifier) as clang_name']);
+        if (!empty($keyword)) {
+            $cond = $srch->addCondition('clanglang.clang_name', 'LIKE', '%' . $keyword . '%');
+            $cond->attachCondition('clang.clang_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
+        }
+        $srch->addOrder('clang_name', 'ASC');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(20);
+        $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'clang_id');
+        FatUtility::dieJsonSuccess(['data' => $data]);
+    }
+
+    /**
      * Get Search Form
      *
      * @return \Form
@@ -118,19 +162,17 @@ class CoursesController extends AdminBaseController
             '',
             ['id' => 'course_clang_id', 'autocomplete' => 'off']
         );
-        $categoryList = Category::getCategoriesByParentId($this->siteLangId);
-        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categoryList);
+        $categoryList = Category::getAll(Category::TYPE_COURSE, $this->siteLangId);
+        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList);
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', []);
         $frm->addHiddenField('', 'course_clang_id', '', ['id' => 'course_clang_id', 'autocomplete' => 'off']);
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses())
-        ->requirements()
-        ->setIntPositive();
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'course_addedon_from', '', ['readonly' => 'readonly']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'course_addedon_till', '', ['readonly' => 'readonly']);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();
         $frm->addHiddenField('', 'order_id');
         $btnSubmit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Search'));
-        $btnSubmit->attachField($frm->addResetButton('', 'btn_reset', Label::getLabel('LBL_Clear')));
+        $btnSubmit->attachField($frm->addButton('', 'btn_reset', Label::getLabel('LBL_Clear')));
         return $frm;
     }
 }

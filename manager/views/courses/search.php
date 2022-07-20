@@ -6,6 +6,7 @@ $arr_flds = [
     'course_title' => Label::getLabel('LBL_TITLE'),
     'teacher_name' => Label::getLabel('LBL_TEACHER'),
     'cate_name' => Label::getLabel('LBL_CATEGORY'),
+    'subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'course_created' => Label::getLabel('LBL_PUBLISHED_ON'),
     'course_status' => Label::getLabel('LBL_STATUS'),
     'action' => Label::getLabel('LBL_ACTION'),

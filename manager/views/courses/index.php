@@ -8,6 +8,10 @@ $srchFrm->developerTags['colClassPrefix'] = 'col-md-';
 $srchFrm->developerTags['fld_default_col'] = 3;
 $srchFrm->getField('keyword')->addFieldtagAttribute('class', 'search-input');
 $srchFrm->getField('btn_reset')->addFieldtagAttribute('onclick', 'clearSearch();');
+$catefld = $srchFrm->getField('course_cateid');
+$subcatefld = $srchFrm->getField('course_subcateid');
+$subcatefld->addFieldtagAttribute('id', 'subCategories');
+$catefld->addFieldtagAttribute('onchange', 'getSubcategories(this.value);');
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -21,23 +25,34 @@ $srchFrm->getField('btn_reset')->addFieldtagAttribute('onclick', 'clearSearch();
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <section class="section searchform_filter">
                     <div class="sectionhead">
                         <h4> <?php echo Label::getLabel('LBL_Search...'); ?></h4>
                     </div>
                     <div class="sectionbody space togglewrap" style="display:none;">
-                        <?php echo $srchFrm->getFormHtml(); ?>    
-                    </div>
-                </section> 		
-                <section class="section">
-                    <div class="sectionbody">
-                        <div class="tablewrap" >
-                            <div id="listing"><?php echo Label::getLabel('LBL_Processing...'); ?></div>
-                        </div> 
+                        <?php echo $srchFrm->getFormHtml(); ?>
                     </div>
                 </section>
-            </div>		
+                <section class="section">
+                    <div class="sectionbody">
+                        <div class="tablewrap">
+                            <div id="listing"><?php echo Label::getLabel('LBL_Processing...'); ?></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    var catId = "<?php echo isset($params['course_cateid']) ? $params['course_cateid'] : 0 ?>";
+    if (catId > 0) {
+        getSubcategories(catId, '<?php echo !empty($subcatefld->value) ? $subcatefld->value : 0; ?>');
+    }
+    $(document).ready(function() {
+        if (catId > 0) {
+            $('.section.searchform_filter .sectionhead').click();
+        }
+    });
+</script>
