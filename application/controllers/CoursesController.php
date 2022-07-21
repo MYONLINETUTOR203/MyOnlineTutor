@@ -173,6 +173,7 @@ class CoursesController extends MyAppController
         $srch->addSearchListingFields();
         $srch->addCondition('section.section_course_id', '=', $courseId);
         $srch->applyPrimaryConditions();
+        $srch->addOrder('section.section_order');
         $sections = $srch->fetchAndFormat();
         /* get list of lecture ids */
         $lectureIds = Lecture::getIds($sections);
