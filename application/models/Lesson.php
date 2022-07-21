@@ -214,6 +214,8 @@ class Lesson extends MyAppModel
          */
         $this->addGoogleEvent($lesson);
         $this->sendScheduledMail($lesson, User::LEARNER, $langId);
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($post['ordles_lesson_starttime'], $post['ordles_lesson_endtime'], $lesson['ordles_duration']);
         return true;
     }
 
@@ -287,6 +289,8 @@ class Lesson extends MyAppModel
         } elseif ($this->userType == User::TEACHER) {
             $this->sendRescheduledMailToLearner($lesson);
         }
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($post['ordles_lesson_starttime'], $post['ordles_lesson_endtime'], $lesson['ordles_duration']);
         return true;
     }
 
@@ -1309,5 +1313,26 @@ class Lesson extends MyAppModel
             $refundAmt = $lesson['ordles_amount'];
         }
         return FatUtility::float($refundAmt);
+    }
+
+    public static function getScheduledLessonCount(string $startTime, string $endTime, int $duration): array
+    {
+        $srch = new SearchBase(static::DB_TBL, 'ordles');
+        $srch->addMultipleFields(['count(*) totalCount', 'min(ordles_lesson_starttime) as startTime', 'max(ordles_lesson_endtime) as endTime']);
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordles.ordles_order_id', 'orders');
+        $srch->addCondition('order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('order_status', '=', Order::STATUS_COMPLETED);
+        $srch->addCondition('ordles_lesson_starttime', '<', $endTime);
+        $srch->addCondition('ordles_lesson_endtime', '>', $startTime);
+        $srch->addCondition('ordles_duration', '>', $duration);
+        $srch->addCondition('ordles_status', '=', Lesson::SCHEDULED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        return [
+            'totalCount' => $row['totalCount'] ?? 0,
+            'startTime' => $row['startTime'] ?? null,
+            'endTime' => $row['endTime'] ?? null,
+        ];
     }
 }

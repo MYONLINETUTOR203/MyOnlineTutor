@@ -158,6 +158,8 @@ class PackagesController extends DashboardController
                 $class['grpcls_id'] = $record->getId();
             }
             $classes[] = $class;
+            $meetingTool = new Meeting(0, 0);
+            $meetingTool->checkLicense($class['grpcls_start_datetime'], $class['grpcls_end_datetime'], $class['grpcls_duration']);
         }
         $db->commitTransaction();
         $languages = Language::getCodes();

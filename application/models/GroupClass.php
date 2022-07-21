@@ -135,6 +135,8 @@ class GroupClass extends MyAppModel
         if ($addEvent) {
             $this->addGoogleEvent($recordId, $data);
         }
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($data['grpcls_start_datetime'], $data['grpcls_end_datetime'], $data['grpcls_duration']);
         $db->commitTransaction();
         return true;
     }
@@ -762,6 +764,24 @@ class GroupClass extends MyAppModel
             'totalClasses' => FatUtility::int($data['totalClasses'] ?? 0),
             'schClassCount' => FatUtility::int($data['schClassCount'] ?? 0),
             'upcomingClass' => FatUtility::int($data['upcomingClass'] ?? 0)
+        ];
+    }
+
+    public static function getScheduledClassesCount(string $startTime, string $endTime, int $duration): array
+    {
+        $srch = new SearchBase(static::DB_TBL, 'gclang');
+        $srch->addMultipleFields(['count(*) totalCount', 'min(grpcls_start_datetime) as startTime', 'max(grpcls_end_datetime) as endTime']);
+        $srch->addCondition('grpcls_start_datetime', '<', $endTime);
+        $srch->addCondition('grpcls_end_datetime', '>', $startTime);
+        $srch->addCondition('grpcls_duration', '>', $duration);
+        $srch->addCondition('grpcls_status', '=', GroupClass::SCHEDULED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        return [
+            'totalCount' => $row['totalCount'] ?? 0,
+            'startTime' => $row['startTime'] ?? null,
+            'endTime' => $row['endTime'] ?? null,
         ];
     }
 }

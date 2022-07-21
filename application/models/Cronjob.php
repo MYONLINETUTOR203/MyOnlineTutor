@@ -421,7 +421,7 @@ class Cronjob
         $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = grpcls.grpcls_teacher_id', 'teacher');
         $srch->joinTable(GroupClass::DB_TBL_LANG, 'LEFT JOIN', 'gclang.gclang_grpcls_id = '
-                . 'grpcls.grpcls_id and gclang.gclang_lang_id = teacher.user_lang_id', 'gclang');
+            . 'grpcls.grpcls_id and gclang.gclang_lang_id = teacher.user_lang_id', 'gclang');
         $srch->addMultipleFields([
             'user_first_name', 'user_last_name',
             'user_lang_id', 'grpcls_id', 'user_email',
@@ -458,4 +458,54 @@ class Cronjob
         return true;
     }
 
+
+    public function shuffleZoomLicense()
+    {
+        $meet = new ZoomMeeting();
+        if (!$meet->initMeetingTool()) {
+            return false;
+        }
+        $toolDetails = $meet->getToolDetails();
+        $freeMeetingDuration = FatApp::getConfig('CONF_ZOOM_FREE_MEETING_DURATION', FatUtility::VAR_INT);
+        $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
+        $srch->addMultipleFields(['zmusr_user_id', 'zmusr_zoom_id', 'zmusr_zoom_type']);
+        $srch->joinTable(ZoomMeeting::DB_TBL_USERS, 'INNER JOIN', 'grpcls_teacher_id = zmusr_user_id', 'zmusr');
+        $srch->addCondition('grpcls.grpcls_status', '=', GroupClass::SCHEDULED);
+        $srch->addCondition('grpcls.grpcls_booked_seats', '>', 0);
+        $srch->addCondition('grpcls.grpcls_metool_id', '=', $toolDetails['metool_id']);
+        $srch->addCondition('grpcls.grpcls_duration', '>', $freeMeetingDuration);
+        $srch->addDirectCondition('grpcls.grpcls_teacher_starttime IS NOT NULL');
+        $srch->addDirectCondition("DATE_SUB(grpcls.grpcls_end_datetime, INTERVAL 5 MINUTE) < '" . date('Y-m-d H:i:s') . "'");
+        $srch->addCondition('zmusr.zmusr_zoom_type', '=', ZoomMeeting::USER_TYPE_LICENSED);
+        $srch->addGroupBy('grpcls_teacher_id');
+        $srch->setPageSize(20);
+        $srch->doNotCalculateRecords();
+        $resultSet = $srch->getResultSet();
+        while ($row = FatApp::getDb()->fetch($resultSet)) {
+            $row['zmusr_zoom_type'] = ZoomMeeting::USER_TYPE_BASIC;
+            if (!$meet->updateUser($row)) {
+                return false;
+            }
+        }
+        $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
+        $srch->addMultipleFields(['zmusr_user_id', 'zmusr_zoom_id', 'zmusr_zoom_type']);
+        $srch->joinTable(ZoomMeeting::DB_TBL_USERS, 'INNER JOIN', 'ordles_teacher_id = zmusr_user_id', 'zmusr');
+        $srch->addCondition('ordles.ordles_status', '=', Lesson::SCHEDULED);
+        $srch->addCondition('ordles.ordles_duration', '>', $freeMeetingDuration);
+        $srch->addCondition('ordles.ordles_metool_id', '=', $toolDetails['metool_id']);
+        $srch->addDirectCondition('ordles.ordles_teacher_starttime IS NOT NULL');
+        $srch->addDirectCondition("DATE_SUB(ordles.ordles_lesson_endtime, INTERVAL 5 MINUTE) < '" . date('Y-m-d H:i:s') . "'");
+        $srch->addCondition('zmusr.zmusr_zoom_type', '=', ZoomMeeting::USER_TYPE_LICENSED);
+        $srch->addGroupBy('ordles_teacher_id');
+        $srch->setPageSize(20);
+        $srch->doNotCalculateRecords();
+        $resultSet = $srch->getResultSet();
+        while ($row = FatApp::getDb()->fetch($resultSet)) {
+            $row['zmusr_zoom_type'] = ZoomMeeting::USER_TYPE_BASIC;
+            if (!$meet->updateUser($row)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

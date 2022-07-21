@@ -113,6 +113,16 @@ class AtomChat extends FatModel
         return $this->meeting['chat_iframe'];
     }
 
+    public function getFreeMeetingDuration() : int
+    {
+        return -1;
+    }
+
+    public function getLicensedCount(): int
+    {
+        return -1;
+    }
+
     /**
      * End Atom chat Meeting
      * 
