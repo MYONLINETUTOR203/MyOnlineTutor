@@ -346,6 +346,7 @@ class CourseSearch extends YocoachSearch
         $this->applyPrimaryConditions();
         $this->addCondition('course.course_id', '!=', $courseId);
         $this->addCondition('user_id', '=', $teacherId);
+        $this->addCondition('course.course_status', '=', Course::PUBLISHED);
         $this->applyOrderBy(0);
         $this->setPageSize(AppConstant::PAGESIZE);
         return $this->fetchAndFormat();
