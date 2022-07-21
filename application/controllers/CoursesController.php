@@ -386,6 +386,7 @@ class CoursesController extends MyAppController
         $srch->applyPrimaryConditions();
         $cnd = $srch->addCondition('teacher.user_first_name', 'LIKE', '%' . $keyword . '%');
         $cnd->attachCondition('teacher.user_last_name', 'LIKE', '%' . $keyword . '%', 'OR');
+        $cnd->attachCondition('mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)', 'LIKE', '%' . $keyword . '%', 'OR', true);
         $srch->addOrder('teacher.user_first_name', 'ASC');
         $srch->addMultiplefields(['teacher.user_id as id', 'CONCAT(teacher.user_first_name, " ", teacher.user_last_name) as name']);
         $srch->setPageSize(5);
