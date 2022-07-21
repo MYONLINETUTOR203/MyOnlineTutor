@@ -154,12 +154,16 @@ class CourseSearch extends YocoachSearch
         if (isset($post['course_level']) && count($post['course_level']) > 0) {
             $this->addCondition('course.course_level', 'IN', $post['course_level']);
         }
-        if (isset($post['course_clang_id'])) {
+        if (isset($post['course_clang_id']) && !empty($post['course_clang_id'])) {
             if (is_array($post['course_clang_id']) && count($post['course_clang_id']) > 0) {
                 $this->addCondition('course.course_clang_id', 'IN', $post['course_clang_id']);
             } elseif (!is_array($post['course_clang_id']) && $post['course_clang_id'] > 0) {
                 $this->addCondition('course.course_clang_id', '=', $post['course_clang_id']);
             }
+        } elseif (!empty($post['course_clang'])) {
+            $this->joinTable(CourseLanguage::DB_TBL_LANG, 'LEFT JOIN', 'clanglang.clanglang_clang_id = '
+            . ' course.course_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId, 'clanglang');
+            $this->addCondition('clanglang.clang_name', 'LIKE', '%' . trim($post['course_clang']) . '%');
         }
         $pricesql = [];
         if (isset($post['price']) && count($post['price'])) {
