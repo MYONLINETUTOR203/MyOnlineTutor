@@ -221,11 +221,12 @@ class Cart extends FatModel
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions([
             'course_status' => Course::PUBLISHED,
-            'course.course_id' => $courseId
+            'course_id' => $courseId
         ]);
         $srch->addMultipleFields([
             'crsdetail.course_title AS course_title',
             'course_clang_id',
+            'clang_identifier',
             'course_cate_id',
             'course_subcate_id',
             'course.course_price AS course_price',
