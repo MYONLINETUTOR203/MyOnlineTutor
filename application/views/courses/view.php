@@ -202,7 +202,7 @@ $levels = Course::getCourseLevels();
                                                     </span>
                                                 <?php } else { ?>
                                                     <h3 class="free-text color-red">
-                                                        <?php echo Label::getLabel('LBL_FREE');?>
+                                                        <?php echo Label::getLabel('LBL_FREE'); ?>
                                                     </h3>
                                                 <?php } ?>
                                                 <span class="course-pricing__price">
@@ -219,7 +219,7 @@ $levels = Course::getCourseLevels();
                                                     <a href="javascript:void(0);" onclick="cart.addCourse(<?php echo $course['course_id']; ?>)" class="btn btn--block btn--primary btn--large">
                                                         <?php echo Label::getLabel("LBL_ENROLL_NOW"); ?>
                                                     </a>
-                                                <?php } else {?>
+                                                <?php } else { ?>
                                                     <a href="javascript:void(0);" onclick="cart.addFreeCourse(<?php echo $course['course_id']; ?>)" class="btn btn--block btn--primary btn--large">
                                                         <?php echo Label::getLabel("LBL_ENROLL_NOW"); ?>
                                                     </a>
@@ -349,6 +349,14 @@ $levels = Course::getCourseLevels();
                                             </div>
                                         </div>
                                     <?php } ?>
+                                    <div class="content-group">
+                                        <h5 class="margin-bottom-6">
+                                            <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
+                                        </h5>
+                                        <div class="check-list check-list--half editor-content">
+                                            <?php echo CommonHelper::renderHtml($course['course_details']) ?>
+                                        </div>
+                                    </div>
                                     <?php if (count($course['course_tags']) > 0) { ?>
                                         <div class="content-group">
                                             <h5 class="margin-bottom-6">
