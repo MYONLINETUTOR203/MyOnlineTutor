@@ -232,12 +232,17 @@ class Cart extends FatModel
             'course.course_price AS course_price',
             'course.course_currency_id AS course_currency_id',
             'course.course_id',
+            'course.course_user_id',
             'crsdetail.course_srchtags',
         ]);
         $courses = $srch->fetchAndFormat();
         $course = current($courses);
         if (empty($course)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
+            return false;
+        }
+        if ($course['course_user_id'] == $this->userId) {
+            $this->error = Label::getLabel('LBL_YOU_ARE_NOT_ALLOWED_TO_ENROLL_TO_YOUR_OWN_COURSE');
             return false;
         }
         $course['total_amount'] = $course['course_price'];
