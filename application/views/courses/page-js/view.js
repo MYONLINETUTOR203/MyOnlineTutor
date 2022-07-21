@@ -32,7 +32,7 @@ $(document).ready(function () {
     };
     openMedia = function (rsrcId) {
         fcom.ajax(fcom.makeUrl('Courses', 'resource', [rsrcId]), '', function (resp) {
-            if ($('#facebox').length > 0) {
+            if ($('#facebox').length > 0 && $('#facebox').is(':visible')) {
                 $('#facebox .content').html(resp);
             } else {
                 $.facebox(resp);
