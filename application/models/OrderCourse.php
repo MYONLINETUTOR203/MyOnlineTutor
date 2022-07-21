@@ -72,7 +72,6 @@ class OrderCourse extends MyAppModel
         }
         /* validate course, order & user */
         $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
-        $srch->joinTable(CourseProgress::DB_TBL, 'INNER JOIN', 'crspro.crspro_ordcrs_id = ordcrs.ordcrs_id', 'crspro');
         $srch->addCondition('ordcrs.ordcrs_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('orders.order_user_id', '=', $this->userId);
         $srch->addCondition('crspro.crspro_completed', 'IS NOT', 'mysql_func_NULL', 'AND', true);
@@ -187,6 +186,16 @@ class OrderCourse extends MyAppModel
             if (!$this->save()) {
                 $db->rollbackTransaction();
                 $this->error = $this->getError();
+                return false;
+            }
+            /* update course progress status */
+            if (!FatApp::getDb()->updateFromArray(
+                CourseProgress::DB_TBL,
+                ['crspro_status' => CourseProgress::CANCELLED],
+                ['smt' => 'crspro_ordcrs_id = ?', 'vals' => [$this->getMainTableRecordId()]]
+            )) {
+                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED');
+                $db->rollbackTransaction();
                 return false;
             }
             if (!$this->refundToLearner($data)) {

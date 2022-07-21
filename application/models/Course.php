@@ -329,6 +329,16 @@ class Course extends MyAppModel
                 $order->error = $order->getError();
                 return false;
             }
+            /* update course progress status */
+            if (!FatApp::getDb()->updateFromArray(
+                CourseProgress::DB_TBL,
+                ['crspro_status' => CourseProgress::CANCELLED],
+                ['smt' => 'crspro_ordcrs_id = ?', 'vals' => [$request['ordcrs_id']]]
+            )) {
+                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED');
+                $db->rollbackTransaction();
+                return false;
+            }
             if (!$order->refundToLearner($orderData)) {
                 $db->rollbackTransaction();
                 return false;

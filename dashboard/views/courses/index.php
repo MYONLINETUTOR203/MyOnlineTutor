@@ -119,7 +119,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                         </div>
                     </div>
                 <?php } else {
-                    $status = $frm->getField('ordcrs_status');
+                    $status = $frm->getField('crspro_status');
                     ?>
                     <div class="col-md-4">
                         <div class="field-set">

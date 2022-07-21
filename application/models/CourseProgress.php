@@ -11,6 +11,11 @@ class CourseProgress extends MyAppModel
     const DB_TBL = 'tbl_course_progresses';
     const DB_TBL_PREFIX = 'crspro_';
 
+    const PENDING = 1;
+    const IN_PROGRESS = 2;
+    const COMPLETED = 3;
+    const CANCELLED = 4;
+
     /**
      * Initialize Course
      *
@@ -19,6 +24,23 @@ class CourseProgress extends MyAppModel
     public function __construct(int $id = 0)
     {
         parent::__construct(static::DB_TBL, 'crspro_id', $id);
+    }
+
+    /**
+     * Get Statuses
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getStatuses(int $key = null)
+    {
+        $arr = [
+            static::PENDING => Label::getLabel('LBL_PENDING'),
+            static::IN_PROGRESS => Label::getLabel('LBL_IN_PROGRESS'),
+            static::COMPLETED => Label::getLabel('LBL_COMPLETED'),
+            static::CANCELLED => Label::getLabel('LBL_CANCELLED'),
+        ];
+        return AppConstant::returArrValue($arr, $key);
     }
 
     /**
@@ -37,6 +59,7 @@ class CourseProgress extends MyAppModel
         $this->assignValues([
             'crspro_ordcrs_id' => $ordcrsId,
             'crspro_started' => date('Y-m-d H:i:s'),
+            'crspro_status' => static::IN_PROGRESS,
         ]);
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -139,15 +162,7 @@ class CourseProgress extends MyAppModel
         /* completed date will be updated only once(first time completed) */
         if (!$progress['crspro_completed'] && $percent == 100.00) {
             $this->setFldValue('crspro_completed', date('Y-m-d H:i:s'));
-            $order = new OrderCourse($progress['crspro_ordcrs_id']);
-            $order->assignValues([
-                'ordcrs_status' => OrderCourse::COMPLETED,
-                'ordcrs_updated' => date('Y-m-d H:i:s')
-            ]);
-            if (!$order->save()) {
-                $this->error = $order->getError();
-                return false;
-            }
+            $this->setFldValue('crspro_status', CourseProgress::COMPLETED);
         }
         if (!$this->save()) {
             $this->error = $this->getError();

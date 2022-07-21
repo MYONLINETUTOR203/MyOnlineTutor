@@ -27,6 +27,7 @@ class OrderCourseSearch extends YocoachSearch
         $this->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
         $this->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $this->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $this->joinTable(CourseProgress::DB_TBL, 'LEFT JOIN', 'crspro.crspro_ordcrs_id = ordcrs.ordcrs_id', 'crspro');
     }
 
     /**
@@ -77,6 +78,13 @@ class OrderCourseSearch extends YocoachSearch
         if (isset($post['course_type']) && $post['course_type'] > 0) {
             $this->addCondition('course.course_type', '=', $post['course_type']);
         }
+        if (isset($post['crspro_status']) && !empty($post['crspro_status'])) {
+            if ($post['crspro_status'] == CourseProgress::PENDING) {
+                $this->addCondition('crspro.crspro_id', 'IS', 'mysql_func_NULL', 'AND', true);
+            } else {
+                $this->addCondition('crspro.crspro_status', '=', $post['crspro_status']);
+            }
+        }
     }
 
     /**
@@ -124,6 +132,11 @@ class OrderCourseSearch extends YocoachSearch
             'orders.order_pmethod_id' => 'order_pmethod_id',
             'orders.order_addedon' => 'order_created',
             'orders.order_payment_status' => 'order_payment_status',
+            'crspro.crspro_completed' => 'crspro_completed',
+            'crspro.crspro_progress' => 'crspro_progress',
+            'crspro.crspro_ordcrs_id' => 'crspro_ordcrs_id',
+            'crspro.crspro_id' => 'crspro_id',
+            'IFNULL(crspro.crspro_status, ' . CourseProgress::PENDING . ')' => 'crspro_status'
         ];
     }
 
@@ -156,15 +169,8 @@ class OrderCourseSearch extends YocoachSearch
             return [];
         }
         $ordcrsIds = array_keys($rows);
-        $progress = $cancelReqs = [];
+        $cancelReqs = [];
         if (count($ordcrsIds) > 0) {
-            /* get progress data */
-            $srch = new SearchBase(CourseProgress::DB_TBL);
-            $srch->addDirectCondition('crspro_ordcrs_id IN (' . implode(', ', $ordcrsIds) . ')');
-            $srch->doNotCalculateRecords();
-            $srch->doNotLimitRecords();
-            $srch->addMultipleFields(['crspro_completed', 'crspro_progress', 'crspro_ordcrs_id', 'crspro_id']);
-            $progress = FatApp::getDb()->fetchAll($srch->getResultSet(), 'crspro_ordcrs_id');
             /* get cancellation request data */
             $srch = new SearchBase(Course::DB_TBL_REFUND_REQUEST);
             $srch->addDirectCondition('corere_ordcrs_id IN (' . implode(', ', $ordcrsIds) . ')');
@@ -178,11 +184,6 @@ class OrderCourseSearch extends YocoachSearch
         foreach ($rows as $key => $row) {
             $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
             $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
-            $row['crspro_completed'] = '';
-            if (isset($progress[$row['ordcrs_id']])) {
-                $row['crspro_completed'] = $progress[$row['ordcrs_id']]['crspro_completed'];
-                $row['crspro_progress'] = $progress[$row['ordcrs_id']]['crspro_progress'];
-            }
             if (isset($cancelReqs[$row['ordcrs_id']])) {
                 $row['corere_status'] = $cancelReqs[$row['ordcrs_id']]['corere_status'];
             }
@@ -193,7 +194,6 @@ class OrderCourseSearch extends YocoachSearch
             $row['can_rate_course'] = $this->canRate($row, $this->userType);
             $row['can_retake_course'] = $this->canRetake($row);
             $row['can_download_certificate'] = $this->canDownloadCertificate($row);
-            $row['crspro_id'] = ($progress[$row['ordcrs_id']]['crspro_id']) ?? 0;
             $rows[$key] = $row;
         }
         return $rows;
@@ -298,6 +298,9 @@ class OrderCourseSearch extends YocoachSearch
             return false;
         }
         if ($certificate['ordcrs_status'] != OrderCourse::COMPLETED) {
+            return false;
+        }
+        if (!$certificate['crspro_completed']) {
             return false;
         }
         return true;

@@ -1170,3 +1170,5 @@ ALTER TABLE `tbl_course_details` ADD `course_srchtags` JSON NULL AFTER `course_c
 DROP TABLE ` tbl_courses_tags`;
 
 UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\r\n    \"heading\": \"Certificate Of Completion\",\r\n    \"learner\": \"{learner-name}\",\r\n    \"trainer\": \"{teacher-name}\",\r\n    \"content_part_1\": \"This is to certify that\",\r\n    \"content_part_2\": \"has successfully completed \\\"{course-name}\\\" online course on {course-completed-date}.\",\r\n    \"certificate_number\": \"{certificate-number}\"\r\n}' WHERE `tbl_certificate_templates`.`certpl_id` = 2; UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\r\n    \"heading\": \"شهادة إتمام\",\r\n    \"learner\": \"{learner-name}\",\r\n    \"trainer\": \"{teacher-name}\",\r\n    \"content_part_1\": \"هذا لتاكيد ان\",\r\n    \"content_part_2\": \"أكمل بنجاح الدورة التدريبية عبر الإنترنت \\\"{course-name}\\\" في {course-completed-date}.\",\r\n    \"certificate_number\": \"{certificate-number}\"\r\n}' WHERE `tbl_certificate_templates`.`certpl_id` = 4;
+
+ALTER TABLE `tbl_course_progresses` ADD `crspro_status` TINYINT(1) NOT NULL AFTER `crspro_started`;

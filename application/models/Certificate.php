@@ -91,7 +91,6 @@ class Certificate extends MyAppModel
     public function getDataForCertificate(int $ordcrsId)
     {
         $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
-        $srch->joinTable(CourseProgress::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_id = crspro.crspro_ordcrs_id', 'crspro');
         $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
         $srch->joinTable(
             CourseLanguage::DB_TBL_LANG,

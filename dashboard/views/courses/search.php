@@ -70,7 +70,7 @@ $requestStatuses = Course::getRefundStatuses();
                         if ($siteUserType == User::TEACHER) {
                             echo $courseStatuses[$course['course_status']];
                         } else {
-                            echo $orderStatuses[$course['ordcrs_status']];
+                            echo $orderStatuses[$course['crspro_status']];
                         }
                         ?>
                     </span>

@@ -75,7 +75,7 @@ class CoursesController extends DashboardController
             'recordCount' => $srch->recordCount(),
             'courseStatuses' => Course::getStatuses(),
             'courseTypes' => Course::getTypes(),
-            'orderStatuses' => OrderCourse::getStatuses(),
+            'orderStatuses' => CourseProgress::getStatuses(),
         ]);
         $this->_template->render(false, false);
     }
@@ -657,7 +657,7 @@ class CoursesController extends DashboardController
         if ($this->siteUserType == User::TEACHER) {
             $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses());
         } else {
-            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ordcrs_status', OrderCourse::getStatuses());
+            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'crspro_status', OrderCourse::getStatuses());
         }
         $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes());
         $categoryList = Category::getCategoriesByParentId($this->siteLangId);
