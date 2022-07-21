@@ -126,7 +126,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                                 <svg class="icon icon--issue icon--small margin-right-2">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#plus'; ?>"></use>
                                 </svg>
-                                <?php echo Label::getLabel('LBL_ADD_MONEY_TO_WALLET'); ?>
+                                <?php echo Label::getLabel('LBL_RECHARGE_WALLET'); ?>
                             </a>
                             <a href="javascript:void(0);" onclick="redeemGiftcardForm();" class="btn btn--transparent color-primary margin-1">
                                 <svg class="icon icon--gift margin-right-1">

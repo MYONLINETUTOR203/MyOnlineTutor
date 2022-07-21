@@ -134,7 +134,7 @@ class WalletController extends DashboardController
         $fld = $frm->addRequiredField($label, 'amount', '', ['placeholder' => $placeHolder]);
         $fld->requirements()->setFloatPositive();
         $fld->requirements()->setRange(FatApp::getConfig('MINIMUM_WALLET_RECHARGE_AMOUNT'), 999999);
-        $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_ADD_MONEY_TO_WALLET'));
+        $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SUBMIT'));
         return $frm;
     }
 
