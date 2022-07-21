@@ -222,6 +222,11 @@ class CartController extends LoggedUserController
         if (empty($courseId)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        /* check course already booked */
+        $course = CourseSearch::getPurchasedCourses($this->siteUserId, [$courseId]);
+        if (!empty($course)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_YOU_HAVE_ALREADY_PURCHASED_THIS_COURSE'));
+        }
         $cart = new Cart($this->siteUserId, $this->siteLangId);
         if (!$cart->addCourse($courseId)) {
             FatUtility::dieJsonError($cart->getError());

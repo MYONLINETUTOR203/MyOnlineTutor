@@ -429,7 +429,7 @@ class CourseSearch extends YocoachSearch
      * @param array $courseIds
      * @return boolean
      */
-    private function getPurchasedCourses(int $userId, array $courseIds)
+    public static function getPurchasedCourses(int $userId, array $courseIds)
     {
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordcrs.ordcrs_order_id', 'orders');
