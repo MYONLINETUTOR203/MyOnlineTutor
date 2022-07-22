@@ -52,6 +52,10 @@ class OrderCourseSearch extends YocoachSearch
                 }
                 $cond->attachCondition($fullName, 'LIKE', '%' . $keyword . '%', 'OR', true);
             }
+
+            $orderId = FatUtility::int(str_replace("O", '', strtoupper($keyword)));
+            $cond->attachCondition('ordcrs.ordcrs_order_id', '=', $orderId);
+            $cond->attachCondition('ordcrs.ordcrs_id', '=', $orderId);
         }
 
         if (isset($post['order_payment_status']) && $post['order_payment_status'] !== '') {
