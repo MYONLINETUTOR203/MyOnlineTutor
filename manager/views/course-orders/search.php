@@ -10,7 +10,7 @@ $arr_flds = [
     'ordcrs_amount' => Label::getLabel('LBL_TOTAL'),
     'order_payment_status' => Label::getLabel('LBL_PAYMENT'),
     'order_pmethod_id' => Label::getLabel('LBL_PAY_METHOD'),
-    'order_created' => Label::getLabel('LBL_DATE'),
+    'order_created' => Label::getLabel('LBL_DATETIME'),
     'ordcrs_status' => Label::getLabel('LBL_STATUS'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
@@ -67,6 +67,9 @@ foreach ($arrListing as $row) {
                 break;
             case 'ordcrs_status':
                 $td->appendElement('plaintext', [], OrderCourse::getStatuses($row[$key]), true);
+                break;
+            case 'order_created':
+                $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]));
                 break;
             default:
                 $td->appendElement('plaintext', [], $row[$key], true);
