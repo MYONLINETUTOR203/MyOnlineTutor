@@ -30,6 +30,9 @@ foreach ($arrListing as $sn => $row) {
             case 'corere_status':
                 $td->appendElement('plaintext', [], $requestStatus[$row['corere_status']]);
                 break;
+            case 'corere_created':
+                $td->appendElement('plaintext', [], MyDate::formatDate($row['corere_created']));
+                break;
             case 'action':
                 $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
                 $li = $ul->appendElement("li", ['class' => 'droplink']);
