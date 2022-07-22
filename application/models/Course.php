@@ -68,10 +68,15 @@ class Course extends MyAppModel
         if ($this->getMainTableRecordId() > 0) {
             $course = static::getAttributesById($this->getMainTableRecordId(), [
                 'course_status',
+                'course_active',
                 'course_user_id'
             ]);
             if (!$course) {
                 $this->error = Label::getLabel('LBL_COURSE_NOT_FOUND');
+                return false;
+            }
+            if ($course['course_active'] == AppConstant::INACTIVE) {
+                $this->error = Label::getLabel('LBL_COURSE_IS_IN_INACTIVE_STATE');
                 return false;
             }
             if ($course['course_user_id'] != $this->userId) {

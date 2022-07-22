@@ -1173,3 +1173,5 @@ UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\r\n    \"heading\": \"
 
 ALTER TABLE `tbl_course_progresses` ADD `crspro_status` TINYINT(1) NOT NULL AFTER `crspro_started`;
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.0.20220721' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+ALTER TABLE `tbl_courses` ADD `course_active` TINYINT(1) NOT NULL AFTER `course_status`;

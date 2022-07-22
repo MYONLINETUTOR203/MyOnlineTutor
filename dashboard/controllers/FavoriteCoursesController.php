@@ -46,6 +46,7 @@ class FavoriteCoursesController extends DashboardController
             'crsfav'
         );
         $srch->applyPrimaryConditions();
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('crsfav.ufc_user_id', '=', $this->siteUserId);
         $srch->addMultipleFields([
             'course.course_id', 'course_type', 

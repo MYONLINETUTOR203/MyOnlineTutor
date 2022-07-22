@@ -63,4 +63,15 @@ $(document).ready(function () {
             $("#subCategories").html(res);
         }, { async : false });
     };
+    updateStatus = function (id, status) {
+        if (confirm(langLbl.confirmUpdateStatus)) {
+            fcom.updateWithAjax(fcom.makeUrl('Courses', 'updateStatus', [id, status]), '', function (res) {
+                if ($('form[name="frmPaging"] input[name="page"]').length > 0) {
+                    search(document.frmPaging);
+                } else {
+                    search(document.frmSearch);
+                }
+            });
+        }
+    };
 })();

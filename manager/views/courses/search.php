@@ -9,6 +9,7 @@ $arr_flds = [
     'subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'course_created' => Label::getLabel('LBL_PUBLISHED_ON'),
     'course_status' => Label::getLabel('LBL_STATUS'),
+    'course_active' => Label::getLabel('LBL_ACTIVE'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive table--hovered']);
@@ -46,6 +47,17 @@ foreach ($arrListing as $row) {
                 break;
             case 'course_status':
                 $td->appendElement('plaintext', [], Course::getStatuses($row[$key]), true);
+                break;
+            case 'course_active':
+                $active = "active";
+                if ($row['course_active'] == AppConstant::NO) {
+                    $active = 'inactive';
+                }
+                $str = '<label class="statustab ' . $active . '" ' . (($canEdit) ? 'onclick="updateStatus(\'' . $row['course_id'] . '\', \'' . $row['course_active'] . '\')"' : "") . '>
+				  <span data-off="' . Label::getLabel('LBL_Active') . '" data-on="' . Label::getLabel('LBL_Inactive') . '" class="switch-labels "></span>
+				  <span class="switch-handles"></span>
+				</label>';
+                $td->appendElement('plaintext', [], $str, true);
                 break;
             default:
                 $td->appendElement('plaintext', [], $row[$key], true);

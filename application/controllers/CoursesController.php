@@ -47,6 +47,7 @@ class CoursesController extends MyAppController
         $srch->applyOrderBy($posts['price_sorting']);
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $courses = $srch->fetchAndFormat();
         $recordCount = $srch->recordCount();
         /* checkout form */
@@ -88,6 +89,7 @@ class CoursesController extends MyAppController
             'userlang.userlang_user_id = teacher.user_id AND userlang.userlang_lang_id = ' . $this->siteLangId,
             'userlang'
         );
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->setPageSize(1);
         $courses = $srch->fetchAndFormat(true);
         if (empty($courses)) {

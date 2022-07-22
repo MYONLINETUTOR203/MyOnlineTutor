@@ -74,17 +74,10 @@ class CourseSearch extends YocoachSearch
             'course.course_id' => 'course_id',
             'course.course_user_id' => 'course_teacher_id',
             'course.course_slug' => 'course_slug',
-            'crsdetail.course_title' => 'course_title',
-            'crsdetail.course_subtitle' => 'course_subtitle',
-            'crsdetail.course_srchtags' => 'course_srchtags',
-            'teacher.user_id' => 'teacher_id',
-            'teacher.user_first_name' => 'teacher_first_name',
-            'teacher.user_last_name' => 'teacher_last_name',
-            'teacher.user_username' => 'teacher_username',
             'course.course_status' => 'course_status',
+            'course.course_active' => 'course_active',
             'course.course_cate_id' => 'course_cate_id',
             'course.course_subcate_id' => 'course_subcate_id',
-            'clang.clang_identifier' => 'clang_identifier',
             'course.course_clang_id' => 'course_clang_id',
             'course.course_price' => 'course_price',
             'course.course_type' => 'course_type',
@@ -98,9 +91,17 @@ class CourseSearch extends YocoachSearch
             'course.course_certificate' => 'course_certificate',
             'course.course_level' => 'course_level',
             'course.course_currency_id' => 'course_currency_id',
+            'crsdetail.course_title' => 'course_title',
+            'crsdetail.course_subtitle' => 'course_subtitle',
+            'crsdetail.course_srchtags' => 'course_srchtags',
             'crsdetail.course_details' => 'course_details',
             'crsdetail.course_welcome' => 'course_welcome',
             'crsdetail.course_congrats' => 'course_congrats',
+            'teacher.user_id' => 'teacher_id',
+            'teacher.user_first_name' => 'teacher_first_name',
+            'teacher.user_last_name' => 'teacher_last_name',
+            'teacher.user_username' => 'teacher_username',
+            'clang.clang_identifier' => 'clang_identifier',
         ];
     }
 
@@ -351,6 +352,7 @@ class CourseSearch extends YocoachSearch
         $this->addCondition('course.course_id', '!=', $courseId);
         $this->addCondition('user_id', '=', $teacherId);
         $this->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $this->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $this->applyOrderBy(0);
         $this->setPageSize(AppConstant::PAGESIZE);
         return $this->fetchAndFormat();

@@ -61,6 +61,7 @@ class CoursesController extends AdminBaseController
             'pageSize' => $post['pagesize'],
             'pageCount' => $srch->pages(),
             'recordCount' => $srch->recordCount(),
+            'canEdit' => $this->objPrivilege->canEditCourses(true),
         ]);
         $this->_template->render(false, false);
     }
@@ -140,6 +141,27 @@ class CoursesController extends AdminBaseController
         $srch->setPageSize(20);
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'clang_id');
         FatUtility::dieJsonSuccess(['data' => $data]);
+    }
+
+    /**
+     * Update status
+     *
+     * @param int $courseId
+     * @param int $status
+     * @return bool
+     */
+    public function updateStatus(int $courseId, int $status)
+    {
+        $this->objPrivilege->canEditCourses();
+        $courseId = FatUtility::int($courseId);
+        $status = FatUtility::int($status);
+        $status = ($status == AppConstant::YES) ? AppConstant::NO : AppConstant::YES;
+        $course = new Course($courseId);
+        $course->setFldValue('course_active', $status);
+        if (!$course->save()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_STATUS_UPDATED_SUCCESSFULLY'));
     }
 
     /**

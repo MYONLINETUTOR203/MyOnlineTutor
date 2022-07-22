@@ -37,7 +37,7 @@ $requestStatuses = Course::getRefundStatuses();
                                 }
                                 ?>
                             </strong>
-                            </span>
+                        </span>
                         <span class="course-stats__item">
                             <?php echo Label::getLabel('LBL_LECTURES') ?>
                             <strong><?php echo $course['course_lectures'] ?></strong>
@@ -65,7 +65,7 @@ $requestStatuses = Course::getRefundStatuses();
                             </div>
                         </div>
                     </div>
-                    <span class="card-landscape__status badge color-secondary badge--curve badge--small margin-left-0">
+                    <span class="card-landscape__status badge color-primary badge--curve badge--small margin-left-0">
                         <?php
                         if ($siteUserType == User::TEACHER) {
                             echo $courseStatuses[$course['course_status']];
@@ -74,10 +74,17 @@ $requestStatuses = Course::getRefundStatuses();
                         }
                         ?>
                     </span>
-                    <?php if (isset($course['corere_status'])) { ?>
+                    <?php if ($siteUserType == User::TEACHER) { ?>
                         <span class="card-landscape__status badge color-red badge--curve badge--small margin-left-0">
-                            <?php echo $requestStatuses[$course['corere_status']]; ?>
+                            <?php echo AppConstant::getActiveArr($course['course_active']); ?>
                         </span>
+                    <?php } ?>
+                    <?php if ($siteUserType == User::LEARNER) { ?>
+                        <?php if (isset($course['corere_status'])) { ?>
+                            <span class="card-landscape__status badge color-red badge--curve badge--small margin-left-0">
+                                <?php echo $requestStatuses[$course['corere_status']]; ?>
+                            </span>
+                        <?php } ?>
                     <?php } ?>
                 </div>
             </div>

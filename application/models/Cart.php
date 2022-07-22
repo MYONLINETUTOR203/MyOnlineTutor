@@ -235,6 +235,7 @@ class Cart extends FatModel
             'course.course_user_id',
             'crsdetail.course_srchtags',
         ]);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $courses = $srch->fetchAndFormat();
         $course = current($courses);
         if (empty($course)) {
