@@ -59,7 +59,7 @@ class CourseRefundRequestsController extends AdminBaseController
         }
 
         $srch = new CourseRefundRequestSearch($this->siteLangId, $this->siteAdminId, User::SUPPORT);
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = u.user_id', 'u');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'corere.corere_user_id = u.user_id', 'u');
         $srch->addSearchListingFields();
         $srch->applySearchConditions($post);
         $srch->setPageNumber($post['page']);
