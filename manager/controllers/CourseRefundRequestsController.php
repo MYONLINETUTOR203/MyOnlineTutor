@@ -123,6 +123,7 @@ class CourseRefundRequestsController extends AdminBaseController
         $srch = new SearchBase(Course::DB_TBL_REFUND_REQUEST, 'corere');
         $srch->joinTable(CourseProgress::DB_TBL, 'LEFT JOIN', 'crspro.crspro_ordcrs_id = corere.corere_ordcrs_id', 'crspro');
         $srch->doNotCalculateRecords();
+        $srch->addCondition('corere_id', '=', $requestId);
         $srch->setPageSize(1);
         $srch->addFld('IFNULL(crspro_progress, 0) as crspro_progress');
         if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
