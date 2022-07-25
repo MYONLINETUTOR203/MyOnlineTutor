@@ -398,6 +398,7 @@ class Course extends MyAppModel
         $this->setFldValue('course_user_id', $this->userId);
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_status', Course::DRAFTED);
+        $this->setFldValue('course_active', AppConstant::ACTIVE);
         $this->assignValues($data);
         if (!$this->save()) {
             $db->rollbackTransaction();
