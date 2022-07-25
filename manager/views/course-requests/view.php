@@ -90,11 +90,11 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_LAST_NAME'); ?></dt>
-                                <dd><?php echo $requestData['user_last_name']; ?></dd>
+                                <dd><?php echo empty($requestData['user_last_name']) ? '-' : $requestData['user_last_name']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_GENDER'); ?></dt>
-                                <dd><?php echo User::getGenderTypes()[$requestData['user_gender']]; ?></dd>
+                                <dd><?php echo !empty($requestData['user_gender']) ? User::getGenderTypes()[$requestData['user_gender']] : '-'; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_EMAIL'); ?></dt>
