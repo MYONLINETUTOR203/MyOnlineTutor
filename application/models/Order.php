@@ -708,6 +708,11 @@ class Order extends MyAppModel
                 $this->error = $course->getError();
                 return false;
             }
+            $progress = new CourseProgress();
+            if (!$progress->setup($course->getId())) {
+                $this->error = $progress->getError();
+                return false;
+            }
         }
         return true;
     }

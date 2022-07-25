@@ -83,11 +83,7 @@ class OrderCourseSearch extends YocoachSearch
             $this->addCondition('course.course_type', '=', $post['course_type']);
         }
         if (isset($post['crspro_status']) && !empty($post['crspro_status'])) {
-            if ($post['crspro_status'] == CourseProgress::PENDING) {
-                $this->addCondition('crspro.crspro_id', 'IS', 'mysql_func_NULL', 'AND', true);
-            } else {
-                $this->addCondition('crspro.crspro_status', '=', $post['crspro_status']);
-            }
+            $this->addCondition('crspro.crspro_status', '=', $post['crspro_status']);
         }
     }
 
@@ -140,7 +136,7 @@ class OrderCourseSearch extends YocoachSearch
             'crspro.crspro_progress' => 'crspro_progress',
             'crspro.crspro_ordcrs_id' => 'crspro_ordcrs_id',
             'crspro.crspro_id' => 'crspro_id',
-            'IFNULL(crspro.crspro_status, ' . CourseProgress::PENDING . ')' => 'crspro_status'
+            'crspro.crspro_status' => 'crspro_status'
         ];
     }
 

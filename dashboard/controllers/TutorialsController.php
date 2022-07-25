@@ -36,14 +36,15 @@ class TutorialsController extends DashboardController
         $srch->addFld('crspro_id');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        if ($data = FatApp::getDb()->fetch($srch->getResultSet())) {
-            FatApp::redirectUser(MyUtility::generateUrl('Tutorials', 'index', [$data['crspro_id']]));
-        }
-        $progress = new CourseProgress();
-        if (!$progress->setup($ordcrsId, $this->siteUserId)) {
+        if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
             FatUtility::exitWithErrorCode(404);
         }
-        FatApp::redirectUser(MyUtility::generateUrl('Tutorials', 'index', [$progress->getMainTableRecordId()]));
+        $progress = new CourseProgress($data['crspro_id']);
+        $progress->assignValues(['crspro_started' => date('Y-m-d'), 'crspro_status' => CourseProgress::IN_PROGRESS]);
+        if (!$progress->save()) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        FatApp::redirectUser(MyUtility::generateUrl('Tutorials', 'index', [$data['crspro_id']]));
     }
 
     /**

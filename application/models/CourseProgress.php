@@ -58,8 +58,7 @@ class CourseProgress extends MyAppModel
         }
         $this->assignValues([
             'crspro_ordcrs_id' => $ordcrsId,
-            'crspro_started' => date('Y-m-d H:i:s'),
-            'crspro_status' => static::IN_PROGRESS,
+            'crspro_status' => static::PENDING,
         ]);
         if (!$this->save()) {
             $this->error = $this->getError();
