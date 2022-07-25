@@ -143,17 +143,19 @@ $levels = Course::getCourseLevels();
                                                     <?php echo Label::getLabel("LBL_LECTURES") ?>
                                                 </span>
                                             </li>
-                                            <li class="course-options__item">
-                                                <span class="course-options__item-media">
-                                                    <svg class="icon icon--level">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-assets">
-                                                        </use>
-                                                    </svg>
-                                                </span>
-                                                <span class="course-options__item-label">
-                                                    <strong><?php echo $totalResources; ?></strong> <?php echo Label::getLabel("LBL_DOWNLOADABLE_ASSETS") ?>
-                                                </span>
-                                            </li>
+                                            <?php if ($totalResources > 0) { ?>
+                                                <li class="course-options__item">
+                                                    <span class="course-options__item-media">
+                                                        <svg class="icon icon--level">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-assets">
+                                                            </use>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="course-options__item-label">
+                                                        <strong><?php echo $totalResources; ?></strong> <?php echo Label::getLabel("LBL_DOWNLOADABLE_ASSETS") ?>
+                                                    </span>
+                                                </li>
+                                            <?php } ?>
                                             <li class="course-options__item">
                                                 <span class="course-options__item-media">
                                                     <svg class="icon icon--level">
