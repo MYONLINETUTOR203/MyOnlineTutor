@@ -14,7 +14,7 @@ $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arrFlds as $val) {
     $e = $th->appendElement('th', [], $val);
 }
-$srNo = 0;
+$srNo = $page == 1 ? 0 : $pageSize * ($page - 1);
 foreach ($arrListing as $sn => $row) {
     $srNo++;
     $tr = $tbl->appendElement('tr');
@@ -60,5 +60,5 @@ if (count($arrListing) == 0) {
 }
 echo $tbl->getHtml();
 echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmCommPaging']);
-$pagingArr = ['pageCount' => $pageCount, 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount];
+$pagingArr = ['pageCount' => ceil($recordCount / $pageSize), 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount];
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);

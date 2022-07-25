@@ -73,7 +73,6 @@ class CourseRefundRequestsController extends AdminBaseController
             'page' => $post['page'],
             'postedData' => $post,
             'pageSize' => $post['pagesize'],
-            'pageCount' => $srch->pages(),
             'recordCount' => $srch->recordCount(),
             'canEdit' => $this->objPrivilege->canEditCourseRefundRequests(true),
         ]);
