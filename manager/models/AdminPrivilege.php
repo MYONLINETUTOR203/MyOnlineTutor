@@ -196,6 +196,7 @@ class AdminPrivilege
             static::SECTION_COURSE_REFUND_REQUESTS => Label::getLabel('MSG_COURSE_REFUND_REQUESTS', $langId),
             static::SECTION_COURSE_REVIEWS => Label::getLabel('MSG_COURSE_REVIEWS', $langId),
             static::SECTION_COURSE_LANGUAGES => Label::getLabel('MSG_COURSE_LANGUAGES', $langId),
+            static::SECTION_COURSES_ORDERS => Label::getLabel('MSG_COURSE_ORDERS', $langId),
         ];
         return $arr;
     }
