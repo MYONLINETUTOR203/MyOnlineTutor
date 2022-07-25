@@ -351,7 +351,7 @@ class Course extends MyAppModel
         }
         $request['corere_remark'] = $data['corere_remark'];
         $request = array_merge($request, $refundData);
-        $this->sendRefundStatusMailToLearner($request);
+        static::sendRefundStatusMailToLearner($request);
         $db->commitTransaction();
         return true;
     }
@@ -362,7 +362,7 @@ class Course extends MyAppModel
      * @param array $data
      * @return void
      */
-    private function sendRefundStatusMailToLearner(array $data)
+    public static function sendRefundStatusMailToLearner(array $data)
     {
         $mail = new FatMailer($data['user_lang_id'], 'course_refund_update_email_to_learner');
         $vars = [

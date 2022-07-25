@@ -122,6 +122,7 @@ class OrderCourse extends MyAppModel
             'ordcrs.ordcrs_id',
             'ordcrs.ordcrs_discount',
             'course.course_id',
+            'crsdetail.course_title',
             'orders.order_id',
         ]);
         if (!$course = FatApp::getDb()->fetch($srch->getResultSet())) {
@@ -202,6 +203,15 @@ class OrderCourse extends MyAppModel
                 $db->rollbackTransaction();
                 return false;
             }
+            $request = [
+                'corere_remark' => '',
+                'corere_status' => Course::REFUND_APPROVED,
+                'course_title' => $data['course_title']
+            ];
+            $user = User::getAttributesById($this->userId, ['user_lang_id', 'user_first_name', 'user_last_name', 
+            'user_email']);
+            $request = array_merge($request, $user);
+            Course::sendRefundStatusMailToLearner($request);
         }
         $db->commitTransaction();
         return true;
