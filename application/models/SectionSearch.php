@@ -98,6 +98,7 @@ class SectionSearch extends YocoachSearch
             $srch = new LectureSearch();
             $srch->applyPrimaryConditions();
             $srch->addSearchListingFields();
+            $srch->addFld('0 AS total_resources');
             $srch->addDirectCondition('lecture_section_id IN (' . implode(',', $sectionIds) . ')');
             $srch->addOrder('lecture_order', 'ASC');
             $lectures = $srch->fetchAndFormat();
@@ -124,10 +125,16 @@ class SectionSearch extends YocoachSearch
         if (count($resources) > 0) {
             foreach ($resources as $resource) {
                 $lectures[$resource['lecsrc_lecture_id']]['resources'][] = $resource;
+                $lectures[$resource['lecsrc_lecture_id']]['total_resources'] += 1;
             }
         }
         foreach ($lectures as $lecture) {
             $rows[$lecture['lecture_section_id']]['lectures'][] = $lecture;
+            if (isset($rows[$lecture['lecture_section_id']]['total_resources'])) {
+                $rows[$lecture['lecture_section_id']]['total_resources'] += $lecture['total_resources'];
+            } else {
+                $rows[$lecture['lecture_section_id']]['total_resources'] = $lecture['total_resources'];
+            }
         }
         return $rows;
     }

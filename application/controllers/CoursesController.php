@@ -127,6 +127,7 @@ class CoursesController extends MyAppController
             'intendedLearners' => $intendedLearners,
             'sections' => $curriculum['sections'],
             'videos' => $curriculum['videos'],
+            'totalResources' => $curriculum['totalResources'],
             'reviews' => $reviews,
             'canRate' => $canRate,
             'checkoutForm' => $checkoutForm,
@@ -183,6 +184,7 @@ class CoursesController extends MyAppController
         return [
             'videos' => $videos,
             'sections' => $sections,
+            'totalResources' => array_sum(array_column($sections, 'total_resources'))
         ];
     }
 

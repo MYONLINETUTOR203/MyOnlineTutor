@@ -151,7 +151,7 @@ $levels = Course::getCourseLevels();
                                                     </svg>
                                                 </span>
                                                 <span class="course-options__item-label">
-                                                    <strong>12</strong> downloadable assets
+                                                    <strong><?php echo $totalResources; ?></strong> <?php echo Label::getLabel("LBL_DOWNLOADABLE_ASSETS") ?>
                                                 </span>
                                             </li>
                                             <li class="course-options__item">
