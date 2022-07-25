@@ -124,6 +124,11 @@ class OrderCourse extends MyAppModel
             'course.course_id',
             'crsdetail.course_title',
             'orders.order_id',
+            'learner.user_first_name as learner_first_name',
+            'learner.user_last_name as learner_last_name',
+            'teacher.user_first_name as teacher_first_name',
+            'teacher.user_last_name as teacher_last_name',
+            'crspro_progress'
         ]);
         if (!$course = FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_FOUND');
@@ -212,9 +217,33 @@ class OrderCourse extends MyAppModel
             'user_email']);
             $request = array_merge($request, $user);
             Course::sendRefundStatusMailToLearner($request);
+        } else {
+            $data['comment'] = $comment;
+            $this->sendCancelRequestToAdmin($data);
         }
         $db->commitTransaction();
         return true;
+    }
+
+    /**
+     * Course Cancellation Request Email to Admin
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function sendCancelRequestToAdmin($data)
+    {
+        $mail = new FatMailer(MyUtility::getSiteLangId(), 'course_cancellation_request_email_to_admin');
+        $vars = [
+            '{course_title}' => ucwords($data['course_title']),
+            '{course_price}' => MyUtility::formatMoney($data['ordcrs_amount'] - $data['ordcrs_discount']),
+            '{teacher_full_name}' => ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
+            '{learner_full_name}' => ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
+            '{progress_percent}' => $data['crspro_progress'],
+            '{learner_comment}' => $data['comment'],
+        ];
+        $mail->setVariables($vars);
+        $mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')]);
     }
 
     /**
