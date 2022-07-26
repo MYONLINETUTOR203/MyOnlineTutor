@@ -578,11 +578,14 @@ class OrderPayment extends FatModel
     {
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'course.course_id = crsdetail.course_id', 'crsdetail');
         $srch->addCondition('ordcrs_order_id', '=', $this->order['order_id']);
         $srch->addMultipleFields([
+            'ordcrs_id',
             'ordcrs_course_id',
-            'course_user_id'
+            'course_user_id',
+            'course_title',
+            'course_price'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -603,6 +606,21 @@ class OrderPayment extends FatModel
             $this->error = $teacherStats->getError();
             return false;
         }
+        $learner = User::getAttributesById($this->order['order_user_id'], ['user_lang_id', 'user_first_name', 'user_last_name', 'user_email']);
+        $teacher = User::getAttributesById($orderCourse['course_user_id'], ['user_first_name', 'user_last_name']);
+        $vars = [
+            '{learner_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
+            '{teacher_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
+            '{course_title}' => ucfirst($orderCourse['course_title']),
+            '{course_price}' => MyUtility::formatMoney($orderCourse['course_price']),
+            '{course_link}' => MyUtility::generateFullUrl('Tutorials', 'start', [$orderCourse['ordcrs_id']], CONF_WEBROOT_DASHBOARD)
+        ];
+        $mail = new FatMailer($learner['user_lang_id'], 'course_booking_email_to_learner');
+        $mail->setVariables($vars);
+        $mail->sendMail([$learner['user_email']]);
+        $mail = new FatMailer(MyUtility::getSiteLangId(), 'course_booking_email_to_admin');
+        $mail->setVariables($vars);
+        $mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')]);
         return true;
     }
 
