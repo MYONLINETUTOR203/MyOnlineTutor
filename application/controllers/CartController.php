@@ -352,8 +352,7 @@ class CartController extends LoggedUserController
         if ($teacher['user_trial_enabled'] == AppConstant::NO) {
             FatUtility::dieJsonError(Label::getLabel('LBL_FREE_TRIAL_IS_DISABLED_BY_TEACHER'));
         }
-        $lesson = new Lesson(0, $this->siteUserId, $this->siteUserType);
-        if ($lesson->isFreeTrailAvailed($teacher['user_id'])) {
+        if (Lesson::isTrailAvailed($this->siteUserId, $teacher['user_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_YOU_ALLREADY_AVAILED_FREE_TRIAL_LESSON'));
         }
         $teacher['user_country_code'] = Country::getAttributesById($teacher['user_country_id'], 'country_code');
