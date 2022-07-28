@@ -580,7 +580,7 @@ class Cart extends FatModel
         }
         foreach ($this->items[static::PACKGE] as $package) {
             foreach ($package['classes'] as $class) {
-                array_push($starttimes, $class['grpcls_start_datetime']);
+                array_push($starttimes, MyDate::formatToSystemTimezone($class['grpcls_start_datetime']));
             }
         }
         $starttimes = array_filter($starttimes);

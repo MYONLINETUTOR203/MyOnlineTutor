@@ -601,8 +601,8 @@ class MyDate extends FatDate
     public static function getSubscriptionDates(int $days, string $timezone = NULL): array
     {
         $timezone = (is_null($timezone)) ? MyUtility::getSiteTimezone() : $timezone;
-        $sDateTime = new dateTime('now', new DateTimeZone($timezone));
-        $eDateTime = new dateTime('now', new DateTimeZone($timezone));
+        $sDateTime = new DateTime('now', new DateTimeZone($timezone));
+        $eDateTime = new DateTime('now', new DateTimeZone($timezone));
         $sDateTime->modify('today');
         $eDateTime->modify('today +' . $days . ' days midnight');
         return [
