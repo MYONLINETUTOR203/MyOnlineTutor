@@ -42,7 +42,6 @@ class CouponsController extends AdminBaseController
         $srch = new SearchBase(Coupon::DB_TBL, 'coupon');
         $srch->joinTable(Coupon::DB_TBL_LANG, 'LEFT JOIN', 'couponlang.couponlang_coupon_id = coupon.coupon_id AND couponlang.couponlang_lang_id = ' . $this->siteLangId, 'couponlang');
         $srch->addMultipleFields(['coupon_id', 'coupon_code', 'coupon_active', 'coupon_discount_type', 'coupon_discount_value', 'coupon_start_date', 'coupon_end_date', 'IFNULL(couponlang.coupon_title, coupon_identifier) as coupon_title']);
-        $srch->addDirectCondition('coupon.coupon_deleted IS NULL');
         if (!empty($post['keyword'])) {
             $cnd = $srch->addCondition('coupon.coupon_code', 'like', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('couponlang.coupon_title', 'like', '%' . $post['keyword'] . '%');
@@ -52,7 +51,7 @@ class CouponsController extends AdminBaseController
         }
         if ($post['coupon_expire'] == AppConstant::YES) {
             $srch->addCondition('coupon.coupon_end_date', '<', date('Y-m-d H:i:s'));
-        }elseif ($post['coupon_expire'] != '' && $post['coupon_expire'] == AppConstant::NO) {
+        } elseif ($post['coupon_expire'] != '' && $post['coupon_expire'] == AppConstant::NO) {
             $srch->addCondition('coupon.coupon_end_date', '>', date('Y-m-d H:i:s'));
         }
 
@@ -207,8 +206,7 @@ class CouponsController extends AdminBaseController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $couponObj = new Coupon($couponId);
-        $couponObj->setFldValue('coupon_deleted', date('Y-m-d H:i:s'));
-        if (!$couponObj->save()) {
+        if (!$couponObj->deleteRecord(false)) {
             FatUtility::dieJsonError($couponObj->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORD_DELETED_SUCCESSFULLY'));
