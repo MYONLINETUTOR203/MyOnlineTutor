@@ -1,10 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $_SESSION[UserAuth::REFERRAL_PAGE_URL] = CommonHelper::getCurrentUrl();
-$stickyDemoHeader = '';
-if (FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1) && MyUtility::isDemoUrl()) {
-    $stickyDemoHeader = 'sticky-demo-header';
-}
+$stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
 ?>
 <!doctype html>
 <html lang="en" dir="<?php echo $siteLanguage['language_direction']; ?>" class="<?php echo $stickyDemoHeader; ?>">
@@ -70,13 +67,10 @@ if (FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1) && MyUtili
         <?php } ?>
         <?php echo Common::setThemeColorStyle(true); ?>
     </head>
-    <?php
-    $autoRestartOn = FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1);
-    $isPreviewOn = ($autoRestartOn == AppConstant::YES) ? 'is-preview-on' : '';
-    ?>
+    <?php $isPreviewOn = MyUtility::isDemoUrl() ? 'is-preview-on' : ''; ?>
     <body class="dashboard-<?php echo (($siteUserType == User::TEACHER) ? 'teacher' : 'learner') . ' ' . strtolower($controllerName) . ' ' . strtolower($actionName) . ' ' . $mainDashboardClass . ' ' . $isPreviewOn; ?>">
         <?php
-        if ($autoRestartOn == AppConstant::YES && MyUtility::isDemoUrl()) {
+        if (MyUtility::isDemoUrl()) {
             include(CONF_INSTALLATION_PATH . 'restore/view/header-bar.php');
         }
         if (isset($_SESSION['preview_theme'])) {

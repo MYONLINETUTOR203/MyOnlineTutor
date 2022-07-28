@@ -1,14 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<?php $headerClasses = strtolower($controllerName) . ' ' . strtolower($controllerName) . '-' . strtolower($actionName); ?>
 <!DOCTYPE html>
-<?php
-$stickyDemoHeader = '';
-if (FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1) && MyUtility::isDemoUrl()) {
-    $stickyDemoHeader = 'sticky-demo-header';
-}
-$headerClasses = strtolower($controllerName) . ' ' . strtolower($controllerName) . '-' . strtolower($actionName);
-?>
-<html prefix="og: http://ogp.me/ns#" class="<?php echo $stickyDemoHeader; ?>">
-
+<html prefix="og: http://ogp.me/ns#" class="<?php echo MyUtility::isDemoUrl() ? 'sticky-demo-header' : ''; ?>">
     <head>
         <meta charset="utf-8">
         <meta name="author" content="">
@@ -74,23 +67,18 @@ if (isset($setMonthAndWeekNames) && $setMonthAndWeekNames) {
             });
         </script>
     </head>
-    <?php
-    $autoRestartOn = FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1);
-    $isPreviewOn = ($autoRestartOn == AppConstant::YES) ? 'is-preview-on' : '';
-    ?>
+    <?php $isPreviewOn = MyUtility::isDemoUrl() ? 'is-preview-on' : ''; ?>
     <body class="<?php echo $headerClasses . ' ' . $isPreviewOn; ?>" dir="<?php echo $siteLanguage['language_direction']; ?>">
         <!-- Custom Loader -->
         <div id="app-alert" class="alert-position alert-position--top-right">
             <alert role="alert" class="alert">
                 <alert-icon class="alert__icon"></alert-icon>
-                <alert-message class="alert__message">
-                    <p></p>
-                </alert-message>
+                <alert-message class="alert__message"><p></p></alert-message>
                 <alert-close class="alert__close" onclick="$.appalert.close();"></alert-close>
             </alert>
         </div>
         <?php
-        if ($autoRestartOn == AppConstant::YES && MyUtility::isDemoUrl()) {
+        if (MyUtility::isDemoUrl()) {
             include(CONF_INSTALLATION_PATH . 'restore/view/header-bar.php');
         }
         if (isset($_SESSION['preview_theme'])) {
