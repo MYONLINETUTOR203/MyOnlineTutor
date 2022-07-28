@@ -159,7 +159,9 @@ var fcom = {
     updateWithAjax: function (url, data, callback, options) {
         var o = $.extend(true, {fOutMode: 'json'}, options);
         this.ajax(url, data, function (res) {
-            callback(res);
+            if (typeof callback !== 'undefined') {
+                callback(res);
+            }
         }, o);
     },
     camel2dashed: function (str) {

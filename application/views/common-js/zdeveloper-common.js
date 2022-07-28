@@ -88,7 +88,7 @@ $(document).ready(function () {
                     let messages = (response.messages >= 100) ? '100+' : response.messages;
                     $('.message-count-js').addClass('head-count').text(messages);
                 }
-            }, { fOutMode: 'json' });
+            }, {fOutMode: 'json'});
         }, ALERT_CLOSE_TIME * 1000);
     };
     setUpGoToTop = function () {
@@ -240,7 +240,7 @@ $(document).ready(function () {
         });
     };
     setSiteLanguage = function (langId) {
-        var data = { langId: langId, url: window.location.pathname };
+        var data = {langId: langId, url: window.location.pathname};
         fcom.updateWithAjax(fcom.makeUrl('CookieConsent', 'setSiteLanguage'), data, function (res) {
             window.location.href = res.url;
         });
@@ -251,7 +251,7 @@ $(document).ready(function () {
         });
     };
     resendSignupVerifyEmail = function (email) {
-        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendSignupVerifyEmail'), { email: email });
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendSignupVerifyEmail', [email]), {});
     };
     togglePassword = function (e) {
         var passType = $("input[name='user_password']").attr("type");
@@ -308,7 +308,7 @@ $(document).ready(function () {
         fcom.ajaxMultipart(fcom.makeUrl('Messages', 'sendMessage', [], confWebDashUrl), formData, function (data) {
             $.loader.hide();
             window.location.href = fcom.makeUrl('Messages', '', [], confWebDashUrl);
-        }, { fOutMode: 'json' });
+        }, {fOutMode: 'json'});
         return false;
     };
     closeNavigation = function () {
@@ -352,7 +352,6 @@ $(document).ready(function () {
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendVerificationLink', [username]));
     };
-
     submitNewsletterForm = function (form) {
         if (newsletterAjaxRuning) {
             return false
@@ -369,11 +368,10 @@ $(document).ready(function () {
             }
             $.loader.hide();
             newsletterAjaxRuning = false;
-        }, { fOutMode: 'json', failed: true });
+        }, {fOutMode: 'json', failed: true});
     }
 
 })(jQuery);
-
 function toggleOffers(element) {
     $(element).toggleClass("is-active");
     $('html').toggleClass("show-offers-js");
@@ -414,7 +412,6 @@ $(document).ready(function () {
                 $('.gototop').removeClass("isvisible");
             }
         });
-
         // scroll body to 0px on click
         $('.gototop').click(function () {
             $('body,html').animate({
@@ -423,11 +420,8 @@ $(document).ready(function () {
             return false;
         });
     });
-
     $(document).on('click', '.play-video', function () {
         $.facebox('<iframe id="ytplayer" type="text/html" width="1000" height="460" src="' + $(this).attr('data-src') + '" frameborder="2"></iframe>');
     });
-
-
 });
 

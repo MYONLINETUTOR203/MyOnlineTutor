@@ -11,7 +11,9 @@
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'forgotPasswordSetup'), fcom.frmData(frm), function () {
-            grecaptcha.reset();
+            if (typeof grecaptcha !== 'undefined') {
+                grecaptcha.reset();
+            }
             frm.reset();
         }, {failed: true});
     };
