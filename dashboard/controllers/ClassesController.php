@@ -416,22 +416,10 @@ class ClassesController extends DashboardController
         if (0 >= $post['grpcls_id']) {
             $post['grpcls_status'] = GroupClass::SCHEDULED;
         }
-        $db = FatApp::getDb();
-        $db->startTransaction();
         $class = new GroupClass($post['grpcls_id'], $this->siteUserId, $this->siteUserType);
         if (!$class->saveClass($post)) {
-            $db->rollbackTransaction();
             FatUtility::dieJsonError($class->getError());
         }
-        $classId = $class->getMainTableRecordId();
-        if (!empty($post['grpcls_banner']['name'])) {
-            $file = new Afile(Afile::TYPE_GROUP_CLASS_BANNER);
-            if (!$file->saveFile($post['grpcls_banner'], $classId, true)) {
-                $db->rollbackTransaction();
-                FatUtility::dieJsonError($file->getError());
-            }
-        }
-        $db->commitTransaction();
         FatUtility::dieJsonSuccess(['classId' => $classId, 'msg' => Label::getLabel('LBL_CLASS_SETUP_SUCCESSFULLY')]);
     }
 

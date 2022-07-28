@@ -132,6 +132,15 @@ class GroupClass extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
+        if (!empty($data['grpcls_banner']['name'])) {
+            $file = new Afile(Afile::TYPE_GROUP_CLASS_BANNER);
+            $classId = $this->getMainTableRecordId();
+            if (!$file->saveFile($data['grpcls_banner'], $classId, true)) {
+                $db->rollbackTransaction();
+                $this->error = $file->getError();
+                return false;
+            }
+        }
         if ($addEvent) {
             $this->addGoogleEvent($recordId, $data);
         }
