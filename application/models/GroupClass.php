@@ -587,7 +587,11 @@ class GroupClass extends MyAppModel
         }
         $srch->doNotCalculateRecords();
         $package = FatApp::getDb()->fetch($srch->getResultSet(), 'grpcls_id');
-        return empty($package) ? false : $package;
+        if (empty($package)) {
+            $this->error = Label::getLabel('LBL_CLASS_PACKAGE_NOT_FOUND');
+            return false;
+        }
+        return $package;
     }
 
     /**
@@ -784,4 +788,5 @@ class GroupClass extends MyAppModel
             'endTime' => $row['endTime'] ?? null,
         ];
     }
+
 }
