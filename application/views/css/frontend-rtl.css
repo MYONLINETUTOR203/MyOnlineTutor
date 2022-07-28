@@ -1610,9 +1610,14 @@ p {
     .section-filters {
       background-color: rgba(0, 0, 0, 0.03);
       padding: 5rem 0 0;
-      position: relative;
+      position: -webkit-sticky;
+      position: sticky;
       z-index: 1;
-      margin-bottom: 3rem; } }
+      margin-bottom: 3rem;
+      top: 0;
+      -webkit-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s; } }
   @media (max-width: 576px) {
     .section-filters {
       padding: 2rem 0;
@@ -2286,10 +2291,7 @@ body.is-filter-show .header {
     background-color: #fff;
     padding: 0;
     -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
-            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0; }
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08); }
     .is-filter-fixed .section-filters h1 {
       display: none; }
     .is-filter-fixed .section-filters::after {

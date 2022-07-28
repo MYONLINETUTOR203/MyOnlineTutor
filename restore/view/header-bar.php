@@ -150,7 +150,7 @@
     }
 
     /* preview header */
-    .preview-header{background-color:#000; color: #fff;position: sticky;top: 0; z-index: 11;width: 100%; height: 60px;}
+    .preview-header{background-color:#000; color: #fff;position: sticky;top: 0; z-index: 12;width: 100%; height: 60px;}
     .preview-header a {color: inherit;}
     .preview-progress__head{display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding-bottom: 0.4rem;}
     .progress-count{font-weight: 800; color: #ff793d;}
@@ -158,32 +158,37 @@
     .preview-container{ min-height: 40px;display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;}
 
     @media(min-width:576px){
-    .is-preview-on .header.nav-up,.is-preview-on .header.nav-down{transform: translateY(inherit);-webkit-transform: translateY(inherit);}
-        .is-preview-on .header{top: 60px;}
+    /* .is-preview-on .header.nav-up,.is-preview-on .header.nav-down{transform: translateY(inherit);-webkit-transform: translateY(inherit);} */
+    .is-preview-on .header.nav-down, .is-preview-on #header{top: 60px;}
+    .is-preview-on.teachers.teachers-index .header.nav-down, .groupclasses.groupclasses-index .header.nav-down{top: 0;}
+    .is-preview-on.teacherrequest.teacherrequest-form .header{top: 8.6rem; transition: none;}
+    
 
 
-        .is-tutor-listing.is-preview-on .header, .is-group-classes.is-preview-on .header, .teachers.teachers-index.is-preview-on .header, .groupclasses.groupclasses-index.is-preview-on .header, .teachers.teachers-languages.is-preview-on .header
-         {position: sticky;}
 
-         .is-preview-on .header .header-primary{box-shadow: none;}
+        /* .is-tutor-listing.is-preview-on .header, .is-group-classes.is-preview-on .header, .teachers.teachers-index.is-preview-on .header, .groupclasses.groupclasses-index.is-preview-on .header, .teachers.teachers-languages.is-preview-on .header
+         {position: sticky;} */
+
+         /* .is-preview-on .header .header-primary{box-shadow: none;} */
 
     }
   
-    .is-preview-on #header{top: 60px;}
+    /* .is-preview-on #header, .is-preview-on.is-filter-fixed #header{top: 60px;} */
     .is-preview-on .leftside{padding-top: 132px;}
 
     @media(min-width:1199px){
-        .is-preview-on.is-filter-fixed .section-filters{top: 142px;}
+        /* .is-preview-on.is-filter-fixed .header{top: 60px;} */
+        .is-preview-on.is-filter-fixed .section-filters{top:60px;}
     }
 
     
 
 
-    @media(min-width:1199px){
+    /* @media(min-width:1199px){
         .preview-container__cell{-webkit-box-flex: 1;-ms-flex: 1;flex: 1;}  
 
        
-    }
+    } */
 
     .preview-container__cell{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
 
@@ -274,7 +279,7 @@
         <div class="preview-container__cell preview-container__right">
               <div class="buttons-bucket">
               <a target="_blank" href="https://www.fatbit.com/online-learning-consultation-marketplace-platform.html" class="preview-button"><?php echo Label::getLabel('LBL_START_YOUR_MARKETPLACE'); ?></a>
-<!--              <a target="_blank" href="https://www.yo-coach.com#demo" class="preview-button"><?php echo Label::getLabel('LBL_REQUEST_DEMO'); ?></a>-->
+              <a target="_blank" href="https://www.yo-coach.com/?demo_form" class="preview-button"><?php echo Label::getLabel('LBL_Get_A_Personalized_Demo'); ?></a>
               <a target="_blank" href="https://www.yo-coach.com/clients.html" class="preview-button"><?php echo Label::getLabel('LBL_OUR_CLIENTS') ?></a>
               </div>
             <a href="javascript:void(0)" class="preview-close" onclick="closePreview();"></a>

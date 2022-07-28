@@ -14,7 +14,8 @@ $section-filters: "section-filters";
     }
 
     @media (min-width:theme('breakpoints.sm','value')){
-        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: relative; z-index: 1; margin-bottom:3rem;
+        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: sticky; z-index: 1; margin-bottom:3rem;    top: 0;
+        transition: all 0.3s;
     }
 
   
@@ -697,7 +698,7 @@ $filters-more: "filters-more";
     @media (min-width:theme('breakpoints.xl','value')){
 
         .#{$section-filters}{
-            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08); position: sticky;top:0;
+            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);
                 & h1{display: none;}
                 &::after{display: none;}
             }
