@@ -403,11 +403,12 @@ class ClassesController extends DashboardController
      */
     public function setupClass()
     {
+        $post = FatApp::getPostedData();
         if (isset($post['grpcls_slug'])) {
-            $post['grpcls_slug'] = CommonHelper::seoUrl($post['tlang_slug']);
+            $post['grpcls_slug'] = CommonHelper::seoUrl($post['grpcls_slug']);
         }
         $form = $this->getAddForm(true);
-        if (!$post = $form->getFormDataFromArray(FatApp::getPostedData() + $_FILES)) {
+        if (!$post = $form->getFormDataFromArray($post + $_FILES)) {
             FatUtility::dieJsonError(current($form->getValidationErrors()));
         }
         $post['grpcls_start_datetime'] = MyDate::formatToSystemTimezone($post['grpcls_start_datetime']);
@@ -420,7 +421,10 @@ class ClassesController extends DashboardController
         if (!$class->saveClass($post)) {
             FatUtility::dieJsonError($class->getError());
         }
-        FatUtility::dieJsonSuccess(['classId' => $classId, 'msg' => Label::getLabel('LBL_CLASS_SETUP_SUCCESSFULLY')]);
+        FatUtility::dieJsonSuccess([
+            'classId' => $class->getMainTableRecordId(),
+            'msg' => Label::getLabel('LBL_CLASS_SETUP_SUCCESSFULLY')
+        ]);
     }
 
     /**
