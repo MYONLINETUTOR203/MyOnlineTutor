@@ -136,7 +136,7 @@ class OrderCourseSearch extends YocoachSearch
             'crspro.crspro_progress' => 'crspro_progress',
             'crspro.crspro_ordcrs_id' => 'crspro_ordcrs_id',
             'crspro.crspro_id' => 'crspro_id',
-            'crspro.crspro_status' => 'crspro_status'
+            'IFNULL(crspro.crspro_status, ' . CourseProgress::PENDING . ')' => 'crspro_status'
         ];
     }
 

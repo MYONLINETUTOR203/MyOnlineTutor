@@ -65,15 +65,15 @@ $requestStatuses = Course::getRefundStatuses();
                             </div>
                         </div>
                     </div>
-                    <span class="card-landscape__status badge color-primary badge--curve badge--small margin-left-0">
-                        <?php
-                        if ($siteUserType == User::TEACHER) {
-                            echo $courseStatuses[$course['course_status']];
-                        } else {
-                            echo $orderStatuses[$course['crspro_status']];
-                        }
-                        ?>
-                    </span>
+                    <?php if ($siteUserType == User::TEACHER) { ?>
+                        <span class="card-landscape__status badge color-primary badge--curve badge--small margin-left-0">
+                            <?php echo $courseStatuses[$course['course_status']]; ?>
+                        </span>
+                    <?php } else { ?>
+                        <span class="card-landscape__status badge color-secondary badge--curve badge--small margin-left-0">
+                            <?php echo $orderStatuses[$course['crspro_status']]; ?>
+                        </span>
+                    <?php } ?>
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <span class="card-landscape__status badge color-red badge--curve badge--small margin-left-0">
                             <?php echo AppConstant::getActiveArr($course['course_active']); ?>

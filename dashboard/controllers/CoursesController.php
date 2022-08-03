@@ -43,7 +43,6 @@ class CoursesController extends DashboardController
         /* get courses list */
         if ($this->siteUserType == User::LEARNER) {
             $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
-            $srch->addOrder('ordcrs_id', 'DESC');
             $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
             $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
             $srch->addSearchListingFields();
@@ -60,6 +59,7 @@ class CoursesController extends DashboardController
                 'crsdetail.course_title',
                 'course.course_ratings',
             ]);
+            $srch->addOrder('crspro_status', 'ASC');
         } else {
             $srch = new CourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
             $srch->addOrder('course_id', 'DESC');
