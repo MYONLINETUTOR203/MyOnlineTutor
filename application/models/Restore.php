@@ -8,15 +8,14 @@
  */
 class Restore extends FatModel
 {
-    const BACKUP_FILE = CONF_INSTALLATION_PATH . "restore/database/yocoach-restore-db.sql";
-    const USER_UPLOADS_PATH = CONF_INSTALLATION_PATH . "user-uploads";
-
     /* setup db names used for restoration */
+
+    const DATABASE_BASE = 'yocoach87h1y172_v3demo_3';
     const DATABASE_FIRST = 'yocoach87h1y172_v3demo_1';
     const DATABASE_SECOND = 'yocoach87h1y172_v3demo_2';
 
     /* set restoration duration */
-    const RESTORE_TIME_INTERVAL_HOURS = 24;
+    const RESTORE_TIME_INTERVAL_HOURS = 1;
     const RESTORATION_SETUP_DATE = '2022-06-09 00:00:00';
 
     private $db;
@@ -35,22 +34,19 @@ class Restore extends FatModel
 
     public function restoreDb()
     {
-        if (!$this->isRestoredSuccessfully()) {
-            if (!$this->restoreUserUploads()) {
-                $this->error = "Unable to restore files";
-                return false;
-            }
-            if (!$this->restoreDatabase()) {
-                $this->error = "An error occurred while restoring database";
-                return false;
-            }
-            if (!$this->executeUpdates()) {
-                return false;
-            }
-            if (!$this->resetRestoreStatus()) {
-                $this->error = "Unable to update restoration status";
-                return false;
-            }
+        if ($this->isRestoredSuccessfully()) {
+            return true;
+        }
+        if (!$this->restoreDatabase()) {
+            $this->error = "An error occurred while restoring database";
+            return false;
+        }
+        if (!$this->executeUpdates()) {
+            return false;
+        }
+        if (!$this->resetRestoreStatus()) {
+            $this->error = "Unable to update restoration status";
+            return false;
         }
         return true;
     }
@@ -74,44 +70,6 @@ class Restore extends FatModel
     }
 
     /**
-     * function to initiate the restoration of user-uploads files & folders
-     *
-     * @return void
-     */
-    private function restoreUserUploads()
-    {
-        $source = CONF_INSTALLATION_PATH . "restore/user-uploads";
-        $target = static::USER_UPLOADS_PATH;
-        if (!$this->fullCopy($source, $target)) {
-            return false;
-        }
-        return $this->recursiveDelete($target);
-    }
-
-    /**
-     * Copy the user-uploads from the backup
-     *
-     * @return void
-     */
-    private function fullCopy($source, $target)
-    {
-        system('cp -R ' . $source . '/* ' . $target, $output);
-        return ($output == 0);
-    }
-
-
-    /**
-     * Delete the existing user-uploads folder & files recursively
-     *
-     * @return void
-     */
-    private function recursiveDelete($source)
-    {
-        system('rm -rf -d ' . $source . '/*-old', $output);
-        return ($output == 0);
-    }
-
-    /**
      * Function to update restoration successful status
      *
      * @return bool
@@ -132,22 +90,16 @@ class Restore extends FatModel
      */
     private function restoreDatabase()
     {
-        $backupFile = static::BACKUP_FILE;
-        $dbServer = CONF_DB_SERVER;
-        $dbUser = CONF_DB_USER;
-        $dbPassword = CONF_DB_PASS;
-        $mysqli = new mysqli($dbServer, $dbUser, $dbPassword, $this->restoreDb);
-        $sql = "SHOW TABLES FROM $this->restoreDb";
-        if ($rs = $mysqli->query($sql)) {
-            while ($row = $rs->fetch_array()) {
-                $tableName = $row["Tables_in_" . $this->restoreDb];
-                $mysqli->query("DROP TABLE $this->restoreDb.$tableName");
+        $db = new Database(CONF_DB_SERVER, CONF_DB_USER, CONF_DB_PASS, $this->restoreDb, true);
+        $rs = $db->query("SHOW TABLES FROM $this->restoreDb");
+        while ($row = $rs->fetchArray()) {
+            $tableName = $row[0];
+            if (in_array($tableName, ['tbl_availability', 'tbl_user_preferences'])) {
+                continue;
             }
-        }
-        $cmd = "mysql --user=" . $dbUser . " --password=\"" . $dbPassword . "\" " . $this->restoreDb . " < " . $backupFile;
-        system($cmd, $output);
-        if ($output != 0) {
-            return false;
+            $db->query('TRUNCATE ' . $this->restoreDb . '.' . $tableName);
+            $db->query('INSERT INTO ' . $this->restoreDb . '.' . $tableName .
+                    ' SELECT * FROM ' . static::DATABASE_BASE . '.' . $tableName);
         }
         return true;
     }
@@ -171,13 +123,7 @@ class Restore extends FatModel
 
     private function getQueries()
     {
-        $query = $this->db->query("SELECT `conf_val` from `" . CONF_DB_NAME . "`.`tbl_configurations` where `conf_name` = 'CONF_RESTORE_SCHEDULE_TIME'");
-        $row = $this->db->fetch($query);
-        $restoreDate = date('Y-m-d H:i:s');
-        if ($row) {
-            $restoreDate = $row['conf_val'];
-        }
-        $hours = round(abs(strtotime($restoreDate) - strtotime(static::RESTORATION_SETUP_DATE)) / 3600, 1);
+        $hours = round(abs(strtotime(date('Y-m-d H:i:s')) - strtotime(static::RESTORATION_SETUP_DATE)) / 3600, 1);
         return [
             "UPDATE tbl_admin_auth_token SET  admauth_expiry = DATE_ADD(admauth_expiry, INTERVAL " . $hours . " hour),  admauth_last_access = DATE_ADD(admauth_last_access, INTERVAL " . $hours . " hour);",
             "UPDATE tbl_admin_commissions SET comm_created = DATE_ADD(comm_created, INTERVAL " . $hours . " hour);",
@@ -202,4 +148,5 @@ class Restore extends FatModel
             "UPDATE tbl_group_classes SET  grpcls_start_datetime = DATE_ADD(grpcls_start_datetime, INTERVAL " . $hours . " hour),  grpcls_end_datetime = DATE_ADD(grpcls_end_datetime, INTERVAL " . $hours . " hour),  grpcls_teacher_starttime = DATE_ADD(grpcls_teacher_starttime, INTERVAL " . $hours . " hour),  grpcls_teacher_endtime = DATE_ADD(grpcls_teacher_endtime, INTERVAL " . $hours . " hour),  grpcls_added_on = DATE_ADD(grpcls_added_on, INTERVAL " . $hours . " hour);"
         ];
     }
+
 }

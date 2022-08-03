@@ -455,7 +455,7 @@ class Cronjob
         if (!$restore->restoreDb()) {
             return false;
         }
-        return true;
+        return 'Demo Database Restored';
     }
 
 
