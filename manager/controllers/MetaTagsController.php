@@ -574,7 +574,7 @@ class MetaTagsController extends AdminBaseController
                 $dbcolumnsArr = array_merge($dbcolumnsArr, ['IFNULL(post_title,post_identifier) as post_identifier ', 'post_id']);
                 break;
             case MetaTag::META_GROUP_COURSE;
-                $dbcolumnsArr = array_merge($dbcolumnsArr, ['course_title', 'course_id', 'course_slug']);
+                $dbcolumnsArr = array_merge($dbcolumnsArr, ['course_title', 'crs.course_id', 'course_slug']);
                 break;
         }
         return $dbcolumnsArr;
