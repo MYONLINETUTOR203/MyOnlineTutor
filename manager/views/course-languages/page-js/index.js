@@ -14,7 +14,7 @@ $(document).ready(function () {
         }
         var status = parseInt($(obj).data('status'));
         var data = 'cLangId=' + cLangId + "&status=" + status;
-        fcom.ajax(fcom.makeUrl('CourseLanguages', 'changeStatus'), data, function (res) {
+        fcom.updateWithAjax(fcom.makeUrl('CourseLanguages', 'changeStatus'), data, function (res) {
             if (status == 1) {
                 $(obj).removeClass("inactive").addClass("active").data("status", 0);
             } else {
