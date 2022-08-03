@@ -17,6 +17,9 @@ class CoursePreviewController extends DashboardController
     public function __construct(string $action)
     {
         parent::__construct($action);
+        if ($this->siteUserType == User::LEARNER) {
+            FatUtility::exitWithErrorCode(404);
+        }
     }
 
     /**
