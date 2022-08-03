@@ -75,6 +75,7 @@ class TutorialsController extends DashboardController
         $srch->applyPrimaryConditions();
         $srch->addCondition('section.section_course_id', '=', $courseId);
         $srch->addSearchListingFields();
+        $srch->addOrder('section.section_order', 'ASC');
         if (!$sections = $srch->fetchAndFormat()) {
             FatUtility::exitWithErrorCode(404);
         }
