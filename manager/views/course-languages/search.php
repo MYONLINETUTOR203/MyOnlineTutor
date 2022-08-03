@@ -85,7 +85,9 @@ echo $tbl->getHtml();
             $('#courseLanguages').tableDnD({
                 onDrop: function(table, row) {
                     var order = $.tableDnD.serialize('id');
-                    fcom.updateWithAjax(fcom.makeUrl('CourseLanguages', 'updateOrder'), order, function(res) {});
+                    fcom.updateWithAjax(fcom.makeUrl('CourseLanguages', 'updateOrder'), order, function(res) {
+                        search();
+                    });
                 },
                 dragHandle: ".dragHandle",
             });
