@@ -95,8 +95,12 @@ class SectionsController extends DashboardController
         $frm = $this->getForm();
         $frm->fill($formData);
         $this->set('frm', $frm);
-        
-        $this->set('order', FatApp::getPostedData('section_order', FatUtility::VAR_INT, 1));
+
+        $sectionDivId = $sectionId;
+        if ($sectionId < 1) {
+            $sectionDivId = FatApp::getPostedData('section_order', FatUtility::VAR_INT, 1) . '1';
+        }
+        $this->set('order', $sectionDivId);
         $this->set('sectionId', $sectionId);
         $this->_template->render(false, false);
     }
