@@ -10,7 +10,7 @@ $langFld->setWrapperAttribute('class', 'hide');
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Label::getLabel('LBL_SPOKEN_LANGUAGE_SETUP'); ?></h4>
+        <h4><?php echo Label::getLabel('LBL_COURSE_LANGUAGE_SETUP'); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="row">
