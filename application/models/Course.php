@@ -840,7 +840,7 @@ class Course extends MyAppModel
         $srch = new SearchBase(CourseRatingReview::DB_TBL, 'ratrev');
         $srch->addMultipleFields([
             'COUNT(*) as course_reviews',
-            'ROUND(AVG(ratrev.ratrev_overall), 2) as course_ratings'
+            'IFNULL(ROUND(AVG(ratrev.ratrev_overall), 2), 0) as course_ratings'
         ]);
         $srch->addCondition('ratrev.ratrev_status', '=', CourseRatingReview::STATUS_APPROVED);
         $srch->addCondition('ratrev.ratrev_type_id', '=', $this->getMainTableRecordId());
