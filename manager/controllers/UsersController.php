@@ -56,6 +56,7 @@ class UsersController extends AdminBaseController
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        $data['user_phone_code'] = FatUtility::int($data['user_phone_code']);
         $data['user_phone_code'] = Country::getAttributesById($data['user_phone_code'], 'country_dial_code');
         $this->set('data', $data);
         $this->_template->render(false, false);

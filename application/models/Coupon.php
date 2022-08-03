@@ -64,7 +64,6 @@ class Coupon extends MyAppModel
         $srch->addCondition('coupon_start_date', '<=', date('Y-m-d H:i:s'));
         $srch->addCondition('coupon_end_date', '>=', date('Y-m-d H:i:s'));
         $srch->addDirectCondition('BINARY coupon_code = "' . $code . '"');
-        $srch->addDirectCondition('coupon_deleted IS NULL');
         $srch->doNotCalculateRecords();
         $srch->setPageNumber(1);
         $srch->setPageSize(1);
@@ -91,7 +90,6 @@ class Coupon extends MyAppModel
         $srch->addCondition('coupon.coupon_start_date', '<=', date('Y-m-d H:i:s'));
         $srch->addCondition('coupon.coupon_end_date', '>=', date('Y-m-d H:i:s'));
         $srch->addCondition('coupon.coupon_active', '=', AppConstant::ACTIVE);
-        $srch->addDirectCondition('coupon.coupon_deleted IS NULL');
         $srch->doNotCalculateRecords();
         $srch->setPageNumber(1);
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'coupon_id');

@@ -19,7 +19,7 @@ class TeacherController extends DashboardController
         MyUtility::setUserType(User::TEACHER);
         parent::__construct($action);
     }
-
+    
     /**
      * Teacher Search Form
      */

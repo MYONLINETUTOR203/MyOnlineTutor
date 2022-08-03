@@ -8,6 +8,7 @@
  */
 class RestoreSystemController extends MyAppController
 {
+
     const CONF_FILE = 'public/settings.php';
 
     private $db;
@@ -21,7 +22,9 @@ class RestoreSystemController extends MyAppController
     public function __construct(string $action)
     {
         parent::__construct($action);
-
+        if (empty(MyUtility::isDemoUrl()) || empty(FatApp::getConfig('CONF_AUTO_RESTORE_ON'))) {
+            FatUtility::dieJsonError('Auto restore disabled by admin!');
+        }
         /* Get the previously restored database */
         $this->restoredDb = (CONF_DB_NAME == Restore::DATABASE_FIRST) ? Restore::DATABASE_SECOND : Restore::DATABASE_FIRST;
 
@@ -39,11 +42,6 @@ class RestoreSystemController extends MyAppController
         /* display error if url is executed manually and is not an ajax call */
         if (!FatUtility::isAjaxCall()) {
             FatUtility::dieWithError('Unauthorized Access!!');
-        }
-
-        /* verify if the restoration is on or off */
-        if (!FatApp::getConfig('CONF_AUTO_RESTORE_ON', FatUtility::VAR_INT, 1)) {
-            FatUtility::dieJsonError('Auto restore disabled by admin!');
         }
 
         if ($this->isRestoredSuccessfully()) {
@@ -175,13 +173,12 @@ class RestoreSystemController extends MyAppController
                 continue;
             }
             if (strpos($directory, '-restored') === false) {
-                if (!rename($newSource .'/'. $directory, $newSource .'/'. $directory . '-old')) {
+                if (!rename($newSource . '/' . $directory, $newSource . '/' . $directory . '-old')) {
                     return false;
                 }
             } else {
-                $restoredList[] = $newSource .'/'. $directory;
+                $restoredList[] = $newSource . '/' . $directory;
             }
-
         }
         foreach ($restoredList as $list) {
             if (!rename($list, str_replace('-restored', '', $list))) {

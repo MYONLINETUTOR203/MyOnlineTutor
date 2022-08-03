@@ -159,7 +159,7 @@ class GuestUserController extends MyAppController
     {
         $verification = new Verification();
         if (!$verification->verify($code)) {
-            Message::addMessage($verification->getError());
+            Message::addErrorMessage($verification->getError());
             FatUtility::exitWithErrorCode(404);
         }
         $verification->removeExpiredToken();

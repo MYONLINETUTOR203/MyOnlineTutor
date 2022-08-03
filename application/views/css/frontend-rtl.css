@@ -1610,9 +1610,14 @@ p {
     .section-filters {
       background-color: rgba(0, 0, 0, 0.03);
       padding: 5rem 0 0;
-      position: relative;
+      position: -webkit-sticky;
+      position: sticky;
       z-index: 1;
-      margin-bottom: 3rem; } }
+      margin-bottom: 3rem;
+      top: 0;
+      -webkit-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s; } }
   @media (max-width: 576px) {
     .section-filters {
       padding: 2rem 0;
@@ -1668,26 +1673,26 @@ p {
         .filter-item__search input[type="text"]::-webkit-input-placeholder {
           /* WebKit, Blink, Edge */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium); }
+          font-weight: var(--font-weight-normal); }
         .filter-item__search input[type="text"]::-moz-placeholder {
           /* Mozilla Firefox 19+ */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]::-ms-input-placeholder {
           /* Microsoft Edge */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]:-ms-input-placeholder {
           /* Most modern browsers support this now. */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; }
         .filter-item__search input[type="text"]::placeholder {
           /* Most modern browsers support this now. */
           color: var(--color-black);
-          font-weight: var(--font-weight-medium);
+          font-weight: var(--font-weight-normal);
           opacity: 1; } }
 
 .filter-item__search-action {
@@ -1748,7 +1753,7 @@ p {
   position: relative;
   height: 30px;
   line-height: 30px;
-  font-weight: var(--font-weight-medium); }
+  font-weight: var(--font-weight-normal); }
   .filter-item__select--arrow {
     padding-left: var(--padding-5); }
     .filter-item__select--arrow:after {
@@ -2292,10 +2297,7 @@ body.is-filter-show .header {
     background-color: #fff;
     padding: 0;
     -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
-            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0; }
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08); }
     .is-filter-fixed .section-filters h1 {
       display: none; }
     .is-filter-fixed .section-filters::after {

@@ -122,7 +122,7 @@ class TeachersController extends MyAppController
         $freeTrialEnabled = ($teacher['user_trial_enabled'] && $freeTrialConf);
         $isFreeTrailAvailed = true;
         if ($freeTrialEnabled) {
-            $isFreeTrailAvailed = (new Lesson(0, $this->siteUserId, $this->siteUserType))->isFreeTrailAvailed($teacher['user_id']);
+            $isFreeTrailAvailed = Lesson::isTrailAvailed($this->siteUserId, $teacher['user_id']);
         }
         $userPreferences = Preference::getUserPreferences($teacher['user_id'], $this->siteLangId);
         $preferencesData = [];

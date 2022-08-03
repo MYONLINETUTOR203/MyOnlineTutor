@@ -351,6 +351,7 @@ class OrderPayment extends FatModel
         $mail->setVariables($vars);
         $mail->sendMail([$subOrder['learner_email']]);
         $this->addLessonEvent($subOrders, $tlangName);
+        $this->checkMeetingLicense($subOrders);
         return true;
     }
 
@@ -422,6 +423,7 @@ class OrderPayment extends FatModel
         $mail->setVariables($vars);
         $mail->sendMail([$subOrder['learner_email']]);
         $this->addLessonEvent($subOrders, $tlangName);
+        $this->checkMeetingLicense($subOrders);
         return true;
     }
 
@@ -705,4 +707,21 @@ class OrderPayment extends FatModel
         return true;
     }
 
+    /**
+     * Check Meeting License
+     * 
+     * @param array $subOrders
+     * @return bool
+     */
+    private function checkMeetingLicense(array $subOrders): bool
+    {
+        $meetingTool = new Meeting(0, 0);
+        foreach ($subOrders as $lesson) {
+            if ($lesson['ordles_status'] != Lesson::SCHEDULED) {
+                continue;
+            }
+            $meetingTool->checkLicense($lesson['ordles_lesson_starttime'], $lesson['ordles_lesson_endtime'], $lesson['ordles_duration']);
+        }
+        return true;
+    }
 }

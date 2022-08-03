@@ -17,7 +17,7 @@ define('CONF_HOME_PAGE_CACHE_TIME', 28800); // in seconds (28800 = 8 hours)
 define('ALLOW_EMAILS', false);
 define('ENCRYPTION_KEY', 'vt%qkpCDRWB*bq@R&#4e');
 define('ENCRYPTION_IV', 'r&!qmJ#zvQaIK9VKsnZa');
-define('CONF_ZOOM_VERSION', '1.9.0');
+define('CONF_ZOOM_VERSION', '2.5.0');
 define('SEARCH_MAX_COUNT', 10000);
 define('CONF_UPLOADS_PATH', CONF_INSTALLATION_PATH . 'user-uploads' . DIRECTORY_SEPARATOR);
 define('CONF_EDITOR_PATH', '/user-uploads/editor');

@@ -6,13 +6,10 @@
     var ALERT_CLOSE_TIME = <?php echo FatApp::getConfig("CONF_AUTO_CLOSE_ALERT_TIME"); ?>;
 </script>
 </head>
-<?php
-$autoRestartOn = FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1);
-$isPreviewOn = ($autoRestartOn == AppConstant::YES) ? 'is-preview-on' : '';
-?>
+<?php $isPreviewOn = MyUtility::isDemoUrl() ? 'is-preview-on' : ''; ?>
 <body class="<?php echo $bodyClass . ' ' . $isPreviewOn; ?>">
     <?php
-    if (FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1) && MyUtility::isDemoUrl()) {
+    if (MyUtility::isDemoUrl()) {
         include(CONF_INSTALLATION_PATH . 'restore/view/header-bar.php');
     }
     ?>

@@ -132,9 +132,20 @@ class GroupClass extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
+        if (!empty($data['grpcls_banner']['name'])) {
+            $file = new Afile(Afile::TYPE_GROUP_CLASS_BANNER);
+            $classId = $this->getMainTableRecordId();
+            if (!$file->saveFile($data['grpcls_banner'], $classId, true)) {
+                $db->rollbackTransaction();
+                $this->error = $file->getError();
+                return false;
+            }
+        }
         if ($addEvent) {
             $this->addGoogleEvent($recordId, $data);
         }
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($data['grpcls_start_datetime'], $data['grpcls_end_datetime'], $data['grpcls_duration']);
         $db->commitTransaction();
         return true;
     }
@@ -585,7 +596,11 @@ class GroupClass extends MyAppModel
         }
         $srch->doNotCalculateRecords();
         $package = FatApp::getDb()->fetch($srch->getResultSet(), 'grpcls_id');
-        return empty($package) ? false : $package;
+        if (empty($package)) {
+            $this->error = Label::getLabel('LBL_CLASS_PACKAGE_NOT_FOUND');
+            return false;
+        }
+        return $package;
     }
 
     /**
@@ -764,4 +779,23 @@ class GroupClass extends MyAppModel
             'upcomingClass' => FatUtility::int($data['upcomingClass'] ?? 0)
         ];
     }
+
+    public static function getScheduledClassesCount(string $startTime, string $endTime, int $duration): array
+    {
+        $srch = new SearchBase(static::DB_TBL, 'gclang');
+        $srch->addMultipleFields(['count(*) totalCount', 'min(grpcls_start_datetime) as startTime', 'max(grpcls_end_datetime) as endTime']);
+        $srch->addCondition('grpcls_start_datetime', '<', $endTime);
+        $srch->addCondition('grpcls_end_datetime', '>', $startTime);
+        $srch->addCondition('grpcls_duration', '>', $duration);
+        $srch->addCondition('grpcls_status', '=', GroupClass::SCHEDULED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        return [
+            'totalCount' => $row['totalCount'] ?? 0,
+            'startTime' => $row['startTime'] ?? null,
+            'endTime' => $row['endTime'] ?? null,
+        ];
+    }
+
 }

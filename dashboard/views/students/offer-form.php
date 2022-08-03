@@ -11,11 +11,11 @@ $frm->setFormTagAttribute('onsubmit', 'setupOfferPrice(this); return(false);');
     echo $frm->getFieldHtml('offpri_learner_id');
     echo $frm->getFieldHtml('offpri_id');
     ?>
-    <h3 class="page-heading"><?php echo sprintf(Label::getLabel("LBL_OFFER_PERCENTAGE_FOR_%s"), ucfirst($offers['user_first_name'] . ' ' . $offers['user_last_name'])) ?></h3>
+    <h3 class="page-heading" style="text-align: center;"><?php echo sprintf(Label::getLabel("LBL_OFFER_PERCENTAGE_FOR_%s"), ucfirst($offers['user_first_name'] . ' ' . $offers['user_last_name'])) ?></h3>
     <div class="row">
         <div class="col-sm-12">
             <div class="table-box-bordered box-signle-price">
-                <h5><?php echo Label::getLabel("LBL_LESSON_OFFER") ?></h5>
+                <h5 class="margin-bottom-0 margin-top-6"><?php echo Label::getLabel("LBL_LESSON_OFFER") ?></h5>
                 <table class="table-pricing">
                     <tbody>
                         <?php foreach ($userSlots as $userSlot) { ?>
@@ -34,7 +34,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupOfferPrice(this); return(false);');
     <div class="row">
         <div class="col-sm-12">
             <div class="table-box-bordered box-signle-price">
-                <h5><?php echo Label::getLabel("LBL_CLASS_OFFER") ?></h5>
+                <h5 class="margin-bottom-0 margin-top-6"><?php echo Label::getLabel("LBL_CLASS_OFFER") ?></h5>
                 <table class="table-pricing">
                     <tbody>
                         <?php foreach ($classSlots as $classSlot) { ?>
@@ -53,7 +53,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupOfferPrice(this); return(false);');
     <div class="row">
         <div class="col-sm-12">
             <div class="table-box-bordered box-signle-price">
-                <h5><?php echo Label::getLabel("LBL_CLASS_OFFER") ?></h5>
+                <h5 class="margin-bottom-0 margin-top-6"><?php echo Label::getLabel("LBL_CLASS_PACKAGE_OFFER") ?></h5>
                 <table class="table-pricing">
                     <tbody>
                         <tr>

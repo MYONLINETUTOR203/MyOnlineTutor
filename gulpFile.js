@@ -1,32 +1,8 @@
-const {src, dest, watch, series, parallel} = require('gulp');
-const sass = require('gulp-sass');
+const {src, dest, watch, parallel} = require('gulp');
+const sass = require('gulp-sass')(require('sass'));
 sass.compiler = require('node-sass');
-const babel = require('gulp-babel');
 
 const autoprefixer = require('gulp-autoprefixer');
-const svgSprite = require('gulp-svg-sprite');
-const concat = require('gulp-concat');
-const merge = require('merge-stream');
-
-const config = {
-    shape: {
-        dimension: {
-            maxWidth: 32,
-            maxHeight: 32,
-            precision: 2,
-            attributes: false,
-        }
-    },
-    mode: {
-        symbol: {
-            dest: './',
-            sprite: 'sprite.svg'
-        }
-    },
-    dest: './'
-};
-
-
 function css() {
     var common = src('scss/common*.scss')
             .pipe(sass())

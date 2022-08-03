@@ -61,9 +61,9 @@ class Meeting extends FatModel
         $data = [
             'id' => $lesson['ordles_id'] . '_' . AppConstant::LESSON,
             'title' => str_replace(
-                ['{teachlang}', '{duration}'],
-                [$lesson['ordles_tlang_name'], $lesson['ordles_duration']],
-                Label::getLabel('LBL_{teachlang},_{duration}_MINUTES_OF_LESSON')
+                    ['{teachlang}', '{duration}'],
+                    [$lesson['ordles_tlang_name'], $lesson['ordles_duration']],
+                    Label::getLabel('LBL_{teachlang},_{duration}_MINUTES_OF_LESSON')
             ),
             'duration' => $lesson['ordles_duration'],
             'starttime' => $lesson['ordles_lesson_starttime'],
@@ -72,7 +72,7 @@ class Meeting extends FatModel
             'recordType' => AppConstant::LESSON,
             'recordId' => $lesson['ordles_id'],
             'recordId' => $lesson['ordles_id'],
-            'meetingToolId' =>  $this->tool['metool_id'],
+            'meetingToolId' => $this->tool['metool_id'],
             'otherDetails' => $lesson,
         ];
         $meeting = $this->createMeeting($lesson['ordles_id'], AppConstant::LESSON, $data);
@@ -104,7 +104,7 @@ class Meeting extends FatModel
             'timezone' => MyUtility::getSystemTimezone(),
             'recordType' => AppConstant::GCLASS,
             'recordId' => $class['grpcls_id'],
-            'meetingToolId' =>  $this->tool['metool_id'],
+            'meetingToolId' => $this->tool['metool_id'],
             'otherDetails' => $class,
         ];
         $meeting = $this->createMeeting($classId, AppConstant::GCLASS, $data);
@@ -201,6 +201,52 @@ class Meeting extends FatModel
     }
 
     /**
+     * Checked the License in meeting tool
+     *
+     * @param string $startTime
+     * @param string $endTime
+     * @param integer $duration
+     * @return boolean
+     */
+    public function checkLicense(string $startTime, string $endTime, int $duration): bool
+    {
+        if (!$this->initMeeting()) {
+            return false;
+        }
+        $meet = new $this->tool['metool_code']($this->userId, $this->userType);
+        if (!$meet->initMeetingTool()) {
+            $this->error = $meet->getError();
+            return false;
+        }
+        $meetingDuration = $meet->getFreeMeetingDuration($startTime, $endTime, $duration);
+        $licenseCount = $meet->getLicensedCount($startTime, $endTime, $duration);
+        if ($meetingDuration == -1 || $meetingDuration > $duration) {
+            return true;
+        }
+        $lessons = Lesson::getScheduledLessonCount($startTime, $endTime, $meetingDuration);
+        $groupClass = GroupClass::getScheduledClassesCount($startTime, $endTime, $meetingDuration);
+        $totalSession = $lessons['totalCount'] + $groupClass['totalCount'];
+        if ($totalSession > $licenseCount) {
+            $startTime = min($lessons['startTime'] ?? $groupClass['startTime'], $groupClass['startTime'] ?? $lessons['startTime']);
+            $endTime = max($lessons['endTime'] ?? $groupClass['endTime'], $groupClass['endTime'] ?? $lessons['endTime']);
+            $language = MyUtility::getSystemLanguage();
+            $mail = new FatMailer($language['language_id'], 'license_alert');
+            $vars = [
+                '{session_count}' => $totalSession,
+                '{start_time}' => $startTime . "(" . CONF_SERVER_TIMEZONE . " " . MyDate::getOffset(CONF_SERVER_TIMEZONE) . ")",
+                '{end_time}' => $endTime . "(" . CONF_SERVER_TIMEZONE . " " . MyDate::getOffset(CONF_SERVER_TIMEZONE) . ")",
+                '{meeting_tool}' => $this->tool['metool_code'],
+            ];
+            $mail->setVariables($vars);
+            if (!$mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')])) {
+                $this->error = $mail->getError();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Get User FDetails
      * 
      * @param int $userType
@@ -218,13 +264,13 @@ class Meeting extends FatModel
                 'user_timezone' => $data['learner_timezone'],
                 'user_type' => User::LEARNER,
                 'user_image' => MyUtility::makeFullUrl(
-                    'Image',
-                    'show',
-                    [
-                        Afile::TYPE_USER_PROFILE_IMAGE, $data['learner_id'],
-                        Afile::SIZE_MEDIUM
-                    ],
-                    CONF_WEBROOT_FRONT_URL
+                        'Image',
+                        'show',
+                        [
+                            Afile::TYPE_USER_PROFILE_IMAGE, $data['learner_id'],
+                            Afile::SIZE_MEDIUM
+                        ],
+                        CONF_WEBROOT_FRONT_URL
                 ),
             ];
         } else {
@@ -236,15 +282,16 @@ class Meeting extends FatModel
                 'user_timezone' => $data['teacher_timezone'],
                 'user_type' => User::TEACHER,
                 'user_image' => MyUtility::makeFullUrl(
-                    'Image',
-                    'show',
-                    [
-                        Afile::TYPE_USER_PROFILE_IMAGE, $data['teacher_id'],
-                        Afile::SIZE_MEDIUM
-                    ],
-                    CONF_WEBROOT_FRONT_URL
+                        'Image',
+                        'show',
+                        [
+                            Afile::TYPE_USER_PROFILE_IMAGE, $data['teacher_id'],
+                            Afile::SIZE_MEDIUM
+                        ],
+                        CONF_WEBROOT_FRONT_URL
                 ),
             ];
         }
     }
+
 }

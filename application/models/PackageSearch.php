@@ -170,7 +170,8 @@ class PackageSearch extends YocoachSearch
     private function canEdit(array $package): bool
     {
         return ($this->userType == User::TEACHER && $package['grpcls_booked_seats'] == 0 &&
-                $package['grpcls_status'] == GroupClass::SCHEDULED);
+                $package['grpcls_status'] == GroupClass::SCHEDULED &&
+                $package['grpcls_starttime_unix'] > $package['grpcls_currenttime_unix']);
     }
 
     /**

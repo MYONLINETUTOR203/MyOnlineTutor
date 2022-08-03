@@ -10,7 +10,7 @@ $typeFld->setWrapperAttribute('class', 'hide');
 ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Label::getLabel('LBL_PREFERENCE'); ?></h4>
+        <h4><?php echo Label::getLabel('LBL_PREFERENCE_SETUP'); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="row">

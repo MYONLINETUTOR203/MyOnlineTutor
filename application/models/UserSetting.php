@@ -124,8 +124,7 @@ class UserSetting extends FatModel
             $this->error = Label::getLabel('LBL_TEACHER_DISABLE_THE_BOOKING');
             return false;
         }
-        $lesson = new Lesson(0, $this->userId, User::LEARNER);
-        if ($lesson->isFreeTrailAvailed($teacher['user_id'])) {
+        if (Lesson::isTrailAvailed($this->userId, $teacher['user_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_YOU_ALLREADY_AVAILED_FREE_TRIAL_LESSON'));
         }
         $availability = new Availability($this->userId);

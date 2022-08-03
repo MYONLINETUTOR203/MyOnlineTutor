@@ -14,7 +14,8 @@ $section-filters: "section-filters";
     }
 
     @media (min-width:theme('breakpoints.sm','value')){
-        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: relative; z-index: 1; margin-bottom:3rem;
+        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: sticky; z-index: 1; margin-bottom:3rem;    top: 0;
+        transition: all 0.3s;
     }
 
   
@@ -82,22 +83,22 @@ $filter-item: "filter-item";
                 &{border: none; height: 30px;padding: 0;
                 
                     &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-                        color:  theme('color.black'); font-weight: theme('font.weight.medium');
+                        color:  theme('color.black'); font-weight: theme('font.weight.normal');
                     }
                     &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-                       color:   theme('color.black'); font-weight: theme('font.weight.medium');
+                       color:   theme('color.black'); font-weight: theme('font.weight.normal');
                        opacity:  1;
                     }
                     &::-moz-placeholder { /* Mozilla Firefox 19+ */
-                       color:  theme('color.black'); font-weight: theme('font.weight.medium');
+                       color:  theme('color.black'); font-weight: theme('font.weight.normal');
                        opacity:  1;
                     }
                     &::-ms-input-placeholder { /* Microsoft Edge */
-                       color: theme('color.black'); font-weight: theme('font.weight.medium');
+                       color: theme('color.black'); font-weight: theme('font.weight.normal');
                        opacity: 1;
                     }
                     &::placeholder { /* Most modern browsers support this now. */
-                       color: theme('color.black'); font-weight: theme('font.weight.medium');
+                       color: theme('color.black'); font-weight: theme('font.weight.normal');
                        opacity: 1;
                     }
                 }
@@ -137,7 +138,7 @@ $filter-item: "filter-item";
       
 
     }
-    &__select{position: relative; height: 30px; line-height: 30px;font-weight: theme('font.weight.medium');
+    &__select{position: relative; height: 30px; line-height: 30px;font-weight: theme('font.weight.normal');
         &--arrow{ padding-#{theme('direction.right','value')}: theme('padding.5');
             &:after{position: absolute;#{theme('direction.right','value')}:0;top:48%; width:8px; height:8px; content: "";border-right: 1px solid #999; border-bottom: 1px solid #999; transform: translateY(-50%) rotate(45deg); pointer-events: none;}
         }
@@ -713,7 +714,7 @@ $filters-more: "filters-more";
     @media (min-width:theme('breakpoints.xl','value')){
 
         .#{$section-filters}{
-            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08); position: sticky;top:0;
+            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);
                 & h1{display: none;}
                 &::after{display: none;}
             }

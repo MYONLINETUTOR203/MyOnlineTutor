@@ -57,7 +57,7 @@ $this->includeTemplate('teacher-request/_partial/leftPanel.php', ['step' => 2]);
                                     <div class="caption-wraper">
                                         <label class="field_label">
                                             <?php echo $usrVideoLink->getCaption(); ?>
-                                            <span><?php echo Label::getLabel('LBL_video_desc'); ?></span>
+                                            <small><?php echo Label::getLabel('LBL_video_desc'); ?></small>
                                             <?php if ($usrVideoLink->requirement->isRequired()) { ?>
                                                 <span class="spn_must_field">*</span>
                                             <?php } ?>
@@ -75,7 +75,7 @@ $this->includeTemplate('teacher-request/_partial/leftPanel.php', ['step' => 2]);
                             <div class="col-md-12">
                                 <div class="field-set">
                                     <div class="caption-wraper">
-                                        <label class="field_label"><?php echo $usrBio->getCaption(); ?> <span><?php echo Label::getLabel('LBL_About_self_Fld_Desc'); ?></span>
+                                        <label class="field_label"><?php echo $usrBio->getCaption(); ?> <small><?php echo Label::getLabel('LBL_About_self_Fld_Desc'); ?></small>
                                             <?php if ($usrBio->requirement->isRequired()) { ?>
                                                 <span class="spn_must_field">*</span>
                                             <?php } ?>

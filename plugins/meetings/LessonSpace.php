@@ -105,6 +105,17 @@ class LessonSpace extends FatModel
         return true;
     }
 
+
+    public function getFreeMeetingDuration() : int
+    {
+        return -1;
+    }
+
+    public function getLicensedCount(): int
+    {
+        return -1;
+    }
+
     /**
      * Execute Curl Request
      *

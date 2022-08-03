@@ -161,8 +161,8 @@ class Lesson extends MyAppModel
             $subscription = Subscription::getSubsByOrderId($lesson['ordles_order_id'], ['ordsub_startdate', 'ordsub_enddate']);
             if (!empty($subscription['ordsub_startdate'])) {
                 if (
-                    strtotime($post['ordles_lesson_starttime']) < strtotime($subscription['ordsub_startdate']) ||
-                    strtotime($post['ordles_lesson_endtime']) > strtotime($subscription['ordsub_enddate'])
+                        strtotime($post['ordles_lesson_starttime']) < strtotime($subscription['ordsub_startdate']) ||
+                        strtotime($post['ordles_lesson_endtime']) > strtotime($subscription['ordsub_enddate'])
                 ) {
                     $this->error = Label::getLabel('LBL_YOU_CAN_NOT_BOOK_LESSON_ON_THIS_TIME');
                     return false;
@@ -214,6 +214,8 @@ class Lesson extends MyAppModel
          */
         $this->addGoogleEvent($lesson);
         $this->sendScheduledMail($lesson, User::LEARNER, $langId);
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($post['ordles_lesson_starttime'], $post['ordles_lesson_endtime'], $lesson['ordles_duration']);
         return true;
     }
 
@@ -240,8 +242,8 @@ class Lesson extends MyAppModel
                 $subscription = Subscription::getSubsByOrderId($lesson['ordles_order_id'], ['ordsub_startdate', 'ordsub_enddate']);
                 if (!empty($subscription['ordsub_startdate'])) {
                     if (
-                        strtotime($post['ordles_lesson_starttime']) < strtotime($subscription['ordsub_startdate']) ||
-                        strtotime($post['ordles_lesson_endtime']) > strtotime($subscription['ordsub_enddate'])
+                            strtotime($post['ordles_lesson_starttime']) < strtotime($subscription['ordsub_startdate']) ||
+                            strtotime($post['ordles_lesson_endtime']) > strtotime($subscription['ordsub_enddate'])
                     ) {
                         $this->error = Label::getLabel('LBL_YOU_CAN_NOT_BOOK_LESSON_ON_THIS_TIME');
                         return false;
@@ -287,6 +289,8 @@ class Lesson extends MyAppModel
         } elseif ($this->userType == User::TEACHER) {
             $this->sendRescheduledMailToLearner($lesson);
         }
+        $meetingTool = new Meeting(0, 0);
+        $meetingTool->checkLicense($post['ordles_lesson_starttime'], $post['ordles_lesson_endtime'], $lesson['ordles_duration']);
         return true;
     }
 
@@ -685,7 +689,7 @@ class Lesson extends MyAppModel
         $endTimeUnix = strtotime($row['ordles_lesson_endtime']);
         $reportTime = strtotime(" +" . $reportHours . " hour", $endTimeUnix);
         if (
-            ($row['ordles_status'] == Lesson::COMPLETED || ($row['ordles_status'] == Lesson::SCHEDULED && empty($row['ordles_teacher_starttime']) && time() > $endTimeUnix)) && $reportTime > time()
+                ($row['ordles_status'] == Lesson::COMPLETED || ($row['ordles_status'] == Lesson::SCHEDULED && empty($row['ordles_teacher_starttime']) && time() > $endTimeUnix)) && $reportTime > time()
         ) {
             return $row;
         }
@@ -714,8 +718,8 @@ class Lesson extends MyAppModel
             }
             $lesson['lessons'][0] = $lesson;
         } elseif (
-            $lesson['ordles_type'] == Lesson::TYPE_REGULAR ||
-            $lesson['ordles_type'] == Lesson::TYPE_SUBCRIP
+                $lesson['ordles_type'] == Lesson::TYPE_REGULAR ||
+                $lesson['ordles_type'] == Lesson::TYPE_SUBCRIP
         ) {
             $lesson['ordles_amount'] = Lesson::getPrice($lesson);
             if (empty($lesson['ordles_amount'])) {
@@ -750,7 +754,7 @@ class Lesson extends MyAppModel
             }
             foreach ($lessons as $time) {
                 if (
-                    strtotime($time['ordles_starttime']) < strtotime($value['ordles_endtime']) && strtotime($time['ordles_endtime']) > strtotime($value['ordles_starttime'])
+                        strtotime($time['ordles_starttime']) < strtotime($value['ordles_endtime']) && strtotime($time['ordles_endtime']) > strtotime($value['ordles_starttime'])
                 ) {
                     $this->error = Label::getLabel('LBL_LESSON_TIME_ARE_COLLAPES_WITH_EACH_OTHER');
                     return false;
@@ -1070,19 +1074,24 @@ class Lesson extends MyAppModel
     /**
      * Free Trail Availed
      * 
+     * @param int $learnerId
      * @param int $teacherId
      * @return bool
      */
-    public function isFreeTrailAvailed(int $teacherId): bool
+    public static function isTrailAvailed(int $learnerId, int $teacherId): bool
     {
-        $srch = $this->getSearchObject();
-        $srch->addFld('count(*) AS totalCount');
-        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
-        $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);
-        $srch->addCondition('orders.order_user_id', '=', $this->userId);
+
+        $srch = new SearchBase(static::DB_TBL, 'ordles');
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordles.ordles_order_id', 'orders');
+        $srch->addCondition('orders.order_user_id', '=', $learnerId);
+        $srch->addCondition('ordles.ordles_teacher_id', '=', $teacherId);
         $srch->addCondition('ordles.ordles_type', '=', static::TYPE_FTRAIL);
         $srch->addCondition('ordles.ordles_status', '!=', static::CANCELLED);
-        $srch->addCondition('ordles.ordles_teacher_id', '=', $teacherId);
+        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);
+        $srch->addFld('COUNT(*) AS totalCount');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
         return ($row['totalCount'] > 0);
     }
@@ -1310,4 +1319,26 @@ class Lesson extends MyAppModel
         }
         return FatUtility::float($refundAmt);
     }
+
+    public static function getScheduledLessonCount(string $startTime, string $endTime, int $duration): array
+    {
+        $srch = new SearchBase(static::DB_TBL, 'ordles');
+        $srch->addMultipleFields(['count(*) totalCount', 'min(ordles_lesson_starttime) as startTime', 'max(ordles_lesson_endtime) as endTime']);
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordles.ordles_order_id', 'orders');
+        $srch->addCondition('order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('order_status', '=', Order::STATUS_COMPLETED);
+        $srch->addCondition('ordles_lesson_starttime', '<', $endTime);
+        $srch->addCondition('ordles_lesson_endtime', '>', $startTime);
+        $srch->addCondition('ordles_duration', '>', $duration);
+        $srch->addCondition('ordles_status', '=', Lesson::SCHEDULED);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $row = FatApp::getDb()->fetch($srch->getResultSet());
+        return [
+            'totalCount' => $row['totalCount'] ?? 0,
+            'startTime' => $row['startTime'] ?? null,
+            'endTime' => $row['endTime'] ?? null,
+        ];
+    }
+
 }
