@@ -26,7 +26,7 @@
                                 <a href="<?php echo MyUtility::makeUrl('Tutorials', 'downloadResource', [$progressId, $resource['lecsrc_id']]); ?>" target="_blank" class="lecture-attachment__item">
                                     <figure class="lecture-attachment__media">
                                         <svg class="attached-media">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#pdf-attachment">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#<?php echo Resource::getFileIcon($resource['resrc_type']); ?>">
                                             </use>
                                         </svg>
                                     </figure>

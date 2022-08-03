@@ -60,6 +60,7 @@ class CoursesController extends DashboardController
                 'course.course_ratings',
             ]);
             $srch->addOrder('crspro_status', 'ASC');
+            $srch->addOrder('ordcrs_id', 'DESC');
         } else {
             $srch = new CourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
             $srch->addOrder('course_id', 'DESC');
