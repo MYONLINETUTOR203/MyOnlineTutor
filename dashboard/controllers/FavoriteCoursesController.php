@@ -48,17 +48,27 @@ class FavoriteCoursesController extends DashboardController
         $srch->applyPrimaryConditions();
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('crsfav.ufc_user_id', '=', $this->siteUserId);
-        $srch->addMultipleFields([
+        $srch->addSearchListingFields([
             'course.course_id', 'course_type', 
             'course_title', 'course_subtitle', 'course_price', 'course_slug',
             'course_lectures', 'course_students', 'course_ratings', 'course_reviews',
+            'course_cate_id', 'course_subcate_id'
         ]);
         $srch->addOrder('ufc_id', 'DESC');
         $srch->setPageNumber($post['pageno']);
         $srch->setPageSize($post['pagesize']);
+        $courses = FatApp::getDb()->fetchAll($srch->getResultSet());
+        /* get categories */
+        $categoryIds = [];
+        array_map(function ($val) use (&$categoryIds) {
+            $categoryIds = array_merge($categoryIds, [$val['course_cate_id'], $val['course_subcate_id']]);
+        }, $courses);
+        $categoryIds = array_unique($categoryIds);
+        $categories = CourseSearch::getCategoryNames($this->siteLangId, $categoryIds);
         $this->sets([
-            'courses' => FatApp::getDb()->fetchAll($srch->getResultSet()),
+            'courses' => $courses,
             'post' => $post,
+            'categories' => $categories,
             'courseTypes' => Course::getTypes(),
             'recordCount' => $srch->recordCount()
         ]);

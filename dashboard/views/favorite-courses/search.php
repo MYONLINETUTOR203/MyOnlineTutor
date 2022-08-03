@@ -17,10 +17,11 @@ if (count($courses) == 0) {
             <div class="card-course__colum card-course__colum--second">
                 <div class="card-course__head">
                     <small class="card-course__subtitle uppercase color-gray-900">
-                        <?php echo $course['course_title'] ?>
+                        <?php echo $categories[$course['course_cate_id']] ?? '' ?>
+                        <?php echo isset($categories[$course['course_subcate_id']]) ? ' / ' . $categories[$course['course_subcate_id']] : ''; ?>
                     </small>
                     <span class="card-course__title">
-                        <?php echo $course['course_subtitle'] ?>
+                        <?php echo $course['course_title'] ?>
                     </span>
                 </div>
                 <div class="card-course__body">
