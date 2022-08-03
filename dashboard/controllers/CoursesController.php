@@ -581,6 +581,15 @@ class CoursesController extends DashboardController
         }
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, AppConstant::NO);
         if ($status == AppConstant::NO) {
+            /* check course already marked favorite */
+            $srch = new SearchBase(User::DB_TBL_COURSE_FAVORITE);
+            $srch->addCondition('ufc_user_id', '=', $this->siteUserId);
+            $srch->addCondition('ufc_course_id', '=', $courseId);
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            if (FatApp::getDb()->fetch($srch->getResultSet())) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_IS_ALREADY_IN_YOUR_FAVORITES_LIST'));
+            }
             /* add to favorites */
             $user = new User($this->siteUserId);
             if (!$user->setupFavoriteCourse($courseId)) {
