@@ -251,7 +251,7 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                             <div id="primary-nav" class="menu-offset">
                                 <!-- Display flashcard list on left sidebar in lesson view page  -->
                                 <?php
-                                $templateVariable = ['controllerName' => $controllerName, 'action' => $actionName, 'siteUser' => $siteUser];
+                                $templateVariable = ['controllerName' => $controllerName, 'action' => $actionName, 'siteUser' => $siteUser, 'siteUserType' => $siteUserType];
                                 $sidebarMenuLayout = '_partial/learner-sidebar.php';
                                 if ($siteUserType == User::TEACHER) {
                                     $templateVariable['tpp'] = $siteUser['profile_progress'];

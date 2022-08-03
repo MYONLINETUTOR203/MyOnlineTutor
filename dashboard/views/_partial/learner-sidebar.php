@@ -155,7 +155,7 @@
                     </a>
                 </li>
             <?php } ?>
-            <?php if ($siteUser['user_is_teacher'] == AppConstant::NO) { ?>
+            <?php if ($siteUserType == User::LEARNER) { ?>
                 <li class="menu__item <?php echo ($controllerName == "FavoriteCourses") ? 'is-active' : ''; ?>">
                     <a href="<?php echo MyUtility::makeUrl('FavoriteCourses', ''); ?>">
                         <svg class="icon icon--small icon--favorites icon--user-search margin-right-4">
