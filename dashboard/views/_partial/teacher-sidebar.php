@@ -52,7 +52,7 @@ if (
             <li class="menu__item <?php echo ($controllerName == "Courses") ? 'is-active' : ''; ?>">
                 <a href="<?php echo MyUtility::makeUrl('Courses'); ?>">
                     <svg class="icon icon--lesson margin-right-2">
-                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lessons'; ?>"></use>
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#all-courses'; ?>"></use>
                     </svg>
                     <span><?php echo Label::getLabel('LBL_ALL_COURSES'); ?></span>
                 </a>
@@ -60,7 +60,7 @@ if (
             <li class="menu__item <?php echo ($controllerName == "Resources") ? 'is-active' : ''; ?>">
                 <a href="<?php echo MyUtility::makeUrl('Resources'); ?>">
                     <svg class="icon icon--lesson margin-right-2">
-                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lessons'; ?>"></use>
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#resources'; ?>"></use>
                     </svg>
                     <span><?php echo Label::getLabel('LBL_COURSE_RESOURCES'); ?></span>
                 </a>
