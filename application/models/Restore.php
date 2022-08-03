@@ -15,7 +15,7 @@ class Restore extends FatModel
     const DATABASE_SECOND = 'yocoach87h1y172_v3demo_2';
 
     /* set restoration duration */
-    const RESTORE_TIME_INTERVAL_HOURS = 1;
+    const RESTORE_TIME_INTERVAL_HOURS = 4;
     const RESTORATION_SETUP_DATE = '2022-06-09 00:00:00';
 
     private $db;
