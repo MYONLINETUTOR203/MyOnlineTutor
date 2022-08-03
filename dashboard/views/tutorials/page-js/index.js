@@ -14,6 +14,8 @@ $(function () {
             });
         }
         $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
+        $('.tutorialTabsJs ul li').removeClass('is-active');
+        $('.crsDetailTabJs').parent().addClass('is-active');
         $('.lectureDetailJs').show();
     };
     getVideo = function (lectureId) {

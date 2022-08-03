@@ -73,8 +73,8 @@
                 </div>
             </div>
         </div>
-    </div><?php
-        } else { ?>
+    </div>
+<?php } else { ?>
     <div class="row justify-content-center">
         <div class="col-lg-7">
             <div class="message-display no-skin">
@@ -94,5 +94,5 @@
                 </a>
             </div>
         </div>
-    </div><?php
-        }
+    </div>
+<?php } ?>

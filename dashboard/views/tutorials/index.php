@@ -39,15 +39,10 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                     <h2 class="page-subtitle margin-bottom-6 lectureTitleJs"></h2>
                     <div class="section-links">
                         <div class="section-links__left">
-                            <nav class="tabs tabs--line border-bottom-0 tabs-scrollable-js">
+                            <nav class="tabs tabs--line border-bottom-0 tabs-scrollable-js tutorialTabsJs">
                                 <ul>
-                                    <li class="d-xl-none d-block">
-                                        <a href="javascript:void(0);">
-                                            <?php echo Label::getLabel('LBL_COURSE_LECTURE'); ?>
-                                        </a>
-                                    </li>
                                     <li class="is-active">
-                                        <a href="javascript:void(0);" onclick="loadLecture(0);">
+                                        <a href="javascript:void(0);" class="crsDetailTabJs" onclick="loadLecture(0);">
                                             <?php echo Label::getLabel('LBL_LECTURE_DETAIL'); ?>
                                         </a>
                                     </li>
