@@ -898,10 +898,15 @@ class Course extends MyAppModel
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+        $srch->joinTable(
+            Course::DB_TBL_REFUND_REQUEST, 'LEFT JOIN', 'corere.corere_ordcrs_id = ordcrs.ordcrs_id', 'corere'
+        );
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::COMPLETED);
-        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $hours . ' HOUR) < "' . date('Y-m-d H:i:s') . '"', 'AND');
+        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $hours . ' DAY) < "' . date('Y-m-d H:i:s') . '"', 'AND');
         $srch->addDirectCondition('ordcrs.ordcrs_teacher_paid IS NULL');
+        $cnd = $srch->addCondition('corere.corere_id', 'IS', 'mysql_func_NULL', 'AND', true);
+        $cnd->attachCondition('corere.corere_status', '=', static::REFUND_DECLINED);
         $srch->addOrder('ordcrs.ordcrs_id', 'ASC');
         $srch->addMultipleFields([
             'ordcrs_commission',
