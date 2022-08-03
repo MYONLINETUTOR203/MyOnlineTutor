@@ -79,14 +79,16 @@ if (count($arrListing) == 0) {
 }
 echo $tbl->getHtml();
 ?>
-<script>
-    $(document).ready(function() {
-        $('#courseLanguages').tableDnD({
-            onDrop: function(table, row) {
-                var order = $.tableDnD.serialize('id');
-                fcom.ajax(fcom.makeUrl('CourseLanguages', 'updateOrder'), order, function(res) {});
-            },
-            dragHandle: ".dragHandle",
+<?php if ($canEdit) { ?>
+    <script>
+        $(document).ready(function() {
+            $('#courseLanguages').tableDnD({
+                onDrop: function(table, row) {
+                    var order = $.tableDnD.serialize('id');
+                    fcom.updateWithAjax(fcom.makeUrl('CourseLanguages', 'updateOrder'), order, function(res) {});
+                },
+                dragHandle: ".dragHandle",
+            });
         });
-    });
-</script>
+    </script>
+<?php } ?>
