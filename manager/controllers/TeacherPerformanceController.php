@@ -51,6 +51,7 @@ class TeacherPerformanceController extends AdminBaseController
         $cond = $srch->addCondition('testat_students', '>', 0);
         $cond->attachCondition('testat_lessons', '>', 0);
         $cond->attachCondition('testat_classes', '>', 0);
+        $cond->attachCondition('testat_courses', '>', 0);
         $srch->addOrder('testat_ratings', 'DESC');
         $srch->addOrder('testat_students', 'DESC');
         $srch->addOrder('testat_lessons', 'DESC');

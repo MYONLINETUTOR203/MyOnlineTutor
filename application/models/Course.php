@@ -585,7 +585,7 @@ class Course extends MyAppModel
         $srch->addDirectCondition('section_deleted IS NULL');
         $srch->addFld('COUNT(section_id) as sections_count');
         $sections = FatApp::getDb()->fetch($srch->getResultSet());
-        if ($courseData['course_sections'] > 0 && $sections['sections_count'] > 0) {
+        if (($courseData && $courseData['course_sections'] > 0) && ($sections && $sections['sections_count'] > 0)) {
             $criteria['course_sections'] = 0;
         }
         /* get course lang data */
