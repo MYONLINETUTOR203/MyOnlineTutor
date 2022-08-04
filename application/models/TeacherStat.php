@@ -284,6 +284,7 @@ class TeacherStat extends FatModel
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->addCondition('course_user_id', '=', $this->userId);
+        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addFld('COUNT(course_id) AS testat_courses');
         $row = FatApp::getDb()->fetch($srch->getResultSet());
         /* update courses count */
