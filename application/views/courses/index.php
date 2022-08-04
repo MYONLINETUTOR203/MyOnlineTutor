@@ -1,6 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $keyword = $srchFrm->getField('keyword');
+$keyword->setFieldTagAttribute('title', Label::getLabel('LBL_BY_COURSE_NAME,_TEACHER_NAME,_TAGS'));
 $sorting = $srchFrm->getField('sorting');
 $priceSorting = $srchFrm->getField('price_sorting');
 $category = $srchFrm->getField('course_cate_id');
