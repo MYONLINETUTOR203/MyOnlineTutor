@@ -576,6 +576,18 @@ class Course extends MyAppModel
         if ($courseData) {
             $criteria = array_merge($criteria, $courseData);
         }
+        /* check sections without lectures */
+        $srch = new SearchBase(Section::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('section_course_id', '=', $courseId);
+        $srch->addCondition('section_lectures', '=', 0);
+        $srch->addDirectCondition('section_deleted IS NULL');
+        $srch->addFld('COUNT(section_id) as sections_count');
+        $sections = FatApp::getDb()->fetch($srch->getResultSet());
+        if ($courseData['course_sections'] > 0 && $sections['sections_count'] > 0) {
+            $criteria['course_sections'] = 0;
+        }
         /* get course lang data */
         $srch = new SearchBase(Course::DB_TBL_LANG);
         $srch->doNotCalculateRecords();

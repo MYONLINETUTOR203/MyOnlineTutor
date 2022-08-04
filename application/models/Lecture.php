@@ -243,7 +243,6 @@ class Lecture extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-
         $srch->addFld('COUNT(lecture_id) AS section_lectures');
         $srch->addFld('lecture_course_id');
         $srch->addCondition('lecture_section_id', '=', $sectionId);

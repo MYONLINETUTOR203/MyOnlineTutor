@@ -149,6 +149,7 @@ $(function () {
         });
     };
     setCompletedStatus = function (criteria) {
+        $('.general-info-js, .intended-learner-js, .course-price-js, .curriculum-js, .course-setting-js').removeClass('is-completed').addClass('is-progress');
         if (criteria.course_lang == 1 && criteria.course_image == 1 && criteria.course_preview_video == 1) {
             $('.general-info-js').removeClass('is-progress').addClass('is-completed');
         }
