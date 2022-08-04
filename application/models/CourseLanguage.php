@@ -42,6 +42,7 @@ class CourseLanguage extends MyAppModel
         if ($active) {
             $srch->addCondition('clang.clang_active', '=', AppConstant::ACTIVE);
         }
+        $srch->addCondition('clang.clang_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultiplefields(['clang_id', 'IFNULL(clang_name, clang_identifier) as clang_name']);
         $srch->doNotCalculateRecords();
         $srch->addOrder('clang_order');
