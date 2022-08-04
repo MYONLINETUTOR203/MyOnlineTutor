@@ -37,6 +37,7 @@ class CertificatesController extends AdminBaseController
     {
         $srch = CertificateTemplate::getSearchObject($this->siteLangId);
         $srch->addGroupBy('certpl_code');
+        $srch->addCondition('certpl_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $data = FatApp::getDb()->fetchAll($srch->getResultSet());
         
         $this->sets([

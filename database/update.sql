@@ -1223,3 +1223,5 @@ UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_t
 UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/admin/content-pages", "/teachers");
 
 ALTER TABLE `tbl_coupons`  DROP `coupon_deleted`;
+
+UPDATE `tbl_certificate_templates` SET certpl_deleted = NOW() WHERE certpl_code = 'course_evaluation_certificate';
