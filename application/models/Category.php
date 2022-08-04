@@ -273,13 +273,15 @@ class Category extends MyAppModel
         }
         $list = [];
         foreach ($parentCategories as $catId => $category) {
-            $list[$catId] = $category;
+            $list[$catId]['name'] = $category;
             $subCategories = static::getCategoriesByParentId($langId, $catId, $type, true);
+            $subCat = [];
             if (count($subCategories) > 0) {
                 foreach ($subCategories as $subCatId => $subCategory) {
-                    $list[$subCatId] = ' »» ' . $subCategory;
+                    $subCat[$subCatId] = $subCategory;
                 }
             }
+            $list[$catId]['sub_categories'] = $subCat;
         }
         return $list;
     }

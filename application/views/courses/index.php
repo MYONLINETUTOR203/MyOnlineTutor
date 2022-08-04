@@ -107,9 +107,23 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                 <label class="select-option">
                                                                     <input class="select-option__input" type="checkbox" name="course_cate_id[]" value="<?php echo $id; ?>">
                                                                     <span class="select-option__item categorySelectOptJs">
-                                                                        <?php echo strtolower($option) ?>
+                                                                        <?php echo strtolower($option['name']) ?>
                                                                     </span>
                                                                 </label>
+                                                                <?php if (count($option['sub_categories']) > 0) { ?>
+                                                                    <ul>
+                                                                        <?php foreach ($option['sub_categories'] as $sid => $name) { ?>
+                                                                            <li>
+                                                                                <label class="select-option">
+                                                                                    <input class="select-option__input" type="checkbox" name="course_cate_id[]" value="<?php echo $sid; ?>">
+                                                                                    <span class="select-option__item categorySelectOptJs">
+                                                                                        <?php echo strtolower($name) ?>
+                                                                                    </span>
+                                                                                </label>
+                                                                            </li>
+                                                                        <?php } ?>
+                                                                    </ul>
+                                                                <?php } ?>
                                                             </li>
                                                     <?php }
                                                     } ?>

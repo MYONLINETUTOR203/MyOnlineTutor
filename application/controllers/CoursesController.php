@@ -36,7 +36,7 @@ class CoursesController extends MyAppController
         $posts['pagesize'] = AppConstant::PAGESIZE;
         $posts['price_sorting'] = FatApp::getPostedData('price_sorting', FatUtility::VAR_INT, AppConstant::SORT_PRICE_ASC);
         $frm = CourseSearch::getSearchForm($this->siteLangId);
-        if (!$post = $frm->getFormDataFromArray($posts)) {
+        if (!$post = $frm->getFormDataFromArray($posts, ['course_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         $post['course_status'] = Course::PUBLISHED;

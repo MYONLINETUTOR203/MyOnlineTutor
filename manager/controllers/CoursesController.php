@@ -184,7 +184,7 @@ class CoursesController extends AdminBaseController
             '',
             ['id' => 'course_clang_id', 'autocomplete' => 'off']
         );
-        $categoryList = Category::getAll(Category::TYPE_COURSE, $this->siteLangId);
+        $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_COURSE, true);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList);
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', []);
         $frm->addHiddenField('', 'course_clang_id', '', ['id' => 'course_clang_id', 'autocomplete' => 'off']);
