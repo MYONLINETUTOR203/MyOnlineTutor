@@ -57,18 +57,15 @@ class FavoriteCoursesController extends DashboardController
         $srch->addOrder('ufc_id', 'DESC');
         $srch->setPageNumber($post['pageno']);
         $srch->setPageSize($post['pagesize']);
-        $courses = FatApp::getDb()->fetchAll($srch->getResultSet());
-        /* get categories */
-        $categoryIds = [];
-        array_map(function ($val) use (&$categoryIds) {
-            $categoryIds = array_merge($categoryIds, [$val['course_cate_id'], $val['course_subcate_id']]);
-        }, $courses);
-        $categoryIds = array_unique($categoryIds);
-        $categories = CourseSearch::getCategoryNames($this->siteLangId, $categoryIds);
+        $courses = $srch->fetchAndFormat();
+        /* checkout form */
+        $cart = new Cart($this->siteUserId, $this->siteLangId);
+        $checkoutForm = $cart->getCheckoutForm([0 => Label::getLabel('LBL_NA')]);
+        $checkoutForm->fill(['order_type' => Order::TYPE_COURSE]);
         $this->sets([
             'courses' => $courses,
             'post' => $post,
-            'categories' => $categories,
+            'checkoutForm' => $checkoutForm,
             'courseTypes' => Course::getTypes(),
             'recordCount' => $srch->recordCount()
         ]);

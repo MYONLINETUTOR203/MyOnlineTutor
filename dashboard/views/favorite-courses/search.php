@@ -17,8 +17,8 @@ if (count($courses) == 0) {
             <div class="card-course__colum card-course__colum--second">
                 <div class="card-course__head">
                     <small class="card-course__subtitle uppercase color-gray-900">
-                        <?php echo $categories[$course['course_cate_id']] ?? '' ?>
-                        <?php echo isset($categories[$course['course_subcate_id']]) ? ' / ' . $categories[$course['course_subcate_id']] : ''; ?>
+                        <?php echo $course['cate_name'] ?>
+                        <?php echo !empty($course['subcate_name']) ? ' / ' . $course['subcate_name'] : ''; ?>
                     </small>
                     <span class="card-course__title">
                         <?php echo $course['course_title'] ?>
@@ -78,6 +78,27 @@ if (count($courses) == 0) {
                             <?php echo Label::getLabel('LBL_UNFAVORITE'); ?>
                         </div>
                     </a>
+                    <?php if (!$course['is_purchased']) { ?>
+                        <?php if ($course['course_type'] == Course::TYPE_FREE) { ?>
+                            <a href="javascript:void(0);" onclick="cart.addFreeCourse('<?php echo $course['course_id'] ?>');" title="<?php echo Label::getLabel('LBL_ENROLL_NOW'); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                <svg class="icon icon--heart icon--18">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#enter"></use>
+                                </svg>
+                                <div class="tooltip tooltip--top bg-black">
+                                    <?php echo Label::getLabel('LBL_ENROLL_NOW'); ?>
+                                </div>
+                            </a>
+                        <?php } else { ?>
+                            <a href="javascript:void(0);" onclick="cart.addCourse('<?php echo $course['course_id'] ?>');" title="<?php echo Label::getLabel('LBL_ENROLL_NOW'); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                <svg class="icon icon--heart icon--18">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#enter"></use>
+                                </svg>
+                                <div class="tooltip tooltip--top bg-black">
+                                    <?php echo Label::getLabel('LBL_ENROLL_NOW'); ?>
+                                </div>
+                            </a>
+                        <?php } ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -91,6 +112,11 @@ $pagingArr = [
     'recordCount' => $recordCount,
     'callBackJsFunc' => 'goToSearchPage'
 ];
+
+$checkoutForm->setFormTagAttribute('class', 'd-none');
+$checkoutForm->setFormTagAttribute('name', 'frmCheckout');
+$checkoutForm->setFormTagAttribute('id', 'frmCheckout');
+echo $checkoutForm->getFormHtml();
 
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 echo FatUtility::createHiddenFormFromData($post, ['name' => 'frmPaging']);
