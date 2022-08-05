@@ -560,6 +560,8 @@ class AdminStatistic
         }
         $srch->addMultipleFields(['COUNT(user_id) AS totalUser']);
         $srch->addGroupBy("groupDate");
+        $srch->addOrder("YEAR(user_created)", 'ASC');
+        $srch->addOrder("MONTH(user_created)", 'ASC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'groupDate');
@@ -589,6 +591,8 @@ class AdminStatistic
         }
         $srch->addMultipleFields(['sum(IFNULL(slstat_les_earnings,0)) as les_earnings']);
         $srch->addGroupBy("groupDate");
+        $srch->addOrder("YEAR(slstat_date)", 'ASC');
+        $srch->addOrder("MONTH(slstat_date)", 'ASC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'groupDate');
@@ -618,6 +622,8 @@ class AdminStatistic
         }
         $srch->addMultipleFields(['sum(IFNULL(slstat_cls_earnings,0)) as cls_earnings']);
         $srch->addGroupBy("groupDate");
+        $srch->addOrder("YEAR(slstat_date)", 'ASC');
+        $srch->addOrder("MONTH(slstat_date)", 'ASC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'groupDate');
@@ -648,6 +654,8 @@ class AdminStatistic
         }
         $srch->addMultipleFields(['sum(IFNULL(slstat_crs_earnings,0)) as crs_earnings']);
         $srch->addGroupBy("groupDate");
+        $srch->addOrder("YEAR(slstat_date)", 'ASC');
+        $srch->addOrder("MONTH(slstat_date)", 'ASC');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'groupDate');
