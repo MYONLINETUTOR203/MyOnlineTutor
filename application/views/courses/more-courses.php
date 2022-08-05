@@ -19,8 +19,8 @@
                                 </svg>
                             </a>
                         <?php } ?>
-                        <span class="course-tag">
-                            <?php if ($crs['course_certificate'] == AppConstant::YES) { ?>
+                        <?php if ($crs['course_certificate'] == AppConstant::YES) { ?>
+                            <span class="course-tag">
                                 <svg class="icon icon--award margin-right-1">
                                     <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-course-certificate">
                                     </use>
@@ -28,8 +28,8 @@
                                 <span>
                                     <?php echo Label::getLabel('LBL_CERTIFICATE_OF_COMPLETION'); ?>
                                 </span>
-                            <?php } ?>
-                        </span>
+                            </span>
+                        <?php } ?>
                     </div>
                     <div class="card-tile__body">
                         <span class="card-tile__label">
