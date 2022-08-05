@@ -152,7 +152,7 @@ $durationType = MyDate::getDurationTypesArr();
                         <h3 class="counter" data-currency="0"><?php echo $stats['ALL_CANCELLED_COURSES'] ?? 0; ?></h3>
                         <p><?php echo Label::getLabel('LBL_THIS_MONTH'); ?> <strong><?php echo $stats['TM_CANCELLED_COURSES'] ?? 0; ?></strong></p>
                         <?php if ($objPrivilege->canViewCourses(true)) { ?>
-                            <a href="<?php echo MyUtility::makeUrl('Courses'); ?>" class="stats__link"></a>
+                            <a href="<?php echo MyUtility::makeUrl('CourseRefundRequests'); ?>" class="stats__link"></a>
                         <?php } ?>
                     </div>
                 </div>
