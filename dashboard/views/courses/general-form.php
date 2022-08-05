@@ -61,8 +61,8 @@ $courseId = $courseIdFld->value;
                                         </label>
                                     </div>
                                     <div class="field-wraper">
-                                        <?php $strLen = 255 - strlen($titleFld->value); ?>
-                                        <div class="field_cover field-count" data-length="255" field-count="<?php echo $strLen; ?>">
+                                        <?php $strLen = 80 - strlen($titleFld->value); ?>
+                                        <div class="field_cover field-count" data-length="80" field-count="<?php echo $strLen; ?>">
                                             <?php echo $titleFld->getHtml(); ?>
                                         </div>
                                     </div>
@@ -79,8 +79,8 @@ $courseId = $courseIdFld->value;
                                         </label>
                                     </div>
                                     <div class="field-wraper">
-                                        <?php $strLen = 255 - strlen($subTitleFld->value); ?>
-                                        <div class="field_cover field-count" data-length="255" field-count="<?php echo $strLen; ?>">
+                                        <?php $strLen = 160 - strlen($subTitleFld->value); ?>
+                                        <div class="field_cover field-count" data-length="160" field-count="<?php echo $strLen; ?>">
                                             <?php echo $subTitleFld->getHtml(); ?>
                                         </div>
                                     </div>
