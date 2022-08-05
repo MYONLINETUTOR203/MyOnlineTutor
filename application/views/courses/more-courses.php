@@ -66,11 +66,15 @@
                     <div class="card-tile__footer">
                         <div class="d-flex align-items-center">
                             <div class="padding-right-4">
-                                <h4 class="color-primary bold-700">
-                                    <?php
-                                    echo CourseUtility::formatMoney($crs['course_price']);
-                                    ?>
-                                </h4>
+                                <?php if ($crs['course_type'] != Course::TYPE_FREE) { ?>
+                                    <h4 class="color-primary bold-700">
+                                        <?php echo CourseUtility::formatMoney($crs['course_price']); ?>
+                                    </h4>
+                                <?php } else { ?>
+                                    <h4 class="free-text color-red bold-700">
+                                        <?php echo Label::getLabel('LBL_FREE'); ?>
+                                    </h4>
+                                <?php } ?>
                             </div>
                             <div>
                                 <div class="rating">
