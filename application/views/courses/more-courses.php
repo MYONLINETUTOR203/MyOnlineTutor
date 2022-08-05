@@ -42,7 +42,8 @@
                         </span>
                         <h5 class="card-tile__title">
                             <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$crs['course_slug']]); ?>" class="snakeline-hover">
-                                <?php echo $crs['course_title']; ?>
+                                <?php 
+                                echo (strlen($crs['course_title']) > 70) ? substr($crs['course_title'], 0, 70) . '...' : $crs['course_title']; ?>
                             </a>
                         </h5>
                         <div class="card-element">
