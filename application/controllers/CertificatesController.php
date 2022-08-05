@@ -46,9 +46,13 @@ class CertificatesController extends MyAppController
             'teacher.user_first_name AS teacher_id',
             'learner.user_country_id',
             'orders.order_user_id',
+            'ordcrs_certificate_number'
         ]);
         $srch->addCondition('ordcrs_id', '=', $ordcrsId);
         if (!$order = FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        if (empty($order['ordcrs_certificate_number'])) {
             FatUtility::exitWithErrorCode(404);
         }
         /* get country name */

@@ -34,8 +34,8 @@ class CertificatesController extends DashboardController
         if (!$data['crspro_completed']) {
             FatUtility::exitWithErrorCode(404);
         }
-        $srch = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$ordcrsData = $srch->getOrderCourseById()) {
+        $ordcrs = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
+        if (!$ordcrsData = $ordcrs->getOrderCourseById()) {
             FatUtility::exitWithErrorCode(404);
         }
         /* return if course do not offer certificate */
@@ -47,6 +47,9 @@ class CertificatesController extends DashboardController
             /* generate certificate */
             $cert = new Certificate($data['crspro_ordcrs_id'], $this->siteUserId, $this->siteLangId);
             if (!$cert->setup()) {
+                /* reset certificate number */
+                $ordcrs->setFldValue('ordcrs_certificate_number', '');
+                $ordcrs->save();
                 FatUtility::dieWithError($cert->getError());
             }
         }
