@@ -1,5 +1,73 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.1.20220805
+
+Fixes:
+
+	Bug-065594 - Course refund request datetime is not coming in the admin timezone
+	Bug-065592 - Course order datetime is not coming in the admin timezone
+	Bug-065595 - Teacher name is coming instead of learner name in course refund request
+	Bug-065593 - Keyword search is not working on the basis of order id
+	Bug-065590 - Pagination is not working on the course orders page
+	Bug-065463 - There should be option to change status of the course in the listing
+	Bug-065559 - Course resources count is not coming correct
+	Bug-065609 - Pagination is not working on course refund request page 
+	Bug-065608 - Admin permission is not there for course orders module
+	Bug-065611 - Completed course note is coming although course status is pending
+	Bug-065612 - Course status remains pending if course cancellation approved directly or by admin
+	Bug-065459 - Data is not aligned properly if the teacher has no last name
+	Bug-065610 - User is not getting "course refund request" status change email
+	Bug-065589 - Admin is not getting course cancellation request email
+	Bug-065373 - For gif resource file, jpg file type icon is coming
+	Bug-065536 - Course purchase related emails are not going to anyone
+	Bug-065867 - Fatal error is coming when opening courses meta tags tab
+	Bug-065848 - Left menu, List Icon are not same as HTML design Page
+	Bug-065830 - If Sub-admin doesn't have permission to write then he is not getting an Error message when trying to change the Status 
+	Bug-065831 - If Sub-admin doesn't have permission to write then he is not getting an Error message when trying to change the list of the arrangements
+	Bug-065826 - After the Rearrangement of the list, Sr-no is not updating in real-time 
+	Bug-065823 - The Title of the Pop up is wrong on other sub-tab page
+	Bug-065822 - If User try to Switch sub tab without saving General Data while add new then display InValid Toast Message
+	Bug-065785 - Notice is coming when changing course review status
+	Bug-065784 - Teacher reviews menu is coming active when the course reviews page is open
+	Bug-065808 - Error message should be meaningful when marking already favorite course as favorite
+	Bug-065800 - Course category/subcategory should come instead of subtitle in favorite courses listing
+	Bug-065801 - Learner courses display order should be latest pending, inprogress, completed and cancelled
+	Bug-065797 - Favorite courses menu is not active when its page is open
+	Bug-065798 - Favorite courses menu is not coming when teacher switch to learner profile 
+	Bug-065789 - The learner is able to preview the teacher's courses 
+	Bug-065780 - When changing lectures then open tab is not coming correct
+	Bug-065794 - Sections are not coming as per the display order in the learning page
+	Bug-065792 - Lecture resource icos is not coming correct on the learning page
+	Bug-065782 - Unable to add section if existing section edit is open
+	Bug-065775 - Teacher got paid for the course on which cancellation request is created
+	Bug-065774 - Teacher got paid before the cancellation time ends
+	Bug-065788 - Course rating is coming if its status is changed to pending or declined from approved
+	Bug-065556 - Course evaluation certificate should not come
+	Bug-065913 - Deleted course languages are coming in the course setup
+	Bug-065912 - Deleted course languages are coming in the course language filter
+	Bug-065814 - “Enroll now” button is not available on unpurchased courses in the favorite courses listing
+	Bug-065818 - If section have no lecture then its counted in count but its detail is not coming
+	Bug-065899 - Published courses are not coming in the sitemap
+	Bug-065908 - Teacher is not coming in teacher performance report
+	Bug-065911 - Courses count is not coming correct in teacher performance report
+	Bug-065938 - When No lecture is added then Extra space display in the section
+	Bug-065929 - Full content is not displaying properly when mouse hover on the half text
+	Bug-065926 - Sub Category in Search Filter is missing
+	Bug-065931 - The certificate is not displayed on the page
+	Bug-065953 - Report generated on date is not coming in dashboard, sales and settlement reports
+	Bug-065952 - Correct page is not opening when clicking on cancelled courses tile
+	Bug-065951 - Course orders page is not opening when clicking on course revenue tile 
+	Bug-065959 - Lecture preview video is playing in backend after closing the video popup 
+	Bug-065958 - Course video is playing in backend after closing the video popup
+	Bug-065909 - Section Title and description Character limit is not same as HTML design page
+	Bug-065907 - Course Title and Subtitle Character limit is not same as HTML design page
+	Bug-065918 - Course complete Content is missing as per HTML design page
+	Bug-065955 - Months are not coming in sequence in admin commission graph 
+	Bug-065990 - Status Wise Course Status Text is not displaying in a different Color 
+	Bug-065985 - If the Course is for free then display Free Text in place of Prise Text
+	Bug-065980 - White Lable is displayed on the Course List page when there is no certification available
+	Bug-065961 - Reviews numbering is not coming correct on second page of pagination
+	Bug-065954 - Option is not available to set the commission for courses 
 ## TV-4.1.0.20220721
 
 Features:
