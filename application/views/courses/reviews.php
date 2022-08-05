@@ -40,6 +40,9 @@
                     <span class="review__author">
                         <?php echo $review['user_first_name'] . ' ' . $review['user_last_name']; ?>
                     </span>
+                    <span class="review__title">
+                        <?php echo $review['ratrev_title']; ?>
+                    </span>
                     <div class="review__meta">
                         <div class="review__rating">
                             <div class="rating">
