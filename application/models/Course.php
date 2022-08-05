@@ -795,7 +795,6 @@ class Course extends MyAppModel
             'course.course_user_id',
             'course.course_reviews',
             'course.course_ratings',
-            'course.course_lectures',
             'course.course_certificate',
         ]);
         $srch->setPageSize(1);

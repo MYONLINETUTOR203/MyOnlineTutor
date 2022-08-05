@@ -37,23 +37,29 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                         <div class="course-progress__content align-center d-block">
                             <?php
                             if ($progress['crspro_completed']) { ?>
+                                <p class="margin-bottom-2">
+                                    <?php
+                                    $label = Label::getLabel('LBL_{completed-lectures}_OF_{total-lectures}_COMPLETE.');
+                                    echo str_replace(
+                                        ['{completed-lectures}', '{total-lectures}'], $course['course_lectures'], $label
+                                    );
+                                    ?>
+                                </p>
                                 <p class="margin-bottom-5 bold-600">
                                     <?php echo Label::getLabel('LBL_CONGRATULATIONS!_YOUR_COURSE_HAS_BEEN_SUCCESSFULLY_COMPLETED'); ?>
                                 </p>
-                                <?php
-                                if ($course['course_certificate'] == AppConstant::YES) { ?>
+                                <?php if ($course['course_certificate'] == AppConstant::YES) { ?>
                                     <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$progressId], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--secondary margin-left-4">
                                         <svg class="icon icon--small margin-right-2">
                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
                                         </svg>
                                         <?php echo Label::getLabel('LBL_DOWNLOAD_CERTIFICATE'); ?>
-                                    </a><?php
-                                }
-                            } else { ?>
+                                    </a>
+                                <?php } ?>
+                            <?php } else { ?>
                                 <h6 class="margin-0"><?php echo $label; ?></h6>
-                                <small class="progressPercent"><?php echo $progressLbl; ?></small><?php
-                            }
-                            ?>
+                                <small class="progressPercent"><?php echo $progressLbl; ?></small>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
