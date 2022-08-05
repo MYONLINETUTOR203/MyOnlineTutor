@@ -42,7 +42,7 @@ $durationType = MyDate::getDurationTypesArr();
                         <h3 class="counter" data-currency="1"><?php echo MyUtility::formatMoney($stats['ALL_COURSES_REVENUE'] ?? 0); ?></h3>
                         <p><?php echo Label::getLabel('LBL_THIS_MONTH'); ?> <strong><?php echo MyUtility::formatMoney($stats['TM_COURSES_REVENUE'] ?? 0); ?></strong></p>
                         <?php if ($objPrivilege->canViewCourses(true)) { ?>
-                            <a href="<?php echo MyUtility::makeUrl('Courses'); ?>" class="stats__link"></a>
+                            <a href="<?php echo MyUtility::makeUrl('CourseOrders'); ?>" class="stats__link"></a>
                         <?php } ?>
                     </div>
                 </div>
