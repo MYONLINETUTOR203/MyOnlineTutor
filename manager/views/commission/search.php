@@ -6,6 +6,7 @@ $arrFlds = [
     'comm_user_id' => Label::getLabel('LBL_TEACHER'),
     'comm_lessons' => Label::getLabel('LBL_LESSON_FEES_[%]'),
     'comm_classes' => Label::getLabel('LBL_CLASS_FEES_[%]'),
+    'comm_courses' => Label::getLabel('LBL_COURSES_FEES_[%]'),
     'action' => Label::getLabel('LBL_ACTION')
 ];
 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive']);

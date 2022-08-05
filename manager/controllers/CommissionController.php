@@ -43,7 +43,7 @@ class CommissionController extends AdminBaseController
         }
         $srch = new SearchBase(Commission::DB_TBL, 'comm');
         $srch->joinTable(User::DB_TBL, 'LEFT JOIN', 'comm.comm_user_id = user.user_id', 'user');
-        $srch->addMultipleFields(['comm_lessons', 'comm_id', 'comm_classes', 'user.user_id', 'user.user_first_name', 'user.user_last_name']);
+        $srch->addMultipleFields(['comm_lessons', 'comm_id', 'comm_classes', 'comm_courses', 'user.user_id', 'user.user_first_name', 'user.user_last_name']);
         if (!empty($post['keyword'])) {
             $srch->addCondition('mysql_func_CONCAT(user.user_first_name, " ", user.user_last_name)', 'LIKE', '%' . $post['keyword'] . '%', 'AND', true);
         }
@@ -163,6 +163,8 @@ class CommissionController extends AdminBaseController
         $fld->requirements()->setRange(1, 100);
         $fld = $frm->addFloatField(Label::getLabel('LBL_CLASS_COMMISSION_FEES_[%]'), 'comm_classes');
         $fld->requirements()->setRange(1, 100);
+        $fld = $frm->addFloatField(Label::getLabel('LBL_COURSE_COMMISSION_FEES_[%]'), 'comm_courses');
+        $fld->requirements()->setRange(1, 100);
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
         return $frm;
     }
@@ -218,7 +220,7 @@ class CommissionController extends AdminBaseController
     private function getCommission(int $teacherId)
     {
         $srch = new SearchBase(Commission::DB_TBL);
-        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_id']);
+        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_courses', 'comm_id']);
         if (!empty($teacherId)) {
             $srch->addCondition('comm_user_id', '=', $teacherId);
         } else {

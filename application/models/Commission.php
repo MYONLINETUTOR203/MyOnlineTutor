@@ -60,6 +60,7 @@ class Commission extends MyAppModel
             'comhis_user_id' => $data['comm_user_id'],
             'comhis_lessons' => $data['comm_lessons'],
             'comhis_classes' => $data['comm_classes'],
+            'comhis_courses' => $data['comm_courses'],
             'comhis_created' => date('Y-m-d H:i:s'),
         ];
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_HISTORY, $assignValues)) {
