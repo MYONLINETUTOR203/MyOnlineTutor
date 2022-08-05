@@ -240,7 +240,9 @@ $(document).ready(function () {
             $.facebox(resp);
         });
     };
-
+    $(document).bind('close.facebox', function () {
+        $('#facebox .content').empty();
+    });
     let options = [];
     $('select[name="keyword"]').select2({
         placeholder: langLbl.courseSrchPlaceholder,

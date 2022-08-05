@@ -15,6 +15,9 @@ $(document).ready(function () {
             }
         });
     };
+    $(document).bind('close.facebox', function () {
+        $('#facebox .content').empty();
+    });
     sortReviews = function (val) {
         document.reviewFrm.sorting.value = val;
         reviews();
