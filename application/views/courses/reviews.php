@@ -4,10 +4,12 @@
         <div class="col-sm-auto">
             <p class="margin-0">
                 <?php
-                $label = Label::getLabel('LBL_DISPLAYING_REVIEWS_{count}_OF_{total}');
+                $label = Label::getLabel('LBL_DISPLAYING_REVIEWS_{start-count}_TO_{end-count}_OF_{total}');
+                $start = (($post['pageno'] - 1) * AppConstant::PAGESIZE + 1);
+                $end = ($recordCount < $start + AppConstant::PAGESIZE - 1) ? $recordCount : $start + AppConstant::PAGESIZE - 1;
                 echo str_replace(
-                    ['{count}', '{total}'],
-                    [count($reviews), $recordCount],
+                    ['{start-count}', '{end-count}', '{total}'],
+                    [$start, $end, $recordCount],
                     $label
                 );
                 ?>
@@ -62,8 +64,6 @@
                     </div>
                 </div>
             </div>
-            <?php //echo $review['ratrev_title']; 
-            ?>
     <?php }
     } else {
         echo Label::getLabel('LBL_NO_REVIEWS_POSTED');
