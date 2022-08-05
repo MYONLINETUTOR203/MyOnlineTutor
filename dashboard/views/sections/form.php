@@ -18,7 +18,7 @@ if ($sectionId > 0) {
 }
 $submitFld = $frm->getField('btn_submit');
 $submitFld->setFieldTagAttribute('class', 'hide-js');
-$titleLength = 255;
+$titleLength = 80;
 $descLength = 300;
 
 if ($sectionId > 0) { ?>

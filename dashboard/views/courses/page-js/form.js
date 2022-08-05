@@ -179,7 +179,7 @@ $(function () {
             } else {
                 $('#courseSectionOrderJs').val(parseInt(section_order) + 1);
                 $('#sectionFormAreaJs').append(res);
-                $('body, html').animate({ scrollTop: $("#sectionForm" + section_order).offset().top }, 1000);
+                $('body, html').animate({ scrollTop: $("#sectionForm" + section_order + '1').offset().top }, 1000);
             }
         });
     };
