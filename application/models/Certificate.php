@@ -117,7 +117,7 @@ class Certificate extends MyAppModel
      */
     public function getFormattedContent(array $data)
     {
-        $srch = CertificateTemplate::getSearchObject($data['user_lang_id']);
+        $srch = CertificateTemplate::getSearchObject($data['lang_id']);
         $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
         if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');

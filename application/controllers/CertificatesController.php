@@ -90,18 +90,18 @@ class CertificatesController extends MyAppController
      */
     public function generate(string $token)
     {
-        $tokenObj = new TempToken();
-        if (!$tokenData = $tokenObj->verify($token)) {
-            FatUtility::dieWithError(Label::getLabel('LBL_THIS_URL_HAS_EXPIRED'));
-        }
+        // $tokenObj = new TempToken();
+        // if (!$tokenData = $tokenObj->verify($token)) {
+        //     FatUtility::dieWithError(Label::getLabel('LBL_THIS_URL_HAS_EXPIRED'));
+        // }
+        $ordcrsId = 47;//$tokenData['tmptok_ordcrs_id'];
         if (
-            !$certificate = Certificate::getAttributesById($tokenData['tmptok_ordcrs_id'], [
+            !$certificate = Certificate::getAttributesById($ordcrsId, [
                 'ordcrs_certificate_number',
             ])
         ) {
             FatUtility::dieWithError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $ordcrsId = $tokenData['tmptok_ordcrs_id'];
         /* get course data */
         $cert = new Certificate(0, $this->siteUserId, $this->siteLangId);
         if (!$data = $cert->getDataForCertificate($ordcrsId)) {
@@ -109,12 +109,50 @@ class CertificatesController extends MyAppController
         }
         /* get certificate template */
         $data['cert_number'] = $certificate['ordcrs_certificate_number'];
+        $data['lang_id'] = $this->siteLangId;
         if (!$content = $cert->getFormattedContent($data)) {
             FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
         }
         $this->set('content', $content);
-        $this->set('layoutDir', Language::getAttributesById($data['user_lang_id'], 'language_direction'));
-        $this->_template->render(false, false);
+        $layoutDir = Language::getAttributesById($this->siteLangId, 'language_direction');
+        $this->set('layoutDir', $layoutDir);
+        // $this->_template->render(false, false, 'certificates/generate.php');
+        // die;
+        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
+
+
+
+        $pdf = new TCPDF('L');
+        $pdf->AddPage('L', "A4");
+        $file = 'abc';
+        $width = 297;
+        $height = 210;
+        $img_file = MyUtility::makeFullUrl('image', 'show', [Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0, Afile::SIZE_LARGE], CONF_WEBROOT_FRONTEND) . '?time=' . time();
+
+
+
+        // $pdf->SetFont('aealarabiya', '', 14);
+        $auto_page_break = $pdf->getAutoPageBreak();
+        $pdf->SetAutoPageBreak(false, 0);
+        // $pdf->setRTL(($layoutDir == 'rtl'));
+        $pdf->Image($img_file, 0, 0, $width, $height, '', '', '', false, 300, '', false, false, 0);
+        $pdf->SetAutoPageBreak($auto_page_break);
+
+        $pdf->writeHTML($content, false, 0, false, false, '');
+        // writeHTML($html, $ln = true, $fill = false, $reseth = false, $cell = false, $align = '')
+        // $y = $pdf->getY();
+        // $pdf->writeHTMLCell(80, '', 30, 190, 'Tutor: <b>Iqbal Kaur</b>', 1, 0, 1, true, 'J', true);
+        // $pdf->writeHTMLCell(80, '', 125, '', 'Tutor: <b>Iqbal Kaur</b>', 1, 1, 1, true, 'J', true);
+        // $pdf->writeHTMLCell(80, '', 220, '', 'Certificate No.: <b>Iqbal Kaur</b>', 1, 2, 1, true, 'J', true);
+
+
+        /* get file path and save */
+        $pdf->Output(CONF_UPLOADS_PATH . $file . '.pdf', 'I');
+
+
+
+
+        die;
     }
 
     /**
