@@ -596,7 +596,7 @@ class CoursesController extends DashboardController
             if (!$user->setupFavoriteCourse($courseId)) {
                 FatUtility::dieJsonError($user->getError());
             }
-            FatUtility::dieJsonSuccess(Label::getLabel('LBL_SETUP_SUCCESSFUL'));
+            FatUtility::dieJsonSuccess(Label::getLabel('LBL_COURSE_ADDED_TO_FAVORITES'));
         }
         /* remove from favorites */
         $where = [
@@ -606,7 +606,7 @@ class CoursesController extends DashboardController
         if (!$db->deleteRecords(User::DB_TBL_COURSE_FAVORITE, $where)) {
             FatUtility::dieJsonError($db->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_SETUP_SUCCESSFUL'));
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_COURSE_REMOVED_FROM_FAVORITES'));
     }
 
     /**
