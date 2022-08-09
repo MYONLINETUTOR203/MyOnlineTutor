@@ -51,7 +51,7 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
-                                <dd><?php echo $requestData['course_details']; ?></dd>
+                                <dd><?php echo CommonHelper::renderHtml($requestData['course_details']); ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_PRICE'); ?></dt>
