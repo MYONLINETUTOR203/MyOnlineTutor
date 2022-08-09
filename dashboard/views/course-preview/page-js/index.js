@@ -125,6 +125,7 @@ $(function () {
     };
     clearNotesSearch = function () {
         document.frmNotesSearch.reset();
+        $('.notesHeadJs .form-search__action--reset').hide();
         notesSearch(document.frmNotesSearch);
     };
     goToNotesSearchPage = function (page) {
