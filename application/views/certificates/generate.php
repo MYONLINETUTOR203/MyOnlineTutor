@@ -31,7 +31,7 @@
                         <td>
                             <table border="1" cellspacing="1" style="width:100%">
                                 <tr>
-                                    <td align="<?php echo ($layoutDir == 'ltr') ? 'left' : 'right'; ?>" style="text-align:left;font-size:12px;line-height:10px;width:33%;">
+                                    <td class="certificate-signs__left" align="<?php echo ($layoutDir == 'ltr') ? 'left' : 'right'; ?>" style="font-size:12px;line-height:10px;width:33%;">
                                         <?php echo Label::getLabel('LBL_TUTOR:'); ?>
                                         <b>
                                             <?php echo $content['trainer'] ?>
@@ -40,7 +40,7 @@
                                     <td align="center" style="line-height:10px;width:33%; text-align:center;">
                                         <img align="middle" src="<?php echo MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_FRONT_LOGO, 0, Afile::SIZE_MEDIUM]); ?>" alt="" />
                                     </td>
-                                    <td align="<?php echo ($layoutDir == 'ltr') ? 'right' : 'left'; ?>" style="text-align:right;font-size:12px;line-height:10px;width:33%">
+                                    <td class="certificate-signs__right" align="<?php echo ($layoutDir == 'ltr') ? 'right' : 'left'; ?>" style="font-size:12px;line-height:10px;width:33%">
                                         <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:'); ?>
                                         <b>
                                             <?php echo $content['certificate_number'] ?>
@@ -55,27 +55,26 @@
             <td width="5%"></td>
         </tr>
     </table>
-    <!-- <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-            <td style="width:33.3%;">
-
-            </td>
-            <td style="width:33.3%;" >
-
-            </td>
-            <td style="width:33.3%;" >
-
-            </td>
-        </tr>
-    </table> -->
 </div>
 <style>
     * {
-        /* font-size: 18px; */
         line-height: 32px;
     }
 
-    .layout--rtl .certificate {
+    .layout--rtl table,
+    .layout--rtl table td {
         direction: rtl;
+    }
+
+    .layout--rtl .certificate-signs__left {
+        left: auto;
+        right: 0;
+        text-align: right;
+    }
+
+    .layout--rtl .certificate-signs__right {
+        left: 0;
+        right: auto;
+        text-align: left;
     }
 </style>
