@@ -499,13 +499,7 @@ $levels = Course::getCourseLevels();
                                                                                     <?php } ?>
                                                                                     <span class="course-topic__time">
                                                                                         <?php
-                                                                                        $duration = YouTube::convertDuration($lesson['lecture_duration'], true, true, true);
-                                                                                        $duration = str_replace(
-                                                                                            ['h', 'm', 's', ' '],
-                                                                                            ['', '', '', ':'],
-                                                                                            $duration
-                                                                                        );
-                                                                                        echo (!empty($duration)) ? $duration : '';
+                                                                                        echo $duration = YouTube::convertDuration($lesson['lecture_duration'], true, true, true, false);
                                                                                         ?>
                                                                                     </span>
                                                                                 </div>
