@@ -59,6 +59,6 @@ if (count($arrListing) == 0) {
     $tbl->appendElement('tr')->appendElement('td', ['colspan' => count($arrFlds)], Label::getLabel('LBL_NO_RECORDS_FOUND'));
 }
 echo $tbl->getHtml();
-echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmCommPaging']);
+echo FatUtility::createHiddenFormFromData($postedData, ['name' => 'frmPaging']);
 $pagingArr = ['pageCount' => ceil($recordCount / $pageSize), 'page' => $page, 'pageSize' => $pageSize, 'recordCount' => $recordCount];
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
