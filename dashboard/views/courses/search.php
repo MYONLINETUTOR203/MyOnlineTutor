@@ -185,12 +185,12 @@ $requestStatuses = Course::getRefundStatuses();
                         </a>
                     <?php } ?>
                     <?php if ($course['can_download_certificate']) { ?>
-                        <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$course['crspro_id']], CONF_WEBROOT_DASHBOARD); ?>" target="_blank" title="<?php echo Label::getLabel('LBL_DONWLOAD_CERTIFICATE'); ?>" class="btn btn--equal btn--shadow btn--bordered is-hover margin-1">
+                        <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$course['crspro_id']], CONF_WEBROOT_DASHBOARD); ?>" target="_blank" title="<?php echo Label::getLabel('LBL_DOWNLOAD_CERTIFICATE'); ?>" class="btn btn--equal btn--shadow btn--bordered is-hover margin-1">
                             <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#download-icon"></use>
                             </svg>
                             <div class="tooltip tooltip--top bg-black">
-                                <?php echo Label::getLabel('LBL_DONWLOAD_CERTIFICATE'); ?>
+                                <?php echo Label::getLabel('LBL_DOWNLOAD_CERTIFICATE'); ?>
                             </div>
                         </a>
                     <?php } ?>

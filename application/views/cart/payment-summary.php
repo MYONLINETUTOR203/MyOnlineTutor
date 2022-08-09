@@ -153,7 +153,7 @@ $steps = Cart::getSteps();
                         <?php } ?>
                         <?php if ($addAndPay == AppConstant::YES && $walletBalance > 0 && $walletBalance < $cartNetAmount) { ?>
                             <div class="payment__row">
-                                <div><b><?php echo Label::getLabel('LBL_WALLET_DETUCTION'); ?></b></div>
+                                <div><b><?php echo Label::getLabel('LBL_WALLET_DEDUCTION'); ?></b></div>
                                 <div><b><?php echo '-' . MyUtility::formatMoney($walletBalance); ?></b></div>
                             </div>
                             <div class="payment__row">
