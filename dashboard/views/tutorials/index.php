@@ -16,7 +16,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
     <!-- [ BODY PANEL ========= -->
     <div class="body-panel">
         <div class="section-intro videoContentJs">
-            
+
         </div>
         <div class="section-layout">
             <div class="section-layout__head">
@@ -41,6 +41,11 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                         <div class="section-links__left">
                             <nav class="tabs tabs--line border-bottom-0 tabs-scrollable-js tutorialTabsJs">
                                 <ul>
+                                    <li class="d-xl-none d-block responsive-toggle-js">
+                                        <a href="javascript:void(0);">
+                                            <?php echo Label::getLabel('LBL_COURSE_LECTURES'); ?>
+                                        </a>
+                                    </li>
                                     <li class="is-active">
                                         <a href="javascript:void(0);" class="crsDetailTabJs" onclick="loadLecture(0);">
                                             <?php echo Label::getLabel('LBL_LECTURE_DETAIL'); ?>
@@ -73,7 +78,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                 <div class="container">
                     <!-- [ BODY RIGHT PANEL ========= -->
                     <sidebar class="body-side">
-                        <div class="toggle-control-list responsive-target-js">
+                        <div class="toggle-control-list responsive-target-js sidebarPanelJs">
                             <?php
                             if ($sections) {
                                 $i = 1;
@@ -88,7 +93,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                             </h6>
                                             <p>
                                                 <span class="completedLecture<?php echo $section['section_id'] ?>">
-                                                    <?php echo isset($lectureStats[$section['section_id']]) ? count($lectureStats[$section['section_id']]) : 0;?>
+                                                    <?php echo isset($lectureStats[$section['section_id']]) ? count($lectureStats[$section['section_id']]) : 0; ?>
                                                 </span>
                                                 <?php
                                                 echo ' / ' . $section['section_lectures'];
@@ -105,7 +110,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                                     foreach ($section['lectures'] as $lesson) {
                                                         $isCovered = (in_array($lesson['lecture_id'], $lectureStats[$section['section_id']])) ? true : false;
                                                         $isActive = ($progress['crspro_lecture_id'] == $lesson['lecture_id']) ? 'is-active' : '';
-                                                        ?>
+                                                ?>
                                                         <div class="lecture <?php echo $isActive; ?>" id="lectureJs<?php echo $lesson['lecture_id']; ?>">
                                                             <div class="lecture__control is-hover">
                                                                 <label class="lecture-checkbox">
@@ -148,22 +153,22 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                                                 </div>
                                                             </div>
                                                         </div><?php
-                                                        $i++;
-                                                    }
-                                                }
-                                                ?>
+                                                                $i++;
+                                                            }
+                                                        }
+                                                                ?>
                                             </div>
                                         </div>
                                     </div><?php
-                                }
-                            }
-                            ?>
+                                        }
+                                    }
+                                            ?>
                         </div>
                     </sidebar>
                     <!-- ] -->
                     <!-- [ TAB CONTENT PANEL ========= -->
-                    <div class="content-area responsive-target-js">
-                        <div class="lectureDetailJs"  style="display: none;">
+                    <div class="content-area responsive-target-js tabsPanelJs">
+                        <div class="lectureDetailJs" style="display: none;">
                         </div>
                         <div class="row justify-content-center notesJs" style="display: none;"></div>
                         <div class="row justify-content-center reviewsJs" style="display: none;"></div>
