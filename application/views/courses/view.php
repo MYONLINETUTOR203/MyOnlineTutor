@@ -602,14 +602,16 @@ $levels = Course::getCourseLevels();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="author-bio__body margin-top-10">
-                                            <h5 class="bold-700 margin-bottom-3">
-                                                <?php echo Label::getLabel('LBL_BIOGRAPHY'); ?>
-                                            </h5>
-                                            <div class="author-box__desc">
-                                                <p><?php echo $course['user_biography'] ?></p>
+                                        <?php if (!empty($course['user_biography'])) { ?>
+                                            <div class="author-bio__body margin-top-10">
+                                                <h5 class="bold-700 margin-bottom-3">
+                                                    <?php echo Label::getLabel('LBL_BIOGRAPHY'); ?>
+                                                </h5>
+                                                <div class="author-box__desc">
+                                                    <p><?php echo $course['user_biography'] ?></p>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
