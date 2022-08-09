@@ -43,22 +43,14 @@ class RestoreSystemController extends MyAppController
         if (!FatUtility::isAjaxCall()) {
             FatUtility::dieWithError('Unauthorized Access!!');
         }
-
         if ($this->isRestoredSuccessfully()) {
             $currentDb = CONF_DB_NAME;
             $this->db->startTransaction();
-
-            /* Reset user-uploads files and folders from backup */
-            if (!$this->switchUserUploads()) {
-                $this->db->rollbackTransaction();
-                FatUtility::dieJsonError('Unable to restore data');
-            }
             /* Re-write the config settings to connect previously restored db */
             if (!$this->writeSettings(CONF_DB_SERVER, CONF_DB_USER, CONF_DB_PASS, $this->restoredDb)) {
                 $this->db->rollbackTransaction();
                 FatUtility::dieJsonError('Unable to restore data');
             }
-
             /* set next restoration time for the previously restored or to be connected db */
             if (!$this->resetRestoreTime($this->restoredDb)) {
                 $this->db->rollbackTransaction();
@@ -72,7 +64,6 @@ class RestoreSystemController extends MyAppController
         } else {
             /* set next restoration time for the previously restored or to be connected db */
             $this->resetRestoreTime(CONF_DB_NAME);
-
             /* @TODO : Send an email notification */
         }
         FatUtility::dieJsonSuccess('Restored Successfully!');
@@ -117,7 +108,6 @@ class RestoreSystemController extends MyAppController
             /* set restoration time according to the defined interval */
             $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s') . ' +' . Restore::RESTORE_TIME_INTERVAL_HOURS . ' hours'));
         }
-
         /* update next restoration time */
         if (!$this->db->query("UPDATE `" . $db . "`.`tbl_configurations` set `conf_val` = '" . $date . "' where `conf_name` = 'CONF_RESTORE_SCHEDULE_TIME'")) {
             return false;
@@ -155,36 +145,6 @@ class RestoreSystemController extends MyAppController
         }
         fclose($file);
 
-        return true;
-    }
-
-    /**
-     * function to initiate the restoration of user-uploads files & folders
-     *
-     * @return void
-     */
-    private function switchUserUploads()
-    {
-        $newSource = Restore::USER_UPLOADS_PATH;
-        $scan = scandir(Restore::USER_UPLOADS_PATH);
-        $restoredList = [];
-        foreach ($scan as $directory) {
-            if (in_array($directory, ['.', '..'])) {
-                continue;
-            }
-            if (strpos($directory, '-restored') === false) {
-                if (!rename($newSource . '/' . $directory, $newSource . '/' . $directory . '-old')) {
-                    return false;
-                }
-            } else {
-                $restoredList[] = $newSource . '/' . $directory;
-            }
-        }
-        foreach ($restoredList as $list) {
-            if (!rename($list, str_replace('-restored', '', $list))) {
-                return false;
-            }
-        }
         return true;
     }
 
