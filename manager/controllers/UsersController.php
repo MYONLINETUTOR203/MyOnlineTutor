@@ -349,6 +349,7 @@ class UsersController extends AdminBaseController
     public function autoCompleteJson()
     {
         $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
+        $isTeacher = FatApp::getPostedData('user_is_teacher', FatUtility::VAR_STRING, '');
         if (empty($keyword)) {
             FatUtility::dieJsonSuccess(['data' => []]);
         }
@@ -360,6 +361,9 @@ class UsersController extends AdminBaseController
             $cond = $srch->addCondition('user_username', 'LIKE', '%' . $keyword . '%');
             $cond->attachCondition('user_email', 'LIKE', '%' . $keyword . '%', 'OR');
             $cond->attachCondition('mysql_func_CONCAT(user_first_name," ", user_last_name)', 'LIKE', '%' . $keyword . '%', 'OR', true);
+        }
+        if ($isTeacher == AppConstant::YES) {
+            $srch->addCondition('user_is_teacher', '=', AppConstant::YES);
         }
         $srch->addOrder('full_name', 'ASC');
         $srch->setPageSize(20);

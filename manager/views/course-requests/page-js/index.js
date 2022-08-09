@@ -1,6 +1,29 @@
 /* global fcom, langLbl */
 $(document).ready(function () {
     search(document.requestSearch);
+
+    $('input[name=\'teacher\']').autocomplete({
+        'source': function (request, response) {
+            fcom.updateWithAjax(fcom.makeUrl('Users', 'AutoCompleteJson'), {
+                keyword: request,
+                user_is_teacher: '1'
+            }, function (result) {
+                response($.map(result.data, function (item) {
+                    return {
+                        label: escapeHtml(item['full_name'] + ' (' + item['user_email'] + ')'),
+                        value: item['user_id'], name: item['full_name']
+                    };
+                }));
+            });
+        },
+        'select': function (item) {
+            $("input[name='teacher_id']").val(item.value);
+            $("input[name='teacher']").val(item.name);
+        }
+    });
+    $('input[name=\'teacher\']').keyup(function () {
+        $('input[name=\'teacher_id\']').val('');
+    });
 });
 (function () {
     goToSearchPage = function (page) {
@@ -15,6 +38,7 @@ $(document).ready(function () {
     };
     clearSearch = function () {
         document.requestSearch.reset();
+        $('input[name="teacher_id"]').val('');
         search(document.requestSearch);
     };
     view = function (reqId) {

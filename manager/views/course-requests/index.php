@@ -5,6 +5,8 @@ $frmSearch->setFormTagAttribute('id', 'search');
 $frmSearch->setFormTagAttribute('class', 'web_form');
 $btn = $frmSearch->getField('btn_clear');
 $btn->setFieldTagAttribute('onClick', 'clearSearch()');
+$fld = $frmSearch->getField('keyword');
+$fld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_TITLE_OR_SUBTITLE'));
 ?>
 <div class='page'>
     <div class='fixed_container'>
