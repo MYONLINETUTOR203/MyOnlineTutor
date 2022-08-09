@@ -43,7 +43,7 @@
     }
 
     .restore-demo-bg {
-        background-image: url('<?php echo MyUtility::makeFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . '/images/catalog-bg.png'; ?>') !important;
+        background-image: url('<?php echo MyUtility::makeFullUrl('', '', array(), CONF_WEBROOT_FRONT_URL) . 'images/catalog-bg.png'; ?>') !important;
         background-color: #fff !important;
         background-repeat: no-repeat !important;
         background-position: 130% top !important;
@@ -332,7 +332,7 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
         var utcDate = new Date(date.toLocaleString('en-US', {timeZone: "UTC"}));
         var now = utcDate.getTime();
         // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+        var distance = countDownDate - now - 65000;
 
         // Time calculations for days, hours, minutes and seconds
         // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -342,10 +342,11 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
         var str = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
         // Display the result in the element with id="demo"
         document.getElementById("restoreCounter").innerHTML = str;
-        var progressPercentage = 100 - (parseFloat(hours + '.' + parseFloat(minutes / 15 * 25)) * 100 / 24);
+        var progressPercentage = 100 - (parseFloat(hours + '.' + parseFloat(minutes / 15 * 25)) * 100 / 4);
         $('.progress-ui__bar').css('width', progressPercentage + '%');
         // If the count down is finished, write some text
         if (distance < 0) {
+            document.getElementById("restoreCounter").innerHTML = 'Restoring...';
             clearInterval(x);
             restoreSystem();
         }
