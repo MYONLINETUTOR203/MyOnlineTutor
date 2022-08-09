@@ -150,7 +150,8 @@ class CourseRefundRequestsController extends AdminBaseController
         $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', $statusList, '');
         $status->requirements()->setRequired();
 
-        $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_remark', '');
+        $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_remark', '');
+        $fld->requirements()->setRequired();
         $requiredFld = new FormFieldRequirement('corere_remark', Label::getLabel('LBL_COMMENT'));
         $requiredFld->setRequired(true);
 

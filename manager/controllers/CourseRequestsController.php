@@ -139,7 +139,8 @@ class CourseRequestsController extends AdminBaseController
         $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', $statusList, '');
         $status->requirements()->setRequired();
 
-        $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'coapre_remark', '');
+        $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'coapre_remark', '');
+        $fld->requirements()->setRequired();
         $requiredFld = new FormFieldRequirement('coapre_remark', Label::getLabel('LBL_COMMENT'));
         $requiredFld->setRequired(true);
 
