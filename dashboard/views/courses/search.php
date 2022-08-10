@@ -89,12 +89,11 @@ $requestStatuses = Course::getRefundStatuses();
                         </span>
                     <?php } ?>
                     <?php if ($siteUserType == User::TEACHER) { ?>
-                        <?php
-                        $color = ($course['course_active'] == AppConstant::ACTIVE) ? 'color-success' : 'color-red';
-                        ?>
-                        <span class="card-landscape__status badge <?php echo $color; ?> badge--curve badge--small margin-left-0">
-                            <?php echo AppConstant::getActiveArr($course['course_active']); ?>
-                        </span>
+                        <?php if ($course['course_active'] == AppConstant::INACTIVE) { ?>
+                            <span class="card-landscape__status badge color-red badge--curve badge--small margin-left-0">
+                                <?php echo AppConstant::getActiveArr($course['course_active']); ?>
+                            </span>
+                        <?php } ?>
                     <?php } ?>
                     <?php if ($siteUserType == User::LEARNER) { ?>
                         <?php if (isset($course['corere_status'])) { ?>

@@ -61,16 +61,6 @@
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DURATION'); ?></dt>
                                 <dd><?php echo YouTube::convertDuration($requestData['course_duration']); ?></dd>
                             </dl>
-                            <dl class="list">
-                                <dt><?php echo Label::getLabel('LBL_STATUS'); ?></dt>
-                                <dd><?php echo AppConstant::getActiveArr($requestData['course_status']); ?></dd>
-                            </dl>
-                            <?php if ($requestData['coapre_remark'] != '') { ?>
-                                <dl class="list">
-                                    <dt><?php echo Label::getLabel('LBL_COMMENTS'); ?></dt>
-                                    <dd><?php echo nl2br($requestData['coapre_remark']); ?></dd>
-                                </dl>
-                            <?php } ?>
                         </div>
                     </div>
                 </form>
