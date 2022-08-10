@@ -29,7 +29,7 @@ $levels = Course::getCourseLevels();
                 </hgroup>
                 <div class="course-counts margin-bottom-6">
                     <div class="course-counts__item">
-                        <a href="#panel-content-4" class="rating">
+                        <a class="rating">
                             <svg class="rating__media">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#rating"></use>
                             </svg>
