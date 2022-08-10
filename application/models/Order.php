@@ -255,7 +255,7 @@ class Order extends MyAppModel
                 'ordcrs_course_id' => $courseId,
                 'ordcrs_amount' => $rows[$courseId],
                 'ordcrs_commission' => $commission,
-                'ordcrs_status' => OrderCourse::COMPLETED,
+                'ordcrs_status' => OrderCourse::IN_PROGRESS,
                 'ordcrs_payment' => AppConstant::UNPAID,
             ]);
         }
@@ -1208,6 +1208,11 @@ class Order extends MyAppModel
                 $table = Giftcard::DB_TBL;
                 $updateArray = ['ordgift_status' => Giftcard::STATUS_CANCELLED];
                 $whereArray = ['smt' => 'ordgift_order_id = ?', 'vals' => [$order['order_id']]];
+                break;
+            case Order::TYPE_COURSE:
+                $table = OrderCourse::DB_TBL;
+                $updateArray = ['ordcrs_status' => OrderCourse::CANCELLED];
+                $whereArray = ['smt' => 'ordcrs_order_id = ?', 'vals' => [$order['order_id']]];
                 break;
         }
         if (!empty($table) && !$db->updateFromArray($table, $updateArray, $whereArray)) {
