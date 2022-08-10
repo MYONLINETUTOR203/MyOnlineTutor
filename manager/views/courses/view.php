@@ -52,7 +52,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DURATION'); ?>
                                     </label>
-                                    : <strong><?php echo $courseData['course_duration'] . ' '. Label::getLabel('LBL_MINUTES'); ?></strong>
+                                    : <strong><?php echo YouTube::convertDuration($courseData['course_duration']); ?></strong>
                                 </div>
                             </div>
                         </div>

@@ -59,7 +59,7 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DURATION'); ?></dt>
-                                <dd><?php echo $requestData['course_duration'].' '.Label::getLabel('LBL_MINS'); ?></dd>
+                                <dd><?php echo YouTube::convertDuration($requestData['course_duration']); ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_STATUS'); ?></dt>
