@@ -15,7 +15,7 @@ class CourseUtility extends FatUtility
         if ($currencyId < 1) {
             $siteCurrency = MyUtility::getSiteCurrency();
         } else {
-            $siteCurrency = Currency::getData($currencyId, MyUtility::getSiteLangId());
+            $siteCurrency = Currency::getData($currencyId, MyUtility::getSiteLangId(), false);
         }
         if ($value > 0) {
             $value = static::convertToCurrency($value, $siteCurrency['currency_id']);
