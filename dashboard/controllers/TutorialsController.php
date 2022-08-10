@@ -33,16 +33,18 @@ class TutorialsController extends DashboardController
         /* check if already started */
         $srch = new SearchBase(CourseProgress::DB_TBL);
         $srch->addCondition('crspro_ordcrs_id', '=', $ordcrsId);
-        $srch->addFld('crspro_id');
+        $srch->addMultipleFields(['crspro_id', 'crspro_started']);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
             FatUtility::exitWithErrorCode(404);
         }
-        $progress = new CourseProgress($data['crspro_id']);
-        $progress->assignValues(['crspro_started' => date('Y-m-d'), 'crspro_status' => CourseProgress::IN_PROGRESS]);
-        if (!$progress->save()) {
-            FatUtility::exitWithErrorCode(404);
+        if (empty($data['crspro_started'])) {
+            $progress = new CourseProgress($data['crspro_id']);
+            $progress->assignValues(['crspro_started' => date('Y-m-d'), 'crspro_status' => CourseProgress::IN_PROGRESS]);
+            if (!$progress->save()) {
+                FatUtility::exitWithErrorCode(404);
+            }
         }
         FatApp::redirectUser(MyUtility::generateUrl('Tutorials', 'index', [$data['crspro_id']]));
     }

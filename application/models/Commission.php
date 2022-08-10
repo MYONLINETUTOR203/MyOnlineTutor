@@ -79,7 +79,7 @@ class Commission extends MyAppModel
     public static function getCommission(int $teacherId)
     {
         $srch = new SearchBase(static::DB_TBL);
-        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_id']);
+        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_courses', 'comm_id']);
         $srch->addDirectCondition('comm_user_id = ' . $teacherId . ' OR comm_user_id IS NULL');
         $srch->addOrder('comm_user_id', 'DESC');
         $srch->doNotCalculateRecords();

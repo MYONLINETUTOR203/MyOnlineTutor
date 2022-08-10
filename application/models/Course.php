@@ -904,7 +904,7 @@ class Course extends MyAppModel
      */
     public function completedCourseSettlement()
     {
-        $hours = FatApp::getConfig('CONF_COURSE_CANCEL_DURATION');
+        $days = FatApp::getConfig('CONF_COURSE_CANCEL_DURATION');
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
@@ -914,7 +914,7 @@ class Course extends MyAppModel
         );
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::COMPLETED);
-        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $hours . ' DAY) < "' . date('Y-m-d H:i:s') . '"', 'AND');
+        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $days . ' DAY) < "' . date('Y-m-d H:i:s') . '"', 'AND');
         $srch->addDirectCondition('ordcrs.ordcrs_teacher_paid IS NULL');
         $cnd = $srch->addCondition('corere.corere_id', 'IS', 'mysql_func_NULL', 'AND', true);
         $cnd->attachCondition('corere.corere_status', '=', static::REFUND_DECLINED);
@@ -945,9 +945,12 @@ class Course extends MyAppModel
                 }
             }
             $orderCourse = new OrderCourse($course['ordcrs_id']);
-            $orderCourse->setFldValue('ordcrs_teacher_paid', $teacherAmount);
             $earnings = $course['ordcrs_amount'] - ($course['ordcrs_discount'] + $teacherAmount);
-            $orderCourse->setFldValue('ordcrs_earnings', FatUtility::float($earnings));
+            $orderCourse->assignValues([
+                'ordcrs_teacher_paid' => $teacherAmount,
+                'ordcrs_earnings' => FatUtility::float($earnings),
+                'ordcrs_updated' => date('Y-m-d H:i:s')
+            ]);
             if (!$orderCourse->save()) {
                 $this->error = $orderCourse->getError();
                 $db->rollbackTransaction();
