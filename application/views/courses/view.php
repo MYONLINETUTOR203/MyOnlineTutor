@@ -29,7 +29,7 @@ $levels = Course::getCourseLevels();
                 </hgroup>
                 <div class="course-counts margin-bottom-6">
                     <div class="course-counts__item">
-                        <a href="#panel-content-4" class="rating">
+                        <a class="rating">
                             <svg class="rating__media">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#rating"></use>
                             </svg>
@@ -499,13 +499,7 @@ $levels = Course::getCourseLevels();
                                                                                     <?php } ?>
                                                                                     <span class="course-topic__time">
                                                                                         <?php
-                                                                                        $duration = YouTube::convertDuration($lesson['lecture_duration'], true, true, true);
-                                                                                        $duration = str_replace(
-                                                                                            ['h', 'm', 's', ' '],
-                                                                                            ['', '', '', ':'],
-                                                                                            $duration
-                                                                                        );
-                                                                                        echo (!empty($duration)) ? $duration : '';
+                                                                                        echo $duration = YouTube::convertDuration($lesson['lecture_duration'], true, true, true, false);
                                                                                         ?>
                                                                                     </span>
                                                                                 </div>
@@ -562,38 +556,6 @@ $levels = Course::getCourseLevels();
                                                     </div>
                                                     <div class="course-counts margin-top-3">
                                                         <div class="course-counts__item">
-                                                            <div class="course-info">
-                                                                <div class="course-info__media">
-                                                                    <svg class="icon icon--level">
-                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-lecture">
-                                                                        </use>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="course-info__title">
-                                                                    <?php echo Label::getLabel('LBL_COURSES'); ?>
-                                                                    <strong>
-                                                                        <?php echo $course['testat_courses'] ?>
-                                                                    </strong>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="course-counts__item">
-                                                            <div class="course-info">
-                                                                <div class="course-info__media">
-                                                                    <svg class="icon icon--level icon--small">
-                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#teaches-icon">
-                                                                        </use>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="course-info__title">
-                                                                    <?php echo Label::getLabel('LBL_STUDENTS'); ?>
-                                                                    <strong>
-                                                                        <?php echo $course['testat_students'] ?>
-                                                                    </strong>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="course-counts__item">
                                                             <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$course['teacher_username']]) ?>" class="underline color-primary padding-bottom-5">
                                                                 <?php echo Label::getLabel('LBL_VIEW_PROFILE'); ?>
                                                             </a>
@@ -602,14 +564,16 @@ $levels = Course::getCourseLevels();
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="author-bio__body margin-top-10">
-                                            <h5 class="bold-700 margin-bottom-3">
-                                                <?php echo Label::getLabel('LBL_BIOGRAPHY'); ?>
-                                            </h5>
-                                            <div class="author-box__desc">
-                                                <p><?php echo $course['user_biography'] ?></p>
+                                        <?php if (!empty($course['user_biography'])) { ?>
+                                            <div class="author-bio__body margin-top-10">
+                                                <h5 class="bold-700 margin-bottom-3">
+                                                    <?php echo Label::getLabel('LBL_BIOGRAPHY'); ?>
+                                                </h5>
+                                                <div class="author-box__desc">
+                                                    <p><?php echo $course['user_biography'] ?></p>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>

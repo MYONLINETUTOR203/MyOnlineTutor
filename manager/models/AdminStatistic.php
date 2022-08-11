@@ -139,7 +139,7 @@ class AdminStatistic
             $srch->addCondition('slstat_date', '>=', $datetime['startDate']);
             $srch->addCondition('slstat_date', '<=', $datetime['endDate']);
         }
-        $srch->addFld('SUM(IFNULL(slstat_les_earnings, 0) + IFNULL(slstat_cls_earnings, 0)) as earnings');
+        $srch->addFld('SUM(IFNULL(slstat_les_earnings, 0) + IFNULL(slstat_cls_earnings, 0) + IFNULL(slstat_crs_earnings, 0)) as earnings');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $records = FatApp::getDb()->fetch($srch->getResultSet());

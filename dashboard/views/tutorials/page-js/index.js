@@ -14,9 +14,10 @@ $(function () {
             });
         }
         $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
+        $('.sidebarPanelJs').css({'display': ''});
         $('.tutorialTabsJs ul li').removeClass('is-active');
         $('.crsDetailTabJs').parent().addClass('is-active');
-        $('.lectureDetailJs').show();
+        $('.lectureDetailJs, .tabsPanelJs').show();
     };
     getVideo = function (lectureId) {
         var progressId = $('#progressId').val();
@@ -108,13 +109,16 @@ $(function () {
             });
         }
         $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
-        $('.tutorInfoJs').show();
+        $('.sidebarPanelJs').css({ 'display': '' });
+        $('.tutorInfoJs, .tabsPanelJs').show();
     };
     getReviews = function () {
         var progressId = $('#progressId').val();
         fcom.ajax(fcom.makeUrl('Tutorials', 'getReviews'), { 'course_id': courseId, 'progress_id': progressId }, function (res) {
             $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
+            $('.sidebarPanelJs').css({ 'display': '' });
             $('.reviewsJs').html(res).show();
+            $('.tabsPanelJs').show();
             searchReviews();
         });
     };
@@ -153,7 +157,8 @@ $(function () {
             });
         }
         $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
-        $('.notesJs').show();
+        $('.sidebarPanelJs').css({ 'display': '' });
+        $('.notesJs, .tabsPanelJs').show();
     };
     notesSearch = function (frm) {
         var data = fcom.frmData(frm);
@@ -163,6 +168,7 @@ $(function () {
     };
     clearNotesSearch = function () {
         document.frmNotesSearch.reset();
+        $('.notesHeadJs .form-search__action--reset').hide();
         notesSearch(document.frmNotesSearch);
     };
     goToNotesSearchPage = function (page) {

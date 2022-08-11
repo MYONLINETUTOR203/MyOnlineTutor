@@ -36,8 +36,17 @@ class CourseRequestSearch extends YocoachSearch
             $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('crsdetail.course_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
-        if (isset($post['coapre_id'])) {
-            $this->addCondition('coapre_id', '=', $post['coapre_id']);
+        if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
+            $this->addCondition('course.course_user_id', '=', $post['teacher_id']);
+        }
+        if (isset($post['coapre_status']) && $post['coapre_status'] != '') {
+            $this->addCondition('coapre_status', '=', $post['coapre_status']);
+        }
+        if (isset($post['start_date']) && !empty($post['start_date'])) {
+            $this->addCondition('coapre_created', ">=", MyDate::formatToSystemTimezone($post['start_date'] . ' 00:00:00'), 'AND', true);
+        }
+        if (isset($post['end_date']) && !empty($post['end_date'])) {
+            $this->addCondition('coapre_created', "<=", MyDate::formatToSystemTimezone($post['end_date'] . ' 23:59:59'), 'AND', true);
         }
     }
 

@@ -23,7 +23,7 @@
                                     </div>
                                     <div class="video-item__time">
                                         <?php
-                                        echo YouTube::convertDuration($lecture['lecture_duration'], true, true, false, false);
+                                        echo YouTube::convertDuration($lecture['lecture_duration'], true, true, true, false);
                                         ?>
                                     </div>
                                 </div>

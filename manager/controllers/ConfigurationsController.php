@@ -501,7 +501,7 @@ class ConfigurationsController extends AdminBaseController
                 $fld3->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_UNSCHEDULE_LESSON_REFUND_PERCENTAGE_TEXT") . "</small>";
                 /* Course Configurations[ */
                 $frm->addHtml('', 'Course', '<h3>' . Label::getLabel("LBL_COURSE") . '</h3>');
-                $fld3 = $frm->addTextBox(Label::getLabel("LBL_COURSE_CANCELLATION_DURATION(DAYS)"), "CONF_COURSE_CANCEL_DURATION");
+                $fld3 = $frm->addIntegerField(Label::getLabel("LBL_COURSE_CANCELLATION_DURATION(DAYS)"), "CONF_COURSE_CANCEL_DURATION");
                 $fld3->requirements()->setRange(0, 100);
                 $fld3->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_COURSE_CANCELLATION_DURATION_TEXT") . ".</small>";
                 $reviewStatus = [

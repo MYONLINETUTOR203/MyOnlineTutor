@@ -39,6 +39,7 @@ class CoursePreviewController extends DashboardController
         $srch->applyPrimaryConditions();
         $srch->addCondition('section.section_course_id', '=', $courseId);
         $srch->addSearchListingFields();
+        $srch->doNotCalculateRecords();
         if (!$sections = $srch->fetchAndFormat()) {
             FatUtility::exitWithErrorCode(404);
         }

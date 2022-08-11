@@ -386,6 +386,10 @@ class Course extends MyAppModel
         if (!$this->canEditCourse()) {
             return false;
         }
+        /* validate data */
+        if (!$this->validate($data)) {
+            return false;
+        }
         $db = FatApp::getDb();
         if (!$db->startTransaction()) {
             $this->error = $db->getError();
@@ -417,6 +421,33 @@ class Course extends MyAppModel
             return false;
         }
         $db->commitTransaction();
+        return true;
+    }
+
+    private function validate($data)
+    {
+        /* validate categories */
+        $categories = [$data['course_cate_id'], $data['course_subcate_id']];
+        $srch = Category::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->addFld('cate_id');
+        $srch->addCondition('cate_id', 'IN', $categories);
+        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $categories = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
+        if (!array_key_exists($data['course_cate_id'], $categories)) {
+            $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
+            return false;
+        }
+        if (!array_key_exists($data['course_subcate_id'], $categories)) {
+            $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
+            return false;
+        }
+        $courseLang = CourseLanguage::getAttributesById($data['course_clang_id'], ['clang_active', 'clang_deleted']);
+        if ($courseLang['clang_active'] == AppConstant::INACTIVE || !empty($courseLang['clang_deleted'])) {
+            $this->error = Label::getLabel('LBL_LANGUAGE_NOT_AVAILABLE');
+            return false;
+        }
         return true;
     }
 
@@ -904,7 +935,7 @@ class Course extends MyAppModel
      */
     public function completedCourseSettlement()
     {
-        $hours = FatApp::getConfig('CONF_COURSE_CANCEL_DURATION');
+        $days = FatApp::getConfig('CONF_COURSE_CANCEL_DURATION');
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
@@ -914,7 +945,7 @@ class Course extends MyAppModel
         );
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::COMPLETED);
-        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $hours . ' DAY) < "' . date('Y-m-d H:i:s') . '"', 'AND');
+        $srch->addDirectCondition('DATE_ADD(orders.order_addedon, INTERVAL ' . $days . ' DAY) < "' . date('Y-m-d H:i:s') . '"', 'AND');
         $srch->addDirectCondition('ordcrs.ordcrs_teacher_paid IS NULL');
         $cnd = $srch->addCondition('corere.corere_id', 'IS', 'mysql_func_NULL', 'AND', true);
         $cnd->attachCondition('corere.corere_status', '=', static::REFUND_DECLINED);
@@ -945,9 +976,12 @@ class Course extends MyAppModel
                 }
             }
             $orderCourse = new OrderCourse($course['ordcrs_id']);
-            $orderCourse->setFldValue('ordcrs_teacher_paid', $teacherAmount);
             $earnings = $course['ordcrs_amount'] - ($course['ordcrs_discount'] + $teacherAmount);
-            $orderCourse->setFldValue('ordcrs_earnings', FatUtility::float($earnings));
+            $orderCourse->assignValues([
+                'ordcrs_teacher_paid' => $teacherAmount,
+                'ordcrs_earnings' => FatUtility::float($earnings),
+                'ordcrs_updated' => date('Y-m-d H:i:s')
+            ]);
             if (!$orderCourse->save()) {
                 $this->error = $orderCourse->getError();
                 $db->rollbackTransaction();

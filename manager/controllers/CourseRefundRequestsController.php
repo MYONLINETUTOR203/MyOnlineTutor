@@ -40,6 +40,11 @@ class CourseRefundRequestsController extends AdminBaseController
     {
         $frm = new Form('requestSearch');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
+        $frm->addTextBox(Label::getLabel('LBL_LEARNER'), 'learner', '');
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', Course::getRefundStatuses());
+        $frm->addDateField(Label::getLabel('LBL_START_TIME'), 'start_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
+        $frm->addDateField(Label::getLabel('LBL_END_TIME'), 'end_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
+        $frm->addHiddenField('', 'learner_id', '');
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
@@ -150,7 +155,8 @@ class CourseRefundRequestsController extends AdminBaseController
         $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', $statusList, '');
         $status->requirements()->setRequired();
 
-        $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_remark', '');
+        $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_remark', '');
+        $fld->requirements()->setRequired();
         $requiredFld = new FormFieldRequirement('corere_remark', Label::getLabel('LBL_COMMENT'));
         $requiredFld->setRequired(true);
 

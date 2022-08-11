@@ -1,10 +1,31 @@
 /* global fcom, langLbl */
 $(document).ready(function () {
     search(document.requestSearch);
+    $('input[name=\'learner\']').autocomplete({
+        'source': function (request, response) {
+            fcom.updateWithAjax(fcom.makeUrl('Users', 'AutoCompleteJson'), {
+                keyword: request
+            }, function (result) {
+                response($.map(result.data, function (item) {
+                    return {
+                        label: escapeHtml(item['full_name'] + ' (' + item['user_email'] + ')'),
+                        value: item['user_id'], name: item['full_name']
+                    };
+                }));
+            });
+        },
+        'select': function (item) {
+            $("input[name='learner_id']").val(item.value);
+            $("input[name='learner']").val(item.name);
+        }
+    });
+    $('input[name=\'learner\']').keyup(function () {
+        $('input[name=\'learner_id\']').val('');
+    });
 });
 (function () {
     goToSearchPage = function (page) {
-        var frm = document.requestSearch;
+        var frm = document.frmPaging;
         $(frm.page).val(page);
         search(frm);
     };
@@ -15,6 +36,7 @@ $(document).ready(function () {
     };
     clearSearch = function () {
         document.requestSearch.reset();
+        $('input[name="learner_id"]').val('');
         search(document.requestSearch);
     };
     view = function (reqId) {

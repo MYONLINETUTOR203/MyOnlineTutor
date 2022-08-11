@@ -67,16 +67,19 @@ class Currency extends MyAppModel
     /**
      * Get Data
      * 
-     * @param int $currencyId
-     * @param int $langId
+     * @param int  $currencyId
+     * @param int  $langId
+     * @param bool $active
      * @return null|array
      */
-    public static function getData(int $currencyId, int $langId)
+    public static function getData(int $currencyId, int $langId, $active = true)
     {
         $srch = new SearchBase(static::DB_TBL, 'currency');
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'curlang.currencylang_currency_id = '
                 . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
-        $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
+        if ($active == true) {
+            $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
+        }
         $srch->addCondition('currency.currency_id', '=', $currencyId);
         $srch->addMultipleFields([
             'currency.currency_id AS currency_id',

@@ -101,6 +101,7 @@ class SectionSearch extends YocoachSearch
             $srch->addFld('0 AS total_resources');
             $srch->addDirectCondition('lecture_section_id IN (' . implode(',', $sectionIds) . ')');
             $srch->addOrder('lecture_order', 'ASC');
+            $srch->doNotCalculateRecords();
             $lectures = $srch->fetchAndFormat();
             $lectureIds = array_keys($lectures);
         }

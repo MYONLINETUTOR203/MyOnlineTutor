@@ -1225,5 +1225,8 @@ UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_t
 ALTER TABLE `tbl_coupons`  DROP `coupon_deleted`;
 
 UPDATE `tbl_certificate_templates` SET certpl_deleted = NOW() WHERE certpl_code = 'course_evaluation_certificate';
+
 UPDATE `tbl_language_labels` SET `label_caption` = 'Report Generated On {datetime}' WHERE `label_key` = 'LBL_REPORT_GENERATED_ON_{datetime}';
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.1.20220805' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+ALTER TABLE `tbl_course_progresses` CHANGE `crspro_started` `crspro_started` DATETIME NULL; 
+UPDATE `tbl_course_progresses` SET `crspro_started` = NULL WHERE crspro_started = '0000-00-00 00:00:00';

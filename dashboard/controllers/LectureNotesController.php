@@ -152,7 +152,7 @@ class LectureNotesController extends DashboardController
     private function getForm()
     {
         $frm = new Form('frmNotes');
-        $frm->addTextBox(Label::getLabel('LBl_NOTES'), 'lecnote_notes')->requirements()->setRequired();
+        $frm->addTextArea(Label::getLabel('LBl_NOTES'), 'lecnote_notes')->requirements()->setRequired();
         $frm->addHiddenField('', 'lecnote_course_id');
         $frm->addHiddenField('', 'lecnote_lecture_id');
         $frm->addHiddenField('', 'lecnote_id');

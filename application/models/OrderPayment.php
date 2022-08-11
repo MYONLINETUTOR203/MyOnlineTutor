@@ -596,6 +596,12 @@ class OrderPayment extends FatModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
+        $record = new OrderCourse($orderCourse['ordcrs_id']);
+        $record->setFldValue('ordcrs_status', OrderCourse::COMPLETED);
+        if (!$record->save()) {
+            $this->error = $record->getError();
+            return false;
+        }
         $courseId = $orderCourse['ordcrs_course_id'];
         $course = new Course($courseId);
         if (!$course->setStudentCount()) {

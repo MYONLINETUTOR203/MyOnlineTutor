@@ -243,19 +243,19 @@ class Order extends MyAppModel
         $srch = new SearchBase(Course::DB_TBL, 'course');
         $srch->addCondition('course.course_id', 'IN', $courseIds);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addMultipleFields(['course_id', 'course_price']);
-        $rows = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+        $srch->addMultipleFields(['course_id', 'course_price', 'course_user_id']);
+        $rows = FatApp::getDb()->fetchAll($srch->getResultSet(), 'course_id');
         if (count($rows) < count($courseIds)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $commission = FatApp::getConfig('CONF_TEACHER_COMMISSION');
         foreach ($courseIds as $courseId) {
+            $commission = Commission::getCommission($rows[$courseId]['course_user_id']);
             array_push($this->courses, [
                 'ordcrs_course_id' => $courseId,
-                'ordcrs_amount' => $rows[$courseId],
-                'ordcrs_commission' => $commission,
-                'ordcrs_status' => OrderCourse::COMPLETED,
+                'ordcrs_amount' => $rows[$courseId]['course_price'],
+                'ordcrs_commission' => $commission['comm_courses'],
+                'ordcrs_status' => OrderCourse::IN_PROGRESS,
                 'ordcrs_payment' => AppConstant::UNPAID,
             ]);
         }
@@ -1208,6 +1208,11 @@ class Order extends MyAppModel
                 $table = Giftcard::DB_TBL;
                 $updateArray = ['ordgift_status' => Giftcard::STATUS_CANCELLED];
                 $whereArray = ['smt' => 'ordgift_order_id = ?', 'vals' => [$order['order_id']]];
+                break;
+            case Order::TYPE_COURSE:
+                $table = OrderCourse::DB_TBL;
+                $updateArray = ['ordcrs_status' => OrderCourse::CANCELLED];
+                $whereArray = ['smt' => 'ordcrs_order_id = ?', 'vals' => [$order['order_id']]];
                 break;
         }
         if (!empty($table) && !$db->updateFromArray($table, $updateArray, $whereArray)) {

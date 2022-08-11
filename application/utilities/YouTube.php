@@ -53,23 +53,8 @@ class YouTube extends FatUtility
         $youtubeData = json_decode($curlResource);
         $youtubeVals = json_decode(json_encode($youtubeData), true);
         $duration = $youtubeVals['items'][0]['contentDetails']['duration'];
-        $hours = $minutes = $seconds = 0;
-        if (preg_match_all('/(\d+)/', $duration, $parts)) {
-            /* convert time into seconds */
-            if (count($parts[0]) == 3) {
-                $hours = ($parts[0][0])*3600;
-                $minutes = isset(($parts[0][1])) ? ($parts[0][1])*60 : 0;
-                $seconds = isset($parts[0][2]) ? $parts[0][2] : 0;
-            }
-            if (count($parts[0]) == 2) {
-                $minutes = isset(($parts[0][0])) ? ($parts[0][0])*60 : 0;
-                $seconds = isset($parts[0][1]) ? $parts[0][1] : 0;
-            }
-            if (count($parts[0]) == 1) {
-                $seconds = isset($parts[0][0]) ? $parts[0][0] : 0;
-            }
-        }
-        return $hours + $minutes + $seconds;
+        $interval = new DateInterval($duration);
+        return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
     }
 
     public static function convertDuration($duration, $hours = true, $minutes = true, $seconds = false, $format = true)
@@ -80,27 +65,27 @@ class YouTube extends FatUtility
             $hrs = floor($duration / 3600);
             if ($hrs > 0) {
                 $formattedTime[] =  $hrs . strtolower(Label::getLabel('LBL_H'));
-                $time[] = $hrs;
             }
+            $time[] = $hrs;
         }
         if ($minutes) {
             $min = gmdate("i", $duration);
             if ($min > 0) {
                 $formattedTime[] = $min . strtolower(Label::getLabel('LBL_M'));
-                $time[] = $min;
             }
+            $time[] = $min;
         }
         if ($seconds) {
             $sec = gmdate("s", $duration);
             if ($sec > 0) {
                 $formattedTime[] = $sec . strtolower(Label::getLabel('LBL_S'));
-                $time[] = $sec;
             }
+            $time[] = $sec;
         }
         if ($format == true) {
             return (count($formattedTime) > 0) ? implode(' ', $formattedTime) : '';
         } else {
-            return (count($time) > 0) ? implode(':', $time) : '';
+            return (count($time) > 0 && array_sum($time) > 0) ? implode(':', $time) : '';
         }
     }
 }

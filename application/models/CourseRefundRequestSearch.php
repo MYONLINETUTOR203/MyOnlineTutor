@@ -36,6 +36,18 @@ class CourseRefundRequestSearch extends YocoachSearch
             $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $post['keyword'] . '%');
             $cnd->attachCondition('crsdetail.course_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
+        if (isset($post['learner_id']) && $post['learner_id'] > 0) {
+            $this->addCondition('corere_user_id', '=', $post['learner_id']);
+        }
+        if (isset($post['corere_status']) && $post['corere_status'] != '') {
+            $this->addCondition('corere_status', '=', $post['corere_status']);
+        }
+        if (isset($post['start_date']) && !empty($post['start_date'])) {
+            $this->addCondition('corere_created', ">=", MyDate::formatToSystemTimezone($post['start_date'] . ' 00:00:00'), 'AND', true);
+        }
+        if (isset($post['end_date']) && !empty($post['end_date'])) {
+            $this->addCondition('corere_created', "<=", MyDate::formatToSystemTimezone($post['end_date'] . ' 23:59:59'), 'AND', true);
+        }
     }
 
     /**

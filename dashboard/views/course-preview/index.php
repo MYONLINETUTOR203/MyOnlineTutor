@@ -49,25 +49,6 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                     <div id="accout-target" class="account__target">
                         <nav class="menu-vertical">
                             <ul>
-                                <?php
-                                /* if ($siteUserType == User::LEARNER) { ?>
-                                    <li class="menu__item <?php echo ("Learner" == $controllerName) ? 'is-active' : ''; ?>">
-                                        <a href="<?php echo MyUtility::makeUrl('Learner', '', [], CONF_WEBROOT_DASHBOARD); ?>">
-                                            <?php echo Label::getLabel('LBL_Dashboard'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="menu__item <?php echo ("Teachers" == $controllerName) ? 'is-active' : ''; ?>">
-                                        <a href="<?php echo MyUtility::makeUrl('Teachers', '', [], CONF_WEBROOT_DASHBOARD); ?>">
-                                            <?php echo Label::getLabel('LBL_My_Teachers'); ?>
-                                        </a>
-                                    </li>
-                                    <li class="menu__item <?php echo ("Lessons" == $controllerName) ? 'is-active' : ''; ?>">
-                                        <a href="<?php echo MyUtility::makeUrl('Lessons', '', [], CONF_WEBROOT_DASHBOARD); ?>">
-                                            <?php echo Label::getLabel('LBL_Lessons'); ?>
-                                        </a>
-                                    </li><?php
-                                } */
-                                ?>
                                 <li class="menu__item <?php echo ("Account" == $controllerName && "profileInfo" == $action) ? 'is-active' : ''; ?>">
                                     <a href="<?php echo MyUtility::makeUrl('Account', 'ProfileInfo', [], CONF_WEBROOT_DASHBOARD); ?>">
                                         <?php echo Label::getLabel('LBL_Settings'); ?>
@@ -108,7 +89,7 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
     <!-- [ BODY PANEL ========= -->
     <div class="body-panel">
         <div class="section-intro videoContentJs">
-            
+
         </div>
         <div class="section-layout">
             <div class="section-layout__head">
@@ -133,7 +114,7 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                         <div class="section-links__left">
                             <nav class="tabs tabs--line border-bottom-0 tabs-scrollable-js">
                                 <ul>
-                                    <li class="d-xl-none d-block">
+                                    <li class="d-xl-none d-block responsive-toggle-js">
                                         <a href="javascript:void(0);">
                                             <?php echo Label::getLabel('LBL_COURSE_LECTURE'); ?>
                                         </a>
@@ -195,16 +176,12 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                                         <div class="toggle-control__target control-target-js">
                                             <div class="lecture-list lecturesListJs">
                                                 <!-- [ LECTURE ========= -->
-                                                <?php
-                                                if (isset($section['lectures']) && count($section['lectures']) > 0) {
-                                                    foreach ($section['lectures'] as $lesson) {
-                                                        $isCovered = false;//(in_array($lesson['lecture_id'], $lectureStats[$section['section_id']])) ? true : false;
-                                                        $isActive = '';//($progress['crspro_lecture_id'] == $lesson['lecture_id']) ? 'is-active' : '';
-                                                        ?>
-                                                        <div class="lecture <?php echo $isActive; ?>" id="lectureJs<?php echo $lesson['lecture_id']; ?>">
+                                                <?php if (isset($section['lectures']) && count($section['lectures']) > 0) {
+                                                    foreach ($section['lectures'] as $lesson) { ?>
+                                                        <div class="lecture" id="lectureJs<?php echo $lesson['lecture_id']; ?>">
                                                             <div class="lecture__control is-hover">
                                                                 <label class="lecture-checkbox">
-                                                                    <input type="checkbox" name="lecture_id" data-section="<?php echo $section['section_id']; ?>" value="<?php echo $lesson['lecture_id']; ?>" <?php echo ($isCovered) ? 'checked="checked"' : ''; ?>>
+                                                                    <input type="checkbox" name="lecture_id" data-section="<?php echo $section['section_id']; ?>" value="<?php echo $lesson['lecture_id']; ?>">
                                                                     <i class="lecture-checkbox__view"></i>
                                                                 </label>
                                                                 <div class="tooltip tooltip--right bg-black">
@@ -243,22 +220,22 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                                                                 </div>
                                                             </div>
                                                         </div><?php
-                                                        $i++;
-                                                    }
-                                                }
-                                                ?>
+                                                                $i++;
+                                                            }
+                                                        }
+                                                                ?>
                                             </div>
                                         </div>
                                     </div><?php
-                                }
-                            }
-                            ?>
+                                        }
+                                    }
+                                            ?>
                         </div>
                     </sidebar>
                     <!-- ] -->
                     <!-- [ TAB CONTENT PANEL ========= -->
-                    <div class="content-area responsive-target-js">
-                        <div class="lectureDetailJs"  style="display: none;">
+                    <div class="content-area responsive-target-js tabsPanelJs">
+                        <div class="lectureDetailJs" style="display: none;">
                         </div>
                         <div class="row justify-content-center notesJs" style="display: none;"></div>
                         <div class="row justify-content-center reviewsJs" style="display: none;"></div>
