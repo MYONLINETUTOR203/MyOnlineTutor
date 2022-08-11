@@ -47,7 +47,6 @@ class Lecture extends MyAppModel
             'lecture_title' => $data['lecture_title'],
             'lecture_details' => $data['lecture_details'],
             'lecture_updated' => date('Y-m-d H:i:s'),
-            'lecture_duration' => ceil(str_word_count(strip_tags($data['lecture_details'])) / 100) * 60,
         ]);
         if ($data['lecture_id'] < 1) {
             $this->setFldValue('lecture_created', date('Y-m-d H:i:s'));
@@ -55,6 +54,10 @@ class Lecture extends MyAppModel
         if (!$this->save($data)) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
+            return false;
+        }
+        /* update lecture duration */
+        if (!$this->setDuration()) {
             return false;
         }
         /* update section duration */
@@ -358,6 +361,13 @@ class Lecture extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
+        $duration = 0;
+        if ($row) {
+            $duration = $row['lecture_duration'];
+        }
+        /* get lecture content duration */
+        $content = static::getAttributesById($this->getMainTableRecordId(), 'lecture_details');
+        $row['lecture_duration'] = (ceil(str_word_count(strip_tags($content)) / 100) * 60) + $duration;
         /* update lecture duration */
         $this->assignValues($row);
         if (!$this->save()) {
