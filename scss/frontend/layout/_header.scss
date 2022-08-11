@@ -3,7 +3,7 @@ $header: 'header';
 .#{$header} {
    
     #{theme('direction.left','value')}: 0;
-    #{theme('direction.right','value')}: 0; position: sticky; top: 0; transition: all 0.5s;
+    #{theme('direction.right','value')}: 0; position: relative; top: 0; transition: all 0.5s;
    
     z-index: 11; 
 
@@ -15,18 +15,20 @@ $header: 'header';
     }
 
 
-    @media(max-width: theme('breakpoints.xl','value')) {
-       &{ position: sticky; top: 0;}
-    }
+    // @media(max-width: theme('breakpoints.xl','value')) {
+    //    &{ position: sticky; top: 0;}
+    // }
     
-    @media(min-width: theme('breakpoints.xl','value')) {
-        &.nav-down{transform: translateY(0);}
-        &.nav-up{transform: translateY(-100%);}
-    }
+    // @media(min-width: theme('breakpoints.xl','value')) {
+    //     &.nav-down{transform: translateY(0);}
+    //     &.nav-up{transform: translateY(-100%);}
+    // }
 
 }
 
-
+.home.home-index {
+    .#{$header} { position: sticky; top: 0;}
+}
 
 $header-primary: 'header-primary';
 

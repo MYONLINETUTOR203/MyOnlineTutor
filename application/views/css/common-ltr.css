@@ -110,7 +110,7 @@
   --color-warning-inverse: #fff;
   --color-info: #0d66d0;
   --color-info-inverse: #fff;
-  --color-black: #555;
+  --color-black: #111;
   --color-white: #ffffff;
   --color-gray-000: #000;
   --color-gray-1000: gray;
@@ -2604,8 +2604,7 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
   position: relative; }
 
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-  color: inherit !important;
-  font-weight: var(--font-weight-medium); }
+  color: inherit !important; }
 
 .select2-search--dropdown {
   padding: var(--padding-4) !important; }
@@ -2614,7 +2613,7 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
   border-color: var(--color-gray-200) !important;
   padding-left: var(--padding-4) !important; }
 
-.select2-container {
+.filter-panel .select2-container {
   padding-left: var(--padding-4) !important; }
 
 .courses.courses-index .filters-layout__item-first .filter-item__trigger {

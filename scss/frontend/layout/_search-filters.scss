@@ -13,9 +13,12 @@ $section-filters: "section-filters";
         &:after{position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background-color: theme('color.gray.100'); content: ""; pointer-events: none;}
     }
 
+    @media (min-width:theme('breakpoints.xl','value')){
+        &{ position: sticky;top:0; }
+    }
+
     @media (min-width:theme('breakpoints.sm','value')){
-        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: sticky; z-index: 1; margin-bottom:3rem;    top: 0;
-        transition: all 0.3s;
+        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  z-index: 1; margin-bottom:2rem;
     }
 
   
@@ -25,22 +28,21 @@ $section-filters: "section-filters";
         }
     }
 
-   
+    & .select-option{margin-bottom: 0;}
      
 }
 
 
 
+// .is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .courses.courses-index{
+//     @media (min-width:theme('breakpoints.sm','value')){
+//         .header.nav-up{transform: translateY(0);}
+//         .header{position: relative;}
+//         .header.nav-down{transform: translateY(0);
+//         }
+//     }
 
-.is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .courses.courses-index{
-    @media (min-width:theme('breakpoints.sm','value')){
-        .header.nav-up{transform: translateY(0);}
-        .header{position: relative;}
-        .header.nav-down{transform: translateY(0);
-        }
-    }
-
-}
+// }
 
 
 
@@ -363,7 +365,7 @@ $select-option: "select-option";
 
     
         &:after{position: absolute; #{theme('direction.right','value')}: 1rem; top:50%; content: "";height: 12px; width: 6px; border-right: 1px solid currentColor;border-bottom: 1px solid currentColor;transform: translateY(-65%) rotate(45deg); pointer-events: none;}
-    
+        &:before{width: 2.5rem; height: 35px; position: absolute; #{theme('direction.right','value')}: 0;top: 0; background-color: #fff;content: ""; pointer-events: none;}
 
         @media(max-width:theme('breakpoints.sm','value')){
             &{padding-#{theme('direction.left','value')}: 0; border: none; font-size: 13px;}
@@ -714,7 +716,7 @@ $filters-more: "filters-more";
     @media (min-width:theme('breakpoints.xl','value')){
 
         .#{$section-filters}{
-            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);
+            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);transition: all 0.2s;
                 & h1{display: none;}
                 &::after{display: none;}
             }

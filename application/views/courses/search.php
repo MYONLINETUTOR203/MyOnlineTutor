@@ -180,9 +180,9 @@ $priceSorting = AppConstant::getSortbyArr();
                                         <div class="course-controls__item">
                                             <?php if (!$course['is_purchased']) { ?>
                                                 <?php if ($course['course_type'] == Course::TYPE_FREE) { ?>
-                                                    <h3 class="free-text color-red">
+                                                    <h4 class="free-text color-red">
                                                         <?php echo Label::getLabel('LBL_FREE'); ?>
-                                                    </h3>
+                                                    </h4>
                                                 <?php } else { ?>
                                                     <h4 class="color-primary bold-700">
                                                         <?php echo CourseUtility::formatMoney($course['course_price']); ?>

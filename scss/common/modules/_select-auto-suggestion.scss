@@ -22,10 +22,10 @@
     }
 .select2-container .select2-selection--single .select2-selection__rendered{padding-#{theme('direction.left','value')}: 0!important;top: 2px;
 position: relative;}
-.select2-container--default .select2-selection--single .select2-selection__placeholder{color: inherit!important; font-weight: theme('font.weight.medium');}
+.select2-container--default .select2-selection--single .select2-selection__placeholder{color: inherit!important;}
 .select2-search--dropdown{padding: theme('padding.4')!important;}
 .select2-container--default .select2-search--dropdown .select2-search__field{border-color: theme('color.gray.200')!important;padding-#{theme('direction.left','value')}: theme('padding.4')!important;}
-.select2-container{padding-#{theme('direction.left','value')}: theme('padding.4')!important;}
+.filter-panel .select2-container{padding-#{theme('direction.left','value')}: theme('padding.4')!important;}
 
 .courses.courses-index {
     & .filters-layout__item-first{

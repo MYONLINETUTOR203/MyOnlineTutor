@@ -1256,7 +1256,7 @@ $offers-ui: "offers-ui";
             .link-detail{
                 opacity: 1;
                 visibility: visible;
-                bottom: -18px;
+                bottom: -42px;
             }
 
         }
@@ -1761,3 +1761,5 @@ $offers-ui: "offers-ui";
     }
 }
 
+
+.panel-content.calender{margin-top: 0;}

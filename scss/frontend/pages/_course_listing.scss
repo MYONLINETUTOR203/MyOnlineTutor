@@ -23,7 +23,7 @@ $course-card: "course-card";
 
 
     .#{$mark-option} {
-        &{position: absolute; #{theme('direction.left','value')}:1.6rem;top:1.6rem; z-index: 1; 
+        &{position: absolute; #{theme('direction.left','value')}:1.6rem;top:1.6rem; 
     
             @media (max-width:theme('breakpoints.sm','value')){
                 &{ #{theme('direction.left','value')}:1rem;top:1rem;z-index: 1;}
