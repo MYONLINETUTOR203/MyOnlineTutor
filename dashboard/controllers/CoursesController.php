@@ -168,7 +168,9 @@ class CoursesController extends DashboardController
     public function setup()
     {
         $frm = $this->getGeneralForm();
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_subcate_id'])) {
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), [
+            'course_cate_id', 'course_subcate_id', 'course_clang_id'
+        ])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
@@ -402,12 +404,16 @@ class CoursesController extends DashboardController
     public function setupPrice()
     {
         $frm = $this->getPriceForm();
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_currency_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
+        }
+        /* validate currency */
+        if (Currency::getAttributesById($post['course_currency_id'], 'currency_active') == AppConstant::INACTIVE) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_CURRENCY_NOT_AVAILABLE'));
         }
         $price = 0;
         if ($post['course_price'] > 0) {
