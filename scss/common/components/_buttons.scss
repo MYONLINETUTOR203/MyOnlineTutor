@@ -403,3 +403,6 @@
         .btn{margin: 5px 0 0;width: 100%; display: block;}
     }
 }
+@media (max-width:theme('breakpoints.sm','value')){
+.btn.btn--block-mobile{display: block;width: 100%; text-align: center;}
+}

@@ -9,6 +9,9 @@
       position: -webkit-sticky;
       position: sticky;
       top: 0; } }
+  @media (min-width: 1199px) {
+    .header {
+      width: 72%; } }
 
 .header-primary {
   padding: var(--padding-2) var(--padding-4);
@@ -19,7 +22,19 @@
   @media (min-width: 1199px) {
     .header-primary {
       padding-left: var(--padding-10);
-      padding-right: var(--padding-10); } }
+      padding-right: var(--padding-10); }
+      .header-primary__left {
+        width: 70%; }
+        .header-primary__left .page-title {
+          width: calc(100% - 140px); }
+      .header-primary__right {
+        width: 30%;
+        -webkit-box-pack: end;
+            -ms-flex-pack: end;
+                justify-content: flex-end;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex; } }
   @media (max-width: 576px) {
     .header-primary {
       width: 100%;
@@ -411,8 +426,7 @@ p {
     bottom: 0;
     overflow: auto;
     background-color: var(--color-white);
-    border-right: 1px solid var(--color-gray-200);
-    padding-top: 70px; } }
+    border-right: 1px solid var(--color-gray-200); } }
 
 @media (max-width: 1199px) {
   .body-side {
@@ -588,7 +602,8 @@ p {
       -ms-flex-pack: justify;
           justify-content: space-between;
   padding: var(--padding-2) var(--padding-5);
-  cursor: pointer; }
+  cursor: pointer;
+  word-wrap: break-word; }
   .lecture__control {
     width: 30px;
     position: relative;
@@ -682,7 +697,8 @@ p {
   opacity: 0.5; }
 
 .section-layout__head {
-  border-bottom: 1px solid var(--color-gray-200); }
+  border-bottom: 1px solid var(--color-gray-200);
+  padding-top: var(--padding-6); }
   @media (min-width: 1199px) {
     .section-layout__head {
       padding: var(--padding-8) 0 0; } }
@@ -1112,11 +1128,16 @@ p {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center; }
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
   .teaches__media {
     width: 24px; }
+  .teaches__content {
+    width: calc(100% - 30px); }
 
 .footer {
   display: block; }

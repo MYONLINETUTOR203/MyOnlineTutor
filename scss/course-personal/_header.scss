@@ -12,6 +12,12 @@ $header: "header";
             top: 0;
         }
     }
+
+
+    @media (min-width: theme("breakpoints.xl","value")) {
+        &{width: 72%;}
+    }
+
 }
 
 $header-primary: "header-primary";
@@ -23,7 +29,12 @@ $header-primary: "header-primary";
     box-shadow: 0px 3px 3px #0000000f;
 
     @media (min-width: theme("breakpoints.xl","value")) {
-        &{padding-left:theme("padding.10");padding-right:theme("padding.10");}
+        &{padding-left:theme("padding.10");padding-right:theme("padding.10");
+            &__left{width: 70%;
+                & .page-title{width: calc(100% - 140px);}
+            }
+            &__right{width: 30%;justify-content: flex-end;display: flex;}
+        }
     }
 
 

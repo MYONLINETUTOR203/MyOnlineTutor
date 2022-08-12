@@ -62,7 +62,7 @@
 
 .list-inline.list-inline--onehalf li {
     padding: 0 0 10px 20px;
-    width: 50%;
+    width: 50%; margin-#{theme('direction.right','value')}: -4px;
 
 }
 

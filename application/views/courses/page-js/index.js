@@ -338,3 +338,13 @@ $(document).ready(function () {
         });
     };
 });
+
+
+$(window).scroll(function () {
+    var body_height = $(".body").position();
+    if (typeof body_height !== typeof undefined && body_height.top < $(window).scrollTop()) {
+        $("body").addClass("is-filter-fixed");
+    } else {
+        $("body").removeClass("is-filter-fixed");
+    }
+});

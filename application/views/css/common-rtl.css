@@ -110,7 +110,7 @@
   --color-warning-inverse: #fff;
   --color-info: #0d66d0;
   --color-info-inverse: #fff;
-  --color-black: #555;
+  --color-black: #111;
   --color-white: #ffffff;
   --color-gray-000: #000;
   --color-gray-1000: gray;
@@ -2604,8 +2604,7 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
   position: relative; }
 
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
-  color: inherit !important;
-  font-weight: var(--font-weight-medium); }
+  color: inherit !important; }
 
 .select2-search--dropdown {
   padding: var(--padding-4) !important; }
@@ -2614,7 +2613,7 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
   border-color: var(--color-gray-200) !important;
   padding-right: var(--padding-4) !important; }
 
-.select2-container {
+.filter-panel .select2-container {
   padding-right: var(--padding-4) !important; }
 
 .courses.courses-index .filters-layout__item-first .filter-item__trigger {
@@ -6164,9 +6163,16 @@ img {
     width: 100%;
     display: block; } }
 
+@media (max-width: 576px) {
+  .btn.btn--block-mobile {
+    display: block;
+    width: 100%;
+    text-align: center; } }
+
 .editor-content, .cms-container {
   line-height: 2;
-  color: var(--color-black); }
+  color: var(--color-black);
+  word-break: break-word; }
   .editor-content p, .cms-container p {
     margin-bottom: var(--margin-10);
     line-height: inherit;
@@ -6881,7 +6887,8 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 .list-inline.list-inline--onehalf li {
   padding: 0 0 10px 20px;
-  width: 50%; }
+  width: 50%;
+  margin-left: -4px; }
 
 .list-inline.list-inline--onehalf li label {
   display: block; }

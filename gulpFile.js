@@ -21,7 +21,7 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-    return merge(common, frontend, dashboard, course);
+    return (common, frontend, dashboard, course);
 }
 
 function watchFiles() {

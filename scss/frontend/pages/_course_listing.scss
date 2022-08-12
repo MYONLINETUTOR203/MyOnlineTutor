@@ -23,7 +23,7 @@ $course-card: "course-card";
 
 
     .#{$mark-option} {
-        &{position: absolute; #{theme('direction.left','value')}:1.6rem;top:1.6rem; z-index: 1; 
+        &{position: absolute; #{theme('direction.left','value')}:1.6rem;top:1.6rem; 
     
             @media (max-width:theme('breakpoints.sm','value')){
                 &{ #{theme('direction.left','value')}:1rem;top:1rem;z-index: 1;}
@@ -33,13 +33,13 @@ $course-card: "course-card";
 
     &{background-color: theme('color.white');border-radius: theme('radius.0'); box-shadow: theme('boxShadow.all'); width: 100%; margin-bottom: theme('margin.10'); transition: all 0.4s; position: relative;
     
-        &__label{display: block; color: theme('color.primary'); font-weight: theme('font.weight.medium'); font-size: theme('font.size.small'); text-transform: uppercase;
+        &__label{display: block; color: theme('color.primary'); font-weight: theme('font.weight.medium'); font-size: theme('font.size.small'); text-transform: uppercase; max-width: 76%;
         
             @media (max-width:theme('breakpoints.sm','value')){
                 &{font-size: theme('font.size.sm');}
             }
         }
-        &__title{display: block; color: theme('color.black'); font-weight: theme('font.weight.bold'); margin: theme('margin.4') 0 theme('margin.1');
+        &__title{display: block; color: theme('color.black'); font-weight: theme('font.weight.bold'); margin: theme('margin.4') 0 theme('margin.1');word-wrap: break-word;
         
             @media (max-width:theme('breakpoints.lg','value')){
                 &{font-size: theme('font.size.h5');}display: block;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;margin-top: theme('margin.6');
