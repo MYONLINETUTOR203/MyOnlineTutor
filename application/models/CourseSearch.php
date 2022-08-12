@@ -329,8 +329,8 @@ class CourseSearch extends YocoachSearch
             (new CourseLanguage())->getAllLangs($langId, true)
         );
         $frm->addCheckBoxes(Label::getLabel('LBL_PRICE'), 'price', AppConstant::getPriceRangeOptions());
-        $frm->addTextBox(Label::getLabel('LBL_PRICE_FROM'), 'price_from', '')->requirements()->setInt();
-        $frm->addTextBox(Label::getLabel('LBL_PRICE_TILL'), 'price_till', '')->requirements()->setInt();
+        $frm->addTextBox(Label::getLabel('LBL_PRICE_FROM'), 'price_from', '')->requirements()->setFloat();
+        $frm->addTextBox(Label::getLabel('LBL_PRICE_TILL'), 'price_till', '')->requirements()->setFloat();
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setIntPositive();
         $frm->addHiddenField('', 'pageno', 1)->requirements()->setIntPositive();
         $btnSubmit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Search'));
