@@ -95,6 +95,16 @@ class CoursesController extends DashboardController
         }
         $courseId = FatUtility::int($courseId);
         if ($courseId > 0) {
+            $srch = new CourseSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
+            $srch->applyPrimaryConditions();
+            $srch->addFld('course.course_id');
+            $srch->addCondition('course.course_id', '=', $courseId);
+            $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+            $srch->setPageSize(1);
+            if (!$course = FatApp::getDb()->fetch($srch->getResultSet())) {
+                Message::addErrorMessage(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+                FatApp::redirectUser(MyUtility::generateUrl('Courses'));
+            }
             $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
             if (!$course->canEditCourse()) {
                 Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
