@@ -1,5 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="col-xl-8 col-lg-10">
+<div class="col-xl-10 col-lg-10">
     <div class="reviews-section">
         <div class="reviews-section__head">
             <div class="reviews-stats">

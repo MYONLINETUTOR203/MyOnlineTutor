@@ -193,14 +193,14 @@ $box-panel: "box-panel";
  
     &__head{padding: theme('padding.8');
         @media(max-width:theme('breakpoints.sm','value')){
-            &{padding: theme('padding.6');}
+            &{padding: theme('padding.4');}
             & .buttons-group{margin-top: theme('margin.4');}
         }
     
     }
     &__container{padding: theme('padding.8');
         @media(max-width:theme('breakpoints.sm','value')){
-            &{padding: theme('padding.6');}
+            &{padding: theme('padding.4');}
         }
     }
     
@@ -278,13 +278,13 @@ $sort-row: "sort-row";
 .#{$sort-row}{ margin: theme('margin.6') 0 0;
     &__item{display: flex; flex-wrap: wrap;}
     &__field{flex: 1;}
-    &__actions{min-width: 90px;padding-#{theme('direction.left','value')}: 4px;
+    &__actions{padding-#{theme('direction.left','value')}: 4px;
 
-        @media(max-width:theme('breakpoints.xl','value')){
-            &{min-width: 1%;
-                .btn--sort{display: none;}
-            }
-        }
+        // @media(max-width:theme('breakpoints.xl','value')){
+        //     &{min-width: 1%;
+        //         .btn--sort{display: none;}
+        //     }
+        // }
 
 
 
@@ -361,7 +361,7 @@ $card-panel: "card-panel";
             &{display: flex; align-items: flex-start; flex-wrap: wrap;}
         }
         @media(max-width:theme('breakpoints.sm','value')){
-            &{padding: theme('padding.3');
+            &{padding: theme('padding.4');
                 & .btn--sort{float: left;}
             }
         }
@@ -370,7 +370,7 @@ $card-panel: "card-panel";
     }
     &__body{padding: theme('padding.6'); 
         @media(max-width:theme('breakpoints.sm','value')){
-            &{padding: theme('padding.3');}
+            &{padding: theme('padding.4');}
         }
     }
 
@@ -396,32 +396,56 @@ $card-title: "card-title";
         }
     }
 
-    &__content{display: flex; align-items: center;
+    &__content{
+        @media(min-width:theme('breakpoints.xl','value')){
+            &{display: flex; align-items: center;}
+        }
         @media(min-width:theme('breakpoints.sm','value')){
-            &{max-width: 95%;}
+            &{max-width: 92%; line-height: 1.4;}
         }
         @media(max-width:theme('breakpoints.sm','value')){
             &{width: 100%;}
+        }
+        @media(max-width:theme('breakpoints.xl','value')){
+            &{padding-top: theme('padding.3'); }
         }
       
 
     }
 
     &__caption{
+        @media(max-width:theme('breakpoints.xl','value')){
+            &{margin-bottom: theme('margin.4'); display: block;}
+        }
         @media(max-width:theme('breakpoints.sm','value')){
-            &{line-height: 1.6; width: calc(100% - 80px);}
+            &{line-height: 1.6; }
         }
     }
    
     &__actions{display: inline-flex; align-self: flex-start;
     
         @media(min-width:theme('breakpoints.xl','value')){
-            &{opacity: 0;visibility: hidden;}
+            &{opacity: 0;visibility: hidden;
+                .btn .btn-label{font-size: 0;}
+            }
         }
 
-        @media(max-width:theme('breakpoints.sm','value')){
-            &{width:80px; margin-#{theme('direction.left','value')}: auto;}
+       
+        @media(max-width:theme('breakpoints.xl','value')){
+            &{
+                & .btn.btn--equal{border: 1px solid theme('color.gray.400'); background-color: theme('color.white')!important; margin-#{theme('direction.right','value')}: theme('margin.2'); width: auto; height: auto; padding: theme('padding.2') theme('padding.4')!important; font-size: 13px; color: theme('color.black')!important; border-radius: theme('radius.round');
+                    & .icon{margin-#{theme('direction.right','value')}: theme('margin.2')!important;width: 12px; height: 12px; }
+                }
+            }
         }
+
+
+        @media(max-width:theme('breakpoints.sm','value')){
+            &{width: 100%;
+                & .btn.btn--equal{flex: 1; padding: theme('padding.3') theme('padding.4')!important; }
+            }
+        }
+
 
     }
 
@@ -473,7 +497,7 @@ $card-box: "card-box";
         }
 
         @media(max-width:theme('breakpoints.sm','value')){
-            &{padding: theme('padding.3');}
+            &{padding: theme('padding.4');}
         }
 
 
@@ -510,6 +534,9 @@ $card-box: "card-box";
         }
 
     }
+
+
+
 
 
 }
@@ -596,13 +623,16 @@ $file-uploader: "file-uploader";
 $file-attachment: "file-attachment";
 .#{$file-attachment}{
 
+    & >.d-flex{align-items: flex-start;}
     &__item{ width: 100%; border: 1px solid theme('color.gray.200'); padding: theme('padding.3'); position: relative; display: flex;flex-wrap: wrap;margin-top: theme('margin.4'); margin-bottom: theme('margin.6');
         & .#{$file-attachment}{
             &__content{max-width: 60%;}
         } 
     }
-    &__media{width:50px; display:flex; align-items: center; justify-content: flex-start;}
-    &__content{flex: 1;}
+    &__media{width:50px; display:flex; align-items: center; justify-content: flex-start; padding-top: theme('padding.1');}
+    &__content{ width: calc(100% - 50px); white-space: normal;
+        
+    }
     &__progress{ margin-#{theme('direction.left','value')}: auto; margin-#{theme('direction.right','value')}: theme('margin.2'); display: flex; align-items: center;
         .progress{min-width:200px;}
     }

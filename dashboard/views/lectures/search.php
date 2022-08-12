@@ -20,6 +20,7 @@
                             <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#edit"></use>
                             </svg>
+                            <span class="btn-label"><?php echo Label::getLabel('LBL_EDIT'); ?></span>
                             <div class="tooltip tooltip--top bg-black">
                                 <?php echo Label::getLabel('LBL_EDIT'); ?>
                             </div>
@@ -28,6 +29,7 @@
                             <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#trash"></use>
                             </svg>
+                            <span class="btn-label"><?php echo Label::getLabel('LBL_DELETE'); ?></span>
                             <div class="tooltip tooltip--top bg-black">
                                 <?php echo Label::getLabel('LBL_DELETE'); ?>
                             </div>

@@ -29,6 +29,7 @@ $section-filters: "section-filters";
     }
 
     & .select-option{margin-bottom: 0;}
+    & .select2-selection__arrow{display: none!important;}
      
 }
 
@@ -361,11 +362,11 @@ $select-option: "select-option";
 
    
     &__item{position: relative;  padding: theme('padding.3') theme('padding.5'); padding-#{theme('direction.right','value')}: theme('padding.10'); display: block; overflow: hidden;
-     color: theme('color.gray.600');border: 1px solid theme('color.gray.200');text-transform: capitalize;
+     color: theme('color.gray.600');border: 1px solid theme('color.gray.200');text-transform: capitalize;word-wrap: break-word;
 
     
         &:after{position: absolute; #{theme('direction.right','value')}: 1rem; top:50%; content: "";height: 12px; width: 6px; border-right: 1px solid currentColor;border-bottom: 1px solid currentColor;transform: translateY(-65%) rotate(45deg); pointer-events: none;}
-        &:before{width: 2.5rem; height: 35px; position: absolute; #{theme('direction.right','value')}: 0;top: 0; background-color: #fff;content: ""; pointer-events: none;}
+        // &:before{width: 2.5rem; height: 35px; position: absolute; #{theme('direction.right','value')}: 0;top: 0; background-color: #fff;content: ""; pointer-events: none;}
 
         @media(max-width:theme('breakpoints.sm','value')){
             &{padding-#{theme('direction.left','value')}: 0; border: none; font-size: 13px;}
@@ -382,11 +383,11 @@ $select-option: "select-option";
 
     }
 
-    &__input{position: absolute; inset: 0;opacity: 0;width: 100%; height: 100%;
+    &__input{position: absolute;left: 0;right:0; top:0; bottom: 0;opacity: 0;width: 100%; height: 100%;
         &:checked + .#{$select-option}{
-            &__item{color: theme('color.secondary'); border-color: currentColor; font-weight: theme('font.weight.medium');
+            &__item{color: theme('color.secondary'); border-color: currentColor; font-weight: theme('font.weight.medium'); 
                 @media(min-width:theme('breakpoints.xl','value')){
-                    &:before{position: absolute; inset: 0;content: ""; background-color: currentColor; opacity: 0.06;pointer-events: none;}
+                    &:before{position: absolute; left: 0;right:0; top:0; bottom: 0; content: ""; background-color: currentColor; opacity: 0.04;pointer-events: none;width: auto;height: auto;}
                 }
             }
         }
@@ -403,12 +404,12 @@ $select-list: "select-list";
 
         @media(min-width:theme('breakpoints.sm','value')){
         & .#{$select-option}{
-            &__item{border: none; border-bottom: 1px solid theme('color.gray.200');padding: theme('padding.3');  padding-#{theme('direction.right','value')}:theme('padding.8');}
+            &__item{border: none; border-bottom: 1px solid theme('color.gray.200');padding: theme('padding.3');  padding-#{theme('direction.right','value')}:theme('padding.12');}
 
             &__input{
                 &:checked + .#{$select-option}{
                     &__item{color: theme('color.secondary'); border-color: theme('color.gray.200');
-                        &:before{display: none;}
+                        // &:before{display: none;}
                     }
                 }
               

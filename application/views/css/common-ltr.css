@@ -6163,9 +6163,16 @@ img {
     width: 100%;
     display: block; } }
 
+@media (max-width: 576px) {
+  .btn.btn--block-mobile {
+    display: block;
+    width: 100%;
+    text-align: center; } }
+
 .editor-content, .cms-container {
   line-height: 2;
-  color: var(--color-black); }
+  color: var(--color-black);
+  word-break: break-word; }
   .editor-content p, .cms-container p {
     margin-bottom: var(--margin-10);
     line-height: inherit;
@@ -6880,7 +6887,8 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 .list-inline.list-inline--onehalf li {
   padding: 0 0 10px 20px;
-  width: 50%; }
+  width: 50%;
+  margin-right: -4px; }
 
 .list-inline.list-inline--onehalf li label {
   display: block; }

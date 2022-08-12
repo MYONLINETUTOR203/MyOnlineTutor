@@ -87,7 +87,7 @@ echo $frm->getFormTag(); ?>
                                 <div class="media-placeholder ratio ratio--16by9">
                                     <?php if ($previewVideo) { ?>
                                         <div class="media-placeholder__preview">
-                                            <video width="387" height="218" controls>
+                                            <video width="100%" height="100%" controls>
                                                 <source src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_COURSE_PREVIEW_VIDEO, $courseId], CONF_WEBROOT_FRONT_URL) . '?t=' . time(); ?>" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>

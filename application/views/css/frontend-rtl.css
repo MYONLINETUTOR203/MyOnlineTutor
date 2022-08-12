@@ -1615,6 +1615,8 @@ p {
         margin-bottom: 0 !important; } }
   .section-filters .select-option {
     margin-bottom: 0; }
+  .section-filters .select2-selection__arrow {
+    display: none !important; }
 
 @media (min-width: 576px) {
   .filter-item {
@@ -1964,7 +1966,8 @@ body.is-filter-show .header {
     overflow: hidden;
     color: var(--color-gray-600);
     border: 1px solid var(--color-gray-200);
-    text-transform: capitalize; }
+    text-transform: capitalize;
+    word-wrap: break-word; }
     .select-option__item:after {
       position: absolute;
       left: 1rem;
@@ -1978,15 +1981,6 @@ body.is-filter-show .header {
           -ms-transform: translateY(-65%) rotate(45deg);
               transform: translateY(-65%) rotate(45deg);
       pointer-events: none; }
-    .select-option__item:before {
-      width: 2.5rem;
-      height: 35px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background-color: #fff;
-      content: "";
-      pointer-events: none; }
     @media (max-width: 576px) {
       .select-option__item {
         padding-right: 0;
@@ -1994,7 +1988,10 @@ body.is-filter-show .header {
         font-size: 13px; } }
   .select-option__input {
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     opacity: 0;
     width: 100%;
     height: 100%; }
@@ -2005,11 +2002,16 @@ body.is-filter-show .header {
       @media (min-width: 1199px) {
         .select-option__input:checked + .select-option__item:before {
           position: absolute;
-          inset: 0;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
           content: "";
           background-color: currentColor;
-          opacity: 0.06;
-          pointer-events: none; } }
+          opacity: 0.04;
+          pointer-events: none;
+          width: auto;
+          height: auto; } }
 
 .select-list {
   position: relative; }
@@ -2018,12 +2020,10 @@ body.is-filter-show .header {
       border: none;
       border-bottom: 1px solid var(--color-gray-200);
       padding: var(--padding-3);
-      padding-left: var(--padding-8); }
+      padding-left: var(--padding-12); }
     .select-list--vertical .select-option__input:checked + .select-option__item {
       color: var(--color-secondary);
       border-color: var(--color-gray-200); }
-      .select-list--vertical .select-option__input:checked + .select-option__item:before {
-        display: none; }
     .select-list--vertical li:last-child .select-option__item {
       border-bottom: none; }
     .select-list--vertical > ul > li ul {
@@ -9611,7 +9611,8 @@ body.sort-active {
     color: var(--color-primary);
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-small);
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    max-width: 76%; }
     @media (max-width: 576px) {
       .course-card__label {
         font-size: var(--font-size-sm); } }
@@ -9619,7 +9620,8 @@ body.sort-active {
     display: block;
     color: var(--color-black);
     font-weight: var(--font-weight-bold);
-    margin: var(--margin-4) 0 var(--margin-1); }
+    margin: var(--margin-4) 0 var(--margin-1);
+    word-wrap: break-word; }
     @media (max-width: 991px) {
       .course-card__title {
         display: block;
@@ -10450,7 +10452,8 @@ body.sort-active {
     color: var(--color-black);
     font-weight: var(--font-weight-bold);
     margin: var(--margin-2) 0 var(--margin-4);
-    min-height: 50px; }
+    min-height: 50px;
+    word-wrap: break-word; }
     @media (max-width: 991px) {
       .card-tile__title {
         display: block;
@@ -10522,3 +10525,32 @@ body.sort-active {
 .video-preview__head {
   border-bottom: 1px solid var(--color-gray-200);
   padding: var(--padding-8); }
+
+.btn--favorite .fav-icon {
+  fill: none;
+  stroke: var(--color-gray-800);
+  stroke-width: 2px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  top: 1px;
+  display: block;
+  margin-left: 0.5rem; }
+
+.btn--favorite.is-active .fav-icon {
+  fill: var(--color-primary);
+  stroke: var(--color-primary); }
+
+.mark-option .fav-icon {
+  fill: none;
+  stroke: var(--color-gray-800);
+  stroke-width: 2px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  top: 1px;
+  display: block; }
+
+.mark-option.is-active .fav-icon {
+  fill: var(--color-white);
+  stroke: var(--color-white); }

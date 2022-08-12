@@ -14,13 +14,13 @@ $fld->setFieldTagAttribute('class', 'btn btn--primary');
         <div class="page-layout__large">
             <div class="box-panel">
                 <div class="box-panel__head border-bottom">
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-sm-flex align-items-center justify-content-between">
                         <div>
                             <h4><?php echo Label::getLabel('LBL_MANAGE_CURRICULUM'); ?></h4>
                         </div>
                         <div>
                             <div class="buttons-group d-flex align-items-center">
-                                <a href="javascript:void(0);" onclick="sectionForm()" class="btn btn--secondary margin-left-4">
+                                <a href="javascript:void(0);" onclick="sectionForm()" class="btn btn--secondary btn--block-mobile">
                                     <svg class="icon">
                                         <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#plus-more"></use>
                                     </svg>

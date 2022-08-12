@@ -169,7 +169,7 @@
     .alert-position.animated {
       opacity: 1;
       visibility: visible;
-      z-index: 100; }
+      z-index: 1000; }
     .alert-position .alert {
       margin-bottom: 0; }
     @media (min-width: 576px) {

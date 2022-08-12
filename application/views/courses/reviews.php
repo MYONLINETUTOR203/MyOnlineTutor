@@ -42,9 +42,7 @@
                     <span class="review__author">
                         <?php echo $review['user_first_name'] . ' ' . $review['user_last_name']; ?>
                     </span>
-                    <span class="review__title">
-                        <?php echo $review['ratrev_title']; ?>
-                    </span>
+                    
                     <div class="review__meta">
                         <div class="review__rating">
                             <div class="rating">
@@ -59,7 +57,10 @@
                         </div>
                         <div class="review__date"><?php echo MyDate::formatDate($review['ratrev_created']); ?></div>
                     </div>
-                    <div class="review__message">
+                    <h6 class="review__title margin-top-6">
+                        <?php echo $review['ratrev_title']; ?>
+                    </h6>
+                    <div class="review__message margin-top-2">
                         <p><?php echo $review['ratrev_detail']; ?></p>
                     </div>
                 </div>

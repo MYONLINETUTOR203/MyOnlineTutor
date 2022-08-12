@@ -92,7 +92,7 @@ $body-side: 'body-side';
 
     @media(min-width: theme('breakpoints.xl','value')){
         &{
-            width: 28%; position: fixed; right: 0;top: 0; bottom: 0; overflow: auto;background-color: theme('color.white'); border-#{theme('direction.left','value')}: 1px solid theme('color.gray.200'); padding-top: 70px;
+            width: 28%; position: fixed; right: 0;top: 0; bottom: 0; overflow: auto;background-color: theme('color.white'); border-#{theme('direction.left','value')}: 1px solid theme('color.gray.200');
         }
     }
    
@@ -222,7 +222,7 @@ $lecture: 'lecture';
 
 .#{$lecture} {
 
-    &{position: relative; display: flex; flex-wrap: wrap;  justify-content: space-between; padding: theme('padding.2') theme('padding.5') ; cursor: pointer;
+    &{position: relative; display: flex; flex-wrap: wrap;  justify-content: space-between; padding: theme('padding.2') theme('padding.5') ; cursor: pointer; word-wrap: break-word;
         &__control{width: 30px;position: relative; white-space: nowrap;
             .#{$lecture-checkbox} {margin-top: 7px; margin-#{theme('direction.left','value')}:2px;}
             .tooltip{top: 5px; transform: translateX(100%);}
@@ -315,7 +315,7 @@ $page-directions: 'page-directions';
 $section-layout: 'section-layout';
 
 .#{$section-layout} {
-   &__head{border-bottom: 1px solid theme('color.gray.200');
+   &__head{border-bottom: 1px solid theme('color.gray.200'); padding-top: theme('padding.6');
         @media(min-width: theme('breakpoints.xl','value')){
             &{padding: theme('padding.8') 0 0; }
         }
@@ -639,7 +639,8 @@ $author-box: "author-box";
 $teaches: "teaches";
 
 .#{$teaches}{ 
-    &{display: flex; align-items: center;
+    &{display: flex; align-items: flex-start; justify-content: space-between;
         &__media{width: 24px;}
+        &__content{width: calc(100% - 30px);}
     }
 }

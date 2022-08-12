@@ -576,7 +576,7 @@ $card-tile: "card-tile";
                 &{font-size: theme('font.size.sm');}
             }
         }
-        &__title{display: block; color: theme('color.black'); font-weight: theme('font.weight.bold'); margin: theme('margin.2') 0 theme('margin.4'); min-height: 50px;
+        &__title{display: block; color: theme('color.black'); font-weight: theme('font.weight.bold'); margin: theme('margin.2') 0 theme('margin.4'); min-height: 50px; word-wrap: break-word;
         
             @media (max-width:theme('breakpoints.lg','value')){
                 &{font-size: theme('font.size.h5');}display: block;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -648,3 +648,20 @@ $video-preview: "video-preview";
 
 
 
+.btn--favorite{
+    .fav-icon{fill:none;stroke: theme('color.gray.800'); stroke-width: 2px; width:18px; height: 18px; position: relative;top:1px; display: block;margin-#{theme('direction.right','value')}:0.5rem;}
+
+    &.is-active{
+        & .fav-icon{fill:theme('color.primary'); stroke:theme('color.primary');}
+    }
+
+}
+
+.mark-option{
+    .fav-icon{fill:none;stroke: theme('color.gray.800'); stroke-width: 2px; width:18px; height: 18px; position: relative;top:1px; display: block;}
+
+    &.is-active{
+        & .fav-icon{fill:theme('color.white'); stroke:theme('color.white');}
+    }
+
+}
