@@ -8,7 +8,8 @@
         "google/recaptcha": "^1.2",
         "stripe/stripe-php": "^7.87",
         "tecnickcom/tcpdf": "^6.4",
-        "jonnyw/php-phantomjs": "4.*"
+        "jonnyw/php-phantomjs": "4.*",
+        "mpdf/mpdf": "^8.1"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"

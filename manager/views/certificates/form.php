@@ -125,7 +125,7 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
-                                                                    <span> <?php echo Label::getLabel('LBL_TUTOR:'); ?></span>
+                                                                    <span> <?php echo Label::getLabel('LBL_TUTOR:', $data['certpl_lang_id']); ?></span>
                                                                     <div class="style-bold contentTrainerJs" contenteditable="true">
                                                                         <?php echo $content['trainer'] ?>
                                                                     </div>
@@ -133,13 +133,13 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 
                                                                 <div class="certificate-signs__middle">
                                                                     <div class="certificate-logo">
-                                                                        <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_ADMIN_LOGO, 0, Afile::SIZE_ORIGINAL, $siteLangId]); ?>" alt="">
+                                                                        <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $data['certpl_lang_id']]); ?>" alt="">
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="certificate-signs__right">
 
-                                                                    <span> <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:'); ?></span>
+                                                                    <span> <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:', $data['certpl_lang_id']); ?></span>
                                                                     <div class="style-bold contentCertNoJs" contenteditable="true">
                                                                         <?php echo $content['certificate_number'] ?>
                                                                     </div>

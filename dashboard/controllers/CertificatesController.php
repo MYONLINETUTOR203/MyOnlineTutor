@@ -31,7 +31,7 @@ class CertificatesController extends DashboardController
         }
         $data = CourseProgress::getAttributesById($progressId, ['crspro_completed', 'crspro_ordcrs_id']);
         /* return if course not completed */
-        if (!$data['crspro_completed']) {
+        if (empty($data['crspro_completed'])) {
             FatUtility::exitWithErrorCode(404);
         }
         $ordcrs = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
@@ -44,15 +44,45 @@ class CertificatesController extends DashboardController
         }
         /* check if certificate already generated */
         if (empty($ordcrsData['ordcrs_certificate_number'])) {
+            $db = FatApp::getDb();
+            $db->startTransaction();
             /* generate certificate */
+            $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
             $cert = new Certificate($data['crspro_ordcrs_id'], $this->siteUserId, $this->siteLangId);
-            if (!$cert->setup()) {
-                /* reset certificate number */
-                $ordcrs->setFldValue('ordcrs_certificate_number', '');
-                $ordcrs->save();
-                FatUtility::dieWithError($cert->getError());
+            $cert->setFldValue('ordcrs_certificate_number', $certificateNumber);
+            if (!$cert->save()) {
+                FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
+                return false;
             }
+            /* get certificate content */
+            $content = $this->getCertificateContent($ordcrsData);
+            $filename = 'certificate' . $ordcrsData['ordcrs_id'] . '.pdf';
+            /* generate certificate */
+            if (!$cert->generateCertificate($content, $filename)) {
+                $db->rollbackTransaction();
+                FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
+            }
+            
+            $db->commitTransaction();
         }
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND));
+    }
+
+    public function getCertificateContent(array $data)
+    {
+        /* get course data */
+        $cert = new Certificate(0, $this->siteUserId, $this->siteLangId);
+        if (!$data = $cert->getDataForCertificate($data['ordcrs_id'])) {
+            FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
+        }
+        /* get certificate template */
+        $data['cert_number'] = $data['ordcrs_certificate_number'];
+        $data['lang_id'] = $this->siteLangId;
+        if (!$content = $cert->getFormattedContent($data)) {
+            FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
+        }
+        $this->set('content', $content);
+        $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
+        return $this->_template->render(false, false, 'certificates/generate.php', true);
     }
 }

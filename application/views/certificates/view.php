@@ -4,7 +4,10 @@
         <div class="layout-flex">
             <div class="layout-flex__large">
                 <div class="certificate-media margin-bottom-4">
-                    <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_IMAGE, $ordcrsId, 'LARGE']); ?>" alt="">
+                    <object data="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) ?>#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="603">
+                        <p>Your web browser doesn't have a PDF plugin.
+                            Instead you can <a class="underline color-primary" target="_blank" href="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) ?>#toolbar=0&navpanes=0&scrollbar=0">click here</a> to access the file directly.</p>
+                    </object>
                 </div>
                 <div class="certificate-desc">
                     <p class="font-small"></p>
@@ -111,7 +114,7 @@
                 </div>
                 <div class="btn-actions margin-top-8">
                     <div class="share margin-right-1">
-                        <a href="#download-target" class="share__trigger trigger-js btn btn--primary-bordered btn--block">
+                        <a target="_blank" href="<?php echo MyUtility::makeUrl('Image', 'download', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId]); ?>" class="btn btn--primary-bordered btn--block">
                             <svg class="icon icon--download margin-right-2 icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
                             </svg>
@@ -119,7 +122,7 @@
                                 <?php echo Label::getLabel('LBL_DOWNLOAD'); ?>
                             </span>
                         </a>
-                        <div id="download-target" class="share__target">
+                        <!-- <div id="download-target" class="share__target">
                             <div class="d-flex justify-content-center">
                                 <a target="_blank" href="<?php echo MyUtility::makeUrl('Image', 'download', [Afile::TYPE_CERTIFICATE_IMAGE, $ordcrsId]); ?>" class="btn btn--primary-bordered margin-1">
                                     <svg class="icon icon--png icon--small margin-right-2">
@@ -134,7 +137,7 @@
                                     <?php echo Label::getLabel('LBL_PDF'); ?>
                                 </a>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="share margin-left-1">
                         <a href="#share-target" class="share__trigger trigger-js btn btn--primary-bordered btn--block">

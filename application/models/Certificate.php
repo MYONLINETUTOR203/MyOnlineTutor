@@ -30,54 +30,34 @@ class Certificate extends MyAppModel
     }
 
     /**
-     * Setup certificate data * generate certificate
-     *
-     * @return bool
-     */
-    public function setup() :bool
-    {
-        $db = FatApp::getDb();
-        $this->setFldValue('ordcrs_certificate_number', static::CERTIFICATE_NO_PREFIX . uniqid());
-        if (!$this->save()) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-            return false;
-        }
-        $ordcrsId = $this->getMainTableRecordId();
-        $db->startTransaction();
-        $tokenObj = new TempToken();
-        /* remove previous token */
-        if (!$tokenObj->removeToken($ordcrsId)) {
-            $db->rollbackTransaction();
-            return false;
-        }
-        $token = $ordcrsId . '_' . FatUtility::getRandomString(15);
-        if (!$tokenObj->addToken($ordcrsId, $token)) {
-            $db->rollbackTransaction();
-            return false;
-        }
-        if (!$this->generateCertificate($token)) {
-            $db->rollbackTransaction();
-            return false;
-        }
-        $db->commitTransaction();
-        return true;
-    }
-
-    /**
      * Generate Certificate Image & PDF
      *
      * @param string $token
      * @return bool
      */
-    private function generateCertificate(string $token)
+    public function generateCertificate($content, $filename, $preview = false)
     {
-        $url = MyUtility::generateFullUrl('Certificates', 'generate', [$token], CONF_WEBROOT_FRONTEND);
-        if (!$this->createImage($url)) {
-            return false;
-        }
-        if (!$this->createPdf()) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-            return false;
+        $mpdf = new \Mpdf\Mpdf([
+            'orientation' => 'L',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'mirrorMargins' => 0,
+            'autoLangToFont' => true,
+            'autoScriptToLang' => true,
+        ]);
+        $mpdf->SetDirectionality(Language::getAttributesById($this->langId, 'language_direction'));
+        $mpdf->WriteHTML($content);
+        $path = $this->getFilePath() . $filename;
+        if ($preview == false) {
+            $mpdf->Output(CONF_UPLOADS_PATH . $path, \Mpdf\Output\Destination::FILE);
+            if (!$this->saveFile(Afile::TYPE_CERTIFICATE_PDF, $filename, $path)) {
+                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
+                return false;
+            }
+        } else {
+            $mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
         }
         return true;
     }
@@ -103,7 +83,8 @@ class Certificate extends MyAppModel
         $srch->addMultipleFields([
             'crspro_completed',
             'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
-            'learner.user_lang_id'
+            'learner.user_lang_id',
+            'ordcrs_certificate_number'
         ]);
         $srch->addCondition('ordcrs_id', '=', $ordcrsId);
         return FatApp::getDb()->fetch($srch->getResultSet());
@@ -146,102 +127,15 @@ class Certificate extends MyAppModel
         return json_decode($content, true);
     }
 
-    public function generateSampleCertificate($filepath)
-    {
-        $url = MyUtility::generateFullUrl('Certificates', 'generateSample', [], CONF_WEBROOT_FRONTEND);
-        if (!$this->createImage($url, $filepath, true)) {
-            return false;
-        }
+    // public function generateSampleCertificate($filepath)
+    // {
+    //     // $url = MyUtility::generateFullUrl('Certificates', 'generateSample', [], CONF_WEBROOT_FRONTEND);
+    //     // if (!$this->createImage($url, $filepath, true)) {
+    //     //     return false;
+    //     // }
 
-        return true;
-    }
-
-    /**
-     * Render Image in PDF & Save File
-     *
-     * @return string
-     */
-    private function createPdf()
-    {
-        $filename = 'certificate' . $this->getMainTableRecordId();
-        $file =  $this->getFilePath() . $filename;
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE);
-        $sizes = $afile->getImageSizes('LARGE');
-        $pdf = new TCPDF();
-        $pdf->AddPage();
-        $pdf->Image(CONF_UPLOADS_PATH . $file . '.jpg', 0, 0, $sizes[0], $sizes[1], 'JPG', '', '', true, 150, 'C', false, false, 1, true, false, true);
-        /* get file path and save */
-        $pdf->Output(CONF_UPLOADS_PATH . $file . '.pdf', 'F');
-        /* save file data */
-        if (!$this->saveFile(Afile::TYPE_CERTIFICATE_PDF, $filename . '.pdf', $file . '.pdf')) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Create Certificate Image
-     *
-     * @param string $url
-     * @param string $filepath
-     * @return string|bool
-     */
-    private function createImage(string $url, string $filepath = '', $isSample = false)
-    {
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE);
-        $sizes = $afile->getImageSizes('LARGE');
-        $width  = $sizes[0];
-        $height = $sizes[1];
-        $top    = 0;
-        $left   = 0;
-
-        $client = Client::getInstance();
-        $request = $client->getMessageFactory()->createCaptureRequest($url, 'GET');
-
-        $filename = 'certificate' . $this->getMainTableRecordId() . '.jpg';
-        if (empty($filepath)) {
-            $filepath = $this->getFilePath() . $filename;
-        } else {
-            $filepath = $filepath . $filename;
-        }
-        $request->setOutputFile(str_replace('\\', '/', CONF_UPLOADS_PATH . $filepath));
-        $request->setViewportSize($width, $height);
-        $request->setCaptureDimensions($width, $height, $top, $left);
-        $response = $client->getMessageFactory()->createResponse();
-
-        $executablePath = '';
-        if (PHP_OS_FAMILY === "Windows") {
-            $executablePath = CONF_UPLOADS_PATH . 'bin/phantomjs.exe';
-        } elseif (PHP_OS_FAMILY === "Linux") {
-            $executablePath = CONF_UPLOADS_PATH . 'bin/phantomjs';
-        }
-        if (empty($executablePath)) {
-            $this->error = Label::getLabel('LBL_PHANTOMJS_EXECUTABLE_FILE_NOT_FOUND');
-            return false;
-        }
-        
-        if (!file_exists($executablePath)) {
-            $this->error = Label::getLabel('LBL_PHANTOMJS_EXECUTABLE_FILE_NOT_FOUND');
-            return false;
-        }
-        $client->getEngine()->setPath($executablePath);
-
-        $client->send($request, $response);
-
-        if ($response->getStatus() !== 200) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-            return false;
-        }
-        /* save file data */
-        if ($isSample == false) {
-            if (!$this->saveFile(Afile::TYPE_CERTIFICATE_IMAGE, $filename, $filepath)) {
-                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-                return false;
-            }
-        }
-        return true;
-    }
+    //     return true;
+    // }
 
     /**
      * Save created files data
@@ -251,7 +145,7 @@ class Certificate extends MyAppModel
      * @param string $path
      * @return bool
      */
-    private function saveFile(int $type, string $filename, string $path)
+    public function saveFile(int $type, string $filename, string $path)
     {
         $record = new TableRecord(Afile::DB_TBL);
         $record->assignValues([
@@ -266,6 +160,13 @@ class Certificate extends MyAppModel
             $this->error = $record->getError();
             return false;
         }
+        /* delete old file */
+        $fileId = $record->getId();
+        $stmt = [
+            'vals' => [$type, 0, $this->getMainTableRecordId(), $fileId],
+            'smt' => 'file_type = ? AND file_lang_id = ? AND file_record_id = ? AND file_id != ?'
+        ];
+        FatApp::getDb()->deleteRecords(Afile::DB_TBL, $stmt);
         return true;
     }
 

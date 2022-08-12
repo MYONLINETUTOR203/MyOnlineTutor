@@ -182,27 +182,34 @@ class CertificatesController extends AdminBaseController
         ]);
     }
 
-    public function generate()
+    public function generate($langId)
     {
-        $extension = 'bz2';
-        if (!extension_loaded($extension)) {
-            FatUtility::dieWithError(Label::getLabel('LBL_EXTENSION_MISSING_OR_DISABLED:') . $extension);
+        $langId = ($langId < 1) ? $this->siteLangId : $langId;
+        /* Create dummy data */
+        $data = [
+            'learner_first_name' => 'Martha',
+            'learner_last_name' => 'Christopher',
+            'teacher_first_name' => 'John',
+            'teacher_last_name' => 'Doe',
+            'course_title' => 'English Language Learning - Beginners',
+            'course_clang_name' => 'English',
+            'lang_id' => $langId,
+            'cert_number' => 'YC_h34uwh9e72w',
+            'crspro_completed' => date('Y-m-d H:i:s'),
+        ];
+        $cert = new Certificate(0, 0, $langId);
+        $content = $cert->getFormattedContent($data);
+        $this->sets([
+            'content' => $content,
+            'layoutDir' => Language::getAttributesById($langId, 'language_direction'),
+            'langId' => $langId
+        ]);
+        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
+        $filename = 'certificate.pdf';
+        /* generate certificate */
+        if (!$cert->generateCertificate($content, $filename, true)) {
+            FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
         }
-        $certificate = new Certificate();
-        $filePath = 'sample/';
-        if (!file_exists(CONF_UPLOADS_PATH . $filePath)) {
-            mkdir(CONF_UPLOADS_PATH . $filePath, 0777, true);
-        }
-        if (!$certificate->generateSampleCertificate($filePath)) {
-            FatUtility::dieWithError($certificate->getError());
-        }
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE);
-        $sizes = $afile->getImageSizes('LARGE');
-        $filePath = CONF_UPLOADS_PATH . $filePath . 'certificate0.jpg';;
-        $img = new ImageResize($filePath);
-        $img->setResizeMethod(ImageResize::IMG_RESIZE_EXTRA_ADDSPACE);
-        $img->setMaxDimensions($sizes[0], $sizes[1]);
-        $img->displayImage();
     }
 
     /**
