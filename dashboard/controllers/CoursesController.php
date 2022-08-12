@@ -583,8 +583,11 @@ class CoursesController extends DashboardController
         $db = FatApp::getDb();
         /* validate course id */
         $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
-        if (!$course->get()) {
+        if (!$data = $course->get()) {
             FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
+        }
+        if ($data['course_user_id'] == $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_YOU_CANNOT_MARK_YOUR_OWN_COURSE_AS_FAVORITE'));
         }
         $status = FatApp::getPostedData('status', FatUtility::VAR_INT, AppConstant::NO);
         if ($status == AppConstant::NO) {
