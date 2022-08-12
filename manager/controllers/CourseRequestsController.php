@@ -118,6 +118,7 @@ class CourseRequestsController extends AdminBaseController
      */
     public function form(int $requestId)
     {
+        $this->objPrivilege->canEditCourseRequests();
         $requestId = FatUtility::int($requestId);
         if ($requestId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -168,6 +169,7 @@ class CourseRequestsController extends AdminBaseController
      */
     public function updateStatus()
     {
+        $this->objPrivilege->canEditCourseRequests();
         $form = $this->getForm();
         if (!$post = $form->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($form->getValidationErrors()));
