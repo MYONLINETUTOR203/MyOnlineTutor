@@ -94,6 +94,16 @@ class CourseLanguagesController extends AdminBaseController
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
         }
+        /* check identifier already in use */
+        $srch = new SearchBase(CourseLanguage::DB_TBL);
+        $srch->addCondition('clang_identifier', '=', trim($post['clang_identifier']));
+        $srch->addDirectCondition('clang_deleted IS NULL');
+        if ($cLangId > 0) {
+            $srch->addCondition('clang_id', '!=', $cLangId);
+        }
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_LANGUAGE_IDENTIFIER_NOT_AVAILABLE'));
+        }
         unset($post['clang_id']);
         $courseLanguage = new CourseLanguage($cLangId);
         $courseLanguage->assignValues($post);
@@ -221,7 +231,6 @@ class CourseLanguagesController extends AdminBaseController
         $fld = $frm->addRequiredField(Label::getLabel('LBL_LANGUAGE_IDENTIFIER'), 'clang_identifier', '', 
             ['id' => 'clang_identifier']
         );
-        $fld->setUnique(CourseLanguage::DB_TBL, 'clang_identifier', 'clang_id', 'clang_identifier', 'clang_id');
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'clang_active', AppConstant::getActiveArr(), '', [], '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
         return $frm;
