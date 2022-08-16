@@ -249,19 +249,8 @@ class CoursePreviewController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_NOT_FOUND'));
         }
         /* fetch rating data */
-        $srch = new SearchBase(RatingReview::DB_TBL, 'ratrev');
-        $srch->addCondition('ratrev.ratrev_status', '=', RatingReview::STATUS_APPROVED);
-        $srch->addCondition('ratrev.ratrev_type', '=', AppConstant::COURSE);
-        $srch->addCondition('ratrev.ratrev_type_id', '=', $courseId);
-        $srch->addMultipleFields([
-            'ratrev_overall',
-            'COUNT(ratrev_id) as rate_count'
-        ]);
-        $srch->addGroupBy('ratrev_overall');
-        $srch->doNotCalculateRecords();
-        $srch->doNotLimitRecords();
-        $reviews = FatApp::getDb()->fetchAll($srch->getResultSet(), 'ratrev_overall');
-        $this->set('reviews', $reviews);
+        $revObj = new CourseRatingReview();
+        $this->set('reviews', $revObj->getRatingStats($courseId));
         /* get sorting form */
         $frm = $this->getReviewForm();
         $frm->fill(['course_id' => $courseId]);

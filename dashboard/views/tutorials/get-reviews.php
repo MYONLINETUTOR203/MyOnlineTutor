@@ -33,6 +33,13 @@
                                                 <?php } ?>
                                             </div>
                                         </div>
+                                        <div class="reviews-progress__value">
+                                            <?php
+                                            if ($review['count'] > 0) {
+                                                echo '(' . $review['count'] . ')';
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
                             <?php } ?>

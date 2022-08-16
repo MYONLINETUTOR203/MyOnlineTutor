@@ -22,35 +22,31 @@
                     </div>
                     <div class="col-8 col-sm-6">
                         <div class="reviews-counter">
-                            <?php
-                            $i = 5;
-                            $totalCount = array_sum(array_column($reviews, 'rate_count'));
-                            while ($i >= 1) {
-                                $rating = 0;
-                                if (isset($reviews[$i]['rate_count'])) {
-                                    $rating = ($reviews[$i]['rate_count'] / $totalCount) * 100;
-                                }
-                                ?>
+                            <?php foreach ($reviews as $review) { ?>
                                 <div class="reviews-counter__item">
                                     <div class="reviews-progress">
-                                        <div class="reviews-progress__value"><?php echo $i; ?></div>
+                                        <div class="reviews-progress__value"><?php echo $review['rating']; ?></div>
                                         <div class="reviews-progress__content">
                                             <div class="progress progress--small progress--round">
-                                                <?php if ($rating > 0) { ?>
-                                                    <div class="progress__bar bg-yellow" role="progressbar" style="width:<?php echo $rating ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <?php if ($review['percent'] > 0) { ?>
+                                                    <div class="progress__bar bg-yellow" role="progressbar" style="width:<?php echo $review['percent'] ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                                 <?php } ?>
                                             </div>
                                         </div>
+                                        <div class="reviews-progress__value">
+                                            <?php
+                                            if ($review['count'] > 0) {
+                                                echo '(' . $review['count'] . ')';
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            <?php
-                                $i--;
-                            }
-                            ?>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="col-sm-3 col-md-4 col-xl-3">
-                        
+
                     </div>
                 </div>
             </div>
