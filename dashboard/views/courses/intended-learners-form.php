@@ -46,7 +46,7 @@ $textLength = 155;
                                 $idsFld = $frm->getField('type_learnings_ids[]');
                                 $idsFld->setFieldTagAttribute('class', 'sortable_ids');
                                 foreach ($responses[$typeLearning] as $response) {
-                                    $learningField->value = $response['coinle_response'];
+                                    $learningField->value = CommonHelper::renderHtml($response['coinle_response']);
                                     $idsFld->value = $response['coinle_id']; ?>
                                     <div class="sort-row typeFieldsJs">
                                         <div class="sort-row__item">

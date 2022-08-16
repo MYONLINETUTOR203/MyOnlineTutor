@@ -33,17 +33,17 @@
                     </div>
                     <div class="card-tile__body">
                         <span class="card-tile__label">
-                            <?php echo $crs['cate_name']; ?>
+                            <?php echo CommonHelper::renderHtml($crs['cate_name']); ?>
                             <?php
                             if (!empty($crs['subcate_name'])) {
-                                echo ' / ' . $crs['subcate_name'];
+                                echo ' / ' . CommonHelper::renderHtml($crs['subcate_name']);
                             }
                             ?>
                         </span>
                         <h5 class="card-tile__title">
                             <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$crs['course_slug']]); ?>" class="snakeline-hover">
                                 <?php 
-                                echo (strlen($crs['course_title']) > 70) ? substr($crs['course_title'], 0, 70) . '...' : $crs['course_title']; ?>
+                                echo (strlen($crs['course_title']) > 70) ? CommonHelper::renderHtml(substr($crs['course_title'], 0, 70)) . '...' : CommonHelper::renderHtml($crs['course_title']); ?>
                             </a>
                         </h5>
                         <div class="card-element">

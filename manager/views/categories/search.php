@@ -93,7 +93,7 @@ foreach ($arrListing as $sn => $row) {
                 }
                 break;
             default:
-                $td->appendElement('plaintext', [], $row[$key] ?? '-');
+                $td->appendElement('plaintext', [], CommonHelper::renderHtml($row[$key] ?? '-'));
                 break;
         }
     }

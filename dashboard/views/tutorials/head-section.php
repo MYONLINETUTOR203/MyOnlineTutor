@@ -119,7 +119,7 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                         <?php } ?>
                     </a>
                 </figure>
-                <h1 class="page-title"><a href="javascript:void(0);"><?php echo $course['course_title']; ?></a>
+                <h1 class="page-title"><a href="javascript:void(0);"><?php echo CommonHelper::renderHtml($course['course_title']); ?></a>
                 </h1>
             </div>
         </div>
