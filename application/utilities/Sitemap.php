@@ -59,6 +59,7 @@ class Sitemap
         $srch->doNotCalculateRecords();
         $srch->setPageSize(2000);
         $resultSet = $srch->getResultSet();
+        $urls = [];
         while ($row = FatApp::getDb()->fetch($resultSet)) {
             array_push($urls, [
                 'value' => $row['course_title'],
