@@ -47,6 +47,7 @@ class CoursePreviewController extends DashboardController
             'course' => $course,
             'sections' => $sections,
         ]);
+        $this->_template->addJs('js/common_ui_functions.js');
         $this->_template->render();
     }
 

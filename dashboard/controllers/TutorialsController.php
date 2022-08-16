@@ -92,7 +92,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'lectureStats' => $lectureStats,
         ]);
-        $this->_template->addJs('js/jquery.barrating.min.js');
+        $this->_template->addJs(['js/jquery.barrating.min.js', 'js/common_ui_functions.js']);
         $this->_template->render();
     }
 
