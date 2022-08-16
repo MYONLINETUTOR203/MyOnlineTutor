@@ -198,6 +198,7 @@ class CourseRatingReview extends MyAppModel
         for ($i = 5; $i >= 1; $i--) {
             $rating[] = [
                 'rating' => $i,
+                'count' => $reviews[$i] ?? 0,
                 'percent' => (isset($reviews[$i])) ? ($reviews[$i] / $totalCount) * 100 : 0,
             ];
         }
