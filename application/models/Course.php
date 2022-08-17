@@ -908,22 +908,30 @@ class Course extends MyAppModel
     private function setStatsCount()
     {
         /* update category course count */
-        $courseData = static::getAttributesById($this->getMainTableRecordId(), ['course_cate_id', 'course_user_id']);
+        $courseData = static::getAttributesById($this->getMainTableRecordId(), ['course_cate_id', 'course_subcate_id']);
         $srch = new SearchBase(Course::DB_TBL);
+        $srch->joinTable(
+            Category::DB_TBL,
+            'INNER JOIN',
+            'c.cate_id = course_cate_id OR c.cate_id = course_subcate_id',
+            'c'
+        );
         $srch->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course_status', '=', static::PUBLISHED);
+        $srch->addCondition('c.cate_id' , 'IN', $courseData);
         $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-
-        /* update student count */
-        $srch->addCondition('course_cate_id', '=', $courseData['course_cate_id']);
-        $srch->addFld('COUNT(course_id) AS cate_courses');
-        $row = FatApp::getDb()->fetch($srch->getResultSet());
-        $category = new Category($courseData['course_cate_id']);
-        $category->assignValues($row);
-        if (!$category->save()) {
-            $this->error = $category->getError();
-            return false;
+        $srch->addMultipleFields(['c.cate_id, COUNT(*)']);
+        $srch->addGroupBy('cate_id');
+        $rows = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+        if (count($rows) > 0) {
+            foreach ($rows as $id => $count) {
+                $category = new Category($id);
+                $category->assignValues(['cate_courses' => $count]);
+                if (!$category->save()) {
+                    $this->error = $category->getError();
+                    return false;
+                }
+            }
         }
         return true;
     }
