@@ -1,6 +1,6 @@
-<div class="card-box card-group-js" id="sectionLectures<?php echo $lecture['lecture_id'] ?>">
+<div class="card-box card-group-js lecturePanelJs" id="sectionLectures<?php echo $lecture['lecture_id'] ?>" data-id="<?php echo $lecture['lecture_id'] ?>">
     <div class="card-box__head">
-        <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move">
+        <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
             <svg class="icon icon--sorting">
                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#sorting-icon"></use>
             </svg>

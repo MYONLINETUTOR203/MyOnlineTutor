@@ -24,7 +24,7 @@ if (count($sectionsList) > 0) {
                                         <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#edit"></use>
                                     </svg>
                                     <span class="btn-label"><?php echo Label::getLabel('LBL_EDIT'); ?></span>
-                                    
+
                                     <div class="tooltip tooltip--top bg-black">
                                         <?php echo Label::getLabel('LBL_EDIT'); ?>
                                     </div>
@@ -34,7 +34,7 @@ if (count($sectionsList) > 0) {
                                         <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#trash"></use>
                                     </svg>
                                     <span class="btn-label">
-                                    <?php echo Label::getLabel('LBL_DELETE'); ?>
+                                        <?php echo Label::getLabel('LBL_DELETE'); ?>
                                     </span>
                                     <div class="tooltip tooltip--top bg-black">
                                         <?php echo Label::getLabel('LBL_DELETE'); ?>
@@ -86,7 +86,7 @@ if (count($sectionsList) > 0) {
                                                         <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#edit"></use>
                                                     </svg>
                                                     <span class="btn-label"><?php echo Label::getLabel('LBL_EDIT'); ?></span>
-                                                    
+
                                                     <div class="tooltip tooltip--top bg-black">
                                                         <?php echo Label::getLabel('LBL_EDIT'); ?>
                                                     </div>
