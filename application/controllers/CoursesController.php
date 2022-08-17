@@ -207,12 +207,14 @@ class CoursesController extends MyAppController
             'ratrev_title', 'ratrev_detail', 'ratrev_overall', 'ratrev_created', 'course_reviews'
         ]);
         $srch->addOrder('ratrev.ratrev_id', $post['sorting']);
-        $srch->setPageSize(AppConstant::PAGESIZE);
+        $pagesize = AppConstant::PAGESIZE;
+        $srch->setPageSize($pagesize);
         $srch->setPageNumber($post['pageno']);
         $this->sets([
             'reviews' => FatApp::getDb()->fetchAll($srch->getResultSet()),
             'pageCount' => $srch->pages(),
             'post' => $post,
+            'pagesize' => $pagesize,
             'recordCount' => $srch->recordCount(),
             'frm' => $frm,
         ]);

@@ -59,10 +59,12 @@
     ?>
 </div>
 <?php
-$pagingLbl = Label::getLabel('LBL_DISPLAYING_REVIEWS_{record-count}_OF_{total-records}');
+$pagingLbl = Label::getLabel('LBL_DISPLAYING_REVIEWS_{start-count}_TO_{end-count}_OF_{total}');
+$start = (($post['pageno'] - 1) * $pagesize + 1);
+$end = ($recordCount < $start + $pagesize - 1) ? $recordCount : $start + $pagesize - 1;
 $pagingLbl = str_replace(
-    ['{record-count}', '{total-records}'],
-    [$records, $recordCount],
+    ['{start-count}', '{end-count}', '{total}'],
+    [$start, $end, $recordCount],
     $pagingLbl
 );
 ?>

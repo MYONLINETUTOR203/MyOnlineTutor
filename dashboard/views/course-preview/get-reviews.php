@@ -61,10 +61,10 @@
                     <div class="col-sm-auto">
                         <p class="margin-0 pagingLblJs">
                             <?php
-                            $label = Label::getLabel('LBL_DISPLAYING_REVIEWS_{record-count}_OF_{total-records}');
+                            $label = Label::getLabel('LBL_DISPLAYING_REVIEWS_{start-count}_TO_{end-count}_OF_{total}');
                             $label = str_replace(
-                                ['{record-count}', '{total-records}'],
-                                [0, 0],
+                                ['{start-count}', '{end-count}', '{total}'],
+                                [0, 0, 0],
                                 $label
                             );
                             echo $label;
