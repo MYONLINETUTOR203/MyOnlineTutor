@@ -439,7 +439,7 @@ class Course extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
             return false;
         }
-        if (!array_key_exists($data['course_subcate_id'], $categories)) {
+        if ($data['course_subcate_id'] > 0 && !array_key_exists($data['course_subcate_id'], $categories)) {
             $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
             return false;
         }
