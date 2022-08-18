@@ -100,6 +100,7 @@ class TeacherRequestsController extends AdminBaseController
         $requestId = FatUtility::int($requestId);
         $srch = new SearchBase(TeacherRequest::DB_TBL, 'tereq');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'u.user_id = tereq.tereq_user_id', 'u');
+        $srch->addDirectCondition('u.user_deleted IS NULL');
         $srch->addCondition('tereq_id', '=', $requestId);
         $srch->addCondition('tereq.tereq_step', '=', 5);
         $srch->doNotCalculateRecords();
@@ -115,7 +116,7 @@ class TeacherRequestsController extends AdminBaseController
         $srch->addGroupBy('tereq_id');
         $row = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($row)) {
-            FatUtility::dieJsonError(Label::getLabel('MSG_INVALID_REQUEST'));
+            FatUtility::dieJsonError(Label::getLabel('MSG_USER_OR_REQUEST_NOT_FOUND'));
         }
         $row['tereq_phone_code'] = Country::getAttributesById($row['tereq_phone_code'], 'country_dial_code');
         $row['tereq_teach_langs'] = json_decode($row['tereq_teach_langs'], true);
