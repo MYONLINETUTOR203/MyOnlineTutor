@@ -106,7 +106,9 @@ class GdprRequestsController extends AdminBaseController
         $frm->addTextBox(Label::getLabel('LBL_Search_By_Keyword'), 'keyword', '', ['placeholder' => Label::getLabel('LBL_Search_By_Keyword')]);
         $frm->addHiddenField('', 'pageSize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();
-        $frm->addSelectBox(Label::getLabel('LBl_Status'), 'status', GdprRequest::getStatusArr());
+        $statuses = GdprRequest::getStatusArr();
+        unset($statuses[GdprRequest::STATUS_DELETED_REQUEST]);
+        $frm->addSelectBox(Label::getLabel('LBl_Status'), 'status', $statuses);
         $frm->addDateField(Label::getLabel('LBl_Added_On'), 'added_on');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Search'));
         $frm->addButton('', 'btn_reset', Label::getLabel('LBL_CLEAR'));
