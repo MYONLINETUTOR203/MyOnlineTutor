@@ -122,16 +122,20 @@ class TeacherRequestsController extends AdminBaseController
         $row['tereq_teach_langs'] = json_decode($row['tereq_teach_langs'], true);
         $row['tereq_speak_langs'] = json_decode($row['tereq_speak_langs'], true);
         $row['tereq_slang_proficiency'] = json_decode($row['tereq_slang_proficiency'], true);
-        $file = new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF);
         $srch = new SearchBase(TeacherRequest::DB_TBL, 'tr');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'u.user_id = tr.tereq_user_id', 'u');
         $srch->addCondition('tereq_user_id', '=', $row['tereq_user_id']);
         $srch->addCondition('tereq_id', '!=', $requestId);
         $srch->addOrder('tereq_id', 'desc');
         $otherRequest = FatApp::getDb()->fetchAll($srch->getResultSet());
+        $userImage = (new Afile(Afile::TYPE_TEACHER_APPROVAL_IMAGE))->getFile($row['tereq_user_id']);
+        if (empty($userImage)) {
+            $userImage = (new Afile(Afile::TYPE_USER_PROFILE_IMAGE))->getFile($row['tereq_user_id']);
+        }
         $this->sets([
             'row' => $row,
-            'photoIdRow' => $file->getFile($row['tereq_user_id']),
+            'userImage' => $userImage,
+            'photoIdRow' => (new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF))->getFile($row['tereq_user_id']),
             'speakLanguagesArr' => SpeakLanguage::getNames($this->siteLangId, $row['tereq_speak_langs']),
             'teachLanguages' => TeachLanguage::getNames($this->siteLangId, $row['tereq_teach_langs']),
             'speakLanguageProfArr' => SpeakLanguage::getProficiencies(),
