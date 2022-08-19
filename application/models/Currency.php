@@ -55,6 +55,7 @@ class Currency extends MyAppModel
     {
         $srch = self::getSearchObject($langId);
         $srch->addMultipleFields(['currency_id', 'CONCAT(IFNULL(curr_l.currency_name,curr.currency_code)," (",currency_code ,")") as currency_name_code']);
+        $srch->addOrder('currency_order');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $row = FatApp::getDb()->fetchAllAssoc($srch->getResultSet(), 'currency_id');
