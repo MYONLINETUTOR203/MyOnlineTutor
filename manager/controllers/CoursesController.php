@@ -43,7 +43,14 @@ class CoursesController extends AdminBaseController
         $srch = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->applySearchConditions($post);
         $srch->applyPrimaryConditions();
+        $srch->joinTable(
+            Course::DB_TBL_APPROVAL_REQUEST,
+            'INNER JOIN',
+            'course.course_id = coapre.coapre_course_id',
+            'coapre'
+        );
         $srch->addSearchListingFields();
+        $srch->addFld('coapre_updated');
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['page']);

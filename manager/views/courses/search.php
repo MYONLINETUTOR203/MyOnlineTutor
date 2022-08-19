@@ -7,7 +7,7 @@ $arr_flds = [
     'teacher_name' => Label::getLabel('LBL_TEACHER'),
     'cate_name' => Label::getLabel('LBL_CATEGORY'),
     'subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
-    'course_created' => Label::getLabel('LBL_PUBLISHED_ON'),
+    'coapre_updated' => Label::getLabel('LBL_PUBLISHED_ON'),
     'course_status' => Label::getLabel('LBL_STATUS'),
     'course_active' => Label::getLabel('LBL_ACTIVE'),
     'action' => Label::getLabel('LBL_ACTION'),
@@ -42,7 +42,7 @@ foreach ($arrListing as $row) {
             case 'teacher_name':
                 $td->appendElement('plaintext', [], $row['teacher_first_name'] . ' ' . $row['teacher_last_name'], true);
                 break;
-            case 'course_created':
+            case 'coapre_updated':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]), true);
                 break;
             case 'course_status':
