@@ -9,7 +9,7 @@
                 <form class="web_form form_horizontal">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3><i class="ion-person icon"></i> <?php echo Label::getLabel('LBL_REQUEST_INFORMATION'); ?></h3>
+                            <h3><i class="ion-pull-request icon"></i> <?php echo Label::getLabel('LBL_REQUEST_INFORMATION'); ?></h3>
                         </div>
                     </div>
                     <div class="rowbody">
@@ -36,7 +36,7 @@
                 <form class="web_form form_horizontal">
                     <div class="row">
                         <div class="col-md-12">
-                            <h3><i class="ion-person icon"></i> <?php echo Label::getLabel('LBL_COURSE_INFORMATION'); ?></h3>
+                            <h3><i class="ion-ios-paper icon"></i> <?php echo Label::getLabel('LBL_COURSE_INFORMATION'); ?></h3>
                         </div>
                     </div>
                     <div class="rowbody">
