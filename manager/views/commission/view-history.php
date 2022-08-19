@@ -10,6 +10,7 @@
                     'user_id' => Label::getLabel('LBL_USER'),
                     'comhis_lessons' => Label::getLabel('LBL_LESSON_FEES_[%]'),
                     'comhis_classes' => Label::getLabel('LBL_CLASS_FEES_[%]'),
+                    'comhis_courses' => Label::getLabel('LBL_COURSE_FEES_[%]'),
                     'comhis_created' => Label::getLabel('LBL_ADDED_ON')
                 ];
                 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive']);

@@ -129,7 +129,7 @@ class CommissionController extends AdminBaseController
         $userId = FatUtility::int($userId);
         $srch = new SearchBase(Commission::DB_TBL_HISTORY, 'comhis');
         $srch->joinTable(User::DB_TBL, 'LEFT JOIN', 'comhis.comhis_user_id = user.user_id', 'user');
-        $srch->addMultipleFields(['comhis_lessons', 'comhis_classes', 'comhis.comhis_created', 
+        $srch->addMultipleFields(['comhis_lessons', 'comhis_classes', 'comhis_courses', 'comhis.comhis_created', 
             'user.user_id', 'user.user_first_name', 'user.user_last_name']);
         if (empty($userId)) {
             $srch->addDirectCondition('comhis.comhis_user_id IS NULL');
