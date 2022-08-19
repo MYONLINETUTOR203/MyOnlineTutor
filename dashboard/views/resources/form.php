@@ -5,7 +5,7 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 
 $fld = $frm->getField('resource_files[]');
-$fld->htmlAfterField = "<small>" . str_replace('{extension}', $allowedExtensions, Label::getLabel('LBL_NOTE:_ALLOWED_RESOURCES_FILE_TYPES:_{extension}')) . "</small>";
+$fld->htmlAfterField = "<small>" . str_replace(['{filesize}', '{extension}'], [$filesize, $allowedExtensions], Label::getLabel('LBL_NOTE:_ALLOWED_SIZE_{filesize}_MB._SUPPORTED_FILE_FORMATS_{extension}')) . "</small>";
 $cancelBtn = $frm->getField('btn_cancel');
 $cancelBtn->addFieldTagAttribute('onClick', 'cancel();');
 ?>

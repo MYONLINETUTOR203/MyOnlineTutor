@@ -49,6 +49,13 @@ $time = time();
                                 $frm->setFormTagAttribute('id', 'frmLectureResrc' . $time);
                                 $fld = $frm->getField('resource_files[]');
                                 $fld->setFieldTagAttribute('onchange', 'uploadResource(\'frmLectureResrc' . $time . '\');');
+                                $label = Label::getLabel('LBL_ALLOWED_SIZE_{filesize}_MB._SUPPORTED_FILE_FORMATS_{extensions}');
+                                $label = str_replace(
+                                    ['{filesize}', '{extensions}'],
+                                    [MyUtility::convertBitesToMb($filesize), implode(', ', Resource::ALLOWED_EXTENSIONS)],
+                                    $label
+                                );
+                                $fld->htmlAfterField = '<small>' . $label . '</small>';
                                 echo $frm->getFormTag();
                                 ?>
                                 <div class="field-set">

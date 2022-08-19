@@ -55,6 +55,7 @@ class LectureResourcesController extends DashboardController
             'lecture' => $lecture,
             'lectureId' => $lectureId,
             'resources' => $resources,
+            'filesize' => CommonHelper::getMaximumFileUploadSize(true)
         ]);
         $this->_template->render(false, false);
     }
