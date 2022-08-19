@@ -58,6 +58,7 @@
                 $objPrivilege->canViewCourseRequests(true) ||
                 $objPrivilege->canViewCertificates(true) ||
                 $objPrivilege->canViewCourseRefundRequests(true) || 
+                $objPrivilege->canViewCourseLanguage(true) || 
                 $objPrivilege->canViewCourseReviews(true)
             ) { ?>
                 <li class="haschild">
