@@ -289,7 +289,6 @@ class CoursesController extends MyAppController
             FatUtility::dieJsonSuccess(['data' => []]);
         }
         $filterTypes = Course::getFilterTypes();
-        $langId = MyUtility::getSiteLangId();
         
         $courses = $this->getCourses($keyword);
         $data = [];
@@ -367,6 +366,7 @@ class CoursesController extends MyAppController
         );
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addMultiplefields(['course.course_id as id', 'crsdetail.course_title as name']);
         if (!empty($keyword)) {
             $srch->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');
@@ -412,11 +412,20 @@ class CoursesController extends MyAppController
      */
     private function getTags($keyword = '')
     {
-        $srch = new SearchBase(Course::DB_TBL_LANG);
+        $srch = new SearchBase(Course::DB_TBL_LANG, 'crsdetail');
+        $srch->joinTable(
+            Course::DB_TBL,
+            'INNER JOIN',
+            'crsdetail.course_id = course.course_id',
+            'course'
+        );
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
         $srch->addDirectCondition('JSON_CONTAINS(course_srchtags, ' . '\'"' . $keyword . '"\')');
         $srch->addFld('course_srchtags');
+        $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $tagsList = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (!empty($tagsList)) {
             return $tagsList;
