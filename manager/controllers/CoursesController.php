@@ -178,7 +178,7 @@ class CoursesController extends AdminBaseController
             Label::getLabel('LBL_KEYWORD'),
             'keyword',
             '',
-            ['placeholder' => Label::getLabel('LBL_SEARCH_BY_KEYWORD')]
+            ['placeholder' => Label::getLabel('LBL_SEARCH_BY_COURSE_TITLE_OR_TEACHER')]
         );
         $frm->addTextBox(
             Label::getLabel('LBL_LANGUAGE'),

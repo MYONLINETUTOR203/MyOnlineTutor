@@ -3,6 +3,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frmSearch->setFormTagAttribute('onsubmit', 'search(this); return(false);');
 $frmSearch->setFormTagAttribute('id', 'search');
 $frmSearch->setFormTagAttribute('class', 'web_form');
+$frmSearch->getField('keyword')->addFieldtagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_COURSE_TITLE_OR_SUBTITLE'));
 $btn = $frmSearch->getField('btn_clear');
 $btn->setFieldTagAttribute('onClick', 'clearSearch()');
 ?>

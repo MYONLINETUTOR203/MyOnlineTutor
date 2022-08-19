@@ -3,7 +3,11 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'search(this); return(false);');
 $keywordFld = $frm->getField('keyword');
-$keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_KEYWORD...'));
+if ($siteUserType == User::LEARNER) {
+    $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_COURSE_TITLE,_TEACHER,_ORDER_ID'));
+} else {
+    $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_COURSE_TITLE'));
+}
 $typeFld = $frm->getField('course_type');
 $catgFld = $frm->getField('course_cateid');
 $catgFld->addFieldTagAttribute('onchange', 'getSubCategories(this.value)');
