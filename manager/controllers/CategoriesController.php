@@ -222,7 +222,7 @@ class CategoriesController extends AdminBaseController
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);
         }
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', [], Label::getLabel('LBL_ROOT_CATEGORY'));
         $fld->requirements()->setInt();
 
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'cate_status', AppConstant::getActiveArr(), '', [], '')
