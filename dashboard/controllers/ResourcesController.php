@@ -99,7 +99,7 @@ class ResourcesController extends DashboardController
         $fld = $frm->addFileUpload(Label::getLabel('LBl_RESOURCE_FILES'), 'resource_files[]', [
             'multiple' => 'multiple',
             'id' => 'resource_file'
-        ]);
+        ])->requirements()->setRequired();
         
         $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
         ->requirements()->setInt();
