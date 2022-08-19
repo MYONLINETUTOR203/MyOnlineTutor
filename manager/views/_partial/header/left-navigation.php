@@ -103,8 +103,13 @@
             <?php } ?>
             <?php
             if (
-                $objPrivilege->canViewOrders(true) || $objPrivilege->canViewLessonsOrders(true) || $objPrivilege->canViewPackagesOrders(true) ||
-                $objPrivilege->canViewClassesOrders(true) || $objPrivilege->canViewWalletOrders(true) || $objPrivilege->canViewGiftcardOrders(true) ||
+                $objPrivilege->canViewOrders(true) ||
+                $objPrivilege->canViewLessonsOrders(true) || 
+                $objPrivilege->canViewPackagesOrders(true) ||
+                $objPrivilege->canViewClassesOrders(true) ||
+                $objPrivilege->canViewWalletOrders(true) ||
+                $objPrivilege->canViewGiftcardOrders(true) ||
+                $objPrivilege->canViewCoursesOrders(true) ||
                 $objPrivilege->canViewSubscriptionOrders(true)
             ) {
             ?>
