@@ -149,6 +149,6 @@
         <svg class="icon">
             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#plus-more"></use>
         </svg>
-        Add a new note
+        <?php echo Label::getLabel('LBL_ADD_A_NEW_NOTE'); ?>
     </a>
 </div>
