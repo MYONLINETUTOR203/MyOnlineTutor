@@ -52,6 +52,6 @@ $(document).ready(function () {
 
     updateOrder = function (onDrag = 1) {
         var order = $("#categoriesList").tableDnDSerialize();
-        fcom.ajax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) { });
+        fcom.updateWithAjax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) { });
     }
 })();	
