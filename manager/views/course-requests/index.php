@@ -14,15 +14,13 @@ $fld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_TITLE_O
             <div class="space">
                 <div class="page__title">
                     <div class="row">
-                        <div class="col--first col-lg-6">
+                        <div class="col--first">
                             <span class="page__icon"><i class="ion-android-star"></i></span>
                             <h5><?php echo Label::getLabel('LBL_MANAGE_COURSE_APPROVAL_REQUESTS'); ?> </h5>
                             <?php $this->includeTemplate('_partial/header/header-breadcrumb.php'); ?>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12">
                 <section class="section searchform_filter">
                     <div class="sectionhead">
                         <h4> <?php echo Label::getLabel('LBL_SEARCH'); ?></h4>
