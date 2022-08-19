@@ -34,6 +34,9 @@ class CoursePreviewController extends DashboardController
         if (!$course = $courseObj->get()) {
             FatUtility::exitWithErrorCode(404);
         }
+        if ($this->siteUserId != $course['course_user_id']) {
+            FatUtility::exitWithErrorCode(404);
+        }
         /* fetch section and lectures list */
         $srch = new SectionSearch($this->siteLangId, $this->siteUserId, User::LEARNER);
         $srch->applyPrimaryConditions();
