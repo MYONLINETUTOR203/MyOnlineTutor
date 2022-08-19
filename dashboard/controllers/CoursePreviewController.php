@@ -46,6 +46,9 @@ class CoursePreviewController extends DashboardController
         if (!$sections = $srch->fetchAndFormat()) {
             FatUtility::exitWithErrorCode(404);
         }
+        if ($course['course_lectures'] < 1) {
+            FatUtility::exitWithErrorCode(404);
+        }
         $this->sets([
             'course' => $course,
             'sections' => $sections,

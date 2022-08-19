@@ -115,14 +115,16 @@ $requestStatuses = Course::getRefundStatuses();
             <div class="card-course__colum card-course__colum--third">
                 <div class="actions-group">
                     <?php if ($siteUserType == User::TEACHER) { ?>
-                        <a href="<?php echo MyUtility::makeUrl('CoursePreview', 'index', [$course['course_id']]); ?>" title="<?php echo Label::getLabel('LBL_PREVIEW'); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                            <svg class="icon icon--enter icon--18">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#view-icon"></use>
-                            </svg>
-                            <div class="tooltip tooltip--top bg-black">
-                                <?php echo Label::getLabel('LBL_PREVIEW'); ?>
-                            </div>
-                        </a>
+                        <?php if ($course['course_sections'] > 0 && $course['course_lectures'] > 0) { ?>
+                            <a href="<?php echo MyUtility::makeUrl('CoursePreview', 'index', [$course['course_id']]); ?>" title="<?php echo Label::getLabel('LBL_PREVIEW'); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                <svg class="icon icon--enter icon--18">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#view-icon"></use>
+                                </svg>
+                                <div class="tooltip tooltip--top bg-black">
+                                    <?php echo Label::getLabel('LBL_PREVIEW'); ?>
+                                </div>
+                            </a>
+                        <?php } ?>
                     <?php } elseif ($course['can_view_course']) { ?>
                         <a href="<?php echo MyUtility::makeUrl('Tutorials', 'start', [$course['ordcrs_id']]); ?>" title="<?php echo Label::getLabel('LBL_VIEW'); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                             <svg class="icon icon--enter icon--18">
