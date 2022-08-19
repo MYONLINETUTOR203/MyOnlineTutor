@@ -94,10 +94,11 @@ class CoursesController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         $courseId = FatUtility::int($courseId);
+        $courseTitle = '';
         if ($courseId > 0) {
             $srch = new CourseSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
             $srch->applyPrimaryConditions();
-            $srch->addFld('course.course_id');
+            $srch->addMultipleFields(['course.course_id', 'course_title']);
             $srch->addCondition('course.course_id', '=', $courseId);
             $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
             $srch->setPageSize(1);
@@ -105,12 +106,14 @@ class CoursesController extends DashboardController
                 Message::addErrorMessage(Label::getLabel('LBL_COURSE_NOT_FOUND'));
                 FatApp::redirectUser(MyUtility::generateUrl('Courses'));
             }
+            $courseTitle = $course['course_title'];
             $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
             if (!$course->canEditCourse()) {
                 Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
                 FatApp::redirectUser(MyUtility::generateUrl('Courses'));
             }
         }
+        $this->set('courseTitle', $courseTitle);
         $this->set('courseId', $courseId);
         $this->set("includeEditor", true);
         $this->_template->addJs('js/jquery.tagit.js');
