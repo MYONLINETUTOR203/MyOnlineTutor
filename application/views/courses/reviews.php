@@ -5,7 +5,7 @@
             <p class="margin-0">
                 <?php
                 $label = Label::getLabel('LBL_DISPLAYING_REVIEWS_{start-count}_TO_{end-count}_OF_{total}');
-                $start = (($post['pageno'] - 1) * $pagesize + 1);
+                $start = ($recordCount > 0) ? (($post['pageno'] - 1) * $pagesize + 1) : 0;
                 $end = ($recordCount < $start + $pagesize - 1) ? $recordCount : $start + $pagesize - 1;
                 echo str_replace(
                     ['{start-count}', '{end-count}', '{total}'],
