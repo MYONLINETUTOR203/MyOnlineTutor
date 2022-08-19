@@ -31,9 +31,6 @@ $srchFrm->getField('btn_reset')->addFieldtagAttribute('onclick', 'clearSearch();
                     </div>
                 </section> 		
                 <section class="section">
-                    <div class="sectionhead">
-                        <h4><?php echo Label::getLabel('LBL_COURSE_ORDER_LISTING'); ?></h4>
-                    </div>
                     <div class="sectionbody">
                         <div class="tablewrap" >
                             <div id="listing"><?php echo Label::getLabel('LBL_Processing...'); ?></div>
