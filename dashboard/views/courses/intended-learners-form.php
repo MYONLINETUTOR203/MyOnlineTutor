@@ -89,7 +89,7 @@ $textLength = 155;
                                             </div>
                                         </div>
                                         <div class="sort-row__actions">
-                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
+                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move">
                                                 <svg class="icon icon--sorting">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#sorting-icon"></use>
                                                 </svg>
@@ -172,7 +172,7 @@ $textLength = 155;
                                             </div>
                                         </div>
                                         <div class="sort-row__actions">
-                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
+                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move">
                                                 <svg class="icon icon--sorting">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#sorting-icon"></use>
                                                 </svg>
@@ -254,7 +254,7 @@ $textLength = 155;
                                             </div>
                                         </div>
                                         <div class="sort-row__actions">
-                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
+                                            <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move">
                                                 <svg class="icon icon--sorting">
                                                     <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#sorting-icon"></use>
                                                 </svg>

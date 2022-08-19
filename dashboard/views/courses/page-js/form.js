@@ -22,6 +22,7 @@ $(function () {
     addFld = function (type) {
         $('.typesAreaJs' + type + " .typesListJs").append($('.typesAreaJs' + type + " .typeFieldsJs:last").clone().find("input:text, input:hidden").val("").end());
         var obj = $('.typesAreaJs' + type + " .typeFieldsJs:last");
+        $(obj).find("a.sortHandlerJs").removeClass('sortHandlerJs');
         $(obj).find("a.removeRespJs").attr('onclick', "removeIntendedLearner(this, 0);").show();
         $(obj).find(".field-count").attr('field-count', $(obj).find(".field-count").data('length'));
     };
