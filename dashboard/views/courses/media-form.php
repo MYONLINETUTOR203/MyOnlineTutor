@@ -8,7 +8,7 @@ $crsFld->setFieldTagAttribute('onchange', 'setupMedia()');
 $videoFld = $frm->getField('course_preview_video');
 $videoFld->setFieldTagAttribute('onchange', 'setupMedia()');
 $fld = $frm->getField('btn_next');
-$fld->setFieldTagAttribute('class', 'btn btn--primary');
+$fld->setFieldTagAttribute('class', 'btn btn--primary -no-border');
 $fld->setFieldTagAttribute('onclick', 'intendedLearnersForm()');
 
 echo $frm->getFormTag(); ?>

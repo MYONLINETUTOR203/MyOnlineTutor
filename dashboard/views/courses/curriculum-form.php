@@ -3,7 +3,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 $fld = $frm->getField('btn_next');
 $fld->setFieldTagAttribute('onclick', 'settingsForm()');
-$fld->setFieldTagAttribute('class', 'btn btn--primary');
+$fld->setFieldTagAttribute('class', 'btn btn--primary -no-border');
 ?>
 <div class="page__body">
     <!-- [ PAGE PANEL ========= -->

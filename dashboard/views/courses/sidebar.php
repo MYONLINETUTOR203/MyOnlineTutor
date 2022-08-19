@@ -57,7 +57,7 @@
             }
 
             if ($fld = $frm->getField('btn_approval')) {
-                $fld->setFieldTagAttribute('class', 'btn btn--primary');
+                $fld->setFieldTagAttribute('class', 'btn btn--primary -no-border');
                 echo $frm->getFieldHtml('btn_approval');
             }
             ?>
