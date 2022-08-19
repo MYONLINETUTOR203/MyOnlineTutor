@@ -589,73 +589,73 @@ $levels = Course::getCourseLevels();
                             <div data-id="panel-content-4" class="panel-content panel-content-js">
                                 <div class="panel-content__head  panel-trigger-js">
                                     <h3><?php echo Label::getLabel('LBL_RATINGS_&_REVIEWS'); ?></h3>
-                                    <div class="panel-content__body  panel-target-js">
-                                        <div class="reviews-section margin-top-14">
-                                            <div class="reviews-section__head">
-                                                <div class="reviews-stats">
-                                                    <div class="row justify-content-between">
-                                                        <div class="col-4 col-sm-2">
-                                                            <div class="reviews-total">
-                                                                <div class="reviews-media">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
-                                                                        <g transform="translate(-28.999 -29)">
-                                                                            <path d="M892.348,2341l17.582,31.851,35.759,6.861L920.8,2406.26l4.518,36.091-32.967-15.445-32.968,15.445,4.518-36.091-24.892-26.546,35.759-6.861L892.348,2341" transform="translate(-808.008 -2308.001)" />
-                                                                        </g>
-                                                                    </svg>
-                                                                    <span class="reviews-count">
-                                                                        <?php echo $course['course_ratings'] ?>
-                                                                    </span>
-                                                                </div>
-                                                                <div class="reviews-value">
-                                                                    <?php echo $course['course_reviews'] . ' ' . Label::getLabel('LBL_RATINGS'); ?>
-                                                                </div>
+                                </div>
+                                <div class="panel-content__body  panel-target-js">
+                                    <div class="reviews-section margin-top-14">
+                                        <div class="reviews-section__head">
+                                            <div class="reviews-stats">
+                                                <div class="row justify-content-between">
+                                                    <div class="col-4 col-sm-2">
+                                                        <div class="reviews-total">
+                                                            <div class="reviews-media">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+                                                                    <g transform="translate(-28.999 -29)">
+                                                                        <path d="M892.348,2341l17.582,31.851,35.759,6.861L920.8,2406.26l4.518,36.091-32.967-15.445-32.968,15.445,4.518-36.091-24.892-26.546,35.759-6.861L892.348,2341" transform="translate(-808.008 -2308.001)" />
+                                                                    </g>
+                                                                </svg>
+                                                                <span class="reviews-count">
+                                                                    <?php echo $course['course_ratings'] ?>
+                                                                </span>
+                                                            </div>
+                                                            <div class="reviews-value">
+                                                                <?php echo $course['course_reviews'] . ' ' . Label::getLabel('LBL_RATINGS'); ?>
                                                             </div>
                                                         </div>
-                                                        <div class="col-8 col-sm-6">
-                                                            <div class="reviews-counter">
-                                                                <?php foreach ($reviews as $review) { ?>
-                                                                    <div class="reviews-counter__item">
-                                                                        <div class="reviews-progress">
-                                                                            <div class="reviews-progress__value">
-                                                                                <?php echo $review['rating'] ?>
-                                                                            </div>
-                                                                            <div class="reviews-progress__content">
-                                                                                <div class="progress progress--small progress--round">
-                                                                                    <?php if ($review['percent'] > 0) { ?>
-                                                                                        <div class="progress__bar bg-yellow" role="progressbar" style="width:<?php echo $review['percent'] ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                                                                    <?php } ?>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="reviews-progress__value">
-                                                                                <?php
-                                                                                if ($review['count'] > 0) {
-                                                                                    echo '(' . $review['count'] . ')';
-                                                                                }
-                                                                                ?>
+                                                    </div>
+                                                    <div class="col-8 col-sm-6">
+                                                        <div class="reviews-counter">
+                                                            <?php foreach ($reviews as $review) { ?>
+                                                                <div class="reviews-counter__item">
+                                                                    <div class="reviews-progress">
+                                                                        <div class="reviews-progress__value">
+                                                                            <?php echo $review['rating'] ?>
+                                                                        </div>
+                                                                        <div class="reviews-progress__content">
+                                                                            <div class="progress progress--small progress--round">
+                                                                                <?php if ($review['percent'] > 0) { ?>
+                                                                                    <div class="progress__bar bg-yellow" role="progressbar" style="width:<?php echo $review['percent'] ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                                <?php } ?>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="reviews-progress__value">
+                                                                            <?php
+                                                                            if ($review['count'] > 0) {
+                                                                                echo '(' . $review['count'] . ')';
+                                                                            }
+                                                                            ?>
+                                                                        </div>
                                                                     </div>
-                                                                <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-3 col-md-4 col-xl-3">
-                                                            <?php if ($canRate) { ?>
-                                                                <div class="reviews-submission">
-                                                                    <p class="margin-bottom-3 margin-top-4 align-center">
-                                                                        <?php echo Label::getLabel('LBL_HAVE_YOU_USED_THIS_COURSE?') ?>
-                                                                    </p>
-                                                                    <a href="javascript:void(0);" onclick="feedbackForm('<?php echo $course['ordcrs_id']; ?>')" class="btn color-primary btn--bordered btn--block">
-                                                                        <?php echo Label::getLabel('LBL_RATE_IT_NOW') ?>
-                                                                    </a>
                                                                 </div>
                                                             <?php } ?>
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-3 col-md-4 col-xl-3">
+                                                        <?php if ($canRate) { ?>
+                                                            <div class="reviews-submission">
+                                                                <p class="margin-bottom-3 margin-top-4 align-center">
+                                                                    <?php echo Label::getLabel('LBL_HAVE_YOU_USED_THIS_COURSE?') ?>
+                                                                </p>
+                                                                <a href="javascript:void(0);" onclick="feedbackForm('<?php echo $course['ordcrs_id']; ?>')" class="btn color-primary btn--bordered btn--block">
+                                                                    <?php echo Label::getLabel('LBL_RATE_IT_NOW') ?>
+                                                                </a>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div>
-                                                <?php echo $frm->getFormHtml(); ?>
                                             </div>
-                                            <div class="reviews-section__body" id="reviewsListingJs">
-                                            </div>
+                                            <?php echo $frm->getFormHtml(); ?>
+                                        </div>
+                                        <div class="reviews-section__body" id="reviewsListingJs">
                                         </div>
                                     </div>
                                 </div>
