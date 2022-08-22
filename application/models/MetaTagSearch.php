@@ -154,6 +154,8 @@ class MetaTagSearch extends SearchBase
             case MetaTag::META_GROUP_COURSE:
                 $this->joinCourses($langId, $metaType);
                 $this->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+                $this->addCondition('course_active', '=', AppConstant::ACTIVE);
+                $this->addCondition('course_status', '=', Course::PUBLISHED);
                 if (isset($condition) && $condition) {
                     $condition->attachCondition('crsdetail.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
                 }
