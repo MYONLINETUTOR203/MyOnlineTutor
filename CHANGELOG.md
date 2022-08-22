@@ -1,5 +1,102 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.2.20220822
+
+
+Tasks:
+
+	Task-100708 - Certificate generation with TCPDF 
+	
+Fixes:
+
+	Bug-066061 - Download and Deduction spellings are incorrect
+	Bug-066055 - Favorite spelling is different in menu and page
+	Bug-066054 - Decimal value should not be allowed for “Course Cancellation Duration” setting
+	Bug-066047 - Add asterisk with comment when decline the course and course refund request
+	Bug-066050 - If teacher have no biography then its heading should not come
+	Bug-066039 - "No class found" is coming if no record found in course listing
+	Bug-066055 - Favorite spelling is different in menu and page
+	Bug-066054 - Decimal value should not be allowed for “Course Cancellation Duration” setting
+	Bug-066047 - Add asterisk with comment when decline the course and course refund request
+	Bug-066050 - If teacher have no biography then its heading should not come
+	Bug-066039 - "No class found" is coming if no record found in course listing
+	Bug-066027 - Course description is not rendering correctly on course refund request detail 
+	Bug-066060 - Time is coming without minutes. Add “m” or “mins” text
+	Bug-066010 - Section and Lecture listing section is not displaying in tablet, Ipad and android device 
+	Bug-066057 - Cross icon remains on search field after clear the notes search
+	Bug-066042 - Success message should be relevant when favorite/unfavorite courses
+	Bug-066045 - More filters(teacher, status, date etc) should be there to filter down the course approval requests
+	Bug-066041 - There should be more filters in the course refund request page
+	Bug-065906 - Course unpaid bank transfer order is not getting canceled
+	Bug-066020 - Fatal error is coming if course currency is inactive 
+	Bug-066059 - Textarea should come instead of text field in notes setup 
+	Bug-066052 - Some of the details are not visible properly 
+	Bug-066038 - No action is performed when clicking on reviews 
+	Bug-066028 - Unpaid course order status is coming completed 
+	Bug-066049 - After decline the course request, status is coming active and also declined comment is coming 
+	Bug-065949 - Commission from courses is not increasing in the graph  
+	Bug-066053 - More filters should be there on learner courses page
+	Bug-066030 - Teacher payment is not coming complete although there is no way to set commission for courses 
+	Bug-065948 - Admin earning and teacher paid amount is incorrect
+	Bug-066024 - 404 page is coming when downloading the course certificate
+	Bug-066056 - Data is not aligned properly if the learner has no last name
+	Bug-066036 - Teacher courses and students count is not coming correct in the course detail page
+	Bug-066023 - Course duration is coming wrong in the course detail
+	Bug-066021 - Teacher is able to add course with inactive category, subcategory, language and currency
+	Bug-065476 - Fatal error is coming when clicking on “Save & Preview” button
+	Bug-065968 - Show reviews count on the right side of line
+	Bug-066009 - Course Complete Progress bar Content is not displaying in the Ipad, Android Device and tablet
+	Bug-066044 - Some of the special characters are not rendering correctly
+	Bug-065824 - Record which is deleted will not able to add as new record
+	Bug-065899 - Published courses are not coming in the sitemap
+	Bug-065961 - Reviews numbering is not coming correct on second page of pagination
+	Bug-065372 - The lectures count is not coming correct
+	Bug-065926 - Sub Category in Search Filter is missing
+	Bug-066121 - Rating & Reviews Section is not displaying in Android mobile device
+	Bug-066122 - Full section is missing in the mobile and Ipad browser 
+	Bug-066124 - Mark Favorite Heart Icon display over the Filter section 
+	Bug-066138 - The teacher is able to preview the other teacher's courses
+	Bug-066156 - Orders menu is not coming if have only course orders module permission
+	Bug-066159 - Courses menu is not coming if have only course languages module permission 
+	Bug-066161 - Status filter is not working for pending status in learner courses
+	Bug-066162 - If there is no review on course then “1” is coming on detail page
+	Bug-066165 - Save and Next button Square border line highlight with the Primary color.
+	Bug-066166 - Save and Next button Square border line highlight with the Primary color 
+	Bug-066177 - Course fee is not coming in commission history
+	Bug-066179 - Inactive course is coming in the course quick search
+	Bug-066201 - Error message is not coming on changing categories display order
+	Bug-066204 - Icons should be relevant in course request and course refund request detail
+	Bug-066206 - Page heading is not aligned with search and table section
+	Bug-066208 - Left sidebar menu should be active if edit certificate page is open 
+	Bug-066218 - Commission deduction from teacher payment is not correct
+	Bug-066219 - Instead of "Select" option, "Root category" option should come in category setup 
+	Bug-066225 - Latest courses should come on the top in manage courses
+	Bug-066228 - Course published date should be when its approved
+	Bug-066230 - Heading row should not come above table headings as per new UI
+	Bug-066231 - Mention the values on which basis keyword search is working
+	Bug-066269 - Error message should be relevant when submitting form without selecting any file
+	Bug-066265 - Currencies are not coming as per the display order set by admin
+	Bug-066281 - Language Label is not added in the admin panel for "Add a new note" in the note section
+	Bug-066285 - After cancel or close the lecture form, not able to change display order of lectures 
+	Bug-066287 - Course preview button should come after course section added
+	Bug-066266 - The "Submit for approval" button should not come if all steps are not completed
+	Bug-066267 - Mention the lecture resource extensions which are allowed to upload
+	Bug-066279 - Course title should come in the form when edit the course
+	Bug-066282 - If Intended learners description not saved then stop its display order change
+	Bug-065611 - Completed course note is coming although course status is pending
+	Bug-065990 - Status Wise Course Status Text is not displaying in a different Color
+	Bug-066289 - Language Label is not added in the admin panel for "Search Categories" Place holder in the filter
+	Bug-066301 - Popularity should be the default sorting of courses
+	Bug-066293 - Inactive teacher courses are coming in search suggestions
+	Bug-066196 - Drafted, "submitted for approval" courses are coming in the course meta tags 
+	Bug-066298 - Category and subcategory should be clickable in listing, detail and more courses card
+	Bug-066264 - File size upload validation is available but not mentioned in the help text
+	Bug-066262 - Same Label is used in the Price and setting section while adding the Course
+	Bug-066202 - Button should be there instead of link in course purchase email
+	Bug-066318 - Youtube videos not playing on secure urls.
+	Bug-066308 - Frontend transparent logo should come on the certificate
+	Bug-066222 - Certificate setting should not come if certificate is inactive
+
 ## TV-4.1.1.20220805
 
 Fixes:
