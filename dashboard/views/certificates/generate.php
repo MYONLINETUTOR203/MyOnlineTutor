@@ -21,7 +21,7 @@
                             </b>
                         </td>
                         <td width="33.3%" class="certificate-signs__middle">
-                            <img src="<?php echo MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $this->siteLangId]); ?>" alt="">
+                            <img src="<?php echo MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $siteLangId], CONF_WEBROOT_FRONTEND); ?>" alt="">
                         </td>
                         <td width="33.3%" class="certificate-signs__right">
                             <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:'); ?>

@@ -5,7 +5,6 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'frmCourses');
 $frm->setFormTagAttribute('onsubmit', 'setupSettings(this); return false;');
 $certFld = $frm->getField('course_certificate');
-$certFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CERTIFICATE_DESCRIPTION'));
 $welcomeFld = $frm->getField('course_welcome');
 $welcomeFld->setFieldTagAttribute('class', 'field-count__wrap');
 $welcomeFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_WELCOME_MESSAGE'));
@@ -36,38 +35,42 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                     <p><?php echo Label::getLabel('LBL_SETTINGS_FORM_INFO'); ?></p>
                     <div class="margin-top-14">
                         <div class="form">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper">
-                                            <label class="field_label">
-                                                <?php echo $certFld->getCaption(); ?>
-                                                <span class="spn_must_field">*</span>
-                                            </label>
-                                        </div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <ul class="list-inline">
-                                                    <?php
-                                                    $selected = ($certFld->value > 0) ? $certFld->value : AppConstant::NO;
-                                                    foreach ($certFld->options as $val => $option) { ?>
-                                                        <li>
-                                                            <label>
-                                                                <span class="radio">
-                                                                    <input type="radio" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' onchange="updatePriceForm(this.value);" name="course_certificate" value="<?php echo $val; ?>">
-                                                                    <i class="input-helper"></i>
-                                                                </span>
-                                                                <?php echo $option; ?>
-                                                            </label>
-                                                        </li><?php
-                                                            }
-                                                                ?>
-                                                </ul>
+                            <?php if ($offerCetificate == true) { ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php echo $certFld->getCaption(); ?>
+                                                    <span class="spn_must_field">*</span>
+                                                </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <ul class="list-inline">
+                                                        <?php
+                                                        $selected = ($certFld->value > 0) ? $certFld->value : AppConstant::NO;
+                                                        foreach ($certFld->options as $val => $option) { ?>
+                                                            <li>
+                                                                <label>
+                                                                    <span class="radio">
+                                                                        <input type="radio" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' onchange="updatePriceForm(this.value);" name="course_certificate" value="<?php echo $val; ?>">
+                                                                        <i class="input-helper"></i>
+                                                                    </span>
+                                                                    <?php echo $option; ?>
+                                                                </label>
+                                                            </li>
+                                                        <?php } ?>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            <?php } else {
+                                echo $certFld->getHtml();
+                            }
+                            ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">

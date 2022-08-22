@@ -509,10 +509,19 @@ class CoursesController extends DashboardController
             $course['course_tags'] = implode(',', $crsTags);
             $data = array_merge($data, $course);
         }
+        /* check certificate available or not */
+        $srch = CertificateTemplate::getSearchObject($this->siteLangId);
+        $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
+        $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        $offerCetificate = false;
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            $offerCetificate = true;
+        }
         /* get form and fill */
-        $frm = $this->getSettingForm();
+        $frm = $this->getSettingForm($offerCetificate);
         $frm->fill($data);
         $this->set('frm', $frm);
+        $this->set('offerCetificate', $offerCetificate);
         $this->set('courseId', $courseId);
         $this->_template->render(false, false);
     }
@@ -799,12 +808,17 @@ class CoursesController extends DashboardController
     /**
      * Get Setting Form
      *
+     * @param bool $offerCetificate
      */
-    private function getSettingForm(): Form
+    private function getSettingForm(bool $offerCetificate = true): Form
     {
         $frm = new Form('frmCourses');
-        $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
-        $fld->requirements()->setRequired();
+        if ($offerCetificate == true) {
+            $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
+            $fld->requirements()->setRequired();
+        } else {
+            $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
+        }
         $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
         $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
         $fld->requirements()->setRequired();
