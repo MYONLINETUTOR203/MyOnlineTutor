@@ -86,7 +86,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                             <div class="search-form-cover">
                                                 <div class="search-form">
                                                     <div class="search-form__field">
-                                                        <input type="text" name="category" onkeyup="onkeyupCategory();" placeholder="Search Categories">
+                                                        <input type="text" name="category" onkeyup="onkeyupCategory();" placeholder="<?php echo Label::getLabel('LBL_SEARCH_CATEGORIES'); ?>">
                                                     </div>
                                                     <div class="search-form__action">
                                                         <span class="btn btn--equal btn--transparent color-black">
