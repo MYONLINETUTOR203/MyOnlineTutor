@@ -317,7 +317,7 @@ class CourseSearch extends YocoachSearch
             Label::getLabel('LBL_SORT_BY'),
             'price_sorting',
             AppConstant::getSortbyArr(),
-            AppConstant::SORT_PRICE_ASC
+            AppConstant::SORT_POPULARITY
         );
         $categories = Category::getAll(Category::TYPE_COURSE, $langId);
         $frm->addCheckBoxes(Label::getLabel('LBL_CATEGORIES'), 'course_cate_id', $categories);
