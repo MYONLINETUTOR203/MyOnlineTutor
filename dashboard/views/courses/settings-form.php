@@ -33,8 +33,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
             </div>
             <div class="box-panel__body">
                 <div class="box-panel__container">
-                    <p><?php echo Label::getLabel('LBL_PRICING_SHORT_INFO_1'); ?></p>
-                    <p><?php echo Label::getLabel('LBL_PRICING_SHORT_INFO_2'); ?></p>
+                    <p><?php echo Label::getLabel('LBL_SETTINGS_FORM_INFO'); ?></p>
                     <div class="margin-top-14">
                         <div class="form">
                             <div class="row">

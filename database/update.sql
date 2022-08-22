@@ -1235,3 +1235,4 @@ DROP TABLE `tbl_temp_tokens`;
 UPDATE `tbl_language_labels` SET `label_caption` = 'Upload your course image here. It must meet our course image quality standards to be accepted. Important guidelines: {dimensions} pixels; {filesize}MB size; {extensions}. no text on the image.' WHERE `tbl_language_labels`.`label_key` = 'LBL_COURSE_IMAGE_INFO'; 
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES ('LBL_COURSE_PREVIEW_VIDEO_GUIDELINES', '1', 'Important guidelines: {filesize}MB size; {extensions} formats only.');
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES ('LBL_SETTINGS_FORM_INFO', '1', 'Write messages to your students (optional) that will be sent automatically when they join or complete your course to encourage students to engage with course content. If you do not wish to send a welcome or congratulations message, leave the text box blank.');
