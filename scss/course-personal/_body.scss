@@ -92,7 +92,7 @@ $body-side: 'body-side';
 
     @media(min-width: theme('breakpoints.xl','value')){
         &{
-            width: 28%; position: fixed; right: 0;top: 0; bottom: 0; overflow: auto;background-color: theme('color.white'); border-#{theme('direction.left','value')}: 1px solid theme('color.gray.200');
+            width: 28%; position: fixed; right: 0;top: 0; bottom: 0; overflow: auto;background-color: theme('color.white'); border-#{theme('direction.left','value')}: 1px solid theme('color.gray.200'); padding-top: 70px;
         }
     }
    
@@ -302,7 +302,7 @@ $box-outlined: 'box-outlined';
 
 $page-directions: 'page-directions';
 
-.#{$page-directions} {padding-top: theme('padding.10');
+.#{$page-directions} {padding-top: theme('padding.10');margin-top: theme('margin.10'); min-height: 90px;
     @media(max-width: theme('breakpoints.sm','value')){
         & .btn--sm-block{width: 100%; display: block; text-align: center; margin-bottom: 1rem;}
     }
@@ -325,7 +325,7 @@ $section-layout: 'section-layout';
    &__body{ padding: theme('padding.10') 0; position:relative;
         @media(min-width: theme('breakpoints.xl','value')){
             &{
-                padding: theme('padding.14') 0;
+                padding: theme('padding.14') 0 theme('padding.8');
             }
             .#{$box-outlined} {min-width: 340px; max-width: 340px;}
         }

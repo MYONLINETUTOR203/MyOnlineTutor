@@ -359,7 +359,7 @@ $header-dropdown--arrow: 'header-dropdown--arrow';
 
             &:hover{
                 a{
-                    background: theme('color.gray.100')
+                    background: theme('color.gray.100'); color: theme('color.primary');
                 }
             }
         }
