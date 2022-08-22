@@ -84,7 +84,7 @@
                         <div class="listview">
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_PROFILE_PICTURE'); ?></dt>
-                                <dd><img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_TEACHER_APPROVAL_IMAGE, $row['tereq_user_id'], Afile::SIZE_SMALL]); ?>" /></dd>
+                                <dd><img src="<?php echo MyUtility::makeUrl('Image', 'show', [$userImage['file_type'], $row['tereq_user_id'], Afile::SIZE_SMALL]); ?>" /></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_PHOTO_ID'); ?></dt>
