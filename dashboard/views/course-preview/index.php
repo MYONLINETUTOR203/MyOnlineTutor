@@ -250,4 +250,4 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                 var currentLectureId = "0";
                 var courseId = "<?php echo $course['course_id'] ?>";
             </script>
-            <script src="http://www.youtube.com/player_api"></script>
+            <script src="//www.youtube.com/player_api"></script>
