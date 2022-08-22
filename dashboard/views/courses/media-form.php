@@ -67,8 +67,8 @@ echo $frm->getFormTag(); ?>
                                     <?php
                                     $lbl = Label::getLabel('LBL_COURSE_IMAGE_INFO');
                                     echo str_replace(
-                                        ['{extensions}', '{dimensions}'],
-                                        [implode(', ', $extensions), implode('x', $dimensions)],
+                                        ['{extensions}', '{dimensions}', '{filesize}'],
+                                        [implode(', ', $extensions), implode('x', $dimensions), $filesize],
                                         $lbl
                                     );
                                     ?>
@@ -112,6 +112,14 @@ echo $frm->getFormTag(); ?>
                                     <?php
                                     echo Label::getLabel('LBL_COURSE_PREVIEW_VIDEO_INFO');
                                     echo Label::getLabel('LBL_LEARN_HOW_TO_MAKE_YOURS_AWESOME!');
+                                    ?><br>
+                                    <?php
+                                    $label = Label::getLabel('LBL_COURSE_PREVIEW_VIDEO_GUIDELINES');
+                                    echo str_replace(
+                                        ['{extensions}', '{filesize}'],
+                                        [implode(', ', $videoFormats), $filesize],
+                                        $label
+                                    );
                                     ?>
                                 </p>
                                 <button type="button" class="btn btn--primary-bordered btn--fileupload cursor-pointer">

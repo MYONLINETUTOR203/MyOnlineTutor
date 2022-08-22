@@ -225,7 +225,9 @@ class CoursesController extends DashboardController
             'frm' => $frm,
             'courseId' => $courseId,
             'extensions' => Afile::getAllowedExts(Afile::TYPE_COURSE_IMAGE),
+            'videoFormats' => Afile::getAllowedExts(Afile::TYPE_COURSE_PREVIEW_VIDEO),
             'dimensions' => $dimensions,
+            'filesize' => MyUtility::convertBitesToMb(CommonHelper::getMaximumFileUploadSize(true)),
             'previewVideo' => $previewVideo,
             'image' => $image,
         ]);

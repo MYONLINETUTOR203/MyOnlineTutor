@@ -1231,3 +1231,7 @@ UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.1.20220805' WHERE `tbl_conf
 ALTER TABLE `tbl_course_progresses` CHANGE `crspro_started` `crspro_started` DATETIME NULL; 
 UPDATE `tbl_course_progresses` SET `crspro_started` = NULL WHERE crspro_started = '0000-00-00 00:00:00';
 DROP TABLE `tbl_temp_tokens`;
+
+UPDATE `tbl_language_labels` SET `label_caption` = 'Upload your course image here. It must meet our course image quality standards to be accepted. Important guidelines: {dimensions} pixels; {filesize}MB size; {extensions}. no text on the image.' WHERE `tbl_language_labels`.`label_key` = 'LBL_COURSE_IMAGE_INFO'; 
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES ('LBL_COURSE_PREVIEW_VIDEO_GUIDELINES', '1', 'Important guidelines: {filesize}MB size; {extensions} formats only.');
