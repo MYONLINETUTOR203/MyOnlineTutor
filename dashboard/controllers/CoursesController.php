@@ -425,7 +425,8 @@ class CoursesController extends DashboardController
             FatUtility::dieJsonError($course->getError());
         }
         /* validate currency */
-        if (Currency::getAttributesById($post['course_currency_id'], 'currency_active') == AppConstant::INACTIVE) {
+        $currencyId = FatUtility::int($post['course_currency_id']);
+        if ($currencyId > 0 && Currency::getAttributesById($currencyId, 'currency_active') == AppConstant::INACTIVE) {
             FatUtility::dieJsonError(Label::getLabel('LBL_CURRENCY_NOT_AVAILABLE'));
         }
         $price = 0;
