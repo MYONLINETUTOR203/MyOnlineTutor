@@ -67,9 +67,11 @@ $requestStatuses = Course::getRefundStatuses();
                     </div>
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <?php
-                        $color = 'color-yellow';
+                        $color = 'color-warning';
                         if ($course['course_status'] == Course::PUBLISHED) {
                             $color = 'color-success';
+                        } elseif ($course['course_status'] == Course::SUBMITTED) {
+                            $color = 'color-info';
                         }
                         ?>
                         <span class="card-landscape__status badge <?php echo $color; ?> badge--curve badge--small margin-left-0">
@@ -79,9 +81,11 @@ $requestStatuses = Course::getRefundStatuses();
                         <?php
                         $color = 'color-success';
                         if ($course['crspro_status'] == CourseProgress::CANCELLED) {
-                            $color = 'color-red';
+                            $color = 'color-danger';
                         } elseif ($course['crspro_status'] == CourseProgress::PENDING) {
-                            $color = 'color-yellow';
+                            $color = 'color-warning';
+                        } elseif ($course['crspro_status'] == CourseProgress::IN_PROGRESS) {
+                            $color = 'color-info';
                         }
                         ?>
                         <span class="card-landscape__status badge <?php echo $color; ?> badge--curve badge--small margin-left-0">
@@ -90,7 +94,7 @@ $requestStatuses = Course::getRefundStatuses();
                     <?php } ?>
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <?php if ($course['course_active'] == AppConstant::INACTIVE) { ?>
-                            <span class="card-landscape__status badge color-red badge--curve badge--small margin-left-0">
+                            <span class="card-landscape__status badge color-danger badge--curve badge--small margin-left-0">
                                 <?php echo AppConstant::getActiveArr($course['course_active']); ?>
                             </span>
                         <?php } ?>
@@ -100,9 +104,9 @@ $requestStatuses = Course::getRefundStatuses();
                             <?php
                             $color = 'color-success';
                             if ($course['corere_status'] == Course::REFUND_DECLINED) {
-                                $color = 'color-red';
+                                $color = 'color-danger';
                             } elseif ($course['corere_status'] == Course::REFUND_PENDING) {
-                                $color = 'color-yellow';
+                                $color = 'color-warning';
                             }
                             ?>
                             <span class="card-landscape__status badge <?php echo $color; ?> badge--curve badge--small margin-left-0">
