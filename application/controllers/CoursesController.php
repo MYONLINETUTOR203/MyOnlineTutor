@@ -357,14 +357,8 @@ class CoursesController extends MyAppController
      */
     private function getCourses($keyword = '')
     {
-        $srch = new SearchBase(Course::DB_TBL, 'course');
-        $srch->joinTable(
-            Course::DB_TBL_LANG,
-            'LEFT JOIN',
-            'crsdetail.course_id = course.course_id',
-            'crsdetail'
-        );
-        $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
+        $srch->applyPrimaryConditions();
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addMultiplefields(['course.course_id as id', 'crsdetail.course_title as name']);
