@@ -96,6 +96,29 @@ Fixes:
 	Bug-066318 - Youtube videos not playing on secure urls.
 	Bug-066308 - Frontend transparent logo should come on the certificate
 	Bug-066222 - Certificate setting should not come if certificate is inactive
+	Bug-066209 - Line height is not proper for the certificate content
+	Bug-066153 - Explore Languages drop-down Text should also display in color on mouse hover as per theme setting
+	Bug-066141 - Next and Previous button is not displaying properly in safari browser
+	Bug-066046 - In teacher/learner profile, some fields are not aligned properly
+	Bug-066040 - Filters are coming over the courses listing in the frontend
+	Bug-066037 - Tabs are not visible when clicking on previous tab or scroll up
+	Bug-066012 - Text overlaps the Tick Icon in the more filtered language sections
+	Bug-066008 - Teaches Icon touching to the Text field
+	Bug-066006 - If attachment name is bigger then Content does not display properly
+	Bug-066000 - Icon Allignment is not proper in Ipad, tablet and Android device
+	Bug-065999 - Rearrange sequence icon is not displaying on Ipad, tablets, and Android device
+	Bug-065990 - Status Wise Course Status Text is not displaying in a different Color
+	Bug-065988 - Content are displaying out of the boundary in firefox browser
+	Bug-065987 - Overview Description is displaying out of the box
+	Bug-065982 - Heart Icon is not filled with the color when activate it
+	Bug-065979 - UI disturbed, Content display out of the Box
+	Bug-065977 - Title text Overlap the Certificate Text
+	Bug-065967 - Review title is not coming in the reviews listing
+	Bug-065941 - When low resolution then Rating point touches the Star logo
+	Bug-065939 - Content is not displaying properly when Word is bigger in low resolutions
+	Bug-065937 - Section title is touching to its border line in low resolutions
+	Bug-065934 - In Low-Resolution video not coming in the center position and its play button not displaying properly
+	Bug-065828 - Popup window Cross icon overlap the Toast message
 
 ## TV-4.1.1.20220805
 
