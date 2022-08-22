@@ -20,7 +20,11 @@ class CoursesController extends MyAppController
      */
     public function index()
     {
+        $params = FatApp::getQueryStringData();
         $srchFrm = CourseSearch::getSearchForm($this->siteLangId);
+        if (isset($params['catg']) && $params['catg'] > 0) {
+            $srchFrm->fill(['course_cate_id' => $params['catg']]);
+        }
         $this->set('srchFrm', $srchFrm);
         $this->set('filterTypes', Course::getFilterTypes());
         $this->_template->render();

@@ -81,10 +81,11 @@ $priceSorting = AppConstant::getSortbyArr();
                             <?php
                             if ($siteUserId > 0) { ?>
                                 <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $course['course_id'] ?>', this)" data-status="<?php echo $course['is_favorite']; ?>" class="mark-option <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>">
-                                <svg class="fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
-                                    <g>
-                                    <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z"/></g>
-                                </svg>
+                                    <svg class="fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
+                                        <g>
+                                            <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z" />
+                                        </g>
+                                    </svg>
                                 </a>
                             <?php } ?>
                             <?php if ($course['course_certificate'] == AppConstant::YES) { ?>
@@ -101,12 +102,12 @@ $priceSorting = AppConstant::getSortbyArr();
                         </div>
                         <div class="course-grid__body">
                             <span class="course-card__label">
-                                <?php echo $course['cate_name']; ?>
+                                <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_cate_id'] ?>"><?php echo $course['cate_name']; ?></a>
                                 <?php
                                 if (!empty($course['subcate_name'])) {
-                                    echo ' / ' . $course['subcate_name'];
-                                }
-                                ?>
+                                    echo ' / '; ?>
+                                    <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_subcate_id'] ?>"><?php echo $course['subcate_name']; ?></a>
+                                <?php } ?>
                             </span>
                             <h4 class="course-card__title">
                                 <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$course['course_slug']]); ?>" class="snakeline-hover">

@@ -17,12 +17,12 @@ $levels = Course::getCourseLevels();
             <div class="page-view__head">
                 <hgroup>
                     <span class="course-card__label margin-top-4">
-                        <?php echo $course['cate_name']; ?>
+                        <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_cate_id'] ?>"><?php echo $course['cate_name']; ?></a>
                         <?php
                         if (!empty($course['subcate_name'])) {
-                            echo ' / ' . $course['subcate_name'];
-                        }
-                        ?>
+                            echo ' / ' ; ?>
+                            <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_subcate_id'] ?>"><?php echo $course['subcate_name'];?></a>
+                        <?php } ?>
                     </span>
                     <h1 class="page-heading"><?php echo $course['course_title']; ?></h1>
                     <h4 class="page-subheading"><?php echo $course['course_subtitle']; ?></h4>

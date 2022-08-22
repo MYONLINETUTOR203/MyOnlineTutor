@@ -105,7 +105,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                         foreach ($options as $id => $option) { ?>
                                                             <li>
                                                                 <label class="select-option">
-                                                                    <input class="select-option__input" type="checkbox" name="course_cate_id[]" value="<?php echo $id; ?>">
+                                                                    <input class="select-option__input" type="checkbox" name="course_cate_id[]" <?php echo ($category->value == $id) ? "checked='checked'" : ''; ?> value="<?php echo $id; ?>">
                                                                     <span class="select-option__item categorySelectOptJs">
                                                                         <?php echo strtolower($option['name']) ?>
                                                                     </span>
@@ -115,7 +115,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                         <?php foreach ($option['sub_categories'] as $sid => $name) { ?>
                                                                             <li>
                                                                                 <label class="select-option">
-                                                                                    <input class="select-option__input" type="checkbox" name="course_cate_id[]" value="<?php echo $sid; ?>">
+                                                                                    <input class="select-option__input" type="checkbox" <?php echo ($category->value == $sid) ? "checked='checked'" : ''; ?> name="course_cate_id[]" value="<?php echo $sid; ?>">
                                                                                     <span class="select-option__item categorySelectOptJs">
                                                                                         <?php echo strtolower($name) ?>
                                                                                     </span>
@@ -468,4 +468,10 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
     var categoryLbl = "<?php echo Label::getLabel('LBL_SELECT_CATEGORY'); ?>";
     var priceLbl = "<?php echo Label::getLabel('LBL_ALL_PRICE'); ?>";
     var ratingLbl = "<?php echo Label::getLabel('LBL_ALL_RATINGS'); ?>";
+    $(document).ready(function() {
+        var catid = "<?php echo $category->value ?>";
+        if (catid != '') {
+            searchByCategory();
+        }
+    });
 </script>
