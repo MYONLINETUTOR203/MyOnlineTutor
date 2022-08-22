@@ -130,7 +130,7 @@ class CourseRefundRequestsController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->addCondition('corere_id', '=', $requestId);
         $srch->setPageSize(1);
-        $srch->addFld('IFNULL(crspro_progress, 0) as crspro_progress');
+        $srch->addMultipleFields(['IFNULL(crspro_progress, 0) as crspro_progress', 'crspro_status']);
         if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }

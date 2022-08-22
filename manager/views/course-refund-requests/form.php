@@ -23,8 +23,10 @@ $fld->setWrapperAttribute('id', 'remarkField');
                     <?php echo $frm->getFormHtml(); ?>
                     <small>
                     <?php
-                    if ($data['crspro_progress'] > 0) {
-                        $label = Label::getLabel('LBL_NOTE:_LEARNER_HAS_ALREADY_COMPLETED_{percent}%_OF_THE_COURSE');
+                    $label = Label::getLabel('LBL_NOTE:_LEARNER_HAS_ALREADY_COMPLETED_{percent}%_OF_THE_COURSE');
+                    if ($data['crspro_status'] == CourseProgress::COMPLETED) {
+                        echo str_replace('{percent}', 100, $label);
+                    } else {
                         echo str_replace('{percent}', $data['crspro_progress'], $label);
                     }
                     ?>
