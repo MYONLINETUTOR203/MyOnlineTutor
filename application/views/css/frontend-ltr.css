@@ -252,7 +252,8 @@
       color: var(--color-dark);
       font-weight: 400; }
     .menu--inline ul .menu__item:hover a {
-      background: var(--color-gray-100); }
+      background: var(--color-gray-100);
+      color: var(--color-primary); }
   .menu--inline ul .is--active a {
     position: relative;
     color: var(--color-primary);

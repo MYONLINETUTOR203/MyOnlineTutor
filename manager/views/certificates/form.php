@@ -272,20 +272,20 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
     .certificate-subtitle {
         font-size: 1.4vw;
         margin-bottom: 2%;
-        font-weight: normal;
+        font-weight: normal; line-height: 1.4;
     }
 
     .certificate-author {
         font-size: 2vw;
         margin-bottom: 10%;
         font-style: normal;
-        font-weight: 700;
+        font-weight: 700; line-height: 1.2;
     }
 
     .certificate-meta {
         font-size: 2.2vw;
         font-weight: normal;
-        line-height: 1.6;
+        line-height: 1.4;
         max-width: 90%;
         margin: 0 auto 5%;
     }

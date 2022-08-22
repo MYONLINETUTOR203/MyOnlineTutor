@@ -141,7 +141,8 @@
 ::before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  outline: 0; }
+  outline: 0;
+  word-wrap: break-word; }
 
 html {
   line-height: 1.15;
@@ -5688,7 +5689,7 @@ img {
     bottom: 0;
     content: "";
     pointer-events: none;
-    opacity: 0.06;
+    opacity: 0.15;
     -webkit-transition: all 0.4s;
     -o-transition: all 0.4s;
     transition: all 0.4s; }
@@ -15000,7 +15001,7 @@ html .ui-button.ui-state-disabled:hover {
 a.ui-button:active {
   background: rgba(0, 0, 0, 0.06);
   font-weight: 400;
-  color: var(--color-secondary); }
+  color: var(--color-primary); }
 
 .ui-icon-background,
 .ui-state-active .ui-icon-background {

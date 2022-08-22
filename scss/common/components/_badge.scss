@@ -47,7 +47,7 @@ $badge: "badge";
     pointer-events: none;
   }
   &:not(:first-child){margin-#{theme('direction.right','value')}: theme('margin.1')}
-  &:before{background-color: currentColor; position: absolute; left: 0; right: 0; top: 0; bottom: 0;content: ""; pointer-events: none;opacity: 0.06;transition: all 0.4s;}
+  &:before{background-color: currentColor; position: absolute; left: 0; right: 0; top: 0; bottom: 0;content: ""; pointer-events: none;opacity: 0.15;transition: all 0.4s;}
   @media (min-width: theme("breakpoints.sm","value")) {
     &:hover:before{opacity: 0.14;}
   }
