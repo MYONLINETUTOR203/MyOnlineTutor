@@ -81,6 +81,11 @@ class CertificatesController extends DashboardController
         if (!$content = $cert->getFormattedContent($data)) {
             FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
         }
+        /* get background and logo images */
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
+        $this->set('backgroundImg', $afile->getFile(0, false));
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
+        $this->set('logoImg', $afile->getFile(0, false));
         $this->set('content', $content);
         $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
         return $this->_template->render(false, false, 'certificates/generate.php', true);

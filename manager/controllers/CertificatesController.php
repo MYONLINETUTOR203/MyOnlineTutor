@@ -199,10 +199,17 @@ class CertificatesController extends AdminBaseController
         ];
         $cert = new Certificate(0, 0, $langId);
         $content = $cert->getFormattedContent($data);
+        /* get background and logo images */
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
+        $backgroundImg = $afile->getFile(0, false);
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $langId);
+        $logoImg = $afile->getFile(0, false);
         $this->sets([
             'content' => $content,
             'layoutDir' => Language::getAttributesById($langId, 'language_direction'),
-            'langId' => $langId
+            'langId' => $langId,
+            'backgroundImg' => $backgroundImg,
+            'logoImg' => $logoImg,
         ]);
         $content = $this->_template->render(false, false, 'certificates/generate.php', true);
         $filename = 'certificate.pdf';
