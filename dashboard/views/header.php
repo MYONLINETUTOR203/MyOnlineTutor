@@ -58,7 +58,7 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
         }
         if (FatApp::getConfig('CONF_ENABLE_PWA', FatUtility::VAR_BOOLEAN, false)) {
             ?>
-            <link rel="manifest" href="<?php echo MyUtility::makeUrl('MyApp', 'PwaManifest'); ?>">
+            <link rel="manifest" href="<?php echo MyUtility::makeUrl('Pwa'); ?>">
             <script>
                 if ("serviceWorker" in navigator) {
                     navigator.serviceWorker.register("<?php echo CONF_WEBROOT_FRONTEND; ?>sw.js");
