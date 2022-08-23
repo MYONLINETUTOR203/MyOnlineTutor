@@ -680,7 +680,7 @@ class OrderClass extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'ordcls');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordcls.ordcls_order_id', 'orders');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = orders.order_user_id', 'learner');
-        $srch->addMultipleFields(['user_first_name', 'user_last_name', 'user_email', 'user_gender']);
+        $srch->addMultipleFields(['user_first_name', 'user_last_name', 'user_email']);
         $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('ordcls.ordcls_status', '!=', static::CANCELLED);

@@ -92,7 +92,6 @@ class TeacherRequestController extends MyAppController
             $request = [
                 'tereq_first_name' => $user['user_first_name'],
                 'tereq_last_name' => $user['user_last_name'],
-                'tereq_gender' => $user['user_gender'],
                 'tereq_phone_code' => $user['user_phone_code'],
                 'tereq_phone_number' => $user['user_phone_number'],
                 'tereq_user_id' => $user['user_id']
@@ -231,6 +230,7 @@ class TeacherRequestController extends MyAppController
      */
     public function setupStep1()
     {
+        echo "Hello";exit;
         $userId = FatUtility::int($this->userId);
         if ($userId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -254,7 +254,6 @@ class TeacherRequestController extends MyAppController
             'tereq_date' => date('Y-m-d H:i:s'),
             'tereq_first_name' => $post['tereq_first_name'],
             'tereq_last_name' => $post['tereq_last_name'],
-            'tereq_gender' => $post['tereq_gender'],
             'tereq_phone_code' => $post['tereq_phone_code'],
             'tereq_phone_number' => $post['tereq_phone_number'],
         ];
@@ -265,7 +264,8 @@ class TeacherRequestController extends MyAppController
         $record = new TableRecord(TeacherRequest::DB_TBL);
         $record->assignValues($data);
         if (!$record->addNew([], $data)) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN'));
+            FatUtility::dieJsonError($record->getError());
+            //FatUtility::dieJsonError(Label::getLabel('LBL_SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN'));
         }
         FatUtility::dieJsonSuccess(['step' => 2, 'msg' => Label::getLabel('LBL_ACTION_PERFORMED_SUCCESSFULLY')]);
     }
@@ -431,7 +431,6 @@ class TeacherRequestController extends MyAppController
         $frm = new Form('frmFormStep1', ['id' => 'frmFormStep1']);
         $frm->addRequiredField(Label::getLabel('LBL_First_Name'), 'tereq_first_name')->requirements()->setRequired();
         $frm->addTextBox(Label::getLabel('LBL_Last_Name'), 'tereq_last_name');
-        $frm->addRadioButtons(Label::getLabel('LBL_Gender'), 'tereq_gender', User::getGenderTypes(), User::GENDER_MALE)->requirements()->setRequired();
         $countries = Country::getAll($this->siteLangId);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_PHONE_CODE'), 'tereq_phone_code', array_column($countries, 'phone_code', 'country_id'), '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired(true);

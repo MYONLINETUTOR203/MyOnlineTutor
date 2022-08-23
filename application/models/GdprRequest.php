@@ -200,7 +200,6 @@ class GdprRequest extends MyAppModel
             'user_email' => null,
             'user_username' => null,
             'user_password' => null,
-            'user_gender' => null,
             'user_active' => 0,
             'user_country_id' => 0,
             'user_deleted' => date('Y-m-d H:i:s'),

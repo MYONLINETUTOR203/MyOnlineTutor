@@ -5,7 +5,6 @@ $teachs = $srchFrm->getField('teachs');
 $price = $srchFrm->getField('price');
 $days = $srchFrm->getField('days');
 $slots = $srchFrm->getField('slots');
-$gender = $srchFrm->getField('gender');
 $locations = $srchFrm->getField('locations');
 $speaks = $srchFrm->getField('speaks');
 $accents = $srchFrm->getField('accents');
@@ -286,40 +285,6 @@ $jslabels = json_encode([
                                                                                 <label class="select-option">
                                                                                     <input class="select-option__input country-filter-js" type="checkbox" name="locations[]" value="<?php echo $id; ?>" <?php echo in_array($id, $locations->value) ? 'checked' : ''; ?> />
                                                                                     <span class="select-option__item select-location-js"><?php echo strtolower($name); ?></span>
-                                                                                </label>
-                                                                            </li>
-                                                                        <?php } ?>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- ] -->
-                                                <!-- [ GENDER FILTER ========= -->
-                                                <div class="filter-item">
-                                                    <div class="filter-item__trigger cursor-pointer filter-item__trigger-js">
-                                                        <div class="filter-item__label">
-                                                            <?php echo Label::getLabel('LBL_TEACHER_GENDER'); ?>
-                                                            <span class="filters-count gender-count-js" style="display: none;"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="filter-item__target filter-item__target-js" style="display: none;">
-                                                        <div class="filter-dropdown">
-                                                            <div class="filter-dropdown__head">
-                                                                <div class="d-flex align-items-center justify-content-between">
-                                                                    <div><h5><?php echo Label::getLabel('LBL_SELECT_GENDER'); ?></h5></div>
-                                                                    <div><a href="javascript:clearMore('gender[]');" class="clear-link bold-600 color-primary underline"><?php echo Label::getLabel('LBL_CLEAR'); ?></a></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="filter-dropdown__body">
-                                                                <div class="select-list select-list--inline">
-                                                                    <ul>
-                                                                        <?php foreach ($gender->options as $id => $name) { ?>
-                                                                            <li>
-                                                                                <label class="select-option">
-                                                                                    <input class="select-option__input gender-filter-js" type="checkbox" name="gender[]" value="<?php echo $id; ?>" <?php echo in_array($id, $gender->value) ? 'checked' : ''; ?> />
-                                                                                    <span class="select-option__item"><?php echo $name; ?></span>
                                                                                 </label>
                                                                             </li>
                                                                         <?php } ?>

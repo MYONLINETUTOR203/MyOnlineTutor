@@ -156,10 +156,6 @@ class TeacherSearch extends YocoachSearch
             $subTable = '(' . $srch->getQuery() . ')';
             $this->joinTable($subTable, 'INNER JOIN', 'utpref.uprefer_user_id = teacher.user_id', 'utpref');
         }
-        /* Tutor Gender */
-        if (count($post['gender']) == 1) {
-            $this->addCondition('teacher.user_gender', '=', current($post['gender']));
-        }
     }
 
     /**
@@ -545,7 +541,6 @@ class TeacherSearch extends YocoachSearch
         $frm->addCheckBoxes(Label::getLabel('LBL_DAY_SLOTS'), 'slots', MyUtility::timeSlotArr());
         $frm->addCheckBoxes(Label::getLabel('LBL_LOCATION'), 'locations', Country::getNames($langId));
         $frm->addCheckBoxes(Label::getLabel('LBL_SPEAKS'), 'speaks', SpeakLanguage::getOptions($langId));
-        $frm->addCheckBoxes(Label::getLabel('LBL_GENDER'), 'gender', AppConstant::getGenders());
         $frm->addCheckBoxes(Label::getLabel('LBL_ACCENTS'), 'accents', $preferences[Preference::TYPE_ACCENTS]);
         $frm->addCheckBoxes(Label::getLabel('LBL_LEVELS'), 'levels', $preferences[Preference::TYPE_TEACHES_LEVEL]);
         $frm->addCheckBoxes(Label::getLabel('LBL_SUBJECTS'), 'subjects', $preferences[Preference::TYPE_SUBJECTS]);

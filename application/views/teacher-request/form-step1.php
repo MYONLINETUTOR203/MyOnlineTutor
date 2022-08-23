@@ -4,7 +4,6 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setupStep1(this); return(false);');
 $usrFirstName = $frm->getField('tereq_first_name');
 $usrLastName = $frm->getField('tereq_last_name');
-$usrGender = $frm->getField('tereq_gender');
 $usrPhoneCode = $frm->getField('tereq_phone_code');
 $usrPhoneCode->setFieldTagAttribute('id', 'tereq_phone_code');
 $usrPhone = $frm->getField('tereq_phone_number');
@@ -67,32 +66,7 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="field-set">
-                                    <div class="caption-wraper">
-                                        <label class="field_label"><?php echo $usrGender->getCaption(); ?>
-                                            <?php if ($usrGender->requirement->isRequired()) { ?>
-                                                <span class="spn_must_field">*</span>
-                                            <?php } ?>
-                                        </label>
-                                    </div>
-                                    <div class="field-wraper">
-                                        <div class="field_cover">
-                                            <div class="row">
-                                                <?php foreach ($usrGender->options as $id => $name) { ?>
-                                                    <div class="col-6 col-md-6">
-                                                        <div class="list-inline">
-                                                            <label><span class="radio"><input <?php echo ($usrGender->value == $id) ? 'checked="checked"' : ''; ?> type="radio" name="<?php echo $usrGender->getName(); ?>" value="<?php echo $id; ?>"><i class="input-helper"></i></span><?php echo $name; ?></label>
-                                                        </div>
-                                                    </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="field-set">

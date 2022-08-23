@@ -20,7 +20,6 @@ $firstNameField = $profileFrm->getField('user_first_name');
 $firstNameField->addFieldTagAttribute('placeholder', $firstNameField->getCaption());
 $lastNameField = $profileFrm->getField('user_last_name');
 $lastNameField->addFieldTagAttribute('placeholder', $lastNameField->getCaption());
-$genderField = $profileFrm->getField('user_gender');
 $phoneField = $profileFrm->getField('user_phone_number');
 $countryField = $profileFrm->getField('user_country_id');
 $timeZoneField = $profileFrm->getField('user_timezone');
@@ -31,8 +30,6 @@ $nextButton = $profileFrm->getField('btn_next');
 $nextButton->addFieldTagAttribute('onClick', 'setupProfileInfo(this.form, true); return(false);');
 $phoneCode = $profileFrm->getField('user_phone_code');
 $phoneCode->addFieldTagAttribute('id', 'user_phone_code');
-$userGender = $profileFrm->getField('user_gender');
-$userGender->setOptionListTagAttribute('class', 'list-inline list-inline--onehalf');
 if ($userRow['user_is_teacher'] == AppConstant::YES) {
     $timeZoneField->htmlAfterField = "<br><small class='color-secondary'>" . Label::getLabel("htmlAfterField_TIMEZONE_TEXT") . ".</small>";
 }
@@ -58,9 +55,9 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                     <?php
                     if ($siteUserType == User::TEACHER) {
                         foreach ($languages as $langId => $language) {
-                            ?>
+                    ?>
                             <li class="profile-lang-tab"><a href="javascript:void(0);" class="profile-lang-li" onclick="getLangProfileInfoForm(<?php echo $langId; ?>);"><?php echo $language['language_name']; ?></a></li>
-                            <?php
+                    <?php
                         }
                     }
                     ?>
@@ -156,8 +153,8 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
-                                            <label class="field_label"><?php echo $genderField->getCaption(); ?>
-                                                <?php if ($genderField->requirement->isRequired()) { ?>
+                                            <label class="field_label"><?php echo Label::getLabel('LBL_PHONE'); ?>
+                                                <?php if ($phoneField->requirement->isRequired()) { ?>
                                                     <span class="spn_must_field">*</span>
                                                 <?php } ?>
                                             </label>
@@ -165,10 +162,9 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                         <div class="field-wraper">
                                             <div class="field_cover">
                                                 <div class="custom-cols custom-cols--onehal">
-                                                    <ul class="list-inline list-inline--onehalf">
-                                                        <?php foreach ($genderField->options as $id => $name) { ?>
-                                                            <li class="<?php echo ($genderField->value == $id) ? 'is-active' : ''; ?>"><label><span class="radio"><input type="radio" name="<?php echo $genderField->getName(); ?>" value="<?php echo $id; ?>" <?php echo ($genderField->value == $id) ? 'checked' : ''; ?>><i class="input-helper"></i></span><?php echo $name; ?></label></li>
-                                                        <?php } ?>
+                                                    <ul>
+                                                        <li class="custom-select-search"><?php echo $phoneCode->getHTML(); ?></li>
+                                                        <li><?php echo $phoneField->getHTML(); ?></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -189,29 +185,6 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                         <div class="field-wraper">
                                             <div class="field_cover custom-select-search">
                                                 <?php echo $countryField->getHTML(); ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper">
-                                            <label class="field_label"><?php echo Label::getLabel('LBL_PHONE'); ?>
-                                                <?php if ($phoneField->requirement->isRequired()) { ?>
-                                                    <span class="spn_must_field">*</span>
-                                                <?php } ?>
-                                            </label>
-                                        </div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <div class="custom-cols custom-cols--onehal">
-                                                    <ul>
-                                                        <li class="custom-select-search"><?php echo $phoneCode->getHTML(); ?></li>
-                                                        <li><?php echo $phoneField->getHTML(); ?></li>
-                                                    </ul>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -290,7 +263,7 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                                         <span class="switch-group__label free-trial-status-js"><?php echo ($freeTrialField->checked) ? Label::getLabel('LBL_Active') : Label::getLabel('LBL_In-active'); ?></span>
                                                         <span class="switch switch--small">
                                                             <input class="switch__label" type="<?php echo $freeTrialField->fldType; ?>" name="<?php echo $freeTrialField->getName(); ?>" value="<?php echo $freeTrialField->value; ?>" <?php echo ($freeTrialField->checked) ? 'checked' : ''; ?>>
-                                                                <i class="switch__handle bg-green"></i>
+                                                            <i class="switch__handle bg-green"></i>
                                                         </span>
                                                     </label>
                                                 </div>
@@ -326,30 +299,32 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
     var statusInActive = '<?php echo Label::getLabel('LBL_In-active'); ?>';
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("[name='user_timezone'], [name='user_country_id'], [name='user_phone_code']").select2();
-        $("[name='user_country_id']").on('change', function () {
+        $("[name='user_country_id']").on('change', function() {
             $("[name='user_phone_code']").val($("[name='user_country_id']").val());
-            $("[name='user_phone_code']").css({width: '100%'});
+            $("[name='user_phone_code']").css({
+                width: '100%'
+            });
             $("[name='user_phone_code']").next().remove();
             $("[name='user_phone_code']").select2();
         });
-        $('input[name="user_username"]').on('keypress', function (e) {
+        $('input[name="user_username"]').on('keypress', function(e) {
             if (e.which == 32) {
                 return false;
             }
         });
-        $('input[name="user_username"]').on('change', function (e) {
+        $('input[name="user_username"]').on('change', function(e) {
             var user_name = $(this).val();
             user_name = user_name.replace(/ /g, "");
             $(this).val(user_name);
             $('.user_username_span').html(user_name);
         });
-        $('input[name="user_username"]').on('keyup', function () {
+        $('input[name="user_username"]').on('keyup', function() {
             var user_name = $(this).val();
             $('.user_username_span').html(user_name);
         });
-        $('input[name="user_trial_enabled"]').on('change', function () {
+        $('input[name="user_trial_enabled"]').on('change', function() {
             let status = ($(this).is(':checked')) ? statusActive : statusInActive;
             $('.free-trial-status-js').text(status);
         });

@@ -35,9 +35,6 @@ class AppConstant
     const DAY_THURSDAY = 4;
     const DAY_FRIDAY = 5;
     const DAY_SATURDAY = 6;
-    /* Genders */
-    const GEN_MALE = 1;
-    const GEN_FEMALE = 2;
     /* Layouts */
     const LAYOUT_LTR = 'ltr';
     const LAYOUT_RTL = 'rtl';
@@ -114,21 +111,6 @@ class AppConstant
         $arr = [
             static::ACTIVE => Label::getLabel('LBL_ACTIVE'),
             static::INACTIVE => Label::getLabel('LBL_INACTIVE')
-        ];
-        return static::returArrValue($arr, $key);
-    }
-
-    /**
-     * Get Genders
-     * 
-     * @param int $key
-     * @return string|array
-     */
-    public static function getGenders(int $key = null)
-    {
-        $arr = [
-            static::GEN_MALE => Label::getLabel('LBL_MALE'),
-            static::GEN_FEMALE => Label::getLabel('LBL_FEMALE')
         ];
         return static::returArrValue($arr, $key);
     }

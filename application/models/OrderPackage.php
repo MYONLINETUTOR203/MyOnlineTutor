@@ -290,7 +290,7 @@ class OrderPackage extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'ordpkg');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordpkg.ordpkg_order_id', 'orders');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = orders.order_user_id', 'learner');
-        $srch->addMultipleFields(['user_first_name', 'user_last_name', 'user_email', 'user_gender']);
+        $srch->addMultipleFields(['user_first_name', 'user_last_name', 'user_email']);
         $srch->addCondition('ordpkg.ordpkg_package_id', '=', $packageId);
         $srch->addCondition('ordpkg.ordpkg_status', '!=', static::CANCELLED);
         $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);

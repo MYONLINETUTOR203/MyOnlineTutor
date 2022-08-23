@@ -388,8 +388,6 @@ class AccountController extends DashboardController
 
         $frm->addRequiredField(Label::getLabel('LBL_First_Name'), 'user_first_name');
         $frm->addTextBox(Label::getLabel('LBL_Last_Name'), 'user_last_name');
-        $fld = $frm->addRadioButtons(Label::getLabel('LBL_GENDER'), 'user_gender', User::getGenderTypes());
-        $fld->requirements()->setRequired();
         $countries = Country::getAll($this->siteLangId);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_COUNTRY'), 'user_country_id', array_column($countries, 'country_name', 'country_id'), FatApp::getConfig('CONF_COUNTRY', FatUtility::VAR_INT, 0), [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired(true);

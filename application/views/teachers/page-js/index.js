@@ -144,7 +144,6 @@ $(document).ready(function () {
 
     clearAllDesktop = function () {
         $('input[name="locations[]"]').prop('checked', false);
-        $('input[name="gender[]"]').prop('checked', false);
         $('input[name="speaks[]"]').prop('checked', false);
         $('input[name="accents[]"]').prop('checked', false);
         $('input[name="levels[]"]').prop('checked', false);
@@ -225,7 +224,6 @@ $(document).ready(function () {
         var price = $(".price-filter-js:checked").length;
         var availbility = $(".availbility-filter-js:checked").length;
         var country = $(".country-filter-js:checked").length;
-        var gender = $(".gender-filter-js:checked").length;
         var speak = $(".speak-filter-js:checked").length;
         var accent = $(".accent-filter-js:checked").length;
         var level = $(".level-filter-js:checked").length;
@@ -233,12 +231,11 @@ $(document).ready(function () {
         var include = $(".include-filter-js:checked").length;
         var test = $(".test-filter-js:checked").length;
         var agegroup = $(".age-group-filter-js:checked").length;
-        var morecount = country + gender + speak + accent + level + subject + include + test + agegroup;
+        var morecount = country + speak + accent + level + subject + include + test + agegroup;
         (language > 0) ? $(".language-count-js").text(language).show() : $(".language-count-js").text('').hide();
         (price > 0) ? $(".price-count-js").text(price).show() : $(".price-count-js").text('').hide();
         (availbility > 0) ? $(".availbility-count-js").text(availbility).show() : $(".availbility-count-js").text('').hide();
         (country > 0) ? $(".country-count-js").text(country).show() : $(".country-count-js").text('').hide();
-        (gender > 0) ? $(".gender-count-js").text(gender).show() : $(".gender-count-js").text('').hide();
         (speak > 0) ? $(".speak-count-js").text(speak).show() : $(".speak-count-js").text('').hide();
         (accent > 0) ? $(".accent-count-js").text(accent).show() : $(".accent-count-js").text('').hide();
         (level > 0) ? $(".level-count-js").text(level).show() : $(".level-count-js").text('').hide();

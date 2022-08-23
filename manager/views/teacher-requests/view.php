@@ -69,10 +69,6 @@
                                 <dd><?php echo $row['tereq_last_name']; ?>&nbsp;</dd>
                             </dl>
                             <dl class="list">
-                                <dt><?php echo Label::getLabel('LBL_GENDER'); ?></dt>
-                                <dd><?php echo User::getGenderTypes()[$row['tereq_gender']]; ?>&nbsp;</dd>
-                            </dl>
-                            <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_PHONE_NUMBER'); ?></dt>
                                 <dd><?php echo $row['tereq_phone_code'] . ' ' . $row['tereq_phone_number']; ?>&nbsp;</dd>
                             </dl>

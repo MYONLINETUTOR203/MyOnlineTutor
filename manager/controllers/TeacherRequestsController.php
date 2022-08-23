@@ -83,6 +83,7 @@ class TeacherRequestsController extends AdminBaseController
 
     public function view(int $requestId)
     {
+        $requestId = FatUtility::int($requestId);
         $srch = new SearchBase(TeacherRequest::DB_TBL, 'tereq');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'u.user_id = tereq.tereq_user_id', 'u');
         $srch->addDirectCondition('u.user_deleted IS NULL');
@@ -94,12 +95,13 @@ class TeacherRequestsController extends AdminBaseController
             'tereq_id', 'tereq_user_id', 'tereq_reference',
             'tereq_date', 'tereq_attempts', 'tereq_comments',
             'tereq_status', 'tereq_first_name', 'tereq_last_name',
-            'tereq_gender', 'tereq_phone_number', 'tereq_phone_code',
-            'tereq_video_link', 'tereq_biography', 'tereq_teach_langs',
-            'tereq_speak_langs', 'tereq_slang_proficiency'
+            'tereq_phone_number', 'tereq_phone_code', 'tereq_video_link',
+            'tereq_biography', 'tereq_teach_langs', 'tereq_speak_langs', 
+            'tereq_slang_proficiency'
         ]);
         $srch->addGroupBy('tereq_id');
         $row = FatApp::getDb()->fetch($srch->getResultSet());
+
         if (empty($row)) {
             FatUtility::dieJsonError(Label::getLabel('MSG_USER_OR_REQUEST_NOT_FOUND'));
         }
@@ -168,7 +170,7 @@ class TeacherRequestsController extends AdminBaseController
         $srch->addMultipleFields([
             'user_lang_id', 'tereq_status', 'tereq_user_id', 'tereq_language_id', 'tereq_comments',
             'tereq_reference', 'user_first_name', 'user_last_name', 'user_email', 'tereq_first_name',
-            'tereq_last_name', 'tereq_gender', 'tereq_phone_number', 'tereq_phone_code', 'tereq_biography',
+            'tereq_last_name', 'tereq_phone_number', 'tereq_phone_code', 'tereq_biography',
             'tereq_video_link', 'tereq_teach_langs', 'tereq_speak_langs', 'tereq_slang_proficiency'
         ]);
         $requestRow = FatApp::getDb()->fetch($srch->getResultSet());
@@ -192,7 +194,7 @@ class TeacherRequestsController extends AdminBaseController
                 'user_dashboard' => User::TEACHER,
                 'user_first_name' => $requestRow['tereq_first_name'],
                 'user_last_name' => $requestRow['tereq_last_name'],
-                'user_gender' => $requestRow['tereq_gender']
+                'user_biography' => $requestRow['tereq_biography'],
             ]);
             if (!$user->save()) {
                 $db->rollbackTransaction();

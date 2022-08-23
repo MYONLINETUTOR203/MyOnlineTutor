@@ -23,8 +23,6 @@ class User extends MyAppModel
     const DB_TBL_LANG_PREFIX = 'userlang_';
     const DB_TBL_USER_TO_SPOKEN_LANGUAGES = 'tbl_user_speak_languages';
     const DB_TBL_TEACHER_FAVORITE = 'tbl_user_favourite_teachers';
-    const GENDER_MALE = 1;
-    const GENDER_FEMALE = 2;
     const LESSION_EMAIL_BEFORE_12_HOUR = 12;
     const LESSION_EMAIL_BEFORE_24_HOUR = 24;
     const LESSION_EMAIL_BEFORE_48_HOUR = 48;
@@ -83,19 +81,6 @@ class User extends MyAppModel
             User::TEACHER => Label::getLabel('LBL_Teacher'),
         ];
         return AppConstant::returArrValue($arr, $key);
-    }
-
-    /**
-     * Get Gender
-     * 
-     * @return array
-     */
-    public static function getGenderTypes(): array
-    {
-        return [
-            static::GENDER_MALE => Label::getLabel('LBL_MALE'),
-            static::GENDER_FEMALE => Label::getLabel('LBL_FEMALE'),
-        ];
     }
 
     /**
@@ -482,7 +467,7 @@ class User extends MyAppModel
         $srch->joinTable(User::DB_TBL_SETTING, 'INNER JOIN', 'user.user_id=uset.user_id', 'uset');
         $srch->addMultipleFields([
             'user.user_id as user_id', 'user_first_name', 'user_last_name', 'user_email',
-            'user_username', 'user_password', 'user_timezone', 'user_gender', 'user_lang_id',
+            'user_username', 'user_password', 'user_timezone', 'user_lang_id',
             'user_country_id', 'user_is_teacher', 'user_active', 'user_verified', 'user_dashboard'
         ]);
         $srch->addCondition('user_email', '=', $email);
@@ -505,7 +490,7 @@ class User extends MyAppModel
         if (is_null($fields)) {
             $fields = [
                 'user.user_id as user_id', 'user_first_name', 'user_last_name', 'user_email',
-                'user_username', 'user_password', 'user_timezone', 'user_gender', 'user_lang_id',
+                'user_username', 'user_password', 'user_timezone', 'user_lang_id',
                 'user_country_id', 'user_is_teacher', 'user_active', 'user_verified', 'user_dashboard'
             ];
         }
