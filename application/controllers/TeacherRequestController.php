@@ -86,6 +86,11 @@ class TeacherRequestController extends MyAppController
         }
         $this->attemptReachedCheck();
         $frm = $this->getFormStep1($this->siteLangId);
+        $photoId = (new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF))->getFile($this->userId);
+        if (!empty($photoId)) {
+            $fld = $frm->getField('user_photo_id');
+            $fld->requirements()->setRequired(false);
+        }
         $request = TeacherRequest::getRequestByUserId($userId);
         if (empty($request)) {
             $user = User::getDetail($this->userId);
@@ -100,11 +105,10 @@ class TeacherRequestController extends MyAppController
         if (!empty($request)) {
             $frm->fill($request);
         }
-        $file = new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF);
         $this->sets([
             'frm' => $frm, 'request' => $request,
             'user' => User::getAttributesById($userId),
-            'photoId' => $file->getFile($this->userId),
+            'photoId' => $photoId,
         ]);
         $this->_template->render(false, false);
     }
@@ -230,14 +234,22 @@ class TeacherRequestController extends MyAppController
      */
     public function setupStep1()
     {
-        echo "Hello";exit;
         $userId = FatUtility::int($this->userId);
         if ($userId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $resubmit = FatApp::getPostedData('resubmit', FatUtility::VAR_INT, 0);
         $frm = $this->getFormStep1($this->siteLangId);
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        $photoId = (new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF))->getFile($this->userId);
+        if (!empty($photoId)) {
+            $fld = $frm->getField('user_photo_id');
+            $fld->requirements()->setRequired(false);
+        }
+        $data = FatApp::getPostedData();
+        if (!empty($_FILES['user_photo_id']['tmp_name'])) {
+            $data = array_merge($data, $_FILES);
+        }
+        if (!$post = $frm->getFormDataFromArray($data)) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         if (!empty($_FILES['user_photo_id']['tmp_name'])) {
@@ -246,6 +258,7 @@ class TeacherRequestController extends MyAppController
                 FatUtility::dieJsonError($file->getError());
             }
         }
+        
         $data = [
             'tereq_step' => 2,
             'tereq_user_id' => $userId,
@@ -264,8 +277,7 @@ class TeacherRequestController extends MyAppController
         $record = new TableRecord(TeacherRequest::DB_TBL);
         $record->assignValues($data);
         if (!$record->addNew([], $data)) {
-            FatUtility::dieJsonError($record->getError());
-            //FatUtility::dieJsonError(Label::getLabel('LBL_SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN'));
+            FatUtility::dieJsonError(Label::getLabel('LBL_SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN'));
         }
         FatUtility::dieJsonSuccess(['step' => 2, 'msg' => Label::getLabel('LBL_ACTION_PERFORMED_SUCCESSFULLY')]);
     }
@@ -439,7 +451,7 @@ class TeacherRequestController extends MyAppController
         $fld->requirements()->setRegularExpressionToValidate(AppConstant::PHONE_NO_REGEX);
         $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PHONE_NO_VALIDATION_MSG'));
         $frm->addHiddenField('', 'resubmit', 0);
-        $frm->addFileUpload(Label::getLabel('LBL_Photo_Id'), 'user_photo_id');
+        $frm->addFileUpload(Label::getLabel('LBL_Photo_Id'), 'user_photo_id')->requirements()->setRequired(true);
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Save_Changes'));
         return $frm;
     }
