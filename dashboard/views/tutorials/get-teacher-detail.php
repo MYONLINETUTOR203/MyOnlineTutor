@@ -38,10 +38,12 @@
             </div>
         </div>
         <div class="author-bio__body margin-top-10">
-            <h5 class="bold-700"><?php echo Label::getLabel('LBL_BIOGRAPHY'); ?></h5>
-            <div class="author-box__desc">
-                <p><?php echo nl2br($teacher['user_biography']); ?></p>
-            </div>
+            <?php if (!empty($teacher['user_biography'])) { ?>
+                <h5 class="bold-700"><?php echo Label::getLabel('LBL_BIOGRAPHY'); ?></h5>
+                <div class="author-box__desc">
+                    <p><?php echo nl2br($teacher['user_biography']); ?></p>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>
