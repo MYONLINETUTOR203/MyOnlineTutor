@@ -5,7 +5,6 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
 ?>
 <!doctype html>
 <html lang="en" dir="<?php echo $siteLanguage['language_direction']; ?>" class="<?php echo $stickyDemoHeader; ?>">
-
 <head>
     <!-- Basic Page Needs ======================== -->
     <meta charset="utf-8">
