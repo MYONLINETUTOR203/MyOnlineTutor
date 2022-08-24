@@ -492,8 +492,8 @@ class Course extends MyAppModel
         $tagsList = explode(',', $data['course_tags']);
         $langData = [
             'course_id' => $this->getMainTableRecordId(),
-            'course_welcome' => $data['course_welcome'],
-            'course_congrats' => $data['course_congrats'],
+            /* 'course_welcome' => $data['course_welcome'],
+            'course_congrats' => $data['course_congrats'], */
             'course_srchtags' => json_encode($tagsList),
         ];
         if (!$this->setupLangData($langData)) {
@@ -626,8 +626,10 @@ class Course extends MyAppModel
         $srch->addCondition('course_id', '=', $courseId);
         $srch->addMultipleFields([
             'IF(course_id IS NULL, 0, 1) as course_lang',
-            'IF(course_welcome IS NULL, 0, 1) as course_welcome',
-            'IF(course_congrats IS NULL, 0, 1) as course_congrats',
+            /* 'IF(course_welcome IS NULL, 0, 1) as course_welcome',
+            'IF(course_congrats IS NULL, 0, 1) as course_congrats', */
+            '1 as course_welcome',
+            '1 as course_congrats',
             'IF(course_srchtags IS NULL, 0, 1) as course_tags',
         ]);
         if ($courseLang = FatApp::getDb()->fetch($srch->getResultSet())) {

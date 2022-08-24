@@ -5,12 +5,12 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'frmCourses');
 $frm->setFormTagAttribute('onsubmit', 'setupSettings(this); return false;');
 $certFld = $frm->getField('course_certificate');
-$welcomeFld = $frm->getField('course_welcome');
+/* $welcomeFld = $frm->getField('course_welcome');
 $welcomeFld->setFieldTagAttribute('class', 'field-count__wrap');
 $welcomeFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_WELCOME_MESSAGE'));
 $congrFld = $frm->getField('course_congrats');
 $congrFld->setFieldTagAttribute('class', 'field-count__wrap');
-$congrFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CONGRATULATION_MESSAGE'));
+$congrFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CONGRATULATION_MESSAGE')); */
 $tagFld = $frm->getField('course_tags');
 $tagFld->addFieldTagAttribute('id', "tagsinput");
 $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_COURSE_TAGS'));
@@ -71,7 +71,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                 echo $certFld->getHtml();
                             }
                             ?>
-                            <div class="row">
+                            <?php /*<div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
@@ -110,7 +110,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */ ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">

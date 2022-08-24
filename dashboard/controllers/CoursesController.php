@@ -819,9 +819,9 @@ class CoursesController extends DashboardController
         } else {
             $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
         }
-        $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
+        /* $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
         $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
-        $fld->requirements()->setRequired();
+        $fld->requirements()->setRequired(); */
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_save', Label::getLabel('LBL_SAVE'));
