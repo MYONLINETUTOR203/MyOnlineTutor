@@ -297,6 +297,7 @@ class Afile extends FatModel
     private function showImage(array $file = null, string $size = null)
     {
         ob_end_clean();
+        ini_set('memory_limit', -1);
         $sizes = $this->getImageSizes($size);
         if (empty($file) || !file_exists(CONF_UPLOADS_PATH . $file['file_path'])) {
             $img = new ImageResize(CONF_INSTALLATION_PATH . 'public/images/noimage.jpg');
@@ -340,6 +341,7 @@ class Afile extends FatModel
     private function showOriginalImage(array $file = null)
     {
         ob_end_clean();
+        ini_set('memory_limit', -1);
         if (empty($file) || !file_exists(CONF_UPLOADS_PATH . $file['file_path'])) {
             $img = new ImageResize(CONF_INSTALLATION_PATH . 'public/images/noimage.jpg');
             $img->setResizeMethod(ImageResize::IMG_RESIZE_EXTRA_ADDSPACE);
