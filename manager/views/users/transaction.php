@@ -38,7 +38,7 @@
                                 $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]));
                                 break;
                             case 'usrtxn_amount':
-                                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]));
+                                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                                 break;
                             case 'usrtxn_comment':
                                 $td->appendElement('plaintext', [], $row[$key], true);

@@ -35,7 +35,7 @@ foreach ($records as $row) {
             case 'slstat_refund':
             case 'slstat_earnings':
             case 'slstat_teacher_paid':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                 break;
             default:
                 $td->appendElement('plaintext', [], $row[$key]);

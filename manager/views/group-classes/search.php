@@ -36,7 +36,7 @@ foreach ($classes as $sn => $row) {
                 $td->appendElement('plaintext', [], GroupClass::getClassTypes($row[$key]));
                 break;
             case 'grpcls_entry_fee':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                 break;
             case 'grpcls_added_on':
             case 'grpcls_start_datetime':

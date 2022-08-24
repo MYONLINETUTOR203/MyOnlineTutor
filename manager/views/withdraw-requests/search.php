@@ -41,13 +41,13 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', [], $txt, true);
                 break;
             case 'user_balance':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['user_balance']));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['user_balance']), true);
                 break;
             case 'withdrawal_transaction_fee':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['withdrawal_transaction_fee']));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['withdrawal_transaction_fee']), true);
                 break;
             case 'withdrawal_amount':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['withdrawal_amount']));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['withdrawal_amount']), true);
                 break;
             case 'account_details':
                 $txt = '';
