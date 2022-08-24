@@ -184,4 +184,4 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                 var currentLectureId = "<?php echo $progress['crspro_lecture_id'] ?>";
                 var courseId = "<?php echo $course['course_id'] ?>";
             </script>
-            <script src="http://www.youtube.com/player_api"></script>
+            <script src="//www.youtube.com/player_api"></script>
