@@ -305,7 +305,7 @@ class MyUtility extends FatUtility
         $langId = empty($langId) ? self::$siteLangId : $langId;
         $srch = new SearchBase(Currency::DB_TBL, 'currency');
         $srch->joinTable(Currency::DB_TBL_LANG, 'LEFT JOIN', 'curlang.currencylang_currency_id = '
-            . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
+                . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
         $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
         $srch->addMultipleFields(['currency_id', 'currency_code', 'currency_name']);
         $srch->doNotCalculateRecords();
@@ -481,14 +481,12 @@ class MyUtility extends FatUtility
         if (!$addsymbol) {
             return $value;
         }
-        if ($addsymbol) {
-            $sign = ($value < 0) ? '-' : '';
-            $value = round(abs($value), 2);
-            $value = number_format($value, 2);
-            $left = self::$siteCurrency['currency_symbol_left'];
-            $right = self::$siteCurrency['currency_symbol_right'];
-            return $sign . $left . $value . $right;
-        }
+        $sign = ($value < 0) ? '-' : '';
+        $value = round(abs($value), 2);
+        $value = number_format($value, 2);
+        $left = self::$siteCurrency['currency_symbol_left'];
+        $right = self::$siteCurrency['currency_symbol_right'];
+        return str_replace(" ", "&nbsp;", $sign . $left . $value . $right);
     }
 
     /**
@@ -724,4 +722,5 @@ class MyUtility extends FatUtility
         $frm->addSubmitButton('', 'btnSubmit', Label::getLabel('LBL_SUBSCRIBE'));
         return $frm;
     }
+
 }
