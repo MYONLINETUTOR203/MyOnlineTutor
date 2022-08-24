@@ -119,8 +119,8 @@ class ResourcesController extends DashboardController
     public function setup()
     {
         $frm = $this->getForm();
-        if (!$frm->getFormDataFromArray(FatApp::getPostedData())) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        if (!$frm->getFormDataFromArray($_FILES)) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
 
         if (count($_FILES['resource_files']['name']) < 1) {
