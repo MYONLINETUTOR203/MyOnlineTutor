@@ -312,10 +312,12 @@ class CoursesController extends MyAppController
                 $tags = json_decode($tags['course_srchtags']);
                 if (count($tags) > 0) {
                     foreach ($tags as $tag) {
-                        $child[] = [
-                                "id" => $tag,
-                                "text" => $tag
-                            ];
+                        if (stripos($tag, $keyword) !== FALSE) {
+                            $child[] = [
+                                    "id" => $tag,
+                                    "text" => $tag
+                                ];
+                        }
                     }
                 }
             }
@@ -419,7 +421,7 @@ class CoursesController extends MyAppController
         );
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
-        $srch->addDirectCondition('JSON_CONTAINS(course_srchtags, ' . '\'"' . $keyword . '"\')');
+        $srch->addCondition('course_srchtags', 'LIKE', '%' . $keyword . '%');
         $srch->addFld('course_srchtags');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
