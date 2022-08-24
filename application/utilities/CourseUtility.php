@@ -34,9 +34,6 @@ class CourseUtility extends FatUtility
 
     public static function convertToSystemCurrency(float $value, int $currencyId): float
     {
-        if ($value < 1) {
-            return 0;
-        }
         $value = static::float($value);
         $currencyValue = Currency::getAttributesById($currencyId, 'currency_value');
         return static::float($value / $currencyValue);
@@ -44,9 +41,6 @@ class CourseUtility extends FatUtility
 
     public static function convertToCurrency(float $value, int $currencyId): float
     {
-        if ($value < 1) {
-            return 0;
-        }
         $value = static::float($value);
         $currencyValue = Currency::getAttributesById($currencyId, 'currency_value');
         return static::float($value * $currencyValue);
