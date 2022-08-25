@@ -130,7 +130,7 @@ $textLength = 155;
                                 $idsFld = $frm->getField('type_requirements_ids[]');
                                 $idsFld->setFieldTagAttribute('class', 'sortable_ids');
                                 foreach ($responses[$typeRequirements] as $response) {
-                                    $reqField->value = $response['coinle_response'];
+                                    $reqField->value = CommonHelper::renderHtml($response['coinle_response']);
                                     $idsFld->value = $response['coinle_id']; ?>
                                     <div class="sort-row typeFieldsJs">
                                         <div class="sort-row__item">
@@ -212,7 +212,7 @@ $textLength = 155;
                                 $idsFld = $frm->getField('type_learners_ids[]');
                                 $idsFld->setFieldTagAttribute('class', 'sortable_ids');
                                 foreach ($responses[$typeLearners] as $response) {
-                                    $learnerField->value = $response['coinle_response'];
+                                    $learnerField->value = CommonHelper::renderHtml($response['coinle_response']);
                                     $idsFld->value = $response['coinle_id']; ?>
                                     <div class="sort-row typeFieldsJs">
                                         <div class="sort-row__item">
