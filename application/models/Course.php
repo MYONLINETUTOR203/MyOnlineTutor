@@ -949,6 +949,7 @@ class Course extends MyAppModel
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
         $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->joinTable(
             Course::DB_TBL_REFUND_REQUEST, 'LEFT JOIN', 'corere.corere_ordcrs_id = ordcrs.ordcrs_id', 'corere'
@@ -966,7 +967,12 @@ class Course extends MyAppModel
             'ordcrs_discount',
             'ordcrs_id',
             'order_id',
-            'teacher.user_id as teacher_id'
+            'teacher.user_id as teacher_id',
+            'teacher.user_email as teacher_email',
+            'teacher.user_first_name',
+            'teacher.user_last_name',
+            'crsdetail.course_title',
+            'teacher.user_lang_id'
         ]);
         $srch->doNotCalculateRecords();
         $resultSet = $srch->getResultSet();
@@ -984,6 +990,9 @@ class Course extends MyAppModel
                     $db->rollbackTransaction();
                     return false;
                 }
+                $txn->sendEmail();
+                $course['amount'] = $teacherAmount;
+                $this->sendPaymentMailToTeacher($course);
             }
             $orderCourse = new OrderCourse($course['ordcrs_id']);
             $earnings = $course['ordcrs_amount'] - ($course['ordcrs_discount'] + $teacherAmount);
@@ -1000,6 +1009,25 @@ class Course extends MyAppModel
             $db->commitTransaction();
         }
         return true;
+    }
+
+    /**
+     * function to send course payment settlement email to teacher
+     *
+     * @param array $data
+     * @return void
+     */
+    public function sendPaymentMailToTeacher(array $data)
+    {
+        $mail = new FatMailer($data['user_lang_id'], 'completed_course_settlement_email_to_teacher');
+        
+        $vars = [
+            '{username}' => ucwords($data['user_first_name'] . ' ' . $data['user_last_name']),
+            '{course_title}' => ucwords($data['course_title']),
+            '{amount}' => MyUtility::formatMoney($data['amount']),
+        ];
+        $mail->setVariables($vars);
+        $mail->sendMail([$data['teacher_email']]);
     }
 
     /**
