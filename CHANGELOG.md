@@ -1,7 +1,54 @@
 # YoCoach V3
 
-## RV-3.0.0 (28-06-2022) 
+## TV-3.0.2.25082022
 
+Fixes:
+
+    #066383 Emails are not workingin case of user registered from facebook
+    #066368 Price display in 2 lines in manage withdraw request in admin panel
+    #066359 Large Image display error Allowed memory size exhausted
+    #066349 PWA Url | Console log error in user learner and teacher dashboard
+    #066253 Delete Request Filter should be removed under the status
+    #066251 Profile Image is not coming in a Teacher Request - View of Admin panel
+    #066245 Fatal Error display in view popup window in deleted teacher request
+    #065860 Invalid request issue is coming while creating a new group class
+    #065742 Quick send for test_email should be 1|true
+    #065720 Update SItemap, sitemap.xml and sitemap HTML issue on demo
+    #065709 Teacher is able to book free trial multiple times
+    #065684 Email verification link is not working on forgot password page
+    #065683 Notice is coming and Bhojpuri language is not displaying in speak languages
+    #065681 Bank transfer book before condition is not working for package
+    #065679 If package start time passed then also user is able to edit the class
+    #065673 If admin delete the coupon code then let him allow to add same coupon again
+    #065670 Invalid error message is coming in success toast
+    #065669 When class/package has 0 Seat available then don't display the hurry sentences
+    #065666 Heading is not coming on teacher preferences English/Arabic tab
+    #065663 Class get created with the invalid extension and above max limit file
+    #065604 Fatal Error on View User(Admin)
+    #065587 Not seeing self video when joining meeting from browser
+    #065581 Content pages/blocks images are broken on demo
+    #065450 Admin gets email notification for license alert in Utc time But Utc is not mention
+    #065329 To separate the helping text label from the field name label on the teacher registeration form
+    #065327 To create separate Label for 'Class Offer' under the user dashboard
+    #065326 To create separate Label for 'Add money to the wallet' under the user dashboard
+    #065324 Page Title and Search headings to be added on the Messages tab
+
+## TV-3.0.1.15072022
+
+Fixes:
+
+    task-98734 Zoom License Issue Verification
+    task-99829 Restore header for demo and placeholder content on the search filters
+    bug-065286 - Update the label from Users to Learners in Admin Setting
+    bug-065241 - Admin dashboard showing sales instead of earnings
+    bug-065223 - changing the name in the Personal info section, the name is not updated
+    bug-065194 - Credentials are not prefilled on demo for frontend user
+    bug-065183 - Teacher Search Form Labels are not updated
+    bug-065184 - Get Cart Items method return type Error
+    bug-065182 - Add new country is showing INVALID REQUEST
+    bug-065181 - Country Flag is broken in country management
+
+## RV-3.0.0 (28-06-2022) 
 
 Features:
 
