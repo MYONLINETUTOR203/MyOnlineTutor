@@ -18,6 +18,7 @@ class Cronjob
     {
         $srch = new SearchBase(FatMailer::DB_TBL_ARCHIVE);
         $srch->addCondition('earch_senton', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('earch_attempted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addOrder('earch_id', 'ASC');
         $srch->setPageSize(15);
         $srch->doNotCalculateRecords();
@@ -421,7 +422,7 @@ class Cronjob
         $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = grpcls.grpcls_teacher_id', 'teacher');
         $srch->joinTable(GroupClass::DB_TBL_LANG, 'LEFT JOIN', 'gclang.gclang_grpcls_id = '
-            . 'grpcls.grpcls_id and gclang.gclang_lang_id = teacher.user_lang_id', 'gclang');
+                . 'grpcls.grpcls_id and gclang.gclang_lang_id = teacher.user_lang_id', 'gclang');
         $srch->addMultipleFields([
             'user_first_name', 'user_last_name',
             'user_lang_id', 'grpcls_id', 'user_email',
@@ -457,7 +458,6 @@ class Cronjob
         }
         return 'Demo Database Restored';
     }
-
 
     public function shuffleZoomLicense()
     {
@@ -508,4 +508,5 @@ class Cronjob
         }
         return true;
     }
+
 }
