@@ -275,7 +275,7 @@ class Course extends MyAppModel
         $mail = new FatMailer($this->langId, 'course_request_update_email_to_teacher');
         $vars = [
             '{username}' => ucwords($data['user_first_name'] . ' ' . $data['user_last_name']),
-            '{course_title}' => ucwords($data['course_title']),
+            '{course_title}' => ucwords($data['coapre_title']),
             '{request_status}' => static::getRequestStatuses($data['coapre_status']),
             '{admin_comment}' => empty($data['coapre_remark']) ? Label::getLabel('LBL_NA') : $data['coapre_remark'],
         ];
