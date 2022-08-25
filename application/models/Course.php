@@ -707,10 +707,16 @@ class Course extends MyAppModel
     {
         $db = FatApp::getDb();
         if ($requestId < 1) {
+            $course = $this->get();
             $data = [
                 'coapre_course_id' => $this->getMainTableRecordId(),
                 'coapre_status' => static::REQUEST_PENDING,
                 'coapre_created' => date('Y-m-d H:i:s'),
+                'coapre_title' => $course['course_title'],
+                'coapre_subtitle' => $course['course_subtitle'],
+                'coapre_details' => $course['course_details'],
+                'coapre_price' => CourseUtility::formatMoney($course['course_price'], $course['course_currency_id']),
+                'coapre_duration' => $course['course_duration'],
             ];
         } else {
             $data = [
@@ -822,6 +828,7 @@ class Course extends MyAppModel
         $srch->addCondition('course.course_id', '=', $this->getMainTableRecordId());
         $srch->addMultipleFields([
             'crsdetail.course_title',
+            'crsdetail.course_subtitle',
             'crsdetail.course_details',
             'course.course_id',
             'course.course_lectures',
@@ -829,6 +836,9 @@ class Course extends MyAppModel
             'course.course_reviews',
             'course.course_ratings',
             'course.course_certificate',
+            'course.course_currency_id',
+            'course.course_price',
+            'course_duration'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();

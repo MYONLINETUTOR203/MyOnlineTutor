@@ -3,7 +3,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arrFlds = [
     'listserial' => Label::getLabel('LBL_Sr._No'),
-    'course_title' => Label::getLabel('LBL_COURSE_NAME'),
+    'coapre_title' => Label::getLabel('LBL_COURSE_NAME'),
     'user_name' => Label::getLabel('LBL_TEACHER_NAME'),
     'coapre_status' => Label::getLabel('LBL_STATUS'),
     'coapre_created' => Label::getLabel('LBL_REQUESTED_ON'),

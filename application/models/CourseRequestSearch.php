@@ -18,7 +18,6 @@ class CourseRequestSearch extends YocoachSearch
         parent::__construct($langId, $userId, $userType);
 
         $this->joinTable(Course::DB_TBL, 'INNER JOIN', 'coapre.coapre_course_id = course.course_id', 'course');
-        $this->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
     }
 
     /**
@@ -33,8 +32,8 @@ class CourseRequestSearch extends YocoachSearch
             $this->addCondition('coapre_id', '=', $post['coapre_id']);
         }
         if (!empty($post['keyword'])) {
-            $cnd = $this->addCondition('crsdetail.course_title', 'LIKE', '%' . $post['keyword'] . '%');
-            $cnd->attachCondition('crsdetail.course_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
+            $cnd = $this->addCondition('coapre.coapre_title', 'LIKE', '%' . $post['keyword'] . '%');
+            $cnd->attachCondition('coapre.coapre_subtitle', 'LIKE', '%' . $post['keyword'] . '%', 'OR');
         }
         if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
             $this->addCondition('course.course_user_id', '=', $post['teacher_id']);
@@ -76,13 +75,11 @@ class CourseRequestSearch extends YocoachSearch
             'coapre.coapre_remark' => 'coapre_remark',
             'coapre.coapre_created' => 'coapre_created',
             'coapre.coapre_course_id ' => 'coapre_course_id',
-            'crsdetail.course_title' => 'course_title',
-            'crsdetail.course_subtitle' => 'course_subtitle',
-            'course.course_price' => 'course_price',
-            'course.course_currency_id' => 'course_currency_id',
-            'course.course_duration' => 'course_duration',
-            'course.course_status' => 'course_status',
-            'crsdetail.course_details' => 'course_details',
+            'coapre.coapre_title' => 'coapre_title',
+            'coapre.coapre_subtitle' => 'coapre_subtitle',
+            'coapre.coapre_price' => 'coapre_price',
+            'coapre.coapre_duration' => 'coapre_duration',
+            'coapre.coapre_details' => 'coapre_details',
             'u.user_id' => 'user_id',
             'u.user_first_name' => 'user_first_name',
             'u.user_last_name' => 'user_last_name',

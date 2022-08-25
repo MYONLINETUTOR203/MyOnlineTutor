@@ -43,23 +43,23 @@
                         <div class="listview">
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_TITLE'); ?></dt>
-                                <dd><?php echo $requestData['course_title']; ?></dd>
+                                <dd><?php echo $requestData['coapre_title']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_SUB_TITLE'); ?></dt>
-                                <dd><?php echo $requestData['course_subtitle']; ?></dd>
+                                <dd><?php echo $requestData['coapre_subtitle']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
-                                <dd><?php echo CommonHelper::renderHtml($requestData['course_details']); ?></dd>
+                                <dd><?php echo CommonHelper::renderHtml($requestData['coapre_details']); ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_PRICE'); ?></dt>
-                                <dd><?php echo CourseUtility::formatMoney($requestData['course_price']); ?></dd>
+                                <dd><?php echo $requestData['coapre_price']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DURATION'); ?></dt>
-                                <dd><?php echo YouTube::convertDuration($requestData['course_duration']); ?></dd>
+                                <dd><?php echo YouTube::convertDuration($requestData['coapre_duration']); ?></dd>
                             </dl>
                         </div>
                     </div>
