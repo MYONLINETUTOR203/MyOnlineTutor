@@ -16,7 +16,7 @@
                             </div>
                             <div class="reviews-value">
                                 <?php echo $course['course_reviews'] ?>
-                                <?php echo Label::getLabel('LBL_RATINGS'); ?>
+                                <?php echo Label::getLabel('LBL_REVIEWS'); ?>
                             </div>
                         </div>
                     </div>
