@@ -226,7 +226,7 @@ class MessagesController extends DashboardController
         if (isset($_FILES['message_file']['name']) && !empty($_FILES['message_file']['name'])) {
             if (!CommonHelper::validateMaxUploadSize($_FILES['message_file']['size'])) {
                 $label = Label::getLabel('LBL_YOUR_FILE_SIZE_HAS_EXCEEDED_THE_ALLOWED_SIZE_OF_{size}');
-                $label = str_replace('{size}', CommonHelper::getMaximumFileUploadSize(false), $label);
+                $label = str_replace('{size}', Afile::getAllowedUploadSize(Afile::TYPE_MESSAGE_ATTACHMENT), $label);
                 FatUtility::dieJsonError($label);
             }
             $isFileUploadRequest = true;

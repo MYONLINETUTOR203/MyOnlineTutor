@@ -958,7 +958,7 @@ class Afile extends FatModel
      * @param int $type
      * @return int
      */
-    public static function getAllowedUploadSize(int $type): int
+    public static function getAllowedUploadSize(int $type = null): int
     {
         $maxUploadSizeAllowed = CommonHelper::getMaximumFileUploadSize(true);
         switch ($type) {
@@ -1004,6 +1004,7 @@ class Afile extends FatModel
             case static::TYPE_COURSE_PREVIEW_VIDEO:
             case static::TYPE_GROUP_CLASS_BANNER:
             case static::TYPE_CERTIFICATE_LOGO:
+            default:
                 /* 4194304 -- 4 mb  */
                 return min($maxUploadSizeAllowed, 4194304);
         }

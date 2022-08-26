@@ -85,7 +85,7 @@ class ResourcesController extends DashboardController
         $this->set('frm', $frm);
 
         $this->set('allowedExtensions', implode(', ', Resource::ALLOWED_EXTENSIONS));
-        $this->set('filesize', MyUtility::convertBitesToMb(CommonHelper::getMaximumFileUploadSize(true)));
+        $this->set('filesize', MyUtility::convertBitesToMb(Afile::getAllowedUploadSize()));
         $this->_template->render(false, false);
     }
 

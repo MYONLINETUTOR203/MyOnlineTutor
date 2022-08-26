@@ -179,7 +179,7 @@ class Resource extends MyAppModel
             $this->error = Label::getLabel('FILE_EMPTY_FILE_UPLOADED');
             return false;
         }
-        $allowedSize = CommonHelper::getMaximumFileUploadSize(true);
+        $allowedSize = Afile::getAllowedUploadSize();
         if ($file["size"] > $allowedSize) {
             $label = Label::getLabel('LBL_UPLOAD_FILE_SIZE_MUST_BE_EQUAL_OR_LESS_THEN_{size}_MB');
             $this->error = str_replace('{size}', MyUtility::convertBitesToMb($allowedSize), $label);
