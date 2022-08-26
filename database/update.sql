@@ -46,3 +46,5 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 ALTER TABLE `tbl_teacher_requests` DROP `tereq_gender`;
 ALTER TABLE `tbl_users` DROP `user_gender`;
 
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.0.20220826(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
