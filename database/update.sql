@@ -57,3 +57,4 @@ INSERT INTO tbl_languages (language_id, language_code, language_flag, language_n
 (NULL, 'RU', 'ru.png', 'Russian', '1', 'ltr'),
 (NULL, 'SW', 'sw.png', 'Swahili', '1', 'ltr'),
 (NULL, 'HE', 'he.png', 'Hebrew', '1', 'rtl');
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.1.20220830(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
