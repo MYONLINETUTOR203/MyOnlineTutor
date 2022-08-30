@@ -658,7 +658,7 @@ class Afile extends FatModel
             static::TYPE_FRONT_LOGO => [
                 static::SIZE_SMALL => [100, 10],
                 static::SIZE_MEDIUM => [140, 40],
-                static::SIZE_LARGE => [168, 37]
+                static::SIZE_LARGE => [168, 50]
             ],
             static::TYPE_APPLY_TO_TEACH_BANNER => [
                 static::SIZE_SMALL => [100, 100],
