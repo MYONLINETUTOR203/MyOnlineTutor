@@ -48,3 +48,12 @@ ALTER TABLE `tbl_users` DROP `user_gender`;
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.0.20220826(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
+INSERT INTO tbl_languages (language_id, language_code, language_flag, language_name, language_active, language_direction) VALUES 
+(NULL, 'ZH', 'zh.png', 'Chinese', '1', 'ltr'),
+(NULL, 'FR', 'fr.png', 'French', '1', 'ltr'),
+(NULL, 'TH', 'th.png', 'Thai', '1', 'ltr'),
+(NULL, 'VI', 'vi.png', 'Vietnamese', '1', 'ltr'),
+(NULL, 'ES', 'es.png', 'Spanish', '1', 'ltr'),
+(NULL, 'RU', 'ru.png', 'Russian', '1', 'ltr'),
+(NULL, 'SW', 'sw.png', 'Swahili', '1', 'ltr'),
+(NULL, 'HE', 'he.png', 'Hebrew', '1', 'rtl');
