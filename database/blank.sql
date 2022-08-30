@@ -657,7 +657,7 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_WEBSITE_NAME_1', 'Yo!Coach', 0),
 ('CONF_WEBSITE_NAME_2', 'Yo!Coach', 0),
 ('CONF_WELCOME_EMAIL_REGISTRATION', '1', 0),
-('CONF_YOCOACH_VERSION', 'RV-3.0.0', 1),
+('CONF_YOCOACH_VERSION', 'RV-1.0.0(YoCoach RV-3.0)', 1),
 ('FRONTEND_DATE_FORMAT', 'M d, Y', 0),
 ('MINIMUM_GIFT_CARD_AMOUNT', '10', 1),
 ('MINIMUM_WALLET_RECHARGE_AMOUNT', '99', 1);
@@ -1849,7 +1849,15 @@ CREATE TABLE `tbl_languages` (
 
 INSERT INTO `tbl_languages` (`language_id`, `language_code`, `language_flag`, `language_name`, `language_active`, `language_direction`) VALUES
 (1, 'EN', 'en.png', 'English', 1, 'ltr'),
-(2, 'AR', 'ar.png', 'Arabic', 1, 'rtl');
+(2, 'AR', 'ar.png', 'Arabic', 1, 'rtl'),
+(3, 'ZH', 'zh.png', 'Chinese', '1', 'ltr'),
+(4, 'FR', 'fr.png', 'French', '1', 'ltr'),
+(5, 'TH', 'th.png', 'Thai', '1', 'ltr'),
+(6, 'VI', 'vi.png', 'Vietnamese', '1', 'ltr'),
+(7, 'ES', 'es.png', 'Spanish', '1', 'ltr'),
+(8, 'RU', 'ru.png', 'Russian', '1', 'ltr'),
+(9, 'SW', 'sw.png', 'Swahili', '1', 'ltr'),
+(10, 'HE', 'he.png', 'Hebrew', '1', 'rtl');
 
 -- --------------------------------------------------------
 
@@ -8274,7 +8282,6 @@ CREATE TABLE `tbl_teacher_requests` (
   `tereq_terms` tinyint NOT NULL,
   `tereq_first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tereq_last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_gender` int NOT NULL,
   `tereq_phone_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tereq_phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tereq_video_link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -8509,7 +8516,6 @@ CREATE TABLE `tbl_users` (
   `user_username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_timezone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_gender` tinyint(1) DEFAULT NULL,
   `user_lang_id` int NOT NULL,
   `user_country_id` int NOT NULL,
   `user_is_teacher` tinyint(1) DEFAULT NULL,
