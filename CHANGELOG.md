@@ -1,5 +1,35 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.3.20220831
+
+
+Fixes:
+
+	Bug-066356 - Remove welcome and congratulations fields from course settings form
+	Bug-066050 - If teacher have no biography then its heading should not come
+	Bug-066247 - Tag based filter is not working correctly in frontend course listing
+	Bug-066272 - Course price is coming 0 when entering rupee value less than 79(conversion value)
+	Bug-066249 - Course price is getting changed after saving it
+	Bug-066355 - Teacher is unable to upload the resource files 
+	Bug-066354 - Search clear functionality is not working in courses listing
+	Bug-065536 - Course purchase related emails are not going to anyone [Done]
+	Bug-065968 - Show reviews count on the right side of line [Done]
+	Bug-066244 - Fatal Error display in view popup window in deleted teacher request [Working fine]
+	Bug-066044 - Some of the special characters are not rendering correctly [Working fine]
+	Bug-066306 - If course details changed then in the old course approval request it should not change
+	Bug-066264 - File size upload validation is available but not mentioned in the help text
+	Bug-065824 - Record which is deleted will not able to add as new record 
+	Bug-066318 - Youtube videos not playing on secure urls. 
+	Bug-066502 - Cursor focused to description field when adding/editing course/lecture
+	Bug-066500 - Manage courses items are not coming as per pagination
+	Bug-066495 - In course preview, sections are not coming as per display order
+	Bug-066477 - Certificate background image is not coming if the certificate logo is not available
+	Bug-066403 - The {certificate-number} variable is missing in replacement vars
+	Bug-066469 - Teacher ratings and reviews are incorrect on the certificate view page
+	Bug-066470 - Teacher profile image is not coming on the certificate view page
+	Bug-066472 - Course and teacher reviews links are not working correctly on the certificate view page 
+	Bug-066471 - 404 page is opening when clicking on course name
+
 ## TV-4.1.2.20220822
 
 

@@ -1252,3 +1252,5 @@ ALTER TABLE `tbl_course_approval_requests`  ADD `coapre_title` VARCHAR(255) NOT 
 ALTER TABLE `tbl_course_languages` DROP INDEX `clang_identifier`;
 
 UPDATE `tbl_certificate_templates` SET `certpl_vars` = '{learner-name} Learner name <br>\r\n{teacher-name} Teacher name <br>\r\n{course-name} Course Title <br>\r\n{course-language} Course Language<br>\r\n{course-completed-date} Course Completed On <br>\r\n{certificate-number} Certificate Number<br><br>' WHERE `tbl_certificate_templates`.`certpl_id` = 1; UPDATE `tbl_certificate_templates` SET `certpl_vars` = '{learner-name} Learner name <br>\r\n{teacher-name} Teacher name <br>\r\n{course-name} Course Title <br>\r\n{course-language} Course Language<br>\r\n{course-completed-date} Course Completed On <br>\r\n{certificate-number} Certificate Number<br><br>' WHERE `tbl_certificate_templates`.`certpl_id` = 3;
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.3.20220831' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
