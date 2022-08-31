@@ -51,6 +51,7 @@ class CoursesController extends AdminBaseController
         );
         $srch->addSearchListingFields();
         $srch->addFld('coapre_updated');
+        $srch->addCondition('coapre.coapre_status', '=', Course::REQUEST_APPROVED);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['page']);
