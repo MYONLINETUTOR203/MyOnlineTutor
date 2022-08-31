@@ -202,8 +202,18 @@ class CertificatesController extends AdminBaseController
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
         $backgroundImg = $afile->getFile(0, false);
+        if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
+            $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $backgroundImg = CONF_UPLOADS_PATH . $backgroundImg['file_path'];
+        }
         $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $langId);
         $logoImg = $afile->getFile(0, false);
+        if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
+            $logoImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
+        }
         $this->sets([
             'content' => $content,
             'layoutDir' => Language::getAttributesById($langId, 'language_direction'),

@@ -83,9 +83,21 @@ class CertificatesController extends DashboardController
         }
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
-        $this->set('backgroundImg', $afile->getFile(0, false));
+        $backgroundImg = $afile->getFile(0, false);
+        if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
+            $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $backgroundImg = CONF_UPLOADS_PATH . $backgroundImg['file_path'];
+        }
+        $this->set('backgroundImg', $backgroundImg);
         $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
-        $this->set('logoImg', $afile->getFile(0, false));
+        $logoImg = $afile->getFile(0, false);
+        if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
+            $logoImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
+        }
+        $this->set('logoImg', $logoImg);
         $this->set('content', $content);
         $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
         return $this->_template->render(false, false, 'certificates/generate.php', true);

@@ -1,5 +1,5 @@
 <div class="layout--<?php echo $layoutDir; ?>" style="width:100%;">
-    <div class="certificate " style="width:2070px; height:1680px;background-image: url('<?php echo CONF_UPLOADS_PATH . $backgroundImg['file_path'] ?>'); background-size: 100% 100%; background-repeat: no-repeat;">
+    <div class="certificate " style="width:2070px; height:1680px;background-image: url('<?php echo $backgroundImg ?>'); background-size: 100% 100%; background-repeat: no-repeat;">
         <div class="certificate-content">
             <h1 class="certificate-title "><b><?php echo $content['heading'] ?></b></h1>
             <div class="certificate-subtitle ">
@@ -21,7 +21,7 @@
                             </b>
                         </td>
                         <td width="33.3%" class="certificate-signs__middle">
-                            <img width="140" height="47" src="<?php echo CONF_UPLOADS_PATH . $logoImg['file_path'] ?>" alt="">
+                            <img width="140" height="47" src="<?php echo $logoImg ?>" alt="">
                         </td>
                         <td width="33.3%" class="certificate-signs__right">
                             <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:'); ?>
