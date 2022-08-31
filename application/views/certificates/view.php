@@ -57,7 +57,7 @@
                                         echo $order['course_lectures'] . ' ' . Label::getLabel('LBL_LECTURES') ?>
                                     </div>
                                     <div class="course-tile__item margin-2 margin-left-4">
-                                        <a href="" class="rating">
+                                        <a href="javascript:void(0);" class="rating -no-hover">
                                             <svg class="rating__media">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND ?>images/sprite.svg#rating"></use>
                                             </svg>
@@ -95,7 +95,7 @@
                                                 <?php echo ucwords($order['teacher_first_name'] . ' ' . $order['teacher_last_name']) ?>
                                             </a>
                                         </p>
-                                        <a href="javascript:void(0);" class="rating">
+                                        <a href="javascript:void(0);" class="rating -no-hover">
                                             <svg class="rating__media">
                                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#rating"></use>
                                             </svg>
