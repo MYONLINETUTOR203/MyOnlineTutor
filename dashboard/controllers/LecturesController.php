@@ -164,13 +164,16 @@ class LecturesController extends DashboardController
 
         /* validate lecture id */
         $obj = new LectureSearch();
-        if (!$lecture = $obj->getById($lectureId, ['lecture_title', 'lecture_section_id', 'lecture_order'])) {
+        if (!$lecture = $obj->getById($lectureId, [
+            'lecture_title', 'lecture_section_id', 'lecture_order', 'lecture_course_id'
+        ])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
         $obj = new Lecture($lectureId);
         $data = $obj->getMedia(Lecture::TYPE_RESOURCE_EXTERNAL_URL);
         $data['lecsrc_lecture_id'] = $lectureId;
+        $data['lecsrc_course_id'] = $lecture['lecture_course_id'];
 
         /* get form and fill */
         $frm = $this->getMediaForm();
@@ -234,6 +237,9 @@ class LecturesController extends DashboardController
         $fld->requirements()->setRegularExpressionToValidate(AppConstant::INTRODUCTION_VIDEO_LINK_REGEX);
         $fld->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_VALID_VIDEO_LINK'));
         $fld = $frm->addHiddenField('', 'lecsrc_lecture_id');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setInt();
+        $fld = $frm->addHiddenField('', 'lecsrc_course_id');
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
         $fld = $frm->addHiddenField('', 'lecsrc_id')->requirements()->setInt();

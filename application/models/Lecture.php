@@ -310,6 +310,7 @@ class Lecture extends MyAppModel
             'lecsrc_duration' => YouTube::getYoutubeVideoDuration($post['lecsrc_link']),
             'lecsrc_link' => $post['lecsrc_link'],
             'lecsrc_lecture_id' => $this->getMainTableRecordId(),
+            'lecsrc_course_id' => $post['lecsrc_course_id'],
         ];
         if ($post['lecsrc_id'] < 1) {
             $data['lecsrc_created'] = date('Y-m-d H:i:s');
@@ -333,8 +334,7 @@ class Lecture extends MyAppModel
             return false;
         }
         /* update course duration */
-        $courseId = Section::getAttributesById($sectionId, 'section_course_id');
-        $course = new Course($courseId);
+        $course = new Course($post['lecsrc_course_id']);
         if (!$course->setDuration()) {
             $this->error = $course->getError();
             return false;

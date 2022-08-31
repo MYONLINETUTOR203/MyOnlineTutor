@@ -83,6 +83,7 @@ $fld->setFieldTagAttribute('onclick', 'cancelLecture("' . $lectureId . '");');
                     </div>
                     <?php
                     echo $frm->getFieldHtml('lecsrc_lecture_id');
+                    echo $frm->getFieldHtml('lecsrc_course_id');
                     echo $frm->getFieldHtml('lecsrc_id');
                     ?>
                     </form>
