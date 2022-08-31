@@ -43,7 +43,7 @@ class CertificatesController extends MyAppController
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         $srch->addMultipleFields([
-            'teacher.user_first_name AS teacher_id',
+            'teacher.user_id AS teacher_id',
             'learner.user_country_id',
             'orders.order_user_id',
             'ordcrs_certificate_number'
