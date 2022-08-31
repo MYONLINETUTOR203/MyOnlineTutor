@@ -47,7 +47,7 @@
                             </div>
                             <div class="course-tile__body">
                                 <p class="course-title bold-600 margin-bottom-0">
-                                    <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$order['course_id']], CONF_WEBROOT_FRONTEND); ?>">
+                                    <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$order['course_slug']], CONF_WEBROOT_FRONTEND); ?>">
                                         <?php echo $order['course_title'] ?>
                                     </a>
                                 </p>

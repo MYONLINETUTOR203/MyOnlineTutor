@@ -127,6 +127,7 @@ class OrderCourseSearch extends YocoachSearch
             'course.course_certificate' => 'course_certificate',
             'course.course_cate_id' => 'course_cate_id',
             'course.course_subcate_id' => 'course_subcate_id',
+            'course.course_slug' => 'course_slug',
             'crsdetail.course_title' => 'course_title',
             'orders.order_addedon' => 'order_addedon',
             'orders.order_pmethod_id' => 'order_pmethod_id',
