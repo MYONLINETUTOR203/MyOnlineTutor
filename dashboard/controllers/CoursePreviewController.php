@@ -41,6 +41,7 @@ class CoursePreviewController extends DashboardController
         $srch = new SectionSearch($this->siteLangId, $this->siteUserId, User::LEARNER);
         $srch->applyPrimaryConditions();
         $srch->addCondition('section.section_course_id', '=', $courseId);
+        $srch->addOrder('section.section_order', 'ASC');
         $srch->addSearchListingFields();
         $srch->doNotCalculateRecords();
         if (!$sections = $srch->fetchAndFormat()) {
