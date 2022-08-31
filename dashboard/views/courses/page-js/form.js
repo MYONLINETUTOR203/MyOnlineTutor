@@ -3,6 +3,9 @@ $(function () {
     generalForm = function () {
         fcom.ajax(fcom.makeUrl('Courses', 'generalForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
+            var id = $('textarea[name="course_details"]').attr('id');
+            window["oEdit_" + id].disableFocusOnLoad = true;
+            $('#pageContentJs input[name="course_title"]:first').focus();
             getCourseEligibility();
         });
     };
