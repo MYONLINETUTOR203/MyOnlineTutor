@@ -38,7 +38,7 @@
                                         $td->appendElement('plaintext', [], $row['user_first_name'] . ' ' . $row['user_last_name'], true);
                                         break;
                                     case 'order_total_amount':
-                                        $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]));
+                                        $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                                         break;
                                     case 'couhis_added_on':
                                     case 'order_addedon':

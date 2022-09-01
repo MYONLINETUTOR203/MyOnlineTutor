@@ -35,7 +35,7 @@ foreach ($records as $row) {
             case 'slstat_total_sales':
             case 'slstat_net_sales':
             case 'slstat_discount':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                 break;
             default:
                 $td->appendElement('plaintext', [], $row[$key]);

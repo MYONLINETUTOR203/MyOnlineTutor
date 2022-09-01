@@ -20,7 +20,7 @@ foreach ($arr_listing as $sn => $row) {
     $tr = $tbl->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
-        if(date('Y-m-d H:i:s') > $row['coupon_end_date']){
+        if (date('Y-m-d H:i:s') > $row['coupon_end_date']) {
             $td->setAttribute('class', 'c-red');
         }
         switch ($key) {
@@ -34,7 +34,7 @@ foreach ($arr_listing as $sn => $row) {
                 } elseif ($row['coupon_discount_type'] == AppConstant::FLAT_VALUE) {
                     $discountValue = MyUtility::formatMoney($row['coupon_discount_value']);
                 }
-                $td->appendElement('plaintext', [], $discountValue);
+                $td->appendElement('plaintext', [], $discountValue, true);
                 break;
             case 'coupon_datetime':
                 $dispDate = MyDate::formatDate($row['coupon_start_date'], 'Y-m-d') . ' - ' . MyDate::formatDate($row['coupon_end_date'], 'Y-m-d');

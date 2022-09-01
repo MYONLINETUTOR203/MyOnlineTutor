@@ -31,7 +31,7 @@ foreach ($orders as $row) {
                 $td->appendElement('plaintext', [], $row[$key] . '<br/>' . $row['buyer_email'], true);
                 break;
             case 'order_total_amount':
-                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['order_total_amount']));
+                $td->appendElement('plaintext', [], MyUtility::formatMoney($row['order_total_amount']), true);
                 break;
             case 'order_addedon':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]));
