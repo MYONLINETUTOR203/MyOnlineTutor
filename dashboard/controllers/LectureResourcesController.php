@@ -34,13 +34,14 @@ class LectureResourcesController extends DashboardController
 
         /* validate lecture id */
         $obj = new LectureSearch();
-        if (!$lecture = $obj->getById($lectureId, ['lecture_title', 'lecture_section_id', 'lecture_order'])) {
+        if (!$lecture = $obj->getById($lectureId, ['lecture_title', 'lecture_section_id', 'lecture_order', 'lecture_course_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
         $obj = new Lecture($lectureId);
         $data = $obj->getMedia(Lecture::TYPE_RESOURCE_UPLOAD_FILE);
         $data['lecsrc_lecture_id'] = $lectureId;
+        $data['lecsrc_course_id'] = $lecture['lecture_course_id'];
 
         /* get form and fill */
         $frm = $this->getForm(Lecture::TYPE_RESOURCE_UPLOAD_FILE);
@@ -79,7 +80,12 @@ class LectureResourcesController extends DashboardController
             }
             foreach ($resources as $resource) {
                 $lecture = new Lecture($post['lecsrc_lecture_id']);
-                if (!$lecture->setupResources($post['lecsrc_id'], Lecture::TYPE_RESOURCE_LIBRARY, $resource)) {
+                if (!$lecture->setupResources(
+                    $post['lecsrc_id'],
+                    Lecture::TYPE_RESOURCE_LIBRARY,
+                    $resource,
+                    $post['lecsrc_course_id']
+                )) {
                     FatUtility::dieJsonError($resource->getError());
                 }
             }
@@ -97,7 +103,8 @@ class LectureResourcesController extends DashboardController
                 !$lecture->setupResources(
                     $post['lecsrc_id'],
                     Lecture::TYPE_RESOURCE_UPLOAD_FILE,
-                    $resource->getMainTableRecordId()
+                    $resource->getMainTableRecordId(),
+                    $post['lecsrc_course_id']
                 )
             ) {
                 FatUtility::dieJsonError($resource->getError());
@@ -127,6 +134,9 @@ class LectureResourcesController extends DashboardController
         $fld = $frm->addHiddenField('', 'lecsrc_type', $type);
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
+        $fld = $frm->addHiddenField('', 'lecsrc_course_id', $type);
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setInt();
         $fld = $frm->addHiddenField('', 'lecsrc_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;
@@ -144,6 +154,27 @@ class LectureResourcesController extends DashboardController
         if ($resourceId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+
+        $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE, 'lecsrc');
+        $srch->addCondition('lecsrc.lecsrc_id', '=', $resourceId);
+        $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addMultipleFields(['lecsrc_course_id', 'course_user_id']);
+        $srch->joinTable(
+            Course::DB_TBL,
+            'INNER JOIN',
+            'course.course_id = lecsrc.lecsrc_course_id',
+            'course'
+        );
+        if (!$resource = FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        if ($resource['course_user_id'] != $this->siteLangId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+
         $db = FatApp::getDb();
         $data = ['lecsrc_deleted' => date('Y-m-d H:i:s')];
         $where = [
@@ -161,8 +192,16 @@ class LectureResourcesController extends DashboardController
         $frm = $this->getSearchForm();
         $this->set('frm', $frm);
 
+        /* validate lecture id */
+        $obj = new LectureSearch();
+        if (!$lecture = $obj->getById($lectureId, ['lecture_course_id'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
         $resrcFrm = $this->getForm(Lecture::TYPE_RESOURCE_LIBRARY);
-        $resrcFrm->fill(['lecsrc_lecture_id' => $lectureId, 'resources' => []]);
+        $resrcFrm->fill([
+            'lecsrc_lecture_id' => $lectureId, 'lecsrc_course_id' => $lecture['lecture_course_id'], 'resources' => []
+        ]);
         $this->set('resrcFrm', $resrcFrm);
         $this->_template->render(false, false);
     }

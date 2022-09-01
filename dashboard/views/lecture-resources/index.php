@@ -72,6 +72,7 @@ $time = time();
                                 </div>
                                 <?php
                                 echo $frm->getFieldHtml('lecsrc_lecture_id');
+                                echo $frm->getFieldHtml('lecsrc_course_id');
                                 echo $frm->getFieldHtml('lecsrc_type');
                                 echo $frm->getFieldHtml('lecsrc_id');
                                 ?>

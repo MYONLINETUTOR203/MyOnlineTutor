@@ -47,6 +47,7 @@ $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_KEYWORD'))
         echo $resrcFrm->getFormTag();
         echo $resrcFrm->getFieldHtml('lecsrc_type');
         echo $resrcFrm->getFieldHtml('lecsrc_lecture_id');
+        echo $resrcFrm->getFieldHtml('lecsrc_course_id');
         ?>
         <div class="table-scroll">
             <table class="table table--styled table--responsive" id="listingJs">

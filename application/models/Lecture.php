@@ -87,9 +87,15 @@ class Lecture extends MyAppModel
     }
 
     /**
+     * Function to setup resources
      *
+     * @param int $lecSrcId
+     * @param int $type
+     * @param int $srcId
+     * @param int $courseId
+     * @return bool
      */
-    public function setupResources(int $lecSrcId, int $type, int $srcId)
+    public function setupResources(int $lecSrcId, int $type, int $srcId, int $courseId)
     {
         /* bind added resource with lecture */
         $obj = new TableRecord(static::DB_TBL_LECTURE_RESOURCE);
@@ -98,6 +104,7 @@ class Lecture extends MyAppModel
             'lecsrc_type' => $type,
             'lecsrc_resrc_id' => $srcId,
             'lecsrc_lecture_id' => $this->getMainTableRecordId(),
+            'lecsrc_course_id' => $courseId,
             'lecsrc_created' => date('Y-m-d H:i:s')
         ]);
         if (!$obj->addNew()) {
