@@ -14,14 +14,17 @@ class Resource extends MyAppModel
     /* allowed extensions */
     const ALLOWED_EXTENSIONS = ['png', 'jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx', 'zip', 'txt'];
 
+    private $userId;
+
     /**
      * Initialize Course
      *
      * @param int $id
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, $userId = 0)
     {
         parent::__construct(static::DB_TBL, 'resrc_id', $id);
+        $this->userId = $userId;
     }
 
     /**
@@ -210,11 +213,16 @@ class Resource extends MyAppModel
             return false;
         }
 
-        if (!$filePath = static::getAttributesById($resourceId, 'resrc_path')) {
+        if (!$resource = static::getAttributesById($resourceId, ['resrc_path', 'resrc_user_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
-        /* @TODO : apply check for resources binded with courses */
+        if ($this->userId != $resource['resrc_user_id']) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+
+        /* apply check for resources binded with courses */
         $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE);
         $srch->addCondition('lecsrc_resrc_id', '=', $resourceId);
         $srch->addCondition('lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -225,7 +233,7 @@ class Resource extends MyAppModel
             return false;
         }
         
-        $filePath = CONF_UPLOADS_PATH . $filePath;
+        $filePath = CONF_UPLOADS_PATH . $resource['resrc_path'];
         $db = FatApp::getDb();
         $db->startTransaction();
 

@@ -148,7 +148,7 @@ class ResourcesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
-        $resource = new Resource($resourceId);
+        $resource = new Resource($resourceId, $this->siteUserId);
         if (!$resource->delete()) {
             FatUtility::dieJsonError($resource->getError());
         }
