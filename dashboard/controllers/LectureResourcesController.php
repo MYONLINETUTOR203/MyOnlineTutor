@@ -72,6 +72,11 @@ class LectureResourcesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['resources'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
+
+        if (Course::getAttributesById($post['lecsrc_course_id'], 'course_user_id') != $this->siteUserId) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
         
         if ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_LIBRARY) {
             $resources = FatApp::getPostedData('resources');
@@ -196,6 +201,10 @@ class LectureResourcesController extends DashboardController
         $obj = new LectureSearch();
         if (!$lecture = $obj->getById($lectureId, ['lecture_course_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        if (Course::getAttributesById($lecture['lecture_course_id'], 'course_user_id') != $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
 
         $resrcFrm = $this->getForm(Lecture::TYPE_RESOURCE_LIBRARY);
