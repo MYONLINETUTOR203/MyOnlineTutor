@@ -170,11 +170,17 @@ class Lecture extends MyAppModel
     {
         /* reset section order */
         $srch = new SearchBase(static::DB_TBL);
+        $srch->joinTable(
+            Section::DB_TBL,
+            'INNER JOIN',
+            'section_id = lecture_section_id'
+        );
         $srch->addFld('lecture_id');
         $srch->addCondition('lecture_course_id', '=', $courseId);
         $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addOrder('lecture_course_id', 'ASC');
-        $srch->addOrder('lecture_section_id', 'ASC');
+        $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addOrder('section_order', 'ASC');
+        $srch->addOrder('lecture_order', 'ASC');
         $lectureIds = FatApp::getDb()->fetchAll($srch->getResultSet(), 'lecture_id');
         $lectureIds = array_keys($lectureIds);
         array_unshift($lectureIds, "");

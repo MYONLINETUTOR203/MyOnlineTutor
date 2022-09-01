@@ -207,7 +207,7 @@ $(function () {
         $('#sectionAreaJs .card-panel').each(function () {
             order.push($(this).data('id'));
         });
-        fcom.ajax(fcom.makeUrl('Sections', 'updateOrder'), {
+        fcom.ajax(fcom.makeUrl('Sections', 'updateOrder', [courseId]), {
             'order': order
         }, function (res) {
             searchSections();

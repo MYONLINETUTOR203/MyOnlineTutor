@@ -144,14 +144,19 @@ class SectionsController extends DashboardController
     /**
      * Updating Sections sort order
      *
+     * @param int $courseId
      * @return json
      */
-    public function updateOrder()
+    public function updateOrder(int $courseId)
     {
         $ids = FatApp::getPostedData('order');
         $section = new Section();
         if (!$section->updateOrder($ids)) {
             FatUtility::dieJsonError($section->getError());
+        }
+        $lecture = new Lecture();
+        if (!$lecture->resetOrder($courseId)) {
+            FatUtility::dieJsonError($lecture->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_ORDER_SETUP_SUCCESSFUL'));
     }
