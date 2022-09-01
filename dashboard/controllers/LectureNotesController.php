@@ -81,9 +81,14 @@ class LectureNotesController extends DashboardController
         $frm = $this->getForm();
         $data = FatApp::getPostedData();
         if ($notesId > 0) {
-            $notes = LectureNote::getAttributesById($notesId, 'lecnote_notes');
+            if (!$notes = (new LectureNote($notesId))->getNotesById()) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+            }
+            if ($notes['lecnote_user_id'] != $this->siteUserId) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+            }
             $data['lecnote_id'] = $notesId;
-            $data['lecnote_notes'] = $notes;
+            $data['lecnote_notes'] = $notes['lecnote_notes'];
         }
         $frm->fill($data);
         $this->set('frm', $frm);
