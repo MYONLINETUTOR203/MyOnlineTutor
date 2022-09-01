@@ -186,7 +186,11 @@ class Section extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
-
+        $lecture = new Lecture();
+        if (!$lecture->resetOrder($courseId)) {
+            $this->error = $lecture->getError();
+            return false;
+        }
         return true;
     }
 
