@@ -60,3 +60,7 @@ INSERT INTO tbl_languages (language_id, language_code, language_flag, language_n
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.1.20220830(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 UPDATE `tbl_configurations` SET `conf_val` = 'RV-1.0.0(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
+
+UPDATE `tbl_currencies` SET `currency_is_default` = '0' WHERE `tbl_currencies`.`currency_id` = 7;
+UPDATE `tbl_currencies` SET `currency_is_default` = '1' WHERE `tbl_currencies`.`currency_id` = 1;
+
