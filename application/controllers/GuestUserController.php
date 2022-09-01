@@ -154,12 +154,20 @@ class GuestUserController extends MyAppController
      */
     public function verifyEmail(string $code)
     {
+        
         $verification = new Verification();
+        $token = $verification->getToken($code);
         if (!$verification->verify($code)) {
             Message::addErrorMessage($verification->getError());
             FatUtility::exitWithErrorCode(404);
         }
         $verification->removeExpiredToken();
+        $password = User::getAttributesById($token['usrver_user_id'], 'user_password');
+        $auth = new UserAuth();
+        if (!$auth->login($token['user_email'], $password, MyUtility::getUserIp(), false)) {
+            Message::addMessage($auth->getError());
+            FatApp::redirectUser(MyUtility::makeUrl('Home'));
+        }
         Message::addMessage(Label::getLabel("MSG_EMAIL_VERIFIED_SUCCESFULLY"));
         FatApp::redirectUser(MyUtility::makeUrl('Home'));
     }
