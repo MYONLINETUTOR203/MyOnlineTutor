@@ -142,7 +142,7 @@ class LecturesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
-        $lecture = new Lecture($lectureId);
+        $lecture = new Lecture($lectureId, $this->siteUserId);
         if (!$lecture->delete()) {
             FatUtility::dieJsonError($lecture->getError());
         }

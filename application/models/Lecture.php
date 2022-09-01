@@ -17,14 +17,17 @@ class Lecture extends MyAppModel
     const TYPE_RESOURCE_UPLOAD_FILE = 2;
     const TYPE_RESOURCE_LIBRARY = 3;
     
+    private $userId;
+
     /**
      * Initialize Lecture
      *
      * @param int $id
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, $userId = 0)
     {
         parent::__construct(static::DB_TBL, 'lecture_id', $id);
+        $this->userId = $userId;
     }
 
     /**
@@ -124,6 +127,10 @@ class Lecture extends MyAppModel
         $lectureId = $this->getMainTableRecordId();
         if (!$data = static::getAttributesById($lectureId, ['lecture_section_id', 'lecture_course_id'])) {
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        if (Course::getAttributesById($data['lecture_course_id'], 'course_user_id') != $this->userId) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
         $db = FatApp::getDb();
