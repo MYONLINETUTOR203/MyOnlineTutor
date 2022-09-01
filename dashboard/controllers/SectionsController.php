@@ -168,7 +168,7 @@ class SectionsController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
-        $section = new Section($sectionId);
+        $section = new Section($sectionId, $this->siteUserId);
         if (!$section->delete()) {
             FatUtility::dieJsonError($section->getError());
         }

@@ -11,14 +11,16 @@ class Section extends MyAppModel
     const DB_TBL = 'tbl_sections';
     const DB_TBL_PREFIX = 'section_';
     
+    private $userId;
     /**
      * Initialize Section
      *
      * @param int $id
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, $userId = 0)
     {
         parent::__construct(static::DB_TBL, 'section_id', $id);
+        $this->userId = $userId;
     }
 
     /**
@@ -71,6 +73,10 @@ class Section extends MyAppModel
         $sectionId = $this->getMainTableRecordId();
         if (!$courseId = Section::getAttributesById($sectionId, 'section_course_id')) {
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        if (Course::getAttributesById($courseId, 'course_user_id') != $this->userId) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
         $db = FatApp::getDb();
