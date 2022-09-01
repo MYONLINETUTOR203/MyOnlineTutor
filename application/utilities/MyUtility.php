@@ -723,4 +723,36 @@ class MyUtility extends FatUtility
         return $frm;
     }
 
+    public static function convertDuration($duration, $hours = true, $minutes = true, $seconds = false, $format = true)
+    {
+        $formattedTime = [];
+        $time = [];
+        if ($hours) {
+            $hrs = floor($duration / 3600);
+            if ($hrs > 0) {
+                $formattedTime[] =  $hrs . strtolower(Label::getLabel('LBL_H'));
+            }
+            $time[] = $hrs;
+        }
+        if ($minutes) {
+            $min = gmdate("i", $duration);
+            if ($min > 0) {
+                $formattedTime[] = $min . strtolower(Label::getLabel('LBL_M'));
+            }
+            $time[] = $min;
+        }
+        if ($seconds) {
+            $sec = gmdate("s", $duration);
+            if ($sec > 0) {
+                $formattedTime[] = $sec . strtolower(Label::getLabel('LBL_S'));
+            }
+            $time[] = $sec;
+        }
+        if ($format == true) {
+            return (count($formattedTime) > 0) ? implode(' ', $formattedTime) : '';
+        } else {
+            return (count($time) > 0 && array_sum($time) > 0) ? implode(':', $time) : '';
+        }
+    }
+
 }

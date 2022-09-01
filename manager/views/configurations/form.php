@@ -29,6 +29,7 @@ switch ($frmType) {
         $frm->developerTags['fld_default_col'] = '6';
         $adminLogoFld = $frm->getField('admin_logo');
         $desktopLogoFld = $frm->getField('front_logo');
+        $certLogoFld = $frm->getField('certificate_logo');
         $emailLogoFld = $frm->getField('email_logo');
         $faviconFld = $frm->getField('favicon');
         $paymentPageLogo = $frm->getField('payment_page_logo');
@@ -70,6 +71,13 @@ switch ($frmType) {
                 $desktopLogoFld->htmlAfterField .= '<a  class="remove--img" href="javascript:void(0);" onclick="removeMedia(' . Afile::TYPE_FRONT_LOGO . ', ' . $lang_id . ', this);" ><i class="ion-close-round"></i></a>';
             }
             $desktopLogoFld->htmlAfterField .= '</div><br>';
+        }
+        if (!empty($mediaData[Afile::TYPE_CERTIFICATE_LOGO])) {
+            $certLogoFld->htmlAfterField .= '<div class="uploaded--image"><img src="' . MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $lang_id]) . '?' . time() . '"> ';
+            if ($canEdit) {
+                $certLogoFld->htmlAfterField .= '<a  class="remove--img" href="javascript:void(0);" onclick="removeMedia(' . Afile::TYPE_CERTIFICATE_LOGO . ', ' . $lang_id . ', this);" ><i class="ion-close-round"></i></a>';
+            }
+            $certLogoFld->htmlAfterField .= '</div><br>';
         }
         if (!empty($mediaData[Afile::TYPE_PAYMENT_PAGE_LOGO])) {
             $paymentPageLogo->htmlAfterField .= '<div class="uploaded--image"><img src="' . MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_PAYMENT_PAGE_LOGO, 0, Afile::SIZE_SMALL, $lang_id]) . '?' . time() . '"> ';

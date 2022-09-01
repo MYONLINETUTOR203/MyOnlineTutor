@@ -52,6 +52,22 @@
             <?php } ?>
             <?php
             if (
+                $objPrivilege->canViewCertificates(true)
+            ) { ?>
+                <li class="haschild">
+                    <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_QUIZZES'); ?></a>
+                    <ul>                   
+                        <?php if ($objPrivilege->canViewCertificates(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CERTIFICATES'); ?></a>
+                            </li>
+                        <?php } ?>
+    
+                    </ul>
+                </li>
+            <?php } ?>
+            <?php
+            if (
                 $objPrivilege->canViewOrders(true) || $objPrivilege->canViewLessonsOrders(true) || $objPrivilege->canViewPackagesOrders(true) ||
                 $objPrivilege->canViewClassesOrders(true) || $objPrivilege->canViewWalletOrders(true) || $objPrivilege->canViewGiftcardOrders(true) ||
                 $objPrivilege->canViewSubscriptionOrders(true)

@@ -51,6 +51,10 @@ class Afile extends FatModel
     const TYPE_MESSAGE_ATTACHMENT = 53;
     const TYPE_ORDER_PAY_RECEIPT = 54;
     const TYPE_GROUP_CLASS_BANNER = 55;
+    const TYPE_CERTIFICATE_BACKGROUND_IMAGE = 56;
+    const TYPE_CERTIFICATE_IMAGE = 57;
+    const TYPE_CERTIFICATE_PDF = 58;
+    const TYPE_CERTIFICATE_LOGO = 59;
 
     /* Image Sizes */
     const SIZE_SMALL = 'SMALL';
@@ -585,6 +589,7 @@ class Afile extends FatModel
             case static::TYPE_BLOG_PAGE_IMAGE:
             case static::TYPE_TESTIMONIAL_IMAGE:
             case static::TYPE_APPLY_TO_TEACH_BANNER:
+            case static::TYPE_CERTIFICATE_LOGO:
                 return ['png', 'jpg', 'jpeg'];
             case static::TYPE_PAYIN:
             case static::TYPE_BANNER:
@@ -616,6 +621,7 @@ class Afile extends FatModel
             case static::TYPE_HOME_BANNER_DESKTOP:
             case static::TYPE_HOME_BANNER_MOBILE:
             case static::TYPE_HOME_BANNER_IPAD:
+            case static::TYPE_CERTIFICATE_BACKGROUND_IMAGE:
                 return ['png', 'jpg', 'jpeg'];
             case static::TYPE_FAVICON:
                 return ['ico', 'png'];
@@ -689,6 +695,11 @@ class Afile extends FatModel
                 static::SIZE_SMALL => [100, 100],
                 static::SIZE_MEDIUM => [300, 300],
                 static::SIZE_LARGE => [600, 600]
+            ],
+            static::TYPE_CERTIFICATE_LOGO => [
+                static::SIZE_SMALL => [100, 33],
+                static::SIZE_MEDIUM => [140, 47],
+                static::SIZE_LARGE => [168, 56]
             ],
             static::TYPE_EMAIL_LOGO => [
                 static::SIZE_SMALL => [100, 100],
@@ -824,7 +835,17 @@ class Afile extends FatModel
                 static::SIZE_SMALL => [300, 169],
                 static::SIZE_MEDIUM => [500, 281],
                 static::SIZE_LARGE => [1000, 563]
-            ]
+            ],
+            static::TYPE_CERTIFICATE_BACKGROUND_IMAGE => [
+                static::SIZE_SMALL => [100, 100],
+                static::SIZE_MEDIUM => [300, 300],
+                static::SIZE_LARGE => [2070, 1680]
+            ],
+            static::TYPE_CERTIFICATE_IMAGE => [
+                static::SIZE_SMALL => [100, 100],
+                static::SIZE_MEDIUM => [300, 300],
+                static::SIZE_LARGE => [2070, 1680]
+            ],
         ];
         if ($size === null) {
             return $arr[$this->type];
@@ -949,9 +970,41 @@ class Afile extends FatModel
             case static::TYPE_MESSAGE_ATTACHMENT:
             case static::TYPE_ORDER_PAY_RECEIPT:
             case static::TYPE_GROUP_CLASS_BANNER:
+            case static::TYPE_CERTIFICATE_BACKGROUND_IMAGE:
+            case static::TYPE_CERTIFICATE_LOGO:
                 /* 4194304 -- 4 mb  */
                 return min($maxUploadSizeAllowed, 4194304);
         }
+    }
+
+    /**
+     * Show Video
+     *
+     * @param integer $recordId
+     * @param integer $subRecordId
+     * @return video
+     */
+    public function showPdf(int $recordId, int $subRecordId = 0)
+    {
+        ob_end_clean();
+        $file = $this->getFile($recordId, $subRecordId);
+        $filePath = CONF_UPLOADS_PATH . $file['file_path'];
+        $fileExt = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
+        header("Content-Type: " . static::getContentType($fileExt));
+        $headers = FatApp::getApacheRequestHeaders();
+        if (strtotime($headers['If-Modified-Since'] ?? '') == filemtime($filePath)) {
+            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT', true, 304);
+            exit;
+        }
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filePath)) . ' GMT', true, 200);
+        header("Expires: " . date('r', strtotime("+30 Day")));
+        header('Cache-Control: public');
+        header("Pragma: public");
+        $fileData = file_get_contents($filePath);
+        if (CONF_USE_FAT_CACHE) {
+            FatCache::set($_SERVER['REQUEST_URI'], $fileData, '.' . $fileExt);
+        }
+        echo $fileData;
     }
 
 }

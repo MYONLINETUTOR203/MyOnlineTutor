@@ -69,6 +69,7 @@ class AdminPrivilege
     const SECTION_THEME_MANAGEMENT = 61;
     const SECTION_PACKAGE_CLASSES = 62;
     const SECTION_SETTLEMENTS_REPORT = 63;
+    const SECTION_MANAGE_CERTIFICATES = 64;
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -1454,6 +1455,27 @@ class AdminPrivilege
     public function canEditPackageClasses(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
+    }    
+
+    /**
+     * Can View Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_READ, $returnResult);
     }
 
+    /**
+     * Can Edit Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_WRITE, $returnResult);
+    }
 }
