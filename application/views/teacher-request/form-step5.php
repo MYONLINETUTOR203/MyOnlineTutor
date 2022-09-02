@@ -160,9 +160,6 @@
                     <div class="application-no">
                         <?php echo Label::getLabel('LBL_Application_Reference') ?>: <span id="reg-no"><?php echo $request['tereq_reference']; ?></span>
                     </div>
-                    <?php if (!empty($siteUserId)) { ?>
-                        <a href="<?php echo MyUtility::makeUrl('learner', '', [], CONF_WEBROOT_DASHBOARD) ?>" class="btn btn--bordered btn--small color-secondary"><?php echo Label::getLabel('LBL_Visit_My_Account'); ?></a>
-                    <?php } ?>
                 </div>
             </div>
         </div>

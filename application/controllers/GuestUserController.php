@@ -59,8 +59,19 @@ class GuestUserController extends MyAppController
         if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
             UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
         }
+        
+        /* redirect to request form if not approved yet */
+        $treacherRequest = TeacherRequest::getRequestByUserId($_SESSION[UserAuth::SESSION_ELEMENT]['user_id']);
+        if ($treacherRequest && $treacherRequest['tereq_status'] != TeacherRequest::STATUS_APPROVED) {
+            $redirectUrl = MyUtility::makeUrl('TeacherRequest', 'form', [], CONF_WEBROOT_FRONTEND);
+        } else {
+            $redirectUrl = $_SESSION[UserAuth::REFERRAL_PAGE_URL] ?? MyUtility::makeUrl('Account', '', [], CONF_WEBROOT_DASHBOARD);
+        }
         $_SESSION[AppConstant::SEARCH_SESSION] = FatApp::getPostedData();
-        FatUtility::dieJsonSuccess(Label::getLabel("MSG_LOGIN_SUCCESSFULL"));
+        FatUtility::dieJsonSuccess([
+            'msg' => Label::getLabel("MSG_LOGIN_SUCCESSFULL"),
+            'redirectUrl' => $redirectUrl
+        ]);
     }
 
     /**
@@ -169,7 +180,11 @@ class GuestUserController extends MyAppController
             FatApp::redirectUser(MyUtility::makeUrl('Home'));
         }
         Message::addMessage(Label::getLabel("MSG_EMAIL_VERIFIED_SUCCESFULLY"));
-        FatApp::redirectUser(MyUtility::makeUrl('Home'));
+        $treacherRequest = TeacherRequest::getRequestByUserId($token['usrver_user_id']);
+        if ($treacherRequest && $treacherRequest['tereq_status'] != TeacherRequest::STATUS_APPROVED) {
+            FatApp::redirectUser(MyUtility::makeUrl('TeacherRequest', 'form', [], CONF_WEBROOT_FRONTEND));
+        }
+        FatApp::redirectUser(MyUtility::makeUrl('Account', '', [], CONF_WEBROOT_DASHBOARD));
     }
 
     /**
