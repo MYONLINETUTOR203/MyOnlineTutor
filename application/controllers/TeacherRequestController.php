@@ -663,9 +663,6 @@ class TeacherRequestController extends MyAppController
     {
         $frm = $this->getTeacherSignupForm();
         $post = FatApp::getPostedData();
-        if (!isset($post['user_first_name'])) {
-            $post['user_first_name'] = strstr($post['user_email'], '@', true);
-        }
         if (!$post = $frm->getFormDataFromArray($post)) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
@@ -731,7 +728,7 @@ class TeacherRequestController extends MyAppController
     private function getTeacherSignupForm(): Form
     {
         $frm = new Form('signupForm');
-        $frm->addRequiredField(Label::getLabel('LBL_FIRST_NAME'), 'user_first_name');
+        $frm->addTextBox(Label::getLabel('LBL_FIRST_NAME'), 'user_first_name');
         $frm->addTextBox(Label::getLabel('LBL_LAST_NAME'), 'user_last_name');
         $fld = $frm->addEmailField(Label::getLabel('LBL_EMAIL_ID'), 'user_email', '', ['autocomplete="off"']);
         $fld->setUnique('tbl_users', 'user_email', 'user_id', 'user_id', 'user_id');
