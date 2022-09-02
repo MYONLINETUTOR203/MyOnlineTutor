@@ -285,7 +285,11 @@ class TeacherRequestsController extends AdminBaseController
             '{reference_number}' => $data['tereq_reference'],
             '{new_request_status}' => TeacherRequest::getStatuses($data['tereq_status']),
             '{request_comments}' => ($data['tereq_comments'] != '') ? nl2br($data['tereq_comments']) : Label::getLabel('LBL_N/A', $langId),
+            '{login_link}' => ''
         ];
+        if ($data['tereq_status'] == TeacherRequest::STATUS_APPROVED) {
+            $vars['{login_link}'] = '<p style="font-size: 14px; line-height: 20px;color: #676767;"><a style="background:#FF5200; color:#FFFFFF; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;" href="' . MyUtility::makeFullUrl('GuestUser', 'loginForm', [], CONF_WEBROOT_FRONTEND) . '">Login</a></p>';
+        }
         $mail = new FatMailer($langId, 'teacher_request_status_change_learner');
         $mail->setVariables($vars);
         if ($mail->sendMail([$data['user_email']])) {
