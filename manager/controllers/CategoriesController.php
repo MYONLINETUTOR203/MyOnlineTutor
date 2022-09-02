@@ -193,7 +193,7 @@ class CategoriesController extends AdminBaseController
         );
         $fld->requirements()->setRequired();
 
-        $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_QUIZ);
+        $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_QUESTION);
         $fld->requirements()->setIntPositive();
         /* This will be used in future. */
         /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes(), '', [], '')

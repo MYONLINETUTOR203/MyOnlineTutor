@@ -70,6 +70,12 @@
                                 <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CERTIFICATES'); ?></a>
                             </li>
                         <?php } ?>
+
+                        <?php if ($objPrivilege->canViewQuestions(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_QUESTIONS'); ?></a>
+                            </li>
+                        <?php } ?>
     
                     </ul>
                 </li>

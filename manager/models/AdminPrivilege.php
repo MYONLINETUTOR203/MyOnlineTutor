@@ -71,6 +71,7 @@ class AdminPrivilege
     const SECTION_SETTLEMENTS_REPORT = 63;
     const SECTION_MANAGE_CERTIFICATES = 64;
     const SECTION_CATEGORIES = 65;
+    const SECTION_QUESTIONS = 66;
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -1500,5 +1501,27 @@ class AdminPrivilege
     public function canEditCategories(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewQuestions(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditQuestions(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_WRITE, $returnResult);
     }
 }
