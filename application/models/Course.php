@@ -776,7 +776,7 @@ class Course extends MyAppModel
         $srch = new SearchBase(Section::DB_TBL);
         $srch->addCondition('section_course_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addFld('SUM(section_duration) AS course_duration');
+        $srch->addFld('IFNULL(SUM(section_duration), 0) AS course_duration');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $row = FatApp::getDb()->fetch($srch->getResultSet());

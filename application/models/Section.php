@@ -230,7 +230,7 @@ class Section extends MyAppModel
         $srch = new SearchBase(Lecture::DB_TBL);
         $srch->addCondition('lecture_section_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addFld('SUM(lecture_duration) AS section_duration');
+        $srch->addFld('IFNULL(SUM(lecture_duration), 0) AS section_duration');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $row = FatApp::getDb()->fetch($srch->getResultSet());

@@ -144,6 +144,25 @@ class Lecture extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+        /* update lecture duration */
+        if (!$this->setDuration()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        /* update section duration */
+        $section = new Section($data['lecture_section_id']);
+        if (!$section->setDuration()) {
+            $db->rollbackTransaction();
+            $this->error = $section->getError();
+            return false;
+        }
+        /* update course duration */
+        $course = new Course($data['lecture_course_id']);
+        if (!$course->setDuration()) {
+            $db->rollbackTransaction();
+            $this->error = $course->getError();
+            return false;
+        }
         /* reset lectures order */
         if (!$this->resetOrder($data['lecture_course_id'])) {
             $db->rollbackTransaction();
