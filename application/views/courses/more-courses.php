@@ -12,13 +12,11 @@
                                 <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $crs['course_id'], 'MEDIUM', $siteLangId], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?>" alt="<?php echo $crs['course_title']; ?>">
                             </a>
                         </div>
-                        <?php if ($siteUserId > 0) { ?>
-                            <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $crs['course_id'] ?>', this)" class="mark-option <?php echo ($crs['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $crs['is_favorite']; ?>" tabindex="0">
-                                <svg class="icon icon--heart icon--small">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-heart"></use>
-                                </svg>
-                            </a>
-                        <?php } ?>
+                        <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $crs['course_id'] ?>', this)" class="mark-option <?php echo ($crs['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $crs['is_favorite']; ?>" tabindex="0">
+                            <svg class="icon icon--heart icon--small">
+                                <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-heart"></use>
+                            </svg>
+                        </a>
                         <?php if ($crs['course_certificate'] == AppConstant::YES) { ?>
                             <span class="course-tag">
                                 <svg class="icon icon--award margin-right-1">
