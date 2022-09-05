@@ -136,7 +136,7 @@ $(function () {
     };
     feedbackForm = function (ordcrsId) {
         fcom.ajax(fcom.makeUrl('Tutorials', 'feedbackForm'), { 'ordcrs_id': ordcrsId }, function (res) {
-            $.facebox(res);
+            $.facebox(res, 'facebox-medium');
         });
     };
     feedbackSetup = function (frm) {
