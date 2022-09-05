@@ -98,14 +98,6 @@ class QuestionsController extends AdminBaseController
         $question = new Question($quesId);
         $options = $question->getQuesOptions();
         $answerIds = json_decode($questionData['ques_answer'], true);
-        /* $answers = [];
-        if($questionData['ques_type'] != Question::TYPE_MANUAL){
-            if(count($answerIds) > 0){
-                $answers = array_map(function($val) use ($options){
-                   return $options[$val];
-                }, $answerIds);
-            }
-        } */
         $this->sets([
             'questionData' => $questionData,
             'options' => $options,
@@ -113,8 +105,6 @@ class QuestionsController extends AdminBaseController
             'canEdit' => $this->objPrivilege->canEditQuestions(true),
         ]);
         $this->_template->render(false, false);
-
-        
     }
 
     /**
@@ -156,8 +146,6 @@ class QuestionsController extends AdminBaseController
         if ($catgId > 0) {
             $subcategories = Category::getCategoriesByParentId($this->siteLangId, $catgId, Category::TYPE_QUESTION);
         }
-
-        //print_r($catgId);exit;
         $this->set('subCatgId', $subCatgId);
         $this->set('subcategories', $subcategories);
         $this->_template->render(false, false);

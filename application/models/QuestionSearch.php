@@ -54,7 +54,6 @@ class QuestionSearch extends YocoachSearch
             $this->addCondition('ques_cate_id', '=', $post['ques_cate_id']);
         }
         if (isset($post['ques_subcate_id']) && $post['ques_subcate_id'] > 0) {
-            
             $this->addCondition('ques_subcate_id', '=', $post['ques_subcate_id']);
         }
         if (isset($post['ques_type']) && $post['ques_type'] > 0) {
@@ -152,6 +151,28 @@ class QuestionSearch extends YocoachSearch
             'teacher.user_last_name' => 'teacher_last_name',
             'teacher.user_username' => 'teacher_username',
         ];
+    }
+
+
+    /**
+     * Get Search Form
+     * 
+     * @param int $usertype
+     * @return Form
+     */
+    public static function getSearchForm($langId): Form
+    {
+        $categoryList = Category::getCategoriesByParentId($langId, 0, Category::TYPE_QUESTION, false);
+        $frm = new Form('frmQuesSearch');
+        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '', ['id' => 'keyword', 'autocomplete' => 'off']);
+        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
+        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'quesTeacher', '', ['id' => 'quesTeacher', 'autocomplete' => 'off']);
+        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', 10)->requirements()->setInt();
+        $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
+        $frm->addResetButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
+        return $frm;
     }
     
 }

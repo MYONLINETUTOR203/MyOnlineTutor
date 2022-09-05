@@ -109,6 +109,21 @@ if (
     </nav>
 </div>
 <div class="menu-group">
+    <h6 class="heading-6"><?php echo Label::getLabel('LBL_QUIZ'); ?></h6>
+    <nav class="menu menu--primary">
+        <ul>
+            <li class="menu__item <?php echo ($controllerName == "Questions") ? 'is-active' : ''; ?>">
+                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>">
+                    <svg class="icon icon--lesson margin-right-2">
+                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lessons'; ?>"></use>
+                    </svg>
+                    <span><?php echo Label::getLabel('LBL_Questions'); ?></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<div class="menu-group">
     <h6 class="heading-6"><?php echo Label::getLabel('LBL_HISTORY'); ?></h6>
     <nav class="menu menu--primary">
         <ul>

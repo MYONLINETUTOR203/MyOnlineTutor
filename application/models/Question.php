@@ -50,6 +50,27 @@ class Question extends MyAppModel
     }
 
 
+    /**
+     * Delete
+     *
+     * @return bool
+     */
+    public function delete(): bool
+    {
+        if (!$question = self::getAttributesById($this->mainTableRecordId)) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+
+        $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+
 
     /**
      * Get Question Types
@@ -60,8 +81,8 @@ class Question extends MyAppModel
     public static function getQuesTypes(int $key = null)
     {
         $arr = [
-            static::TYPE_RADIO => Label::getLabel('LBL_RADIO'),
-            static::TYPE_CHECKBOX => Label::getLabel('LBL_CHECKBOX'),
+            static::TYPE_RADIO => Label::getLabel('LBL_SINGLE'),
+            static::TYPE_CHECKBOX => Label::getLabel('LBL_MULTIPLE'),
             static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
         ];
         return AppConstant::returArrValue($arr, $key);
