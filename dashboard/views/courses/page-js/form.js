@@ -291,6 +291,12 @@ $(function () {
             $(ele).remove();
         });
     };
+    removeLectureForm = function (sectionId, id) {
+        $(id).remove();
+        if ($('#sectionId' + sectionId + ' .lecturesListJs .card-group-js').length == 0) {
+            $('#sectionId' + sectionId + ' .lecturesListJs').hide();
+        }
+    };
     lectureMediaForm = function (lectureId) {
         fcom.ajax(fcom.makeUrl('Lectures', 'mediaForm', [lectureId]), '', function (res) {
             $('#sectionLectures' + lectureId).html(res);

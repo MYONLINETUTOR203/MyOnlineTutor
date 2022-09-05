@@ -11,10 +11,11 @@ $descFld->setFieldTagAttribute('class', 'field-count__wrap');
 $trialFld = $frm->getField('lecture_is_trial');
 $trialFld->setFieldTagAttribute('class', 'switch__label');
 $fld = $frm->getField('btn_cancel');
+$sectionId = $frm->getField('lecture_section_id')->value;
 if ($lecture['lecture_id'] > 0) {
     $action = 'cancelLecture(\'' . $lecture['lecture_id'] . '\')';
 } else {
-    $action = '$(\'#sectionLectures' . $lectureDivId . '\').remove();';
+    $action = 'removeLectureForm(\'' . $sectionId . '\', \'#sectionLectures' . $lectureDivId . '\');';
 }
 $fld->setFieldTagAttribute('onclick', $action);
 $titleLength = 255;
