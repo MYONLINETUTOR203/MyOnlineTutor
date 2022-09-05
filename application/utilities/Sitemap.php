@@ -56,6 +56,7 @@ class Sitemap
         $srch->addMultipleFields(['course_slug', 'course_title']);
         $srch->applyPrimaryConditions();
         $srch->addCondition('course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course_active', '=', AppConstant::ACTIVE);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(2000);
         $resultSet = $srch->getResultSet();
