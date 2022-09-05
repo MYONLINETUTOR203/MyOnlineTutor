@@ -37,3 +37,8 @@ INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_
 (null, 'Send Wallet Balance maintain Reminder for subscription before 3 day', 'sendWalletBalanceReminder/3', 1, 1),
 (null, 'Send Wallet Balance maintain Reminder for subscription before 7 day', 'sendWalletBalanceReminder/4', 1, 1);
 ALTER TABLE `tbl_email_archives` ADD `earch_attempted` DATETIME NULL AFTER `earch_attachemnts`;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'Receiver have redeemed gift card.'),
+(2, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'قام المستلم باسترداد بطاقة الهدايا.');
