@@ -196,6 +196,7 @@ class CertificatesController extends AdminBaseController
             'lang_id' => $langId,
             'cert_number' => 'YC_h34uwh9e72w',
             'crspro_completed' => date('Y-m-d H:i:s'),
+            'course_duration' => '11265'
         ];
         $cert = new Certificate(0, 0, $langId);
         $content = $cert->getFormattedContent($data);

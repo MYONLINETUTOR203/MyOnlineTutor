@@ -84,7 +84,8 @@ class Certificate extends MyAppModel
             'crspro_completed',
             'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
             'learner.user_lang_id',
-            'ordcrs_certificate_number'
+            'ordcrs_certificate_number',
+            'course_duration'
         ]);
         $srch->addCondition('ordcrs_id', '=', $ordcrsId);
         return FatApp::getDb()->fetch($srch->getResultSet());
@@ -112,7 +113,8 @@ class Certificate extends MyAppModel
                 '{course-name}',
                 '{course-language}',
                 '{course-completed-date}',
-                '{certificate-number}'
+                '{certificate-number}',
+                '{course-duration}'
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
@@ -120,22 +122,13 @@ class Certificate extends MyAppModel
                 '<span class=\"courseNameJs\">' . $data['course_title'] . '</span>',
                 $data['course_clang_name'],
                 MyDate::formatDate($data['crspro_completed']),
-                $data['cert_number']
+                $data['cert_number'],
+                YouTube::convertDuration($data['course_duration'])
             ],
             $content
         );
         return json_decode($content, true);
     }
-
-    // public function generateSampleCertificate($filepath)
-    // {
-    //     // $url = MyUtility::generateFullUrl('Certificates', 'generateSample', [], CONF_WEBROOT_FRONTEND);
-    //     // if (!$this->createImage($url, $filepath, true)) {
-    //     //     return false;
-    //     // }
-
-    //     return true;
-    // }
 
     /**
      * Save created files data
