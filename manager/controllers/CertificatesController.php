@@ -199,7 +199,9 @@ class CertificatesController extends AdminBaseController
             'course_duration' => '11265'
         ];
         $cert = new Certificate(0, 0, $langId);
-        $content = $cert->getFormattedContent($data);
+        if (!$content = $cert->getFormattedContent($data)) {
+            FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
+        }
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
         $backgroundImg = $afile->getFile(0, false);
