@@ -307,20 +307,28 @@ class CoursesController extends MyAppController
         /* find tags */
         $tagsList = $this->getTags($keyword);
         if (count($tagsList)) {
-            $child = [];
+            $list = [];
             foreach ($tagsList as $tags) {
                 $tags = json_decode($tags['course_srchtags']);
                 if (count($tags) > 0) {
                     foreach ($tags as $tag) {
                         if (stripos($tag, $keyword) !== FALSE) {
-                            $child[] = [
-                                    "id" => $tag,
-                                    "text" => $tag
-                                ];
+                            $list[] = $tag;
                         }
                     }
                 }
             }
+            $child = [];
+            if (count($list) > 0) {
+                $list = array_unique($list);
+                foreach ($list as $tag) {
+                    $child[] = [
+                        "id" => $tag,
+                        "text" => $tag
+                    ];
+                }
+            }
+
             $data[] = [
                 'text' => $filterTypes[Course::FILTER_TAGS],
                 'type' => Course::FILTER_TAGS,
