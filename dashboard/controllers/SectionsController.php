@@ -132,7 +132,14 @@ class SectionsController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        
+        if (Course::getAttributesById($post['section_course_id'], 'course_user_id') != $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        if ($post['section_id'] > 0) {
+            if (Section::getAttributesById($post['section_id'], 'section_course_id') != $post['section_course_id']) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+            }
+        }
         $section = new Section($post['section_id']);
         if (!$section->setup($post)) {
             FatUtility::dieJsonError($section->getError());
