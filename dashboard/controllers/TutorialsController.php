@@ -137,9 +137,7 @@ class TutorialsController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_UNABLE_TO_RENDER_NEXT_LECTURE._PLEASE_TRY_AGAIN'));
         }
         /* get previous and next lectures */
-        $progress = new CourseProgress($progressId);
         $lectureIds = $progress->getNextPrevLectures();
-
         /* get lecture content */
         $srch = new LectureSearch($this->siteLangId);
         $srch->applyPrimaryConditions();
@@ -156,13 +154,15 @@ class TutorialsController extends DashboardController
         /* get lecture video */
         $resource = new Lecture($lectureId);
         $video = $resource->getMedia(Lecture::TYPE_RESOURCE_EXTERNAL_URL);
+        /* get progress data */
+        $progData = CourseProgress::getAttributesById($progressId, ['crspro_covered', 'crspro_progress']);
         $this->sets([
             'lecture' => $lecture,
             'previousLecture' => isset($lectures[$lectureIds['previous']]) ? $lectures[$lectureIds['previous']] : [],
             'nextLecture' => isset($lectures[$lectureIds['next']]) ? $lectures[$lectureIds['next']] : [],
             'resources' => $resources,
             'progressId' => $progressId,
-            'coveredLectures' => CourseProgress::getAttributesById($progressId, 'crspro_covered'),
+            'progData' => $progData,
             'video' => $video,
         ]);
         $this->_template->render(false, false, 'tutorials/get-lecture.php');

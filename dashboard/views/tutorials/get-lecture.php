@@ -7,7 +7,7 @@
                     <?php
                     echo CommonHelper::renderHtml($lecture['lecture_details']);
 
-                    $lectures = json_decode($coveredLectures, true);
+                    $lectures = json_decode($progData['crspro_covered'], true);
                     $lectures = ($lectures) ? $lectures : [];
                     ?>
                 </div>
@@ -86,12 +86,14 @@
                 <h4 class="margin-bottom-4">
                     <?php echo stripslashes(Label::getLabel("LBL_YOU'VE_COMPLETED_THE_LAST_LECTURE_IN_THIS_COURSE.")); ?>
                 </h4>
-                <p>
-                    <?php echo Label::getLabel('LBL_LAST_LECTURE_COMPLETED_SHORT_DESCRIPTION'); ?>
-                </p>
-                <a href="javascript:void(0);" onclick="goToPendingLecture();" class="btn btn--secondary">
-                    <?php echo Label::getLabel('LBL_GO_TO_PENDING_LECTURES'); ?>
-                </a>
+                <?php if ((int)$progData['crspro_progress'] < 100) { ?>
+                    <p>
+                        <?php echo Label::getLabel('LBL_LAST_LECTURE_COMPLETED_SHORT_DESCRIPTION'); ?>
+                    </p>
+                    <a href="javascript:void(0);" onclick="goToPendingLecture();" class="btn btn--secondary">
+                        <?php echo Label::getLabel('LBL_GO_TO_PENDING_LECTURES'); ?>
+                    </a>
+                <?php } ?>
             </div>
         </div>
     </div>
