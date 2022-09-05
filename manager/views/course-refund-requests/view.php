@@ -63,14 +63,8 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_STATUS'); ?></dt>
-                                <dd><?php echo AppConstant::getActiveArr($requestData['course_status']); ?></dd>
+                                <dd><?php echo Course::getStatuses($requestData['course_status']); ?></dd>
                             </dl>
-                            <?php if ($requestData['corere_remark'] != '') { ?>
-                                <dl class="list">
-                                    <dt><?php echo Label::getLabel('LBL_COMMENTS'); ?></dt>
-                                    <dd><?php echo nl2br($requestData['corere_remark']); ?></dd>
-                                </dl>
-                            <?php } ?>
                         </div>
                     </div>
                 </form>
