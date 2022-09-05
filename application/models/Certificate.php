@@ -102,10 +102,12 @@ class Certificate extends MyAppModel
         $srch = CertificateTemplate::getSearchObject($data['lang_id']);
         $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
         if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
+            $this->error = Label::getLabel('LBL_CONTENT_NOT_FOUND');
             return false;
         }
         $content = $template['certpl_body'];
+        $title = $data['course_title'];
+        $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
         $content = str_replace(
             [
                 '{learner-name}',
@@ -119,7 +121,7 @@ class Certificate extends MyAppModel
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
-                '<span class=\"courseNameJs\">' . $data['course_title'] . '</span>',
+                '<span class=\"courseNameJs\">' . $title . '</span>',
                 $data['course_clang_name'],
                 MyDate::formatDate($data['crspro_completed']),
                 $data['cert_number'],

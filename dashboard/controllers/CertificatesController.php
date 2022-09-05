@@ -52,7 +52,6 @@ class CertificatesController extends DashboardController
             $cert->setFldValue('ordcrs_certificate_number', $certificateNumber);
             if (!$cert->save()) {
                 FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
-                return false;
             }
             /* get certificate content */
             $content = $this->getCertificateContent($ordcrsData);
@@ -79,7 +78,7 @@ class CertificatesController extends DashboardController
         $data['cert_number'] = $data['ordcrs_certificate_number'];
         $data['lang_id'] = $this->siteLangId;
         if (!$content = $cert->getFormattedContent($data)) {
-            FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
+            FatUtility::dieWithError($cert->getError());
         }
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
