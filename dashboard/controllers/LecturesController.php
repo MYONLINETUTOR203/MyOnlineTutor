@@ -119,6 +119,17 @@ class LecturesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        if (Course::getAttributesById($post['lecture_course_id'], 'course_user_id') != $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        if (Section::getAttributesById($post['lecture_section_id'], 'section_course_id') != $post['lecture_course_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+        if ($post['lecture_id'] > 0) {
+            if (Lecture::getAttributesById($post['lecture_id'], 'lecture_section_id') != $post['lecture_section_id']) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+            }
+        }
         $lecture = new Lecture($post['lecture_id']);
         if (!$lecture->setup($post)) {
             FatUtility::dieJsonError($lecture->getError());
