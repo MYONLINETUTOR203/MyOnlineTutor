@@ -31,8 +31,11 @@ $reviews-progress: 'reviews-progress';
 
 .#{$reviews-progress} {
     &{display: flex; align-items: center;
-        &__value{min-width: 30px; text-align: center; padding:0 theme('padding.2');}
-        &__content{width: calc(100% - 30px);}
+        &__value{min-width: 60px; text-align: center; padding:0 theme('padding.2');
+            &:first-child{text-align: #{theme('direction.right','value')};}
+            &:last-child{text-align: #{theme('direction.left','value')};}
+        }
+        &__content{width: calc(100% - 120px);}
     }
 }
 

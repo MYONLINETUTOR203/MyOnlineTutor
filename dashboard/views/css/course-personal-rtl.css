@@ -421,7 +421,7 @@ p {
   .body-side {
     width: 28%;
     position: fixed;
-    right: 0;
+    left: 0;
     top: 0;
     bottom: 0;
     overflow: auto;
@@ -483,6 +483,9 @@ p {
   .toggle-control-list {
     display: none; } }
 
+.course-leaner {
+  overflow: hidden; }
+
 .toggle-control {
   position: relative;
   width: 100%;
@@ -500,7 +503,7 @@ p {
     cursor: pointer; }
     .toggle-control__action:after {
       position: absolute;
-      right: var(--margin-6);
+      left: var(--margin-6);
       top: var(--margin-6);
       content: "";
       pointer-events: none;

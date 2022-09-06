@@ -2332,11 +2332,15 @@ ul {
       -ms-flex-align: center;
           align-items: center; }
   .reviews-progress__value {
-    min-width: 30px;
+    min-width: 60px;
     text-align: center;
     padding: 0 var(--padding-2); }
+    .reviews-progress__value:first-child {
+      text-align: right; }
+    .reviews-progress__value:last-child {
+      text-align: left; }
   .reviews-progress__content {
-    width: calc(100% - 30px); }
+    width: calc(100% - 120px); }
 
 .reviews-counter__item {
   margin-top: var(--margin-2); }
@@ -7928,17 +7932,19 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
   left: 50%;
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
-          transform: translateX(-50%); }
+          transform: translateX(-50%);
+  width: 100%; }
   .slick-dots button {
-    width: 30px;
-    background: rgba(255, 255, 255, 0.4); }
+    width: 10px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 30px; }
 
 .slick-dots {
   text-align: center; }
   .slick-dots li {
     display: inline-block;
     vertical-align: top;
-    margin-right: 10px; }
+    margin-right: 5px; }
     @media (max-width: 576px) {
       .slick-dots li {
         margin-right: 5px;
@@ -7952,7 +7958,7 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
       background: rgba(0, 0, 0, 0.2); }
       @media (max-width: 576px) {
         .slick-dots li button {
-          width: 20px; } }
+          width: 10px; } }
     .slick-dots li.slick-active button {
       background: var(--color-primary); }
 

@@ -483,6 +483,9 @@ p {
   .toggle-control-list {
     display: none; } }
 
+.course-leaner {
+  overflow: hidden; }
+
 .toggle-control {
   position: relative;
   width: 100%;

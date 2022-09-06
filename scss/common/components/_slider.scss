@@ -161,10 +161,10 @@
 .slick-dots {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); width: 100%;
     button{
-        width: 30px;
-      background: rgba(255, 255, 255, 0.4);
+        width:10px;
+      background: rgba(255, 255, 255, 0.4); border-radius: 30px;
         
     }    
 }
@@ -175,7 +175,7 @@
     li{
         display: inline-block;
         vertical-align: top;
-         margin-#{theme('direction.right','value')}: 10px;
+         margin-#{theme('direction.right','value')}: 5px;
          @media(max-width: theme('breakpoints.sm','value')){
             &{ margin-#{theme('direction.right','value')}: 5px; margin-top: 1rem; margin-bottom: 1rem;}
          }
@@ -185,7 +185,7 @@
             border: none; font-size: 0; background: rgba(0, 0, 0, 0.2);
 
             @media(max-width: theme('breakpoints.sm','value')){
-                &{width: 20px;}
+                &{width: 10px;}
             }
             
         }
