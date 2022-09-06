@@ -670,8 +670,9 @@ class UserAuth extends FatModel
     public function sendSignupWelcomeEmail(array $user): bool
     {
         $mail = new FatMailer($user['user_lang_id'], 'welcome_registration');
+        $username = $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? '');
         $mail->setVariables([
-            '{user_full_name}' => $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? ''),
+            '{user_full_name}' => !empty(trim($username)) ? $username : Label::getLabel('LBL_USER'),
             '{contact_us_email}' => FatApp::getConfig('CONF_CONTACT_EMAIL'),
         ]);
         if (!$mail->sendMail([$user['user_email']])) {
@@ -690,8 +691,9 @@ class UserAuth extends FatModel
     public function sendSignupAdminNotifion(array $user): bool
     {
         $mail = new FatMailer($user['user_lang_id'], 'new_registration_admin');
+        $username = $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? '');
         $mail->setVariables([
-            '{user_full_name}' => $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? ''),
+            '{user_full_name}' => !empty(trim($username)) ? $username : Label::getLabel('LBL_NA'),
             '{user_email}' => $user['user_email'],
         ]);
         if (!$mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')])) {
@@ -723,9 +725,10 @@ class UserAuth extends FatModel
             $this->error = $verification->getError();
             return false;
         }
+        $username = $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? '');
         $mail = new FatMailer($user['user_lang_id'], 'user_email_verification');
         $mail->setVariables([
-            '{user_full_name}' => $user['user_first_name'] . ' ' . ($user['user_last_name'] ?? ''),
+            '{user_full_name}' => !empty(trim($username)) ? $username : Label::getLabel('LBL_USER'),
             '{verification_url}' => MyUtility::makeFullUrl('GuestUser', 'verifyEmail', ['verify' => $token])
         ]);
         if (!$mail->sendMail([$user['user_email']])) {
