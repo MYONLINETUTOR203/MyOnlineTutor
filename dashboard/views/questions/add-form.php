@@ -5,21 +5,25 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setupQuestion(this, false); return(false);');
 $titleFld = $frm->getField('ques_title');
 $typeFld = $frm->getField('ques_type');
+$typeFld->setFieldTagAttribute('id', 'ques_type');
+$typeFld->setFieldTagAttribute('onchange', 'setupQuesType(this.value)');
 $detailFld = $frm->getField('ques_detail');
 $catFld = $frm->getField('ques_cate_id');
 $subCatFld = $frm->getField('ques_subcate_id');
+$subCatFld->setFieldTagAttribute('id', 'subCateAddQues');
+$catFld->setFieldTagAttribute('onclick', 'getSubcategories(this.value, "#subCateAddQues")');
 $hintFld = $frm->getField('ques_hint');
 $marksFld = $frm->getField('ques_marks');
 $fld = $frm->getField('ques_id');
 $fld->setFieldTagAttribute('id', 'ques_id');
 $bannerFld = $frm->getField('ques_banner');
 $submitButton = $frm->getField('submit');
-$submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form, true); return(false);');
+$submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form); return(false);');
 
 ?>
 <div class="facebox-panel">
+    <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
     <div class="facebox-panel__head">
-        <h4><?php echo Label::getLabel('LBL_ADD_GROUP_CLASS'); ?></h4>
         <div class="tabs tabs--line border-bottom-0">
             <ul>
                 <li class="is-active"><a href="javascript:void(0);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
@@ -158,7 +162,7 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form, true); 
             </div>
         </div>
 
-        <div class="options-container">
+        <div class="options-container" style="display:none;">
             <div class="row">
                 <div class="col-md-10">
                     <div class="field-set">
@@ -178,7 +182,7 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form, true); 
                 </div>
             </div>
 
-            <div class="more-container-js"></div>
+            <div class="more-container-js sortableLearningJs"></div>
         </div>
        
         
@@ -197,3 +201,9 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form, true); 
         <?php echo $frm->getExternalJS(); ?>
     </div>
 </div>
+
+<script>
+    var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
+    var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
+    var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
+</script>

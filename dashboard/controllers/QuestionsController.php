@@ -2,7 +2,7 @@
 
 /**
  * Questions Controller is used for handling Question Bank
- *  
+ *
  * @package YoCoach
  * @author Fatbit Team
  */
@@ -10,7 +10,7 @@ class QuestionsController extends DashboardController
 {
     /**
      * Initialize Questions
-     * 
+     *
      * @param string $action
      */
     public function __construct(string $action)
@@ -32,14 +32,13 @@ class QuestionsController extends DashboardController
      * Search & List Questions
      */
     public function search()
-    { 
+    {
         $form = QuestionSearch::getSearchForm($this->siteLangId);
-       
+
         if (!$post = $form->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id'])) {
-            
             FatUtility::dieJsonError(current($form->getValidationErrors()));
         }
-      
+
         $post['teacher_id'] = $this->siteUserId;
         $srch = new QuestionSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->applySearchConditions($post);
@@ -58,7 +57,7 @@ class QuestionsController extends DashboardController
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('ques_status', 'DESC');
         $srch->addOrder('ques_id');
-        $data = $srch->fetchAndFormat(); 
+        $data = $srch->fetchAndFormat();
         $categoryIds = array_keys($data);
         $this->sets([
             'questions' => $data,
@@ -121,41 +120,96 @@ class QuestionsController extends DashboardController
         $this->_template->render(false, false);
     }
 
+    public function setupQuestion()
+    {
+        $frm = $this->getForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $answers=[];
+        if ($type != Question::TYPE_MANUAL) {
+            $post['options'] = FatApp::getPostedData('queopt_title');
+            $post['option_answers'] = FatApp::getPostedData('ques_answer');
+            $answers = FatApp::getPostedData('answers');
+            $description = FatApp::getPostedData('queopt_description');
+            if (empty($post['options'])) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_Please_Enter_Question_Option_Values'));
+            }
+            if (empty($post['option_answers'])) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_Please_Select_Correct_Answer(s)_From_The_Given_Options'));
+            }
+            if (!is_array($answers)) {
+                $answers = [$answers];
+            }
+        }
+        $post['correct_answers'] = $answers;
+        $post['ques_user_id'] = $this->siteUserId;
+        $post['ques_status'] = AppConstant::ACTIVE;
+
+        $question = new Question($post['ques_id']);
+
+        if(!$question->addUpdateQuestion($post)){
+            FatUtility::dieJsonError($question->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+        
+    }
 
     public function addOption()
     {
-         $this->_template->render(false, false);
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $frm = $this->getForm($type);
+        $this->set('frm', $frm);
+        $this->set('type', $type);
+        $this->_template->render(false, false);
     }
 
 
-    private function getForm()
+    private function getForm($type = 0)
     {
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
-        $form = new Form('frmQuestion');
-        $form->addHiddenField('', 'ques_id')->requirements()->setIntPositive();
-        $fld = $form->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
+        $frm = new Form('frmQuestion');
+        $frm->addHiddenField('', 'ques_id')->requirements()->setIntPositive();
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
         $fld->requirements()->setRequired(true);
-        $fld = $form->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
+        $fld = $frm->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
         $fld->requirements()->setLength(10, 100);
-        $fld = $form->addTextArea(Label::getLabel('LBL_DESCRIPTION'), 'ques_detail');
-        $fld->requirements()->setRequired(true);
+        $fld = $frm->addTextArea(Label::getLabel('LBL_DESCRIPTION'), 'ques_detail');
         $fld->requirements()->setLength(10, 1000);
-        $fld = $form->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $fld->requirements()->setRequired(true);
-        $fld = $form->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
-        $fld = $form->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
-        $fld = $form->addIntegerField(Label::getLabel('LBL_MARKS'), 'ques_marks');
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
+        $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+        $fld = $frm->addIntegerField(Label::getLabel('LBL_MARKS'), 'ques_marks');
         $fld->requirements()->setRequired(true);
-        //$fld->requirements()->setIntPositive();
-        // $form->addRequiredField(Label::getLabel('LBL_CLASS_TITLE'), 'title[]')->requirements()->setLength(10, 100);
-        // $starttime = $form->addRequiredField(Label::getLabel('LBL_START_TIME'), 'starttime[]', '', ['class' => 'datetime', 'autocomplete' => 'off', 'readonly' => 'readonly']);
-        // $starttime->requirements()->setRegularExpressionToValidate(AppConstant::DATE_TIME_REGEX);
-        $form->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
-        return $form;
+        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired(true);
+        $frm->addTextArea(Label::getLabel('LBL_OPTION_DESCRIPTION'), 'queopt_detail[]')->requirements()->setLength(10, 100);
+
+        if ($type == Question::TYPE_SINGLE) {
+            $fld = $frm->addRadioButtons('', 'ques_answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
+        }
+        if ($type == Question::TYPE_MULTIPLE) {
+            $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', 1);
+        }
+
+
+        $frm->addButton('', 'submit', Label::getLabel('LBL_SAVE'));
+        return $frm;
     }
 
 
-
-    
-  
+    private function getOptionsForm($type = Question::TYPE_SINGLE, $no = 0)
+    {
+        $frm = new Form('frmOptions');
+        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'option_title[]')->requirements()->setRequired(true);
+        if ($type == Question::TYPE_SINGLE) {
+            $fld = $frm->addRadioButtons('', 'answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
+        }
+        if ($type == Question::TYPE_MULTIPLE) {
+            $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'answer[]', 1);
+        }
+        $frm->addTextArea(Label::getLabel('LBL_OPTION_DESCRIPTION'), 'option_description[]')->requirements()->setLength(10, 100);
+        return $frm;
+    }
 }

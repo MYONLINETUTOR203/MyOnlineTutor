@@ -7,7 +7,7 @@ $catFld = $frm->getField('ques_cate_id');
 $subCatFld = $frm->getField('ques_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCategories');
 $submitBtn = $frm->getField('btn_submit');
-$catFld->addFieldTagAttribute('onchange', 'getSubcategories(this.value)');
+$catFld->addFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCategories")');
 $btnReset = $frm->getField('btn_clear');
 $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
 ?>

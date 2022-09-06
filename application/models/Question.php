@@ -6,8 +6,8 @@ class Question extends MyAppModel
     public const DB_TBL_PREFIX = 'ques_';
     public const DB_TBL_OPTIONS = 'tbl_question_options';
 
-    public const TYPE_RADIO = 1;
-    public const TYPE_CHECKBOX = 2;
+    public const TYPE_SINGLE = 1;
+    public const TYPE_MULTIPLE = 2;
     public const TYPE_MANUAL = 3;
 
     /**
@@ -70,6 +70,47 @@ class Question extends MyAppModel
         return true;
     }
 
+    
+    public function addUpdateQuestion($data) 
+    {
+        $db = FatApp::getDb();
+        $db->startTransaction();
+      
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $quesId = $this->getMainTableRecordId();
+        $ques_answers = [];
+        if ($data['ques_type'] != Question::TYPE_MANUAL) {
+            foreach ($data['options'] as $key => $value) {
+                $opt_data = [
+                    'queopt_ques_id' => $quesId,
+                    'queopt_title'   => $value,
+                    'queopt_order'   => $key,
+                    'queopt_detail' =>  $description[$key] ?? ''
+                ];
+                $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
+                $queopt->assignValues($opt_data);
+                if (!$queopt->addNew()) {
+                    $db->rollbackTransaction();
+                    return false;
+                }
+                if(in_array($key, $data['correct_answers'])){
+                    $ques_answers[] = $queopt->getId();
+                }
+            }
+            $this->assignValues(['ques_answer' => json_encode($ques_answers)]);
+            if (!$this->save()) {
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
 
 
     /**
@@ -81,8 +122,8 @@ class Question extends MyAppModel
     public static function getQuesTypes(int $key = null)
     {
         $arr = [
-            static::TYPE_RADIO => Label::getLabel('LBL_SINGLE'),
-            static::TYPE_CHECKBOX => Label::getLabel('LBL_MULTIPLE'),
+            static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE'),
+            static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE'),
             static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
         ];
         return AppConstant::returArrValue($arr, $key);
