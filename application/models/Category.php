@@ -11,14 +11,18 @@ class Category extends MyAppModel
     const TYPE_QUESTION = 2;
     const TYPE_QUIZ = 3;
 
+    private $langId;
+
     /**
      * Initialize Categories
      *
      * @param int $id
+     * @param int $langId
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, int $langId = 0)
     {
         parent::__construct(static::DB_TBL, 'cate_id', $id);
+        $this->langId = $langId;
     }
 
     /**
@@ -190,31 +194,19 @@ class Category extends MyAppModel
     /**
      * Get category data by id
      *
-     * @param int $langId
      * @return array|bool
      */
-    public function getDataById(int $langId)
+    public function getDataById()
     {
         $srch = static::getSearchObject();
-        $srch->joinTable(
-            self::DB_LANG_TBL,
-            'LEFT OUTER JOIN',
-            'catg.cate_id = catg_l.catelang_cate_id AND catg_l.catelang_lang_id = ' . $langId,
-            'catg_l'
-        );
         $srch->addCondition('catg.cate_id', '=', $this->getMainTableRecordId());
         $srch->addMultipleFields(
             [
                 'catg.cate_id',
                 'catg.cate_type',
+                'catg.cate_identifier',
                 'catg.cate_parent',
-                'catg.cate_order',
-                'catg.cate_status',
-                'catg.cate_created',
-                'catg_l.cate_name',
-                'catg_l.cate_details',
-                'catg_l.catelang_lang_id',
-                'catg_l.catelang_id',
+                'catg.cate_status'
             ]
         );
         return FatApp::getDb()->fetch($srch->getResultSet());
@@ -295,16 +287,16 @@ class Category extends MyAppModel
      * @param int    $parent
      * @return void
      */
-    public function checkUnique(string $name, int $langId, int $parent = 0)
+    public function checkUnique(string $identifier, int $parent = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'catg');
-        $srch->joinTable(
-            static::DB_LANG_TBL,
-            'INNER JOIN',
-            'catg.cate_id = catg_l.catelang_cate_id AND catg_l.catelang_lang_id = ' . $langId,
-            'catg_l'
-        );
-        $srch->addCondition('mysql_func_LOWER(cate_name)', '=', strtolower(trim($name)), 'AND', true);
+        // $srch->joinTable(
+        //     static::DB_LANG_TBL,
+        //     'INNER JOIN',
+        //     'catg.cate_id = catg_l.catelang_cate_id AND catg_l.catelang_lang_id = ' . $langId,
+        //     'catg_l'
+        // );
+        $srch->addCondition('mysql_func_LOWER(cate_identifier)', '=', strtolower(trim($identifier)), 'AND', true);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate_parent', '=', $parent);
         if ($this->getMainTableRecordId() > 0) {

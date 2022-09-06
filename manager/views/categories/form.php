@@ -7,8 +7,8 @@ $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 
 
 
-$fld = $frm->getField('catelang_lang_id');
-$fld->setFieldTagAttribute('onchange', 'categoryForm("'.$categoryId.'", this.value)');
+// $fld = $frm->getField('catelang_lang_id');
+// $fld->setFieldTagAttribute('onchange', 'categoryForm("'.$categoryId.'", this.value)');
 
 ?>
 <section class="section">
@@ -16,10 +16,23 @@ $fld->setFieldTagAttribute('onchange', 'categoryForm("'.$categoryId.'", this.val
         <h4><?php echo Label::getLabel('LBL_CATEGORY_SETUP'); ?></h4>
     </div>
     <div class="sectionbody space">
-        <div class="tabs_nav_container responsive flat">
-            <div class="tabs_panel_wrap">
-                <div class="tabs_panel">
-                    <?php echo $frm->getFormHtml(); ?>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="tabs_nav_container responsive flat">
+                    <ul class="tabs_nav">
+                        <li><a class="active" href="javascript:void(0);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
+                        <?php
+                        $inactive = ($categoryId == 0) ? 'fat-inactive' : '';
+                        foreach ($languages as $langId => $langName) {
+                        ?>
+                            <li class=" lang-li-js <?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $categoryId; ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                        <?php } ?>
+                    </ul>
+                    <div class="tabs_panel_wrap">
+                        <div class="tabs_panel">
+                            <?php echo $frm->getFormHtml(); ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

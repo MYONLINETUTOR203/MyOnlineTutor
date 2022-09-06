@@ -98,32 +98,26 @@ class CategoriesController extends AdminBaseController
      * @param int $categoryId
      * @param int $langId
      */
-    public function form(int $categoryId, int $langId)
+    public function form(int $categoryId)
     {
         $this->objPrivilege->canEditCategories();
         $categoryId = FatUtility::int($categoryId);
-        $langId = FatUtility::int($langId);
-        $langId = ($langId < 1) ? $this->siteLangId : $langId;
-
         $data = [];
         if ($categoryId > 0) {
             $category = new Category($categoryId);
-            $data = $category->getDataById($langId);
-
+            $data = $category->getDataById();
             if (count($data) < 1) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
-            $data['catelang_lang_id'] = $langId;
         }
-        $frm = $this->getForm($langId, $categoryId);
+        $frm = $this->getForm($categoryId);
         $frm->fill($data);
-        
         $this->sets([
             'frm' => $frm,
             'data' => $data,
             'categoryId' => $categoryId,
+            'languages' => Language::getAllNames(),
         ]);
-
         $this->_template->render(false, false);
     }
 
@@ -137,14 +131,13 @@ class CategoriesController extends AdminBaseController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-
         $category = new Category($post['cate_id']);
         $parent = FatUtility::int($post['cate_parent']);
-        if (!$category->checkUnique($post['cate_name'], $this->siteLangId, $parent)) {
+        if (!$category->checkUnique($post['cate_identifier'], $this->siteLangId, $parent)) {
             FatUtility::dieJsonError($category->getError());
         }
-
-        if (!$category->addUpdateData($post)) {
+        $category->assignValues($post);
+        if (!$category->save()) {
             FatUtility::dieJsonError($category->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
@@ -173,43 +166,45 @@ class CategoriesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(int $langId, $catgId = 0): Form
+    private function getForm($catgId = 0): Form
     {
-
         $frm = new Form('frmCategory');
-
         $fld = $frm->addHiddenField('', 'cate_id');
         $fld->requirements()->setIntPositive();
-        $fld = $frm->addHiddenField('', 'catelang_id');
-        $fld->requirements()->setIntPositive();
-
-        $fld = $frm->addSelectBox(
-            Label::getLabel('LBL_LANGUAGE'),
-            'catelang_lang_id',
-            Language::getAllNames(),
-            '',
-            [],
-            ''
-        );
-        $fld->requirements()->setRequired();
-
+        $fld = $frm->addTextBox(Label::getLabel('LBL_IDENTIFIER'), 'cate_identifier')->requirements()->setRequired();
         $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_QUESTION);
         $fld->requirements()->setIntPositive();
-        /* This will be used in future. */
-        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes(), '', [], '')
-        ->requirements()
-        ->setRequired(); */
 
-        $fld = $frm->addTextBox(Label::getLabel('LBL_NAME'), 'cate_name')->requirements()->setRequired();
-        $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
-
-        $parentCategories = Category::getCategoriesByParentId($langId, 0, Category::TYPE_QUIZ);
-
+        $parentCategories = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUIZ);
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);
         }
         $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', [], Label::getLabel('LBL_ROOT_CATEGORY'));
         $fld->requirements()->setInt();
+        /* This will be used in future. */
+        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes(), '', [], '')
+        ->requirements()
+        ->setRequired(); */
+
+
+
+
+        // $fld = $frm->addHiddenField('', 'catelang_id');
+        // $fld->requirements()->setIntPositive();
+        // $fld = $frm->addSelectBox(
+        //     Label::getLabel('LBL_LANGUAGE'),
+        //     'catelang_lang_id',
+        //     Language::getAllNames(),
+        //     '',
+        //     [],
+        //     ''
+        // );
+        // $fld->requirements()->setRequired();
+        // $fld = $frm->addTextBox(Label::getLabel('LBL_NAME'), 'cate_name')->requirements()->setRequired();
+        // $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
+
+
+        
 
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'cate_status', AppConstant::getActiveArr(), '', [], '')
         ->requirements()
@@ -228,7 +223,7 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
-        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes()); */
+        $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_QUESTION);
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         return $frm;
