@@ -158,7 +158,7 @@
                     <h5><?php echo Label::getLabel('LBL_Hello'); ?> <?php echo implode(" ", [$request['tereq_first_name'], $request['tereq_last_name']]); ?></h5>
                     <p><?php echo Label::getLabel('LBL_Thank_You_For_Submitting_Your_Application'); ?></p>
                     <?php if(empty($user['user_verified'])): ?>  
-                    <p><?php echo Label::getLabel('LBL_Your_Email_Verification_Is_Pending'); ?></p>
+                    <h6 class="mb-8"><?php echo Label::getLabel('LBL_Your_Email_Verification_Is_Pending'); ?></h6>
                     <?php endif; ?>
                     <div class="application-no">
                         <?php echo Label::getLabel('LBL_Application_Reference') ?>: <span id="reg-no"><?php echo $request['tereq_reference']; ?></span>
