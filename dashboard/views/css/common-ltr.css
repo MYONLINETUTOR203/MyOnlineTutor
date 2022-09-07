@@ -2442,6 +2442,9 @@ ul {
     border-top: 1px solid var(--color-gray-200);
     margin-top: var(--margin-6); } }
 
+.review__title {
+  margin-bottom: 0; }
+
 .section--certificate {
   padding: var(--padding-14) 0 !important; }
 

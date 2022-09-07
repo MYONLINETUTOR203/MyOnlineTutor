@@ -9585,7 +9585,8 @@ body.sort-active {
   border-color: currentColor;
   color: var(--color-gray-900); }
   .btn--favorite.is-active {
-    color: var(--color-primary); }
+    color: var(--color-primary);
+    border-color: var(--color-primary); }
 
 .course-card .mark-option {
   position: absolute;
