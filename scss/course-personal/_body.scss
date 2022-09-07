@@ -153,7 +153,6 @@ $toggle-control-list: "toggle-control-list";
 
 
 
-.course-leaner{overflow:hidden;}
 
 
 $toggle-control: 'toggle-control';
@@ -262,7 +261,7 @@ $lecture-meta: 'lecture-meta';
 $lecture-list: 'lecture-list';
 
 .#{$lecture-list} {
-    &{position: relative;width: 100%; padding: theme('padding.2') 0 theme('padding.2');
+    &{position: relative;width: 100%; 
         &:before{position: absolute;#{theme('direction.left','value')}:theme('margin.8'); top: 0; bottom: 0; content: ""; pointer-events: none; width: 1px; background-color: theme('color.gray.300');}
     }
 }

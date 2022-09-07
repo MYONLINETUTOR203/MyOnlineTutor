@@ -42,14 +42,14 @@ $course-card: "course-card";
         &__title{display: block; color: theme('color.black'); font-weight: theme('font.weight.bold'); margin: theme('margin.4') 0 theme('margin.1');word-wrap: break-word;
         
             @media (max-width:theme('breakpoints.lg','value')){
-                &{font-size: theme('font.size.h5');}display: block;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;margin-top: theme('margin.6');
+                &{font-size: theme('font.size.h5');}display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;margin-top: theme('margin.6');
             }
 
             @media (max-width:theme('breakpoints.sm','value')){
                 &{font-size: theme('font.size.medium'); margin-bottom: theme('margin.4');margin-top: theme('margin.2'); overflow: visible; text-overflow: unset;white-space: normal;}
             }
         }
-        &__subtitle{display: block;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        &__subtitle{display: block;
         
             @media (max-width:theme('breakpoints.sm','value')){
                 &{display: none;}

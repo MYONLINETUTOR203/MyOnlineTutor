@@ -2360,7 +2360,8 @@ body.is-filter-show .header {
       bottom: 60px;
       z-index: 1;
       max-width: 400px;
-      margin: 0 auto; }
+      margin: 0 auto;
+      z-index: 2; }
       .sorting-options__item {
         -webkit-box-flex: 1;
             -ms-flex: 1;
@@ -9643,11 +9644,7 @@ body.sort-active {
            text-overflow: unset;
         white-space: normal; } }
   .course-card__subtitle {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    -o-text-overflow: ellipsis;
-       text-overflow: ellipsis; }
+    display: block; }
     @media (max-width: 576px) {
       .course-card__subtitle {
         display: none; } }

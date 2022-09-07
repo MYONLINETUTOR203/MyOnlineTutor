@@ -4,7 +4,7 @@ $header: "header";
 .#{$header} {
    
     transition: all 0.5s;
-    z-index: 11;
+    z-index: 11; position:relative;
 
     @media (min-width: theme("breakpoints.sm","value")) {
         & {
@@ -180,7 +180,7 @@ $course-progress: "course-progress";
         & small{display: block;}
         & small{font-size: 12px; line-height: 1; opacity: 0.8;}
         @media (max-width: theme("breakpoints.xl","value")) {
-            &.is-active:after{position: fixed; left: 0;right: 0;top: 0;bottom: 0;content: ""; background-color: rgba(0,0,0,0.8);z-index: 1;}
+            &.is-active:after{position: fixed; left: 0;right: 0;top: 0;bottom: 0;content: ""; background-color: rgba(0,0,0,0.8);z-index: 2;}
         }
     }
 
@@ -194,7 +194,7 @@ $course-progress: "course-progress";
 
     &__target{
         @media (min-width: theme("breakpoints.xl","value")){
-             position: absolute; #{theme('direction.right','value')}: 0; top: 160%; background-color: theme('color.white'); min-width: 350px;box-shadow: theme('boxShadow.bottom'); border: 1px solid theme('color.gray.200');padding:theme('padding.6');opacity: 0; visibility:hidden; z-index: 1; transition: all 0.4s;
+             position: absolute; #{theme('direction.right','value')}: 0; top: 160%; background-color: theme('color.white'); min-width: 350px;box-shadow: theme('boxShadow.bottom'); border: 1px solid theme('color.gray.200');padding:theme('padding.6');opacity: 0; visibility:hidden; z-index: 2; transition: all 0.4s;
    
         &:before{position: absolute;
             #{theme('direction.right','value')}:1rem;
@@ -241,7 +241,7 @@ $account: "account";
             &.is-active:after{position: fixed; left: 0;right: 0;top: 0;bottom: 0;content: ""; background-color: rgba(0,0,0,0.8);z-index: 1;}
         }
     }
-    &__target{position: absolute; #{theme('direction.right','value')}: 0; top: 160%; background-color: theme('color.white'); min-width: 200px; z-index: 1;
+    &__target{position: absolute; #{theme('direction.right','value')}: 0; top: 160%; background-color: theme('color.white'); min-width: 200px; z-index:2;
     box-shadow: theme('boxShadow.bottom'); border: 1px solid theme('color.gray.200');padding:theme('padding.3') 0; opacity: 0;visibility: hidden;
         &:before{position: absolute;
             #{theme('direction.right','value')}: 0.6rem;

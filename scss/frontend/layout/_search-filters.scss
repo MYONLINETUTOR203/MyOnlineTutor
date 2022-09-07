@@ -791,7 +791,7 @@ $sorting-options: "sorting-options";
     }
 
     @media (max-width:theme('breakpoints.sm','value')){
-        &{background-color: theme('color.secondary'); display: flex; align-items: center; border-radius: theme('radius.round');  position: fixed; left:15px; right: 15px;  bottom: 60px;z-index: 1; max-width: 400px; margin: 0 auto;
+        &{background-color: theme('color.secondary'); display: flex; align-items: center; border-radius: theme('radius.round');  position: fixed; left:15px; right: 15px;  bottom: 60px;z-index: 1; max-width: 400px; margin: 0 auto;z-index: 2;
             &__item{flex: 1;
                 &:first-child{border-right: 1px solid theme('color.gray.100');}
             

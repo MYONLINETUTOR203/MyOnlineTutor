@@ -700,10 +700,10 @@ $search-view: "search-view";
 
 $step-view: "step-view";
 
-.#{$step-view}{ 
+.#{$step-view}{
     @media(min-width:theme('breakpoints.sm','value')){
         &{
-            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
         }
         &__large{flex: 1;}
     }
