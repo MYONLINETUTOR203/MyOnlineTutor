@@ -158,7 +158,14 @@ class CategoriesController extends AdminBaseController
         if (!$category->checkUnique($post['cate_name'], $this->siteLangId, $parent)) {
             FatUtility::dieJsonError($category->getError());
         }
-
+        if ($post['cate_id'] > 0) {
+            if (!$data = $category->getDataById($this->siteLangId)) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORY_NOT_FOUND'));
+            }
+            if ($post['cate_parent'] > 0 && $data['cate_subcategories'] > 0) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_CANNOT_ASSIGN_PARENT_AS_THIS_CATEGORY_HAS_ITS_OWN_SUBCATEGORIES'));
+            }
+        }
         if (!$category->addUpdateData($post)) {
             FatUtility::dieJsonError($category->getError());
         }

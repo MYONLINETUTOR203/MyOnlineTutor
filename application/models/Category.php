@@ -210,6 +210,7 @@ class Category extends MyAppModel
                 'catg.cate_order',
                 'catg.cate_status',
                 'catg.cate_created',
+                'catg.cate_subcategories',
                 'catg_l.cate_name',
                 'catg_l.cate_details',
                 'catg_l.catelang_lang_id',
