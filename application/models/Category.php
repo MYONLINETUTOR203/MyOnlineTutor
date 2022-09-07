@@ -48,26 +48,11 @@ class Category extends MyAppModel
      */
     public function addUpdateData($data): bool
     {
-        $db = FatApp::getDb();
-
-        $db->startTransaction();
-        $catgIds = [];
-        /* add selected parent category id */
-        if (!empty($data['cate_parent'])) {
-            $catgIds[] = $data['cate_parent'];
+        $parent = FatUtility::int($data['cate_parent']);
+        if (!$this->checkUnique($data['cate_identifier'], $parent)) {
+            $this->error = $this->getError();
+            return false;
         }
-        if ($this->mainTableRecordId > 0) {
-            $catgIds[] = $this->mainTableRecordId;
-            if (!$catData = self::getAttributesById($this->mainTableRecordId, ['cate_id', 'cate_parent'])) {
-                $this->error = Label::getLabel('LBL_INVALID_REQUEST');
-                return false;
-            }
-            /* add old parent id from the edited category */
-            if (!empty($catData['cate_parent'])) {
-                $catgIds[] = $catData['cate_parent'];
-            }
-        }
-
         /* save category data */
         $this->assignValues($data);
         if ($this->mainTableRecordId < 1) {
@@ -75,28 +60,14 @@ class Category extends MyAppModel
         }
         $this->setFldValue('cate_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $db->rollbackTransaction();
-            $this->error = $db->getError();
-            return false;
-        }
-
-        /* save category lang data */
-        if (!$this->addUpdateLangData($data)) {
-            $db->rollbackTransaction();
-            $this->error = $db->getError();
+            $this->error = $this->getError();
             return false;
         }
         /* update sub categories count */
-        if (count($catgIds) > 0) {
-            $catgIds = array_unique($catgIds);
-            if (!$this->updateSubCatCount($catgIds)) {
-                $db->rollbackTransaction();
-                $this->error = $db->getError();
-                return false;
-            }
+        if (!$this->updateSubCatCount()) {
+            $this->error = $this->getError();
+            return false;
         }
-
-        $db->commitTransaction();
         return true;
     }
 
@@ -115,7 +86,6 @@ class Category extends MyAppModel
             'cate_details' => $data['cate_details'],
             'catelang_id' => $data['catelang_id'],
         ];
-
         if (!FatApp::getDb()->insertFromArray(static::DB_LANG_TBL, $assignValues, false, [], $assignValues)) {
             $this->error = FatApp::getDb()->getError();
             return false;
@@ -130,32 +100,34 @@ class Category extends MyAppModel
      */
     public function delete(): bool
     {
-        if (!$cateParent = self::getAttributesById($this->mainTableRecordId, ['cate_parent'])) {
+        if (!$data = $this->getDataById()) {
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
-
+        if ($data['cate_records'] > 0) {
+            $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_DELETED.');
+            return false;
+        }
+        if ($data['cate_subcategories'] > 0) {
+            $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_SUBCATEGORIES_CANNOT_BE_DELETED.');
+            return false;
+        }
         $this->setFldValue('cate_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
         }
-
         /* update sub categories count */
-        if (isset($cateParent['cate_parent']) && $cateParent['cate_parent'] > 0) {
-            $this->updateSubCatCount([$cateParent['cate_parent']]);
-        }
-
+        $this->updateSubCatCount();
         return true;
     }
 
     /**
      * Function to update sub categories count
      *
-     * @param array $catgIds
      * @return bool
      */
-    private function updateSubCatCount(array $catgIds): bool
+    private function updateSubCatCount(): bool
     {
         if (
             !FatApp::getDb()->query(
@@ -165,18 +137,16 @@ class Category extends MyAppModel
                         COUNT(cate_id) AS cate_subcategories,
                         cate_parent
                     FROM `" . static::DB_TBL . "` 
-                    WHERE `cate_parent` IN(" . implode(',', $catgIds) . ") AND cate_deleted IS NULL
+                    WHERE cate_deleted IS NULL
                     GROUP BY `cate_parent`
                 ) c 
                 ON cate.cate_id = c.cate_parent 
-                SET cate.cate_subcategories = c.cate_subcategories
-                WHERE  `cate_id` IN(" . implode(',', $catgIds) . ")"
+                SET cate.cate_subcategories = c.cate_subcategories"
             )
         ) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
-
         return true;
     }
 
@@ -200,15 +170,16 @@ class Category extends MyAppModel
     {
         $srch = static::getSearchObject();
         $srch->addCondition('catg.cate_id', '=', $this->getMainTableRecordId());
-        $srch->addMultipleFields(
-            [
-                'catg.cate_id',
-                'catg.cate_type',
-                'catg.cate_identifier',
-                'catg.cate_parent',
-                'catg.cate_status'
-            ]
-        );
+        $srch->addCondition('catg.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addMultipleFields([
+            'catg.cate_id',
+            'catg.cate_type',
+            'catg.cate_identifier',
+            'catg.cate_parent',
+            'catg.cate_status',
+            'catg.cate_records',
+            'catg.cate_subcategories'
+        ]);
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
@@ -231,10 +202,7 @@ class Category extends MyAppModel
             'catg_l'
         );
         $srch->addMultipleFields(
-            [
-                'cate_id',
-                'cate_name'
-            ]
+            ['cate_id', 'IFNULL(cate_name, cate_identifier) AS cate_name']
         );
         $srch->addOrder('cate_order');
         $srch->addCondition('cate_parent', '=', $catgId);
@@ -290,17 +258,11 @@ class Category extends MyAppModel
     public function checkUnique(string $identifier, int $parent = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'catg');
-        // $srch->joinTable(
-        //     static::DB_LANG_TBL,
-        //     'INNER JOIN',
-        //     'catg.cate_id = catg_l.catelang_cate_id AND catg_l.catelang_lang_id = ' . $langId,
-        //     'catg_l'
-        // );
         $srch->addCondition('mysql_func_LOWER(cate_identifier)', '=', strtolower(trim($identifier)), 'AND', true);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate_parent', '=', $parent);
         if ($this->getMainTableRecordId() > 0) {
-            $srch->addCondition('catelang_cate_id', '!=', $this->getMainTableRecordId());
+            $srch->addCondition('cate_id', '!=', $this->getMainTableRecordId());
         }
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);

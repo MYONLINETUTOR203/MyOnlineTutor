@@ -185,6 +185,9 @@ class AdminPrivilege
             static::SECTION_LESSON_STATS => Label::getLabel('MSG_LESSON_STATS', $langId),
             static::SECTION_SALES_REPORT => Label::getLabel('MSG_SALE_REPORT', $langId),
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
+            static::SECTION_CATEGORIES => Label::getLabel('MSG_CATEGORIES', $langId),
+            static::SECTION_QUESTIONS => Label::getLabel('MSG_QUESTIONS', $langId),
+            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_CERTIFICATES', $langId),
         ];
         return $arr;
     }

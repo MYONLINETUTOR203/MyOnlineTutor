@@ -4,12 +4,6 @@ $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
-
-
-
-// $fld = $frm->getField('catelang_lang_id');
-// $fld->setFieldTagAttribute('onchange', 'categoryForm("'.$categoryId.'", this.value)');
-
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -25,7 +19,11 @@ $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
                         $inactive = ($categoryId == 0) ? 'fat-inactive' : '';
                         foreach ($languages as $langId => $langName) {
                         ?>
-                            <li class=" lang-li-js <?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $categoryId; ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                            <li class=" lang-li-js <?php echo $inactive; ?>">
+                                <a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php if ($categoryId > 0) { ?> onclick="langForm(<?php echo $categoryId; ?>, <?php echo $langId; ?>);" <?php } ?>>
+                                    <?php echo $langName; ?>
+                                </a>
+                            </li>
                         <?php } ?>
                     </ul>
                     <div class="tabs_panel_wrap">
