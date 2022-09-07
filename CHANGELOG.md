@@ -1,5 +1,52 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.4.20220907
+
+
+Fixes:
+
+	Bug-066545 - List Navigation Bar is displayed in 2 lines and the bottom page overlaps the bar when the of courses increases
+	Bug-066538 - Teacher is able to add/edit lectures in other teacher courses
+	Bug-066537 - Teacher is able to add/edit sections in other teacher courses
+	Bug-066535 - Fatal error is coming when opening manage approval requests
+	Bug-066534 - Error is coming when submitting course for approval
+	Bug-066517 - Teacher is able to delete other teacher resources using remove('88');
+	Bug-066515 - Teacher is able to remove other teacher lecture resources using removeLectureResrc('686', '363');
+	Bug-066513 - Teacher is able to attach resources to other teacher lectures using getResources('363');
+	Bug-066512 - Teacher is able to delete other teacher lecture using removeLecture('294', '492');
+	Bug-066511 - Teacher is able to delete other teacher section using removeSection('201');
+	Bug-066510 - Learner is able to access other learner notes using notesForm('39');
+	Bug-066497 - First lecture is not opening when reorder and delete sections and lectures
+	Bug-066496 - After deleting the lecture other section lectures numbering is incorrect
+	Bug-066494 - Lectures numbering is not coming correct if sections order changed
+	Bug-066486 - All the free preview videos are coming preview video popup
+	Bug-066484 - Popup is coming in small size when giving rating a to the course
+	Bug-066481 - Extra space is coming on section when adding lecture and cancels the form
+	Bug-066475 - In RTL mode, course learning page is not rendering properly
+	Bug-066474 - “Content not found” is coming when downloading certificate
+	Bug-066473 - Deleted lectures time is coming in the course duration
+	Bug-066468 - Course duration is not coming on the certificate view page
+	Bug-066466 - Video Navigation Icon is overlapping the Left Panel in android device
+	Bug-066462 - When the Student Open Progress bar Pop up window on the course preview page the background is accessible to the user to mark the lecture as complete and incomplete
+	Bug-066456 - Notices are coming if enter integer value other than 1 & 2 in URL
+	Bug-066454 - Inactive courses are coming in the sitemap
+	Bug-066453 - “Add from library” button is not aligned with file upload field
+	Bug-066452 - Status "NA" and comment are coming in course refund request detail
+	Bug-066294 - Course subtitle is not coming complete in the listing
+	Bug-066247 - Tag based filter is not working correctly in frontend course listing
+	Bug-066221 - If content is long then its hiding behind the letter counter
+	Bug-066125 - Mark Favorite Heart Icon does not display on the list of More Course from teacher
+	Bug-066124 - Mark Favorite Heart Icon display over the Filter section
+	Bug-066025 - Functionality is not working correctly when opening the learning page after the completion
+	Bug-065982 - Heart Icon is not filled with the color when activate it
+	Bug-065968 - Show reviews count on the right side of line
+	Bug-065609 - Pagination is not working on course refund request page
+	Bug-065552 - Teacher should not be able to enroll on his own courses
+	Bug-065539 - Warnings are coming when adding course without profile completion
+	Bug-065478 - Fatal error is coming when searching with alphabetic value in price range
+	Bug-065457 - Pagination is not working on course approval requests page
+	Bug-065455 - Admin permission is not there for course approval requests module
+
 ## TV-4.1.3.20220831
 
 
