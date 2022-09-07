@@ -32,7 +32,7 @@ class Question extends MyAppModel
     }
     
     /**
-     * Get Question Types
+     * Get Question Options
      * 
      * @param int $key
      * @return array
@@ -47,6 +47,21 @@ class Question extends MyAppModel
         }
         $srch->addOrder('queopt_order', 'ASC');
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+    }
+
+    /**
+     * Get Question Options Details
+     * 
+     * @param int $key
+     * @return array
+     */
+    public function getOptions()
+    {
+        $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
+        $srch->addMultipleFields(['queopt_id', 'queopt_title', 'queopt_order', 'queopt_detail']);
+        $srch->addCondition('queopt_ques_id', '=', $this->mainTableRecordId);
+        $srch->addOrder('queopt_order', 'ASC');
+        return FatApp::getDb()->fetchAll($srch->getResultSet());
     }
 
 
@@ -84,12 +99,12 @@ class Question extends MyAppModel
         $quesId = $this->getMainTableRecordId();
         $ques_answers = [];
         if ($data['ques_type'] != Question::TYPE_MANUAL) {
-            foreach ($data['options'] as $key => $value) {
+            foreach ($data['queopt_title'] as $key => $value) {
                 $opt_data = [
                     'queopt_ques_id' => $quesId,
                     'queopt_title'   => $value,
                     'queopt_order'   => $key,
-                    'queopt_detail' =>  $description[$key] ?? ''
+                    'queopt_detail' =>  $data['queopt_detail'][$key] ?? ''
                 ];
                 $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
                 $queopt->assignValues($opt_data);
@@ -97,7 +112,7 @@ class Question extends MyAppModel
                     $db->rollbackTransaction();
                     return false;
                 }
-                if(in_array($key, $data['correct_answers'])){
+                if(in_array($key, $data['answers'])){
                     $ques_answers[] = $queopt->getId();
                 }
             }
@@ -144,4 +159,6 @@ class Question extends MyAppModel
         ];
         return AppConstant::returArrValue($arr, $key);
     }
+
+
 }

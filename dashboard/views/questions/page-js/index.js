@@ -22,25 +22,28 @@ $(function () {
             search(document.frmQuesSearch);
         });
     };
-    getSubcategories = function (id, target) {
+    getSubcategories = function (id, target, subCategoryId = 0) {
         id = (id == '') ? 0 : id;
         fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id]), '', function (res) {
             $(target).html(res);
+            if(subCategoryId > 0){
+                $(target).val(subCategoryId);
+            }
         });
     };
-    addForm = function () {
-        fcom.ajax(fcom.makeUrl('Questions', 'addForm'), '',function (response) {
+    form = function (id) {
+        fcom.ajax(fcom.makeUrl('Questions', 'form', [id]), '',function (response) {
             $.facebox(response, 'facebox-medium');
         });
     };
 
-    addOptionRow = function () {
-        var type = $('#ques_type').val();
-        fcom.ajax(fcom.makeUrl('Questions', 'addOption'), {type: type}, function (res) {
-            $(".more-container-js").append(res);
+    addOptions = function () {
+        var data = fcom.frmData(document.frmQuestion);
+        fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), data, function (res) {
+            $(".more-container-js").html(res);
         });
     };
-    setupQuesType = function () {
+    showOptions = function () {
         var type = $('#ques_type').val();
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
             $('.options-container').show();
@@ -50,10 +53,7 @@ $(function () {
             $('.more-container-js').empty();
         }   
     };
-    removeOptionRow = function (obj) {
-        $(obj).parents('.typeFieldsJs').remove();
-    };
-    setupQuestion = function (frm) {
+    setup = function (frm) {
         if (!$(frm).validate()) {
             return;
         }
@@ -67,10 +67,10 @@ $(function () {
             }
             i++;
         });
-        console.log(answers);
         data.append('answers', answers);
-        fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setupQuestion'), data, function(res){
-            console.log(res);
+        fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setup'), data, function(res){
+            search(document.frmQuesSearch);
+            $.facebox.close();
         });
 
     };

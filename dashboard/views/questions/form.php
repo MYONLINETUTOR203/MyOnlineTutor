@@ -2,11 +2,11 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'questionFrm');
 $frm->setFormTagAttribute('class', 'form');
-$frm->setFormTagAttribute('onsubmit', 'setupQuestion(this, false); return(false);');
+$frm->setFormTagAttribute('onsubmit', 'setup(this, false); return(false);');
 $titleFld = $frm->getField('ques_title');
 $typeFld = $frm->getField('ques_type');
 $typeFld->setFieldTagAttribute('id', 'ques_type');
-$typeFld->setFieldTagAttribute('onchange', 'setupQuesType(this.value)');
+$typeFld->setFieldTagAttribute('onchange', 'showOptions(this.value)');
 $detailFld = $frm->getField('ques_detail');
 $catFld = $frm->getField('ques_cate_id');
 $subCatFld = $frm->getField('ques_subcate_id');
@@ -16,20 +16,14 @@ $hintFld = $frm->getField('ques_hint');
 $marksFld = $frm->getField('ques_marks');
 $fld = $frm->getField('ques_id');
 $fld->setFieldTagAttribute('id', 'ques_id');
-$bannerFld = $frm->getField('ques_banner');
+$optionCount = $frm->getField('ques_options_count');
+$addOptionsFld = $frm->getField('add_options');
+$addOptionsFld->setFieldTagAttribute('onclick', 'addOptions()');
 $submitButton = $frm->getField('submit');
-$submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form); return(false);');
-
+$submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);');
 ?>
 <div class="facebox-panel">
     <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
-    <div class="facebox-panel__head">
-        <div class="tabs tabs--line border-bottom-0">
-            <ul>
-                <li class="is-active"><a href="javascript:void(0);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
-            </ul>
-        </div>
-    </div>
     <div class="facebox-panel__body">
         <?php echo $frm->getFormTag(); ?>
         <?php echo $frm->getFieldHTML('ques_id'); ?>
@@ -130,6 +124,23 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form); return
                 <div class="field-set">
                     <div class="caption-wraper">
                         <label class="field_label">
+                            <?php echo $marksFld->getCaption(); ?>
+                            <?php if ($marksFld->requirement->isRequired()) { ?>
+                                <span class="spn_must_field">*</span>
+                            <?php } ?>
+                        </label>
+                    </div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                            <?php echo str_replace('type="text"', 'type="number"', $marksFld->getHtml()); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="field-set">
+                    <div class="caption-wraper">
+                        <label class="field_label">
                             <?php echo $hintFld->getCaption(); ?>
                             <?php if ($hintFld->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
@@ -143,47 +154,40 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form); return
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="row options-container" style="display: none;">
             <div class="col-md-6">
                 <div class="field-set">
                     <div class="caption-wraper">
                         <label class="field_label">
-                            <?php echo $marksFld->getCaption(); ?>
-                            <?php if ($marksFld->requirement->isRequired()) { ?>
+                            <?php echo $optionCount->getCaption(); ?>
+                            <?php if ($optionCount->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
                             <?php } ?>
                         </label>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
-                            <?php echo $marksFld->getHtml(); ?>
+                            <?php echo $optionCount->getHtml(); ?>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="options-container" style="display:none;">
-            <div class="row">
-                <div class="col-md-10">
-                    <div class="field-set">
-                        <div class="caption-wraper">
-                            <label class="field_label">
-                                <?php echo Label::getLabel('LBL_QUESTION_OPTIONS'); ?>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
+            <div class="col-md-6">
+                <div class="field-set">
                     <div class="caption-wraper">
-                        <label class="field_label">
-                            <a href="javascript:addOptionRow()" class="color-secondary"> +<?php echo Label::getLabel('LBL_ADD_OPTIONS'); ?></a>
-                        </label>
+                        <label class="field_label">&nbsp;</label>
+                    </div>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                        <?php echo $addOptionsFld->getHtml(); ?>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="more-container-js sortableLearningJs"></div>
         </div>
+        <div class="more-container-js"></div>
        
         
         <div class="row form-action-sticky">
@@ -206,4 +210,8 @@ $submitButton->addFieldTagAttribute('onClick', 'setupQuestion(this.form); return
     var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
     var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
     var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
+
+    $(document).ready(function(){
+        getSubcategories('<?php echo $categoryId; ?>', '#subCateAddQues', '<?php echo $subCategoryId; ?>');
+    });
 </script>

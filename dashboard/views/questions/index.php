@@ -26,7 +26,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                         <?php echo Label::getLabel('LBL_SEARCH'); ?>
                     </a>
                     <?php if ($siteUserType == User::TEACHER) { ?>
-                        <a href="javascript:void(0);" onclick="addForm();" class="btn color-secondary btn--bordered margin-left-4">
+                        <a href="javascript:void(0);" onclick="form(0);" class="btn color-secondary btn--bordered margin-left-4">
                             <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                                 <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
                             </svg>

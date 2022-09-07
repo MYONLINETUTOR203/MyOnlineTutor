@@ -113,55 +113,58 @@ class QuestionsController extends DashboardController
      *
      * @return html
      */
-    public function addForm()
+    public function form($id = 0)
     {
-        $frm = $this->getForm();
+        $type = 0;
+        if (0 < $id) {
+            $question = Question::getAttributesById($id);
+            if (empty($question) || $question['ques_user_id'] != $this->siteUserId) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+            }
+            $type = $question['ques_type'];
+            $quesObj = new Question($question['ques_id']);
+            $options = $quesObj->getOptions();
+        }
+        $frm = $this->getForm($type);
+        $frm->fill($question ?? []);
+        $this->set('categoryId', $question['ques_cate_id'] ?? 0);
+        $this->set('subCategoryId', $question['ques_subcate_id'] ?? 0);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
 
-    public function setupQuestion()
+    public function setup()
     {
-        $frm = $this->getForm();
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        $type = FatApp::getPostedData('ques_type', FatUtility::VAR_INT, 0);
+        $frm = $this->getForm($type);
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
-        $answers=[];
         if ($type != Question::TYPE_MANUAL) {
-            $post['options'] = FatApp::getPostedData('queopt_title');
-            $post['option_answers'] = FatApp::getPostedData('ques_answer');
-            $answers = FatApp::getPostedData('answers');
-            $description = FatApp::getPostedData('queopt_description');
-            if (empty($post['options'])) {
-                FatUtility::dieJsonError(Label::getLabel('LBL_Please_Enter_Question_Option_Values'));
-            }
-            if (empty($post['option_answers'])) {
+            $post['queopt_title'] = FatApp::getPostedData('queopt_title');
+            $post['answers'] = FatApp::getPostedData('ques_answer');
+            if (empty($post['answers'])) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_Please_Select_Correct_Answer(s)_From_The_Given_Options'));
             }
-            if (!is_array($answers)) {
-                $answers = [$answers];
-            }
         }
-        $post['correct_answers'] = $answers;
         $post['ques_user_id'] = $this->siteUserId;
         $post['ques_status'] = AppConstant::ACTIVE;
-
-        $question = new Question($post['ques_id']);
-
-        if(!$question->addUpdateQuestion($post)){
+        $quesId = $post['ques_id'];
+        unset($post['ques_id']);
+        $question = new Question($quesId);
+        if (!$question->addUpdateQuestion($post)) {
             FatUtility::dieJsonError($question->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
-        
     }
 
-    public function addOption()
-    {
-        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
-        $frm = $this->getForm($type);
-        $this->set('frm', $frm);
+    public function optionForm()
+    {   
+        $type = FatApp::getPostedData('ques_type', FatUtility::VAR_INT, 0);
+        $count = FatApp::getPostedData('ques_options_count', FatUtility::VAR_INT, 0);
+        $this->set('frm', $this->getOptionsForm($type, $count));
         $this->set('type', $type);
+        $this->set('count', $count);
         $this->_template->render(false, false);
     }
 
@@ -170,9 +173,9 @@ class QuestionsController extends DashboardController
     {
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm = new Form('frmQuestion');
-        $frm->addHiddenField('', 'ques_id')->requirements()->setIntPositive();
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
-        $fld->requirements()->setRequired(true);
+        $frm->addHiddenField('', 'ques_id', 0)->requirements()->setIntPositive();
+        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
+        $typeFld->requirements()->setRequired(true);
         $fld = $frm->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
         $fld->requirements()->setLength(10, 100);
         $fld = $frm->addTextArea(Label::getLabel('LBL_DESCRIPTION'), 'ques_detail');
@@ -180,36 +183,27 @@ class QuestionsController extends DashboardController
         $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $fld->requirements()->setRequired(true);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
-        $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
         $fld = $frm->addIntegerField(Label::getLabel('LBL_MARKS'), 'ques_marks');
         $fld->requirements()->setRequired(true);
-        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired(true);
-        $frm->addTextArea(Label::getLabel('LBL_OPTION_DESCRIPTION'), 'queopt_detail[]')->requirements()->setLength(10, 100);
-
-        if ($type == Question::TYPE_SINGLE) {
-            $fld = $frm->addRadioButtons('', 'ques_answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
-        }
-        if ($type == Question::TYPE_MULTIPLE) {
-            $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', 1);
-        }
-
-
+        $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+        $fld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
+        $fld->requirements()->setRequired();
+        $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
         $frm->addButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;
     }
 
 
-    private function getOptionsForm($type = Question::TYPE_SINGLE, $no = 0)
+    private function getOptionsForm(int $type, int $count)
     {
         $frm = new Form('frmOptions');
-        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'option_title[]')->requirements()->setRequired(true);
+        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired(true);
         if ($type == Question::TYPE_SINGLE) {
-            $fld = $frm->addRadioButtons('', 'answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
+            $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
+            $fld->requirements()->setRequired();
+        } elseif ($type == Question::TYPE_MULTIPLE) {
+            $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', 1);
         }
-        if ($type == Question::TYPE_MULTIPLE) {
-            $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'answer[]', 1);
-        }
-        $frm->addTextArea(Label::getLabel('LBL_OPTION_DESCRIPTION'), 'option_description[]')->requirements()->setLength(10, 100);
         return $frm;
     }
 }

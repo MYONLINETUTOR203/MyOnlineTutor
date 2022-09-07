@@ -61,7 +61,7 @@ if (count($questions) == 0) {
                     <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $actionLabel; ?></div>
                         <div class="flex-cell__content">
-                            <a href="javascript:void(0);" onclick="addForm('<?php echo $question['ques_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                            <a href="javascript:void(0);" onclick="form('<?php echo $question['ques_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                 <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#edit'; ?>"></use>
                                 </svg>
