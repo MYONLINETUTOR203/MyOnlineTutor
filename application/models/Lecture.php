@@ -406,7 +406,9 @@ class Lecture extends MyAppModel
         }
         /* get lecture content duration */
         $content = static::getAttributesById($this->getMainTableRecordId(), 'lecture_details');
-        $row['lecture_duration'] = (ceil(str_word_count(strip_tags($content)) / 100) * 60) + $duration;
+        $content = strip_tags($content);
+        $content = count(explode(' ', $content));
+        $row['lecture_duration'] = (ceil($content / 100) * 60) + $duration;
         /* update lecture duration */
         $this->assignValues($row);
         if (!$this->save()) {
