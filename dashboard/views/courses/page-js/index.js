@@ -11,6 +11,7 @@ $(function () {
     };
     clearSearch = function () {
         document.frmSearch.reset();
+        getSubCategories(0);
         search(document.frmSearch);
     };
     form = function () {

@@ -41,6 +41,7 @@ $(document).ready(function () {
     clearSearch = function () {
         document.frmSearch.reset();
         $("input[name='course_clang_id'], select[name='course_cateid'], select[name='course_subcateid']").val('');
+        getSubcategories(0);
         search(document.frmSearch);
     };
 
