@@ -243,6 +243,7 @@ class Order extends MyAppModel
         $srch = new SearchBase(Course::DB_TBL, 'course');
         $srch->addCondition('course.course_id', 'IN', $courseIds);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addMultipleFields(['course_id', 'course_price', 'course_user_id']);
         $rows = FatApp::getDb()->fetchAll($srch->getResultSet(), 'course_id');
         if (count($rows) < count($courseIds)) {
