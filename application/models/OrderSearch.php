@@ -109,7 +109,6 @@ class OrderSearch extends YocoachSearch
         if (count($rows) == 0) {
             return [];
         }
-        $pmethodIds = array_column($rows, 'order_pmethod_id');
         $pmethods = PaymentMethod::getPayins(true);
         $countryIds = array_column($rows, 'learner_country_id');
         $countries = Country::getNames($this->langId, $countryIds);
@@ -155,6 +154,7 @@ class OrderSearch extends YocoachSearch
             'orders.order_payment_status' => 'order_payment_status',
             'orders.order_total_amount' => 'order_total_amount',
             'orders.order_addedon' => 'order_addedon',
+            'ordcrs.ordcrs_amount' => 'ordcrs_amount',
             'learner.user_email' => 'learner_email',
             'learner.user_first_name' => 'learner_first_name',
             'learner.user_last_name' => 'learner_last_name',

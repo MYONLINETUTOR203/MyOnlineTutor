@@ -1131,7 +1131,8 @@ class Order extends MyAppModel
                     'course.course_duration',
                     'ordcrs.ordcrs_amount',
                     'teacher.user_email',
-                    'ordcrs.ordcrs_status'
+                    'ordcrs.ordcrs_status',
+                    'ordcrs.ordcrs_commission'
                 ]);
                 break;
             case Order::TYPE_WALLET:

@@ -198,8 +198,8 @@ $payins[0] = Label::getLabel('LBL_N/A');
                                                 <strong><?php echo Label::getLabel('LBL_COURSE_TITLE'); ?> : </strong><?php echo $childeOrderDetails['course_title']; ?><br>
                                                 <strong><?php echo Label::getLabel('LBL_TEACHER_NAME'); ?> : </strong><?php echo ucwords($childeOrderDetails['user_first_name']. ' ' .$childeOrderDetails['user_last_name']); ?><br>
                                                 <strong><?php echo Label::getLabel('LBL_TEACHER_EMAIL'); ?> : </strong><?php echo $childeOrderDetails['user_email']; ?><br>
-                                                <strong><?php echo Label::getLabel('LBL_COURSE_STATUS'); ?> : </strong><?php echo OrderCourse::getStatuses($childeOrderDetails['ordcrs_status']); ?><br>
-                                                <strong><?php echo Label::getLabel('LBL_AMOUNT'); ?> : </strong><?php echo MyUtility::formatMoney($order['order_net_amount']); ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_AMOUNT'); ?> : </strong><?php echo MyUtility::formatMoney($order['ordcrs_amount']); ?><br>
+                                                <strong><?php echo Label::getLabel('LBL_ADMIN_COMMISSION_(%)'); ?> : </strong><?php echo $childeOrderDetails['ordcrs_commission'] . '%'; ?><br>
                                                 <?php
                                                 break;
                                         }
