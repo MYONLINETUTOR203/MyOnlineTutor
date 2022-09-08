@@ -4,7 +4,7 @@
         <div class="layout-flex">
             <div class="layout-flex__large">
                 <div class="certificate-media margin-bottom-4">
-                    <object data="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) ?>#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="603">
+                    <object data="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) . '?t=' . time() ?>#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="603">
                         <p>Your web browser doesn't have a PDF plugin.
                             Instead you can <a class="underline color-primary" target="_blank" href="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) ?>#toolbar=0&navpanes=0&scrollbar=0">click here</a> to access the file directly.</p>
                     </object>

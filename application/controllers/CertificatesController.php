@@ -82,30 +82,4 @@ class CertificatesController extends MyAppController
         ]);
         $this->_template->render();
     }
-
-    /**
-     * Generating sample certificate with dummy data for testing at admin end.
-     */
-    public function generateSample()
-    {
-        /* Create dummy data */
-        $data = [
-            'learner_first_name' => 'Martha',
-            'learner_last_name' => 'Christopher',
-            'teacher_first_name' => 'John',
-            'teacher_last_name' => 'Doe',
-            'course_title' => 'English Language Learning - Beginners',
-            'course_clang_name' => 'English',
-            'user_lang_id' => $this->siteLangId,
-            'cert_number' => 'YC_h34uwh9e72w',
-            'crspro_completed' => date('Y-m-d H:i:s'),
-        ];
-        $cert = new Certificate(0, $this->siteUserId, $this->siteLangId);
-        $content = $cert->getFormattedContent($data);
-        $this->sets([
-            'content' => $content,
-            'layoutDir' => Language::getAttributesById($this->siteLangId, 'language_direction')
-        ]);
-        $this->_template->render(false, false, 'certificates/generate.php');
-    }
 }
