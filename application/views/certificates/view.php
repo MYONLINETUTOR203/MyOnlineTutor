@@ -53,7 +53,7 @@
                                 </p>
                                 <div class="course-tile__meta d-flex align-items-center  margin-bottom-5">
                                     <div class="course-tile__item margin-2 margin-left-0">
-                                        <?php echo YouTube::convertDuration($order['course_duration'], true, false) . ', ';
+                                        <?php echo YouTube::convertDuration($order['course_duration']) . ', ';
                                         echo $order['course_lectures'] . ' ' . Label::getLabel('LBL_LECTURES') ?>
                                     </div>
                                     <div class="course-tile__item margin-2 margin-left-4">
