@@ -33,6 +33,13 @@ foreach ($arrListing as $sn => $row) {
             case 'coapre_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]));
                 break;
+            case 'coapre_title':
+                $title = $row[$key];
+                if (!empty($row['course_deleted'])) {
+                    $title .= '<br>[' . Label::getLabel('LBL_DELETED') . ']';
+                }
+                $td->appendElement('plaintext', [], $title, true);
+                break;
             case 'action':
                 $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
                 $li = $ul->appendElement("li", ['class' => 'droplink']);
