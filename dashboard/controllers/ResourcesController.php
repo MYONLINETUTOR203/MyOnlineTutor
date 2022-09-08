@@ -17,6 +17,9 @@ class ResourcesController extends DashboardController
     public function __construct(string $action)
     {
         parent::__construct($action);
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
     }
 
     /**
