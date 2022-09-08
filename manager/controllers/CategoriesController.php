@@ -135,7 +135,7 @@ class CategoriesController extends AdminBaseController
                 FatUtility::dieJsonError(Label::getLabel('LBL_CANNOT_ASSIGN_PARENT_AS_THIS_CATEGORY_HAS_ITS_OWN_SUBCATEGORIES'));
             }
         }
-        if (!$category->addUpdateData($post)) {
+        if (!$category->setup($post)) {
             FatUtility::dieJsonError($category->getError());
         }
         FatUtility::dieJsonSuccess([

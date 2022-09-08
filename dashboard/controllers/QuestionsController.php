@@ -34,13 +34,11 @@ class QuestionsController extends DashboardController
     public function search()
     {
         $form = QuestionSearch::getSearchForm($this->siteLangId);
-
         if (!$post = $form->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id'])) {
             FatUtility::dieJsonError(current($form->getValidationErrors()));
         }
-
         $post['teacher_id'] = $this->siteUserId;
-        $srch = new QuestionSearch($this->siteLangId, 0, User::SUPPORT);
+        $srch = new QuestionSearch($this->siteLangId, $this->siteUserId, User::SUPPORT);
         $srch->applySearchConditions($post);
         $srch->applyPrimaryConditions();
         $srch->addMultipleFields(
@@ -58,7 +56,6 @@ class QuestionsController extends DashboardController
         $srch->addOrder('ques_status', 'DESC');
         $srch->addOrder('ques_id');
         $data = $srch->fetchAndFormat();
-        $categoryIds = array_keys($data);
         $this->sets([
             'questions' => $data,
             'postedData' => $post,
@@ -88,7 +85,6 @@ class QuestionsController extends DashboardController
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
     }
 
-
     /**
      * Fetch sub categories for selected category
      *
@@ -115,7 +111,6 @@ class QuestionsController extends DashboardController
      */
     public function form($id = 0)
     {
-        $type = 0;
         if (0 < $id) {
             $question = Question::getAttributesById($id);
             if (empty($question) || $question['ques_user_id'] != $this->siteUserId) {
@@ -125,54 +120,60 @@ class QuestionsController extends DashboardController
             $quesObj = new Question($question['ques_id']);
             $question['options'] = array_column($quesObj->getOptions(), NULL, 'queopt_order');
         }
-        $frm = $this->getForm($type); 
+        $frm = $this->getForm(); 
         if (isset($question)) {
             $frm->fill($question ?? []);
             $this->set('question', $question ?? []);
-            $this->set('optionsFrm',$this->getOptionsForm($question['ques_type'], $question['ques_options_count']));
+            $this->set('optionsFrm',$this->getOptionsForm($question['ques_type']));
         }
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
 
+    /**
+     * Setup Questions
+     */
     public function setup()
     {
-        $type = FatApp::getPostedData('ques_type', FatUtility::VAR_INT, 0);
-        $frm = $this->getForm($type);
-        
+        $frm = $this->getForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id', 'ques_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
-        }
-        if ($type != Question::TYPE_MANUAL) {
-            $post['queopt_title'] = FatApp::getPostedData('queopt_title');
+        }  
+        if ($post['ques_type'] != Question::TYPE_MANUAL) {
+            $optionFrm = $this->getOptionsForm($post['ques_type']);
+            if (!$optionData = $optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
+                FatUtility::dieJsonError(current($optionFrm->getValidationErrors()));
+            }  
             $post['answers'] = FatApp::getPostedData('ques_answer');
-            if (empty($post['answers'])) {
-                FatUtility::dieJsonError(Label::getLabel('LBL_Please_Select_Correct_Answer(s)_From_The_Given_Options'));
-            }
+            $post['queopt_title'] = FatApp::getPostedData('queopt_title');
         }
-        $post['ques_user_id'] = $this->siteUserId;
-        $post['ques_status'] = AppConstant::ACTIVE;
         $quesId = $post['ques_id'];
-        unset($post['ques_id']);
-        $question = new Question($quesId);
-        if (!$question->addUpdateQuestion($post)) {
+        $question = new Question($quesId, $this->siteUserId);
+        if (!$question->setup($post)) {
             FatUtility::dieJsonError($question->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
     }
 
+    /**
+     * Render Option Fields
+     */
     public function optionForm()
     {   
         $type = FatApp::getPostedData('ques_type', FatUtility::VAR_INT, 0);
         $count = FatApp::getPostedData('ques_options_count', FatUtility::VAR_INT, 0);
-        $this->set('frm', $this->getOptionsForm($type, $count));
+        $this->set('frm', $this->getOptionsForm($type));
         $this->set('type', $type);
         $this->set('count', $count);
         $this->_template->render(false, false);
     }
 
-
-    private function getForm($type = 0)
+    /**
+     * Get Questions Form
+     *
+     * @return Form
+     */
+    private function getForm()
     {
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm = new Form('frmQuestion');
@@ -192,13 +193,18 @@ class QuestionsController extends DashboardController
         $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
         $countFld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
         $countFld->requirements()->setRequired();
+        $countFld->requirements()->setIntPositive();
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
-        $frm->addButton('', 'submit', Label::getLabel('LBL_SAVE'));
+        $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;
     }
 
-
-    private function getOptionsForm(int $type, int $count)
+    /**
+     * Get Question Options Form
+     *
+     * @return Form
+     */
+    private function getOptionsForm(int $type)
     {
         $frm = new Form('frmOptions');
         $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired();
@@ -207,33 +213,9 @@ class QuestionsController extends DashboardController
             $fld->requirements()->setRequired();
         } elseif ($type == Question::TYPE_MULTIPLE) {
             $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', 1);
+            $fld->requirements()->setRequired();
         }
         return $frm;
-    }
-
-     private function validate($data)
-    {
-        /* validate categories */
-        $categories = [$data['ques_cate_id'], $data['ques_subcate_id']];
-        $srch = Category::getSearchObject();
-        $srch->doNotCalculateRecords();
-        $srch->addFld('cate_id');
-        $srch->addCondition('cate_id', 'IN', $categories);
-        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
-        $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $categories = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
-        echo "<pre>"; print_r(($data));exit;
-        if (!array_key_exists($data['ques_cate_id'], $categories)) {
-           
-            $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
-            return false;
-        }
-        // if ($data['ques_subcate_id'] > 0 && !array_key_exists($data['ques_subcate_id'], $categories)) {
-        //     $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
-        //     return false;
-        // }
-
-        return true;
     }
 
 }

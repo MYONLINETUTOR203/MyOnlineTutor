@@ -57,19 +57,9 @@ $(function () {
             return;
         }
         var data = new FormData(frm);
-        var i = 0;
-        var answers = new Array();
-        $('.typeFieldsJs').each(function() {
-            console.log($(this).find('.optAnswer'));
-            if ($(this).find('.optAnswer').is(':checked')) {
-                answers.push(i);
-            }
-            i++;
-        });
-        data.append('answers', answers);
         fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setup'), data, function(res){
             search(document.frmQuesSearch);
-            //$.facebox.close();
+            $.facebox.close();
         });
 
     };

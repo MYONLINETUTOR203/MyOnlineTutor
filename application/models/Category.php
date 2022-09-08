@@ -9,7 +9,6 @@ class Category extends MyAppModel
 
     const TYPE_COURSE = 1;
     const TYPE_QUESTION = 2;
-    const TYPE_QUIZ = 3;
 
     private $langId;
 
@@ -46,7 +45,7 @@ class Category extends MyAppModel
      * @param array $data
      * @return bool
      */
-    public function addUpdateData($data): bool
+    public function setup($data): bool
     {
         $parent = FatUtility::int($data['cate_parent']);
         if (!$this->checkUnique($data['cate_identifier'], $parent)) {

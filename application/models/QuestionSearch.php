@@ -37,6 +37,9 @@ class QuestionSearch extends YocoachSearch
         $this->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
         $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        if(0 < $this->userId){
+            $this->addCondition('ques_user_id', '=', $this->userId);
+        }
     }
 
     /**
@@ -58,9 +61,6 @@ class QuestionSearch extends YocoachSearch
         }
         if (isset($post['ques_type']) && $post['ques_type'] > 0) {
             $this->addCondition('ques.ques_type', '=', $post['ques_type']);
-        }
-        if(isset($post['teacher_id']) && $post['teacher_id']){
-            $this->addCondition('ques_user_id', '=', $post['teacher_id']);
         }
     }
 
@@ -168,7 +168,7 @@ class QuestionSearch extends YocoachSearch
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'quesTeacher', '', ['id' => 'quesTeacher', 'autocomplete' => 'off']);
-        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', 10)->requirements()->setInt();
+        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
         $frm->addResetButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));

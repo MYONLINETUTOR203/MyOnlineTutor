@@ -10,13 +10,16 @@ class Question extends MyAppModel
     public const TYPE_MULTIPLE = 2;
     public const TYPE_MANUAL = 3;
 
+    private $userId;
+
     /**
      * Initialize Questions
      *
      * @param int $id
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, int $userId = 0)
     {
+        $this->userId = $userId;
         parent::__construct(static::DB_TBL, 'ques_id', $id);
     }
 
@@ -30,10 +33,10 @@ class Question extends MyAppModel
         $srch = new SearchBase(self::DB_TBL, 'ques');
         return $srch;
     }
-    
+
     /**
      * Get Question Options
-     * 
+     *
      * @param int $key
      * @return array
      */
@@ -42,7 +45,7 @@ class Question extends MyAppModel
         $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
         $srch->addMultipleFields(['queopt_id', 'queopt_title']);
         $srch->addCondition('queopt_ques_id', '=', $this->mainTableRecordId);
-        if(!empty($optionsIds)){
+        if (!empty($optionsIds)) {
             $srch->addCondition('queopt_id', 'IN', $optionsIds);
         }
         $srch->addOrder('queopt_order', 'ASC');
@@ -51,7 +54,7 @@ class Question extends MyAppModel
 
     /**
      * Get Question Options Details
-     * 
+     *
      * @return array
      */
     public function getOptions()
@@ -84,23 +87,37 @@ class Question extends MyAppModel
         return true;
     }
 
-    
-    public function addUpdateQuestion($data) 
+    /**
+     * Setup Questions
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function setup($data)
     {
         if (!$this->validate($data)) {
             return false;
         }
         $db = FatApp::getDb();
         $db->startTransaction();
+        unset($data['ques_id']);
         $this->assignValues($data);
+        $this->setFldValue('ques_user_id', $this->userId);
+        $this->setFldValue('ques_status', AppConstant::ACTIVE);
+        if ($this->mainTableRecordId < 1) {
+            $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
+        }
+        $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
             return false;
         }
         $quesId = $this->getMainTableRecordId();
+        FatApp::getDb()->deleteRecords(
+            static::DB_TBL_OPTIONS,
+            ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]
+        );
         $ques_answers = [];
-        FatApp::getDb()->deleteRecords(static::DB_TBL_OPTIONS,
-        ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]);
         if ($data['ques_type'] != Question::TYPE_MANUAL) {
             $i = 1;
             foreach ($data['queopt_title'] as $key => $value) {
@@ -116,7 +133,7 @@ class Question extends MyAppModel
                     $db->rollbackTransaction();
                     return false;
                 }
-                if(in_array($key, $data['answers'])){
+                if (in_array($key, $data['answers'])) {
                     $ques_answers[] = $queopt->getId();
                 }
                 $i++;
@@ -162,7 +179,7 @@ class Question extends MyAppModel
 
     /**
      * Get Question Types
-     * 
+     *
      * @param int $key
      * @return string|array
      */
@@ -175,7 +192,7 @@ class Question extends MyAppModel
         ];
         return AppConstant::returArrValue($arr, $key);
     }
-    
+
 
     /**
      * Get Question Status List
@@ -191,6 +208,4 @@ class Question extends MyAppModel
         ];
         return AppConstant::returArrValue($arr, $key);
     }
-
-
 }

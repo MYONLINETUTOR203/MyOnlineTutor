@@ -47,7 +47,6 @@ class QuestionsController extends AdminBaseController
         if (!$post = $form->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id'])) {
             FatUtility::dieJsonError(current($form->getValidationErrors()));
         }
-
         $srch = new QuestionSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->applySearchConditions($post);
         $srch->applyPrimaryConditions();
@@ -130,8 +129,6 @@ class QuestionsController extends AdminBaseController
         FatUtility::dieJsonSuccess(['data' => $data]);
     }
 
-
-
     /**
      * Fetch sub categories for selected category
      *
@@ -150,7 +147,6 @@ class QuestionsController extends AdminBaseController
         $this->set('subcategories', $subcategories);
         $this->_template->render(false, false);
     }
-
 
     /**
      * Get User Search Form
