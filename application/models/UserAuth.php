@@ -11,7 +11,6 @@ class UserAuth extends FatModel
 
     const SESSION_ELEMENT = 'APP_SESSION';
     const COOKIES_ELEMENT = 'APP_COOKIES';
-    const REFERRAL_PAGE_URL = 'REFERRAL_PAGE_URL';
     const DB_TBL_USER_AUTH = 'tbl_user_auth_token';
     const DB_TBL_USER_PRR = 'tbl_user_password_reset_requests';
 

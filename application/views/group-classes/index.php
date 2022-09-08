@@ -4,6 +4,7 @@ $keyword = $srchFrm->getField('keyword');
 $language = $srchFrm->getField('language');
 $classtype = $srchFrm->getField('classtype');
 $duration = $srchFrm->getField('duration');
+$pageno = $srchFrm->getField('pageno');
 $jslabels = json_encode([
     'allLanguages' => Label::getLabel('LBL_ALL_LANGUAGES'),
     'allClassTypes' => Label::getLabel('LBL_All_CLASS_TYPES'),
@@ -173,7 +174,7 @@ $jslabels = json_encode([
                                                     <?php foreach ($duration->options as $id => $name) { ?>
                                                         <li>
                                                             <label class="select-option">
-                                                                <input class="select-option__input duration-filter-js" type="checkbox" name="duration[]" value="<?php echo $id; ?>" <?php echo ($id == $classtype->value) ? 'checked' : ''; ?> />
+                                                                <input class="select-option__input duration-filter-js" type="checkbox" name="duration[]" value="<?php echo $id; ?>" <?php echo in_array($id, $duration->value) ? 'checked' : ''; ?> />
                                                                 <span class="select-option__item"><?php echo $name; ?></span>
                                                             </label>
                                                         </li>
@@ -202,6 +203,7 @@ $jslabels = json_encode([
                 </div>
             </div>
         </div>
+        <input type="text" name="pageno" value="<?php echo $pageno->value; ?>" style="display: none;" />
         </form>
     </div>
     <div class="container container--narrow">

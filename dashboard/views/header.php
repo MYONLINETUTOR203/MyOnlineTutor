@@ -1,6 +1,5 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$_SESSION[UserAuth::REFERRAL_PAGE_URL] = CommonHelper::getCurrentUrl();
 $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
 ?>
 <!doctype html>

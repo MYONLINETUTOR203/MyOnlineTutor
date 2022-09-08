@@ -59,11 +59,8 @@ class GuestUserController extends MyAppController
         if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
             UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
         }
-        $redirectUrl = $_SESSION[UserAuth::REFERRAL_PAGE_URL] ?? MyUtility::makeUrl('Account', '', [], CONF_WEBROOT_DASHBOARD);
-        FatUtility::dieJsonSuccess([
-            'msg' => Label::getLabel("MSG_LOGIN_SUCCESSFULL"),
-            'redirectUrl' => $redirectUrl
-        ]);
+        $_SESSION[AppConstant::SEARCH_SESSION] = FatApp::getPostedData();
+        FatUtility::dieJsonSuccess(Label::getLabel("MSG_LOGIN_SUCCESSFULL"));
     }
 
     /**
