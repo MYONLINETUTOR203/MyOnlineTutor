@@ -52,6 +52,9 @@ class YouTube extends FatUtility
         curl_close($ch);
         $youtubeData = json_decode($curlResource);
         $youtubeVals = json_decode(json_encode($youtubeData), true);
+        if ($youtubeVals['pageInfo']['totalResults'] < 1) {
+            return false;
+        }
         $duration = $youtubeVals['items'][0]['contentDetails']['duration'];
         $interval = new DateInterval($duration);
         return ($interval->d * 24 * 60 * 60) + ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;

@@ -343,10 +343,14 @@ class Lecture extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
+        if (!$duration = YouTube::getYoutubeVideoDuration($post['lecsrc_link'])) {
+            $this->error = Label::getLabel('LBL_UNABLE_TO_GET_VIDEO_DETAILS');
+            return false;
+        }
         $data = [
             'lecsrc_id' => $post['lecsrc_id'],
             'lecsrc_type' => static::TYPE_RESOURCE_EXTERNAL_URL,
-            'lecsrc_duration' => YouTube::getYoutubeVideoDuration($post['lecsrc_link']),
+            'lecsrc_duration' => $duration,
             'lecsrc_link' => $post['lecsrc_link'],
             'lecsrc_lecture_id' => $this->getMainTableRecordId(),
             'lecsrc_course_id' => $post['lecsrc_course_id'],
