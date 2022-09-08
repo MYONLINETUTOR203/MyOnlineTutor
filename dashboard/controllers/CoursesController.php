@@ -116,7 +116,7 @@ class CoursesController extends DashboardController
         $this->set('courseTitle', $courseTitle);
         $this->set('courseId', $courseId);
         $this->set("includeEditor", true);
-        $this->_template->addJs('js/jquery.tagit.js');
+        $this->_template->addJs(['js/jquery.tagit.js', 'js/jquery.ui.touch-punch.min.js']);
         $this->_template->render();
     }
 
