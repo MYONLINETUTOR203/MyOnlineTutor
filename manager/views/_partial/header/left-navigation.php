@@ -53,7 +53,8 @@
             <?php
             if (
                 $objPrivilege->canViewCategories(true) ||
-                $objPrivilege->canViewCertificates(true)
+                $objPrivilege->canViewCertificates(true) ||
+                $objPrivilege->canViewQuestions(true)
             ) { ?>
                 <li class="haschild">
                     <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_QUIZZES'); ?></a>
@@ -73,7 +74,7 @@
 
                         <?php if ($objPrivilege->canViewQuestions(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_QUESTIONS'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_MANAGE_QUESTIONS'); ?></a>
                             </li>
                         <?php } ?>
     

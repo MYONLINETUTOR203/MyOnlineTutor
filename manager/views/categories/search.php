@@ -5,8 +5,8 @@ $arrFlds = [
     'dragdrop' => '',
     'listserial' => Label::getLabel('LBL_Sr._No'),
     'cate_name' => Label::getLabel('LBL_NAME'),
-    /* 'cate_type' => Label::getLabel('LBL_TYPE'), */
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
+    'cate_records' => Label::getLabel('LBL_QUESTIONS'),
     'cate_created' => Label::getLabel('LBL_ADDED_ON'),
     'status' => Label::getLabel('LBL_STATUS'),
 ];
@@ -39,16 +39,23 @@ foreach ($arrListing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', [], $srNo);
                 break;
-            /* case 'cate_type':
-                $td->appendElement('plaintext', [], $types[$row['cate_type']]);
-                break; */
-        
             case 'cate_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['cate_created']));
                 break;
             case 'cate_sub_categories':
                 if ($row['cate_subcategories'] > 0) {
                     $td->appendElement('a', ['href' => MyUtility::makeUrl('Categories', 'index', [$row['cate_id']]), 'class' => 'button small green', 'title' => Label::getLabel('LBL_SUB_CATEGORIES')], $row['cate_subcategories'], true);
+                } else {
+                    $td->appendElement('plaintext', [], 0);
+                }
+                break;
+            case 'cate_records':
+                if ($row['cate_records'] > 0) {
+                    if ($canViewQuestions) {
+                        $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index', [$row['cate_id']]), 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
+                    } else {
+                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records']);
+                    }
                 } else {
                     $td->appendElement('plaintext', [], 0);
                 }

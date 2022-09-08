@@ -30,9 +30,34 @@ $(document).ready(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('Categories', 'setup'), fcom.frmData(frm), function (res) {
-            $(document).trigger('close.facebox');
             search(document.categorySearch);
-            updateOrder(0);
+            let element = $('.tabs_nav a.active').parent().next('li');
+            if (element.length > 0) {
+                let langId = element.find('a').attr('data-id');
+                langForm(res.cateId, langId);
+                return;
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+    langForm = function (cateId, langId) {
+        fcom.ajax(fcom.makeUrl('Categories', 'langForm', [cateId, langId]), '', function (response) {
+            $.facebox(response);
+        });
+    };
+    langSetup = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Categories', 'langSetup'), fcom.frmData(frm), function (res) {
+            search(document.categorySearch);
+            let element = $('.tabs_nav a.active').parent().next('li');
+            if (element.length > 0) {
+                let langId = element.find('a').attr('data-id');
+                langForm(res.cateId, langId);
+                return;
+            }
+            $(document).trigger('close.facebox');
         });
     };
     remove = function (cateId) {
