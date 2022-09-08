@@ -77,7 +77,20 @@ class LectureResourcesController extends DashboardController
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
-        
+        if (Lecture::getAttributesById($post['lecsrc_lecture_id'], 'lecture_course_id') != $post['lecsrc_course_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+        if ($post['lecsrc_id'] > 0) {
+            $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE);
+            $srch->addCondition('lecsrc_id', '=', $post['lecsrc_id']);
+            $srch->addFld('lecsrc_lecture_id');
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $resource = FatApp::getDb()->fetch($srch->getResultSet());
+            if (!$resource || $resource['lecsrc_lecture_id'] != $post['lecsrc_lecture_id']) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+            }
+        }
         if ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_LIBRARY) {
             $resources = FatApp::getPostedData('resources');
             if (empty($resources) || count($resources) < 1) {
@@ -94,7 +107,7 @@ class LectureResourcesController extends DashboardController
                     FatUtility::dieJsonError($resource->getError());
                 }
             }
-        } else {
+        } elseif ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_UPLOAD_FILE) {
             if (empty($_FILES['resource_files']['name'])) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
@@ -114,6 +127,8 @@ class LectureResourcesController extends DashboardController
             ) {
                 FatUtility::dieJsonError($resource->getError());
             }
+        } else {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_MEDIA_TYPE'));
         }
         FatUtility::dieJsonSuccess([
             'lectureId' => $post['lecsrc_lecture_id'],
