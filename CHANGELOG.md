@@ -1,5 +1,19 @@
 # YoCoach V3
 
+## TV-3.0.3.08092022
+
+Fixes:
+
+    #066665 System shall redirect the user to the same page and not the dashboard
+    #066546 "Invalid Request" Toast message appears when the user tries to add a new record
+    #066426 Error message not showing if any message error occurred while login into mobile device
+    #066410 Header and Footer cache not cleared on changing site language
+    #066389 When Gift Card is redeemed the Receiver's name and Gift code are not shown
+    #066245 Fatal Error display in view popup window in deleted teacher request
+    #065745 Multiple Log get generated and Also as per log multiple transaction get successful with Wallet
+    #065324 Page Title and Search headings to be added on the Messages tab
+    #065236 Country shall be updated as per the phone code selected
+
 ## TV-3.0.2.25082022
 
 Fixes:
