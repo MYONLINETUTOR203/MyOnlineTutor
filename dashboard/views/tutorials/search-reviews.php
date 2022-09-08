@@ -31,18 +31,20 @@
                             <?php echo FatDate::format($review['ratrev_created']); ?>
                         </div>
                     </div>
-
+                    <h6 class="review__title margin-top-6">
+                        <?php echo $review['ratrev_title']; ?>
+                    </h6>
                     <div class="review__message">
                         <p><?php echo $review['ratrev_detail'] ?></p>
                     </div>
                 </div>
             </div><?php
-        }
-        $records = count($reviews);
-    } else {
-        $this->includeTemplate('_partial/no-record-found.php', ['msgHeading' => Label::getLabel('LBL_NO_REVIEWS_POSTED_YET')]);
-    }
-    ?>
+                }
+                $records = count($reviews);
+            } else {
+                $this->includeTemplate('_partial/no-record-found.php', ['msgHeading' => Label::getLabel('LBL_NO_REVIEWS_POSTED_YET')]);
+            }
+                    ?>
     <!-- ] -->
 </div>
 <div class="pagination pagination--centered margin-top-10 reviewSrchListJs">
