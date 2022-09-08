@@ -210,6 +210,23 @@ class LecturesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        if (Course::getAttributesById($post['lecsrc_course_id'], 'course_user_id') != $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        if (Lecture::getAttributesById($post['lecsrc_lecture_id'], 'lecture_course_id') != $post['lecsrc_course_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+        if ($post['lecsrc_id'] > 0) {
+            $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE);
+            $srch->addCondition('lecsrc_id', '=', $post['lecsrc_id']);
+            $srch->addFld('lecsrc_lecture_id');
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $resource = FatApp::getDb()->fetch($srch->getResultSet());
+            if (!$resource || $resource['lecsrc_lecture_id'] != $post['lecsrc_lecture_id']) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+            }
+        }
         $lecture = new Lecture($post['lecsrc_lecture_id']);
         if (!$lecture->setupMedia($post)) {
             FatUtility::dieJsonError($lecture->getError());
