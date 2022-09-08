@@ -52,7 +52,6 @@ class Question extends MyAppModel
     /**
      * Get Question Options Details
      * 
-     * @param int $key
      * @return array
      */
     public function getOptions()
@@ -88,9 +87,11 @@ class Question extends MyAppModel
     
     public function addUpdateQuestion($data) 
     {
+        if (!$this->validate($data)) {
+            return false;
+        }
         $db = FatApp::getDb();
         $db->startTransaction();
-      
         $this->assignValues($data);
         if (!$this->save()) {
             $db->rollbackTransaction();
@@ -98,12 +99,15 @@ class Question extends MyAppModel
         }
         $quesId = $this->getMainTableRecordId();
         $ques_answers = [];
+        FatApp::getDb()->deleteRecords(static::DB_TBL_OPTIONS,
+        ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]);
         if ($data['ques_type'] != Question::TYPE_MANUAL) {
+            $i = 1;
             foreach ($data['queopt_title'] as $key => $value) {
                 $opt_data = [
                     'queopt_ques_id' => $quesId,
                     'queopt_title'   => $value,
-                    'queopt_order'   => $key,
+                    'queopt_order'   => $i,
                     'queopt_detail' =>  $data['queopt_detail'][$key] ?? ''
                 ];
                 $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
@@ -115,6 +119,7 @@ class Question extends MyAppModel
                 if(in_array($key, $data['answers'])){
                     $ques_answers[] = $queopt->getId();
                 }
+                $i++;
             }
             $this->assignValues(['ques_answer' => json_encode($ques_answers)]);
             if (!$this->save()) {
@@ -123,6 +128,33 @@ class Question extends MyAppModel
             }
         }
         $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * Validate Categories
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function validate(array $data)
+    {
+        $categories = [$data['ques_cate_id'], $data['ques_subcate_id']];
+        $srch = Category::getSearchObject();
+        $srch->doNotCalculateRecords();
+        $srch->addFld('cate_id');
+        $srch->addCondition('cate_id', 'IN', $categories);
+        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $categories = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
+        if (!array_key_exists($data['ques_cate_id'], $categories)) {
+            $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
+            return false;
+        }
+        if ($data['ques_subcate_id'] > 0 && !array_key_exists($data['ques_subcate_id'], $categories)) {
+            $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
+            return false;
+        }
         return true;
     }
 
@@ -137,8 +169,8 @@ class Question extends MyAppModel
     public static function getQuesTypes(int $key = null)
     {
         $arr = [
-            static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE'),
-            static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE'),
+            static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
+            static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE_CHOICE'),
             static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
         ];
         return AppConstant::returArrValue($arr, $key);

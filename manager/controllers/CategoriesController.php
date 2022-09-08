@@ -203,7 +203,7 @@ class CategoriesController extends AdminBaseController
         $fld = $frm->addTextBox(Label::getLabel('LBL_NAME'), 'cate_name')->requirements()->setRequired();
         $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
 
-        $parentCategories = Category::getCategoriesByParentId($langId, 0, Category::TYPE_QUIZ);
+        $parentCategories = Category::getCategoriesByParentId($langId, 0, Category::TYPE_QUESTION);
 
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);

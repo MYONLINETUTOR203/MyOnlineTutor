@@ -43,8 +43,7 @@ $(function () {
             $(".more-container-js").html(res);
         });
     };
-    showOptions = function () {
-        var type = $('#ques_type').val();
+    showOptions = function (type) {
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
             $('.options-container').show();
             $('.more-container-js').empty();    
@@ -70,7 +69,7 @@ $(function () {
         data.append('answers', answers);
         fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setup'), data, function(res){
             search(document.frmQuesSearch);
-            $.facebox.close();
+            //$.facebox.close();
         });
 
     };

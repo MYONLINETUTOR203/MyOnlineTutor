@@ -11,7 +11,7 @@ $detailFld = $frm->getField('ques_detail');
 $catFld = $frm->getField('ques_cate_id');
 $subCatFld = $frm->getField('ques_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCateAddQues');
-$catFld->setFieldTagAttribute('onclick', 'getSubcategories(this.value, "#subCateAddQues")');
+$catFld->setFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCateAddQues")');
 $hintFld = $frm->getField('ques_hint');
 $marksFld = $frm->getField('ques_marks');
 $fld = $frm->getField('ques_id');
@@ -156,7 +156,7 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
             </div>
         </div>
 
-        <div class="row options-container" style="display: none;">
+        <div class="row options-container" style="<?php echo isset($question['ques_type']) && ($question['type'] != Question::TYPE_SINGLE || $question['ques_type'] != Question::TYPE_MULTIPLE) ? '': 'display: none;'?>">
             <div class="col-md-6">
                 <div class="field-set">
                     <div class="caption-wraper">
@@ -187,7 +187,13 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
                 </div>
             </div>
         </div>
-        <div class="more-container-js"></div>
+        <div class="more-container-js">
+            <?php
+                if(isset($question['options']) && count($question['options']) > 0 && isset($optionsFrm)) {
+                    $this->includeTemplate('questions/option-form.php', array('question'=> $question, 'frm' => $optionsFrm), false);
+                }
+             ?>
+        </div>
        
         
         <div class="row form-action-sticky">
@@ -212,6 +218,6 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
     var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
 
     $(document).ready(function(){
-        getSubcategories('<?php echo $categoryId; ?>', '#subCateAddQues', '<?php echo $subCategoryId; ?>');
+        getSubcategories('<?php echo $question['ques_cate_id'] ?? 0; ?>', '#subCateAddQues', '<?php echo $question['ques_subcate_id'] ?? 0; ?>');
     });
 </script>
