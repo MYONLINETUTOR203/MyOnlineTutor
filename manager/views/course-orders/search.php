@@ -8,6 +8,8 @@ $arr_flds = [
     'teacher_name' => Label::getLabel('LBL_TEACHER'),
     'course_title' => Label::getLabel('LBL_TITLE'),
     'ordcrs_amount' => Label::getLabel('LBL_TOTAL'),
+    'ordcrs_discount' => Label::getLabel('LBL_DISCOUNT'),
+    'ordcrs_net_amount' => Label::getLabel('LBL_NET_TOTAL'),
     'order_payment_status' => Label::getLabel('LBL_PAYMENT'),
     'order_pmethod_id' => Label::getLabel('LBL_PAY_METHOD'),
     'order_created' => Label::getLabel('LBL_DATETIME'),
@@ -49,11 +51,11 @@ foreach ($arrListing as $row) {
                 $td->appendElement('plaintext', [], Order::getTypeArr($row[$key]), true);
                 break;
             case 'ordcrs_amount':
-            case 'ordcls_discount':
+            case 'ordcrs_discount':
                 $td->appendElement('plaintext', [], MyUtility::formatMoney($row[$key]), true);
                 break;
-            case 'ordcls_net_amount':
-                $netAmount = $row['ordcrs_amount'] - $row['ordcls_discount'];
+            case 'ordcrs_net_amount':
+                $netAmount = $row['ordcrs_amount'] - $row['ordcrs_discount'];
                 $td->appendElement('plaintext', [], MyUtility::formatMoney($netAmount), true);
                 break;
             case 'order_payment_status':
