@@ -66,6 +66,7 @@ class CourseRequestsController extends AdminBaseController
         $srch = new CourseRequestSearch($this->siteLangId, $this->siteAdminId, User::SUPPORT);
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = u.user_id', 'u');
         $srch->addSearchListingFields();
+        $srch->addFld('course_deleted');
         $srch->addOrder('coapre_id', 'DESC');
         $srch->applySearchConditions($post);
         $srch->setPageNumber($post['page']);

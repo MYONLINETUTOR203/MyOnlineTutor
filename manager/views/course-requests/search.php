@@ -42,9 +42,10 @@ foreach ($arrListing as $sn => $row) {
 
                 $innerLi = $innerUl->appendElement('li');
                 $innerLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_VIEW'), "onclick" => "view(" . $row['coapre_id'] . ");"], Label::getLabel('LBL_VIEW'), true);
-
-                $innerLi = $innerUl->appendElement('li');
-                $innerLi->appendElement('a', ['href' =>  'javascript:void(0);', 'class' => 'button small green', 'title' => Label::getLabel('LBL_PREVIEW'), 'onclick' => 'userLogin("' . $row['user_id'] . '", "' . $row['coapre_course_id'] . '")'], Label::getLabel('LBL_PREVIEW'), true);
+                if (empty($row['course_deleted'])) {
+                    $innerLi = $innerUl->appendElement('li');
+                    $innerLi->appendElement('a', ['href' =>  'javascript:void(0);', 'class' => 'button small green', 'title' => Label::getLabel('LBL_PREVIEW'), 'onclick' => 'userLogin("' . $row['user_id'] . '", "' . $row['coapre_course_id'] . '")'], Label::getLabel('LBL_PREVIEW'), true);
+                }
 
                 if ($canEdit && $row['coapre_status'] == Course::REQUEST_PENDING) {
                     $innerLi = $innerUl->appendElement('li');
