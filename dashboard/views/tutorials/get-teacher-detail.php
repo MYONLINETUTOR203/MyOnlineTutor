@@ -11,10 +11,11 @@
                 </div>
                 <div class="author-box__content">
                     <div class="author-box__head">
-                        <h5 class="author-name margin-0"><?php echo ucfirst($teacher['user_first_name'] . ' ' . $teacher['user_last_name']) ?></h5>
-                        <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$teacher['user_username']], CONF_WEBROOT_FRONTEND) ?>" class="underline color-primary padding-bottom-5">
-                            <?php echo Label::getLabel('LBL_VIEW_PROFILE'); ?>
-                        </a>
+                        <h4 class="author-name margin-0">
+                            <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$teacher['user_username']], CONF_WEBROOT_FRONTEND) ?>">
+                                <?php echo ucfirst($teacher['user_first_name'] . ' ' . $teacher['user_last_name']) ?>
+                            </a>
+                        </h4>
                     </div>
                     <div class="rating color-yellow">
                         <svg class="rating__media">
@@ -23,16 +24,12 @@
                         <span class="rating__value"><?php echo $teacher['testat_ratings']; ?></span>
                         <span class="rating__count"><?php echo '(' . $teacher['testat_reviewes'] . ' ' . Label::getLabel('LBL_REVIEWS') . ')'; ?></span>
                     </div>
-                    <div class="teaches margin-top-4">
-                        <span class="teaches__media">
-                            <svg class="icon icon--teaches icon--small">
-                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#teaches-icon"></use>
-                            </svg>
-                        </span>
-                        <span class="teaches__content">
-                            <strong><?php echo Label::getLabel('LBL_TEACHES:'); ?></strong>
-                            <?php echo $teacher['teacherTeachLanguageName']; ?>
-                        </span>
+                    <div class="course-counts margin-top-3">
+                        <div class="course-counts__item">
+                            <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$teacher['user_username']], CONF_WEBROOT_FRONTEND) ?>" class="underline color-primary padding-bottom-5">
+                                <?php echo Label::getLabel('LBL_VIEW_PROFILE'); ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
