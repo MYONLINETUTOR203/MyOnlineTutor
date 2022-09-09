@@ -24,6 +24,47 @@ class Question extends MyAppModel
     }
 
     /**
+     * Get Question Types
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getQuesTypes(int $key = null)
+    {
+        $arr = [
+            static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
+            static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE_CHOICE'),
+            static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get Question Status List
+     *
+     * @param integer $key
+     * @return string|array
+     */
+    public static function getStatuses(int $key = null)
+    {
+        $arr = [
+            AppConstant::ACTIVE => Label::getLabel('LBL_ACTIVE'),
+            AppConstant::INACTIVE => Label::getLabel('LBL_INACTIVE'),
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    public function getById()
+    {
+        $srch = new SearchBase(self::DB_TBL, 'ques');
+        $srch->addCondition('ques_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+
+    /**
      * get search base class object
      *
      * @return object
@@ -61,7 +102,8 @@ class Question extends MyAppModel
     {
         $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
         $srch->addMultipleFields(['queopt_id', 'queopt_title', 'queopt_order', 'queopt_detail']);
-        $srch->addCondition('queopt_ques_id', '=', $this->mainTableRecordId);
+        $srch->addCondition('queopt_ques_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
         $srch->addOrder('queopt_order', 'ASC');
         return FatApp::getDb()->fetchAll($srch->getResultSet());
     }
@@ -100,7 +142,6 @@ class Question extends MyAppModel
         }
         $db = FatApp::getDb();
         $db->startTransaction();
-        unset($data['ques_id']);
         $this->assignValues($data);
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
@@ -109,7 +150,6 @@ class Question extends MyAppModel
         }
         $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $db->rollbackTransaction();
             return false;
         }
         $quesId = $this->getMainTableRecordId();
@@ -121,16 +161,15 @@ class Question extends MyAppModel
         if ($data['ques_type'] != Question::TYPE_MANUAL) {
             $i = 1;
             foreach ($data['queopt_title'] as $key => $value) {
-                $opt_data = [
+                $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
+                $queopt->assignValues([
                     'queopt_ques_id' => $quesId,
                     'queopt_title'   => $value,
                     'queopt_order'   => $i,
-                    'queopt_detail' =>  $data['queopt_detail'][$key] ?? ''
-                ];
-                $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
-                $queopt->assignValues($opt_data);
+                ]);
                 if (!$queopt->addNew()) {
                     $db->rollbackTransaction();
+                    $this->error = $this->getError();
                     return false;
                 }
                 if (in_array($key, $data['answers'])) {
@@ -138,8 +177,10 @@ class Question extends MyAppModel
                 }
                 $i++;
             }
+            $this->setFldValue('ques_id', $quesId);
             $this->assignValues(['ques_answer' => json_encode($ques_answers)]);
             if (!$this->save()) {
+                $this->error = $this->getError();
                 $db->rollbackTransaction();
                 return false;
             }
@@ -177,35 +218,5 @@ class Question extends MyAppModel
 
 
 
-    /**
-     * Get Question Types
-     *
-     * @param int $key
-     * @return string|array
-     */
-    public static function getQuesTypes(int $key = null)
-    {
-        $arr = [
-            static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
-            static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE_CHOICE'),
-            static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
-        ];
-        return AppConstant::returArrValue($arr, $key);
-    }
-
-
-    /**
-     * Get Question Status List
-     *
-     * @param integer $key
-     * @return string|array
-     */
-    public static function getStatuses(int $key = null)
-    {
-        $arr = [
-            AppConstant::ACTIVE => Label::getLabel('LBL_ACTIVE'),
-            AppConstant::INACTIVE => Label::getLabel('LBL_INACTIVE'),
-        ];
-        return AppConstant::returArrValue($arr, $key);
-    }
+    
 }

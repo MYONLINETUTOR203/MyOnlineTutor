@@ -24,7 +24,7 @@ $(function () {
     };
     getSubcategories = function (id, target, subCategoryId = 0) {
         id = (id == '') ? 0 : id;
-        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id, subCategoryId]), '', function (res) {
             $(target).html(res);
             if(subCategoryId > 0){
                 $(target).val(subCategoryId);
@@ -38,8 +38,9 @@ $(function () {
     };
 
     addOptions = function () {
-        var data = fcom.frmData(document.frmQuestion);
-        fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), data, function (res) {
+        var type = document.frmQuestion.ques_type.value;
+        var count = document.frmQuestion.ques_options_count.value;
+        fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), { type, count }, function (res) {
             $(".more-container-js").html(res);
         });
     };
@@ -56,9 +57,9 @@ $(function () {
         if (!$(frm).validate()) {
             return;
         }
-        var data = new FormData(frm);
-        fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setup'), data, function(res){
-            search(document.frmQuesSearch);
+        var data = fcom.frmData(frm);
+        fcom.updateWithAjax(fcom.makeUrl('Questions', 'setup'), data, function(res){
+        //     // search(document.frmQuesSearch);
             $.facebox.close();
         });
 

@@ -22,7 +22,6 @@ class QuestionSearch extends YocoachSearch
         parent::__construct($langId, $userId, $userType);
         $this->joinTable(User::DB_TBL, 'LEFT JOIN', 'ques.ques_user_id = teacher.user_id', 'teacher');
         $this->joinTable(Category::DB_TBL, 'LEFT JOIN', 'ques.ques_cate_id = cate.cate_id', 'cate');
-        //$this->joinTable(Category::DB_LANG_TBL, 'LEFT OUTER JOIN', 'ques.ques_cate_id = catg_l.catelang_cate_id', 'catg_l');
     }
 
     
@@ -84,6 +83,7 @@ class QuestionSearch extends YocoachSearch
         foreach ($rows as $key => $row) {
             $row['ques_cate_name'] = isset($categories[$row['ques_cate_id']]) ? $categories[$row['ques_cate_id']] : '';
             $row['ques_subcate_name'] = isset($categories[$row['ques_subcate_id']]) ? $categories[$row['ques_subcate_id']] : '';
+            
             $rows[$key] = $row;
         }
         return $rows;

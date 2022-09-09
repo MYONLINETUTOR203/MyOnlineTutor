@@ -2,27 +2,24 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'questionFrm');
 $frm->setFormTagAttribute('class', 'form');
-$frm->setFormTagAttribute('onsubmit', 'setup(this, false); return(false);');
+$frm->setFormTagAttribute('onsubmit', 'setup(this); return false;');
 $titleFld = $frm->getField('ques_title');
 $typeFld = $frm->getField('ques_type');
 $typeFld->setFieldTagAttribute('id', 'ques_type');
 $typeFld->setFieldTagAttribute('onchange', 'showOptions(this.value)');
 $detailFld = $frm->getField('ques_detail');
 $catFld = $frm->getField('ques_cate_id');
+$catFld->setFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCateAddQues")');
 $subCatFld = $frm->getField('ques_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCateAddQues');
-$catFld->setFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCateAddQues")');
 $hintFld = $frm->getField('ques_hint');
 $marksFld = $frm->getField('ques_marks');
 $marksFld->setFieldTagAttribute('oninput', "this.value = !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null");
-$fld = $frm->getField('ques_id');
-$fld->setFieldTagAttribute('id', 'ques_id');
 $optionCount = $frm->getField('ques_options_count');
 $optionCount->setFieldTagAttribute('oninput', "this.value = !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null");
 $addOptionsFld = $frm->getField('add_options');
 $addOptionsFld->setFieldTagAttribute('onclick', 'addOptions()');
 $submitButton = $frm->getField('submit');
-$submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);');
 ?>
 <div class="facebox-panel">
     <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
@@ -158,7 +155,7 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
             </div>
         </div>
 
-        <div class="row options-container" style="<?php echo isset($question['ques_type']) && ($question['type'] != Question::TYPE_SINGLE || $question['ques_type'] != Question::TYPE_MULTIPLE) ? '': 'display: none;'?>">
+        <div class="row options-container" style="<?php echo (empty($typeFld->value) || $typeFld->value == Question::TYPE_MANUAL) ? 'display: none;' : ''; ?>">
             <div class="col-md-6">
                 <div class="field-set">
                     <div class="caption-wraper">
@@ -191,14 +188,19 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
         </div>
         <div class="more-container-js">
             <?php
-                if(isset($question['options']) && count($question['options']) > 0 && isset($optionsFrm)) {
-                    $this->includeTemplate('questions/option-form.php', array('question'=> $question, 'frm' => $optionsFrm), false);
+                if(count($options) > 0) {
+                    $this->includeTemplate(
+                        'questions/option-form.php',
+                        array(
+                            'type'=> $typeFld->value, 'count'=> $optionCount->value, 'frm' => $optionsFrm,
+                            'options' => $options, 'answers' => $answers
+                        ),
+                        false
+                    );
                 }
              ?>
         </div>
-       
-        
-        <div class="row form-action-sticky">
+        <div class="form-action-sticky">
             <div class="col-sm-12">
                 <div class="field-set margin-bottom-0">
                     <div class="field-wraper">
@@ -220,6 +222,6 @@ $submitButton->addFieldTagAttribute('onClick', 'setup(this.form); return(false);
     var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
 
     $(document).ready(function(){
-        getSubcategories('<?php echo $question['ques_cate_id'] ?? 0; ?>', '#subCateAddQues', '<?php echo $question['ques_subcate_id'] ?? 0; ?>');
+        getSubcategories('<?php echo $catFld->value ?? 0; ?>', '#subCateAddQues', '<?php echo $subCatFld->value ?? 0; ?>');
     });
 </script>

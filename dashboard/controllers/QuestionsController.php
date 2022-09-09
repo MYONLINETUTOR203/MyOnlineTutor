@@ -111,22 +111,26 @@ class QuestionsController extends DashboardController
      */
     public function form($id = 0)
     {
+        $question = $options = $answers = [];
+        $type = 0;
         if (0 < $id) {
-            $question = Question::getAttributesById($id);
+            $quesObj = new Question($id);
+            $question = $quesObj->getById();
             if (empty($question) || $question['ques_user_id'] != $this->siteUserId) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
+            $options = $quesObj->getOptions();
             $type = $question['ques_type'];
-            $quesObj = new Question($question['ques_id']);
-            $question['options'] = array_column($quesObj->getOptions(), NULL, 'queopt_order');
+            $answers = json_decode($question['ques_answer']);
         }
         $frm = $this->getForm(); 
-        if (isset($question)) {
-            $frm->fill($question ?? []);
-            $this->set('question', $question ?? []);
-            $this->set('optionsFrm',$this->getOptionsForm($question['ques_type']));
-        }
-        $this->set('frm', $frm);
+        $frm->fill($question);
+        $this->sets([
+            'optionsFrm' => $this->getOptionsForm($type),
+            'frm' => $frm,
+            'options' => $options,
+            'answers' => $answers
+        ]);
         $this->_template->render(false, false);
     }
 
@@ -141,14 +145,16 @@ class QuestionsController extends DashboardController
         }  
         if ($post['ques_type'] != Question::TYPE_MANUAL) {
             $optionFrm = $this->getOptionsForm($post['ques_type']);
-            if (!$optionData = $optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
+            if (!$optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
                 FatUtility::dieJsonError(current($optionFrm->getValidationErrors()));
             }  
             $post['answers'] = FatApp::getPostedData('ques_answer');
             $post['queopt_title'] = FatApp::getPostedData('queopt_title');
         }
-        $quesId = $post['ques_id'];
-        $question = new Question($quesId, $this->siteUserId);
+        
+
+        $question = new Question($post['ques_id'], $this->siteUserId);
+        unset($post['ques_id']);
         if (!$question->setup($post)) {
             FatUtility::dieJsonError($question->getError());
         }
@@ -159,9 +165,12 @@ class QuestionsController extends DashboardController
      * Render Option Fields
      */
     public function optionForm()
-    {   
-        $type = FatApp::getPostedData('ques_type', FatUtility::VAR_INT, 0);
-        $count = FatApp::getPostedData('ques_options_count', FatUtility::VAR_INT, 0);
+    {
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $count = FatApp::getPostedData('count', FatUtility::VAR_INT, 0);
+        if ($count < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ENTER_OPTIONS_COUNT'));
+        }
         $this->set('frm', $this->getOptionsForm($type));
         $this->set('type', $type);
         $this->set('count', $count);
@@ -177,7 +186,7 @@ class QuestionsController extends DashboardController
     {
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm = new Form('frmQuestion');
-        $frm->addHiddenField('', 'ques_id', 0)->requirements()->setIntPositive();
+        $frm->addHiddenField('', 'ques_id')->requirements()->setInt();
         $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
         $typeFld->requirements()->setRequired();
         $fld = $frm->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
@@ -204,7 +213,7 @@ class QuestionsController extends DashboardController
      *
      * @return Form
      */
-    private function getOptionsForm(int $type)
+    private function getOptionsForm(int $type = 0)
     {
         $frm = new Form('frmOptions');
         $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired();
