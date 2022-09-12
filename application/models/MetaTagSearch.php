@@ -159,6 +159,7 @@ class MetaTagSearch extends SearchBase
                 if (isset($condition) && $condition) {
                     $condition->attachCondition('crsdetail.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
                 }
+                $this->addOrder('course_id', 'DESC');
                 break;
         }
         if (isset($criteria['hasTagsAssociated'])) {
