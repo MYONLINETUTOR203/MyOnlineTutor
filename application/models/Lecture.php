@@ -267,7 +267,7 @@ class Lecture extends MyAppModel
         ]);
         $srch->addCondition('resrc.resrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addOrder('lecsrc_id', 'ASC');
+        $srch->addOrder('lecsrc_id', 'DESC');
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAll($srch->getResultSet());
     }

@@ -104,7 +104,6 @@ $time = time();
                                 <tr class="title-row">
                                     <th><?php echo Label::getLabel('LBL_FILE_NAME'); ?></th>
                                     <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
-                                    <th><?php echo Label::getLabel('LBL_DATE'); ?></th>
                                     <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
                                 </tr>
                                 <?php
@@ -149,16 +148,6 @@ $time = time();
                                                         <div style="max-width: 250px;">
                                                             <?php echo strtoupper($resrc['resrc_type']); ?>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="flex-cell">
-                                                    <div class="flex-cell__label">
-                                                        <?php echo Label::getLabel('LBL_DATE:'); ?>
-                                                    </div>
-                                                    <div class="flex-cell__content">
-                                                        <?php echo FatDate::format($resrc['lecsrc_created']); ?>
                                                     </div>
                                                 </div>
                                             </td>
