@@ -41,4 +41,10 @@ $btn->setFieldTagAttribute('onClick', 'clearSearch()');
 </div>
 <script>
     var REFUND_DECLINED = "<?php echo Course::REFUND_DECLINED ?>";
+    var refundApproved = "<?php echo $frmSearch->getField('corere_status')->value ?? 0; ?>";
+    $(document).ready(function() {
+        if (refundApproved > 0) {
+            $('.section.searchform_filter .sectionhead').click();
+        }
+    });
 </script>
