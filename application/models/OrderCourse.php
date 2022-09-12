@@ -121,6 +121,7 @@ class OrderCourse extends MyAppModel
             'ordcrs.ordcrs_amount',
             'ordcrs.ordcrs_id',
             'ordcrs.ordcrs_discount',
+            'ordcrs.ordcrs_teacher_paid',
             'course.course_id',
             'crsdetail.course_title',
             'orders.order_id',
@@ -142,6 +143,11 @@ class OrderCourse extends MyAppModel
                 $this->error = Label::getLabel('LBL_ALLOWED_CANCELLATION_DURATION_HAS_PASSED');
                 return false;
             }
+            if (!is_null($course['ordcrs_teacher_paid'])) {
+                $this->error = Label::getLabel('LBL_ALLOWED_CANCELLATION_DURATION_HAS_PASSED');
+                return false;
+            }
+
         }
         if ($course['order_status'] == Order::STATUS_CANCELLED) {
             $this->error = Label::getLabel('LBL_COURSE_ALREADY_CANCELLED');

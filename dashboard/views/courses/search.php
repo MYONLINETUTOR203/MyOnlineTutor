@@ -159,7 +159,7 @@ $requestStatuses = Course::getRefundStatuses();
                             </div>
                         </a>
                     <?php } ?>
-                    <?php if ($course['can_cancel_course']) { ?>
+                    <?php if ($course['can_cancel_course'] && is_null($course['ordcrs_teacher_paid'])) { ?>
                         <a href="javascript:void(0);" title="<?php echo Label::getLabel('LBL_CANCEL'); ?>" onclick="cancelForm('<?php echo $course['ordcrs_id']; ?>')" class="btn btn--equal btn--shadow btn--bordered is-hover margin-1">
                             <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#cancel"></use>
