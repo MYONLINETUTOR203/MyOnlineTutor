@@ -41,10 +41,7 @@ class ResourcesController extends DashboardController
     private function getSearchForm(): Form
     {
         $frm = new Form('frmSearch');
-        $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '', [
-            'placeholder' => Label::getLabel('LBL_KEYWORD'),
-            'id' => 'planKeyword'
-        ]);
+        $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField('', 'page', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
