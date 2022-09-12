@@ -74,10 +74,6 @@ class QuestionsController extends DashboardController
     public function remove()
     {
         $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
-        $userId = Question::getAttributesById($quesId, 'ques_user_id');
-        if ($userId != $this->siteUserId) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
         $question = new Question($quesId);
         if (!$question->delete()) {
             FatUtility::dieJsonError($question->getError());
@@ -152,7 +148,6 @@ class QuestionsController extends DashboardController
             $post['queopt_title'] = FatApp::getPostedData('queopt_title');
         }
         
-
         $question = new Question($post['ques_id'], $this->siteUserId);
         unset($post['ques_id']);
         if (!$question->setup($post)) {
@@ -178,6 +173,33 @@ class QuestionsController extends DashboardController
     }
 
     /**
+     * Update question status
+     *
+     * @return json
+     */
+    public function updateStatus()
+    {
+        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $status = FatApp::getPostedData('status', FatUtility::VAR_INT, 0);
+        if ($id < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $status = ($status == AppConstant::ACTIVE) ? AppConstant::INACTIVE : AppConstant::ACTIVE;
+        $question = new Question($id);
+        if (!$data = $question->getById()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
+        }
+        if ($this->siteUserId != $data['ques_user_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        $question->setFldValue('ques_status', $status);
+        if (!$question->save()) {
+            FatUtility::dieJsonError($question->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_STATUS_UPDATED_SUCCESSFULLY'));
+    }
+
+    /**
      * Get Questions Form
      *
      * @return Form
@@ -196,6 +218,7 @@ class QuestionsController extends DashboardController
         $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $fld->requirements()->setRequired();
         $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
+        $fld->requirements()->setInt();
         $fld = $frm->addIntegerField(Label::getLabel('LBL_MARKS'), 'ques_marks');
         $fld->requirements()->setRequired();
         $fld->requirements()->setIntPositive();
@@ -211,7 +234,7 @@ class QuestionsController extends DashboardController
     /**
      * Get Question Options Form
      *
-     * @return Form
+     * @param int $type
      */
     private function getOptionsForm(int $type = 0)
     {
@@ -220,9 +243,11 @@ class QuestionsController extends DashboardController
         if ($type == Question::TYPE_SINGLE) {
             $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
             $fld->requirements()->setRequired();
+            $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_MARK_ANSWERS.'));
         } elseif ($type == Question::TYPE_MULTIPLE) {
             $fld = $frm->addCheckBox(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', 1);
             $fld->requirements()->setRequired();
+            $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_MARK_ANSWERS'));
         }
         return $frm;
     }

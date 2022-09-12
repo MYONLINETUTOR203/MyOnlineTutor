@@ -24,6 +24,7 @@ $(function () {
     };
     getSubcategories = function (id, target, subCategoryId = 0) {
         id = (id == '') ? 0 : id;
+        subCategoryId = (subCategoryId == '') ? 0 : subCategoryId;
         fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id, subCategoryId]), '', function (res) {
             $(target).html(res);
             if(subCategoryId > 0){
@@ -40,9 +41,12 @@ $(function () {
     addOptions = function () {
         var type = document.frmQuestion.ques_type.value;
         var count = document.frmQuestion.ques_options_count.value;
-        fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), { type, count }, function (res) {
-            $(".more-container-js").html(res);
-        });
+        var opts = $('.sortableLearningJs .optionsRowJs').length;
+        if (count != opts) {
+            fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), { type, count }, function (res) {
+                $(".more-container-js").html(res);
+            });
+        }
     };
     showOptions = function (type) {
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
@@ -59,11 +63,19 @@ $(function () {
         }
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('Questions', 'setup'), data, function(res){
-        //     // search(document.frmQuesSearch);
+            search(document.frmQuesSearch);
             $.facebox.close();
         });
 
     };
-    
+    updateStatus = function (id, obj) {
+        var status = $(obj).val();
+        var checked = $(obj).is(':checked');
+        fcom.updateWithAjax(fcom.makeUrl('Questions', 'updateStatus'), { id, status }, function (res) {
+            search(document.frmQuesSearch);
+            return;
+        });
+        $(obj).prop('checked', (checked == false) ? true : false);
+    }
     search(document.frmQuesSearch);
 });

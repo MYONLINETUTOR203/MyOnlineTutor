@@ -42,17 +42,19 @@ $(document).ready(function () {
         searchQuestions(frm);
     };
     
-    clearQuestionSearch = function () {
+    clearSearch = function () {
         document.frmQuesSearch.reset();
         document.frmQuesSearch.teacher_id.value = '';
+        $("select[name='ques_cate_id'], select[name='ques_subcate_id']").val('');
+        getSubcategories(0);
         searchQuestions(document.frmQuesSearch);
     };
 
-    getSubcategories = function (id) {
+    getSubcategories = function (id, selectedId = 0) {
         id = (id == '') ? 0 : id;
-        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id]), '', function (res) {
+        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id, selectedId]), '', function (res) {
             $("#subCategories").html(res);
-        });
+        }, { async : false });
     };
 
     view = function (quesId) {

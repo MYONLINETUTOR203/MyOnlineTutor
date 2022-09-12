@@ -23,10 +23,8 @@ class QuestionsController extends AdminBaseController
 
     /**
      * Render Search Form
-     *
-     * @param int $cateId
      */
-    public function index($cateId = 0)
+    public function index()
     {
         $frm = $this->getSearchForm();
         $frm->fill(FatApp::getQueryStringData());

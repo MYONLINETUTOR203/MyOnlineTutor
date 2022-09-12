@@ -33,7 +33,6 @@ class QuestionSearch extends YocoachSearch
     public function applyPrimaryConditions(): void
     {
         $this->addCondition('ques.ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $this->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
         $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
         if(0 < $this->userId){
@@ -60,6 +59,9 @@ class QuestionSearch extends YocoachSearch
         }
         if (isset($post['ques_type']) && $post['ques_type'] > 0) {
             $this->addCondition('ques.ques_type', '=', $post['ques_type']);
+        }
+        if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
+            $this->addCondition('ques.ques_user_id', '=', $post['teacher_id']);
         }
     }
 
@@ -112,13 +114,17 @@ class QuestionSearch extends YocoachSearch
      */
     public static function getCategoryNames(int $langId, array $categoryIds): array
     {
-        if ($langId == 0 || count($categoryIds) == 0) {
+        if (count($categoryIds) == 0) {
             return [];
         }
-        $srch = new SearchBase(Category::DB_LANG_TBL);
-        $srch->addMultipleFields(['catelang_cate_id', 'cate_name']);
-        $srch->addCondition('catelang_cate_id', 'IN', $categoryIds);
-        $srch->addCondition('catelang_lang_id', '=', $langId);
+        $srch = new SearchBase(Category::DB_TBL);
+        $srch->joinTable(
+            Category::DB_LANG_TBL, 'LEFT JOIN', 'cate_id = catelang_cate_id AND catelang_lang_id = ' . $langId
+        );
+        $srch->addMultipleFields(['cate_id', 'IFNULL(cate_name, cate_identifier) AS cate_name']);
+        $srch->addCondition('cate_id', 'IN', $categoryIds);
+        $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }

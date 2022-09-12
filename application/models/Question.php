@@ -16,6 +16,7 @@ class Question extends MyAppModel
      * Initialize Questions
      *
      * @param int $id
+     * @param int $userId
      */
     public function __construct(int $id = 0, int $userId = 0)
     {
@@ -54,6 +55,11 @@ class Question extends MyAppModel
         return AppConstant::returArrValue($arr, $key);
     }
 
+    /**
+     * Get question by id
+     *
+     * @return array
+     */
     public function getById()
     {
         $srch = new SearchBase(self::DB_TBL, 'ques');
@@ -78,7 +84,7 @@ class Question extends MyAppModel
     /**
      * Get Question Options
      *
-     * @param int $key
+     * @param int $optionsIds
      * @return array
      */
     public function getQuesOptions($optionsIds = [])
@@ -116,16 +122,26 @@ class Question extends MyAppModel
      */
     public function delete(): bool
     {
-        if (!$question = self::getAttributesById($this->mainTableRecordId)) {
-            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+        if (!$question = $this->getById()) {
+            $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
             return false;
         }
-
+        if ($this->userId != $question['ques_user_id']) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
         $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
         }
+        if (!$this->updateCount([$question['ques_cate_id'], $question['ques_subcate_id']])) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
         return true;
     }
 
@@ -137,6 +153,16 @@ class Question extends MyAppModel
      */
     public function setup($data)
     {
+        if ($this->mainTableRecordId > 0) {
+            if (!$question = $this->getById()) {
+                $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
+                return false;
+            }
+            if ($this->userId != $question['ques_user_id']) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+                return false;
+            }
+        }
         if (!$this->validate($data)) {
             return false;
         }
@@ -150,13 +176,44 @@ class Question extends MyAppModel
         }
         $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
+            $this->error = $this->getError();
             return false;
         }
-        $quesId = $this->getMainTableRecordId();
-        FatApp::getDb()->deleteRecords(
+        if (!$this->setupOptions($data, $this->getMainTableRecordId())) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $categories = [
+            $data['ques_cate_id'], $data['ques_subcate_id'],
+            $question['ques_cate_id'], $question['ques_subcate_id']
+        ];
+        if (!$this->updateCount($categories)) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * Setup question options
+     *
+     * @param array $data
+     * @param int   $quesId
+     * @return bool
+     */
+    private function setupOptions(array $data, int $quesId): bool
+    {
+        $db = FatApp::getDb();
+
+        /* delete old questions */
+        if (!$db->deleteRecords(
             static::DB_TBL_OPTIONS,
             ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]
-        );
+        )) {
+            $this->error = $db->getError();
+            return false;
+        }
         $ques_answers = [];
         if ($data['ques_type'] != Question::TYPE_MANUAL) {
             $i = 1;
@@ -168,7 +225,6 @@ class Question extends MyAppModel
                     'queopt_order'   => $i,
                 ]);
                 if (!$queopt->addNew()) {
-                    $db->rollbackTransaction();
                     $this->error = $this->getError();
                     return false;
                 }
@@ -181,11 +237,55 @@ class Question extends MyAppModel
             $this->assignValues(['ques_answer' => json_encode($ques_answers)]);
             if (!$this->save()) {
                 $this->error = $this->getError();
-                $db->rollbackTransaction();
                 return false;
             }
         }
-        $db->commitTransaction();
+        return true;
+    }
+
+    private function updateCount(array $cateIds)
+    {
+        if (count($cateIds) < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_DATA_SENT_FOR_QUESTION_COUNT_UPDATE');
+            return false;
+        }
+        $cateIds = array_filter($cateIds);
+        $db = FatApp::getDb();
+        if (
+            !$db->query(
+            "UPDATE " . Category::DB_TBL . "
+                LEFT JOIN(
+                    SELECT cat.ques_cate_id AS catId,
+                        COUNT(*) AS totalRecord
+                    FROM
+                        " . self::DB_TBL . " AS cat
+                    WHERE 
+                        cat.ques_cate_id IN (" . implode(',', $cateIds) . ")
+                    GROUP BY
+                        cat.ques_cate_id 
+                ) mainCat
+                ON
+                    mainCat.catId = " . Category::DB_TBL . ".cate_id
+                LEFT JOIN(
+                    SELECT
+                        subCat.ques_subcate_id AS catId,
+                        COUNT(*) AS totalRecord
+                    FROM
+                        " . self::DB_TBL . " AS subCat
+                    WHERE 
+                        subCat.ques_subcate_id IN (" . implode(',', $cateIds) . ")
+                    GROUP BY
+                        subCat.ques_subcate_id
+                ) catChild
+                ON
+                    catChild.catId = cate_id
+                SET cate_records = (IFNULL(mainCat.totalRecord, 0) + IFNULL(catChild.totalRecord, 0)) 
+                WHERE cate_id IN (" . implode(',', $cateIds) . ")"
+            )
+        ) {
+            $this->error = $db->getError();
+            return false;
+        }
         return true;
     }
 
@@ -215,8 +315,4 @@ class Question extends MyAppModel
         }
         return true;
     }
-
-
-
-    
 }

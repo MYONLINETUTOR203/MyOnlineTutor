@@ -282,9 +282,12 @@ class CategoriesController extends AdminBaseController
         $status = FatUtility::int($status);
         $status = ($status == AppConstant::YES) ? AppConstant::NO : AppConstant::YES;
 
+        if ($cateId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
         $category = new Category($cateId);
         $category->setFldValue('cate_status', $status);
-        if (!$category->save()) {
+        if (!$category->updateStatus()) {
             FatUtility::dieJsonError($category->getError());
         }
         

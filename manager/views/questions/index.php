@@ -7,12 +7,12 @@ $frmSearch->developerTags['fld_default_col'] = 3;
 $submitBtn = $frmSearch->getField('btn_submit');
 $submitBtn->developerTags['col'] = 6;
 $fld = $frmSearch->getField('btn_clear');
-$fld->addFieldTagAttribute('onclick', 'clearQuestionSearch()');
+$fld->addFieldTagAttribute('onclick', 'clearSearch()');
 $fld = $frmSearch->getField('ques_cate_id');
 $fld->addFieldTagAttribute('onchange', 'getSubcategories(this.value)');
 
-$fld = $frmSearch->getField('ques_subcate_id');
-$fld->addFieldTagAttribute('id', 'subCategories')
+$subcatefld = $frmSearch->getField('ques_subcate_id');
+$subcatefld->addFieldTagAttribute('id', 'subCategories')
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -50,9 +50,9 @@ $fld->addFieldTagAttribute('id', 'subCategories')
     </div>
 </div>
 <script>
-    var catId = "<?php echo isset($params['ques_cateid']) ? $params['ques_cateid'] : 0 ?>";
+    var catId = "<?php echo isset($params['ques_cate_id']) ? $params['ques_cate_id'] : 0 ?>";
     if (catId > 0) {
-        getSubcategories(catId);
+        getSubcategories(catId, '<?php echo !empty($subcatefld->value) ? $subcatefld->value : 0; ?>');
     }
     $(document).ready(function() {
         if (catId > 0) {

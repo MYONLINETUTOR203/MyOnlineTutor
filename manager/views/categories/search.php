@@ -51,10 +51,16 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'cate_records':
                 if ($row['cate_records'] > 0) {
-                    if ($canViewQuestions) {
-                        $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index', [$row['cate_id']]), 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
-                    } else {
-                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records']);
+                    if ($row['cate_type'] == Category::TYPE_QUESTION) {
+                        if ($canViewQuestions) {
+                            $qryString = '?ques_cate_id=' . $row['cate_id'];
+                            if ($postedData['parent_id'] > 0) {
+                                $qryString = '?ques_cate_id=' . $postedData['parent_id'] . '&ques_subcate_id=' . $row['cate_id'];
+                            }
+                            $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
+                        } else {
+                            $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records']);
+                        }
                     }
                 } else {
                     $td->appendElement('plaintext', [], 0);

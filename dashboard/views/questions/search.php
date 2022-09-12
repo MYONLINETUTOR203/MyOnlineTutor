@@ -18,21 +18,21 @@ if (count($questions) == 0) {
         $naLabel = Label::getLabel('LBL_N/A');
         $statuses = Question::getStatuses();
         foreach ($questions as $question) {
-            ?>
+        ?>
             <tr>
                 <td>
-                <div class="flex-cell">
+                    <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $startLabel; ?></div>
                         <div class="flex-cell__content">
                             <?php echo $question['ques_title']; ?>
-                    </div>
+                        </div>
                 </td>
                 <td>
                     <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $startLabel; ?></div>
                         <div class="flex-cell__content">
                             <?php echo $question['ques_cate_name']; ?>
-                    </div>
+                        </div>
                 </td>
                 <td>
                     <div class="flex-cell">
@@ -45,34 +45,29 @@ if (count($questions) == 0) {
                     <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $languageLabel; ?></div>
                         <div class="flex-cell__content">
-                            <?php echo $statuses[$question['ques_status']]; ?>
+                            <label class="switch switch--small">
+                                <input class="switch__label" data-field-caption="" type="checkbox" name="ques_status" value="<?php echo $question['ques_status']; ?>" <?php echo ($question['ques_status'] == AppConstant::ACTIVE) ? 'checked="checked"' : '' ?> onchange="updateStatus('<?php echo $question['ques_id']; ?>', this)"> <i class="switch__handle bg-green"></i>
+                            </label>
                         </div>
-
-                        <!-- <div class="flex-cell__content">
-                        <label id="<?php echo $row['ques_id']; ?>" class="statustab status_<?php echo $row['ques_id'] . ' ' . $active ?>" onclick="<?php echo $statusAct; ?>">
-                            <span data-off="<?php echo $activeLabel ?>" data-on="<?php echo $inactiveLabel ?>" class="switch-labels"></span>
-                            <span class="switch-handles <?php echo $statusClass ?>"></span>
-                        </label>    
-                        </div> -->
                     </div>
                 </td>
-               
+
                 <td>
                     <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $actionLabel; ?></div>
                         <div class="flex-cell__content">
                             <a href="javascript:void(0);" onclick="form('<?php echo $question['ques_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                 <svg class="icon icon--edit icon--small">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#edit'; ?>"></use>
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#edit'; ?>"></use>
                                 </svg>
                                 <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_EDIT'); ?></div>
-                            </a>   
+                            </a>
                             <a href="javascript:void(0);" onclick="remove('<?php echo $question['ques_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                 <svg class="icon icon--issue icon--small">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL.'images/sprite.svg#trash'; ?>"></use>
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#trash'; ?>"></use>
                                 </svg>
                                 <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Remove'); ?></div>
-                            </a>                        
+                            </a>
                         </div>
                     </div>
                 </td>

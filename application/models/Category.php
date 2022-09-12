@@ -92,6 +92,34 @@ class Category extends MyAppModel
         return true;
     }
 
+    public function updateStatus(): bool
+    {
+        if (!$data = $this->getDataById()) {
+            $this->error = Label::getLabel('LBL_CATEGORY_NOT_FOUND');
+            return false;
+        }
+        $status = $this->getFldValue('ques_status');
+        if ($status == AppConstant::INACTIVE && $data['cate_records'] > 0) {
+            if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+            }
+            return false;
+        }
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if ($status == AppConstant::INACTIVE) {
+            $db = FatApp::getDb();
+            $smt = ['smt' => 'cate_parent = ?', 'vals' => [$this->getMainTableRecordId()]];
+            if (!$db->updateFromArray(Category::DB_TBL, ['cate_status' => $status], $smt)) {
+                $this->error = $db->getError();
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Delete
      *
@@ -103,7 +131,7 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
-        if ($data['cate_records'] > 0) {
+        if ($data['cate_type'] == Category::TYPE_QUESTION && $data['cate_records'] > 0) {
             $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_DELETED.');
             return false;
         }

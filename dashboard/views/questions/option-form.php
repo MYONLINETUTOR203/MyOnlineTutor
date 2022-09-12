@@ -2,17 +2,15 @@
 $titleFld = $frm->getField("queopt_title[]");
 $answerFld = $frm->getField('ques_answer[]');
 if ($type == Question::TYPE_SINGLE) {
-    $ques_type = 'radio';
+    $quesType = 'radio';
 } elseif ($type == Question::TYPE_MULTIPLE) {
-    $ques_type = 'checkbox';
+    $quesType = 'checkbox';
 }
 ?>
 <div class="sortableLearningJs">
-    <?php
-    if ($options ?? false) {
-        foreach ($options as $key => $option) {
-    ?>
-            <div class="row ">
+    <?php if ($options ?? false) { ?>
+        <?php foreach ($options as $key => $option) { ?>
+            <div class="row optionsRowJs">
                 <div class="col-md-1">
                     <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
                         <svg class="svg-icon" viewBox="0 0 16 12.632">
@@ -26,10 +24,7 @@ if ($type == Question::TYPE_SINGLE) {
                     <div class="field-set">
                         <div class="field-wraper">
                             <div class="field_cover">
-                                <?php
-                                $titleFld->value = $option['queopt_title'];
-                                echo $titleFld->getHtml();
-                                ?>
+                                <input data-field-caption="<?php echo $titleFld->getCaption(); ?>" placeholder="<?php echo $titleFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:true}" type="text" name="queopt_title[<?php echo $option['queopt_id']; ?>]" value="<?php echo $option['queopt_title']; ?>">
                             </div>
                         </div>
                     </div>
@@ -38,28 +33,19 @@ if ($type == Question::TYPE_SINGLE) {
                     <div class="field-set">
                         <div class="field-wraper">
                             <label>
-                                <?php
-                                $answerFld->value = $option['queopt_id'];
-                                if (in_array($option['queopt_id'], $answers)) {
-                                    $answerFld->addFieldTagAttribute('checked', true);
-                                }
-                                echo $answerFld->getHtml();
-                                ?>
+                                <input data-field-caption="<?php echo $answerFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:false}" type="<?php echo $quesType; ?>" name="ques_answer[]" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $answers)) ? 'checked="checked"' : ''; ?>>
+                                <?php echo $answerFld->getCaption(); ?>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
         <?php } ?>
-        <?php } else {
-        foreach (range(1, $count) as $i) {
-            if (isset($question['options'][$i])) {
-                $ques_answers = json_decode($question['ques_answer'], true);
-                $titleFld->value = $question['options'][$i]['queopt_title'];
-                $answerFld->checked = ($i == $question['options'][$i]['queopt_order'] && in_array($question['options'][$i]['queopt_id'], $ques_answers)) ? true : false;
-            }
-        ?>
-            <div class="row ">
+    <?php } else { ?>
+        <?php
+        $i = 1;
+        while ($count > 0) { ?>
+            <div class="row optionsRowJs">
                 <div class="col-md-1">
                     <a href="javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
                         <svg class="svg-icon" viewBox="0 0 16 12.632">
@@ -82,14 +68,17 @@ if ($type == Question::TYPE_SINGLE) {
                     <div class="field-set">
                         <div class="field-wraper">
                             <label>
-                                <input data-field-caption="<?php echo $answerFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:false}" type="<?php echo $ques_type; ?>" name="ques_answer[]" value="<?php echo $i; ?>" <?php echo $answerFld->checked ? 'checked="checked"' : ''; ?>>
+                                <input data-field-caption="<?php echo $answerFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:false}" type="<?php echo $quesType; ?>" name="ques_answer[]" value="<?php echo $i; ?>" <?php echo ($i == 1 && $type == Question::TYPE_SINGLE) ? 'checked="checked"' : ''; ?>>
                                 <?php echo $answerFld->getCaption(); ?>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
-    <?php }
+    <?php
+            $i++;
+            $count--;
+        }
     }
     ?>
 </div>
