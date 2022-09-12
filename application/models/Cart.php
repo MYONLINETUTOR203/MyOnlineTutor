@@ -246,6 +246,16 @@ class Cart extends FatModel
             $this->error = Label::getLabel('LBL_YOU_ARE_NOT_ALLOWED_TO_ENROLL_TO_YOUR_OWN_COURSE');
             return false;
         }
+        $unpaidOrders= OrderCourse::getUnpaidCourses($this->userId, $courseId);
+        if (!empty($unpaidOrders)) {
+            foreach ($unpaidOrders as $unpaidOrder) {
+                $order = new Order($unpaidOrder['order_id'], $this->userId);
+                if (!$order->cancelUnpaidOrder($unpaidOrder)) {
+                    $this->error = $order->getError();
+                    return false;
+                }
+            }
+        }
         $course['total_amount'] = $course['course_price'];
         $this->items[static::COURSE][$courseId] = $course;
         return $this->refresh();

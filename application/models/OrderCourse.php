@@ -324,4 +324,29 @@ class OrderCourse extends MyAppModel
             'totalCourses' => FatUtility::int($data['totalCourses'] ?? 0)
         ];
     }
+
+    /**
+     * Get Unpaid Courses
+     * 
+     * @param int $userId
+     * @param int $courseId
+     * @return null|array
+     */
+    public static function getUnpaidCourses(int $userId, int $courseId)
+    {
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
+        $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(Coupon::DB_TBL_HISTORY, 'LEFT JOIN', 'orders.order_id = couhis.couhis_order_id', 'couhis');
+        $srch->addMultipleFields(['order_id', 'couhis_id', 'order_type', 'couhis_coupon_id']);
+        $srch->addCondition('orders.order_user_id', '=', $userId);
+        $srch->addCondition('ordcrs.ordcrs_course_id', '=', $courseId);
+        $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::IN_PROGRESS);
+        $srch->addCondition('orders.order_payment_status', '=', Order::UNPAID);
+        $srch->addCondition('orders.order_status', '=', Order::STATUS_INPROCESS);
+        $srch->addCondition('orders.order_type', '=', Order::TYPE_COURSE);
+        $srch->addOrder('order_id', 'DESC');
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetchAll($srch->getResultSet());
+    }
 }
