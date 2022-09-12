@@ -136,6 +136,8 @@ class TeachersController extends MyAppController
             $userQualifications[$value['uqualification_experience_type']][$value['uqualification_id']] = $value;
         }
         $class = new GroupClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $courseObj = new CourseSearch($this->siteLangId, $teacher['user_id'], 0);
+        $moreCourses = $courseObj->getMoreCourses($teacher['user_id']);
         $this->sets([
             'isFreeTrailAvailed' => $isFreeTrailAvailed,
             'userPreferences' => $preferencesData,
@@ -146,8 +148,9 @@ class TeachersController extends MyAppController
             'bookingBefore' => FatApp::getConfig('CONF_CLASS_BOOKING_GAP'),
             'teacher' => $teacher,
             'userTeachLangs' => $teachLangPrices,
+            'moreCourses' => $moreCourses,
             'freeTrialEnabled' => $freeTrialEnabled,
-            'setMonthAndWeekNames' => true
+            'setMonthAndWeekNames' => true,
         ]);
         $this->_template->addJs([
             'js/moment.min.js',
