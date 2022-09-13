@@ -272,3 +272,5 @@ CREATE TABLE IF NOT EXISTS `tbl_users_quizzes` (
 ALTER TABLE `tbl_categories` CHANGE `cate_courses` `cate_records` INT(11) NOT NULL COMMENT 'Courses count or Questions count'; 
 ALTER TABLE `tbl_categories` ADD `cate_identifier` VARCHAR(100) NOT NULL AFTER `cate_type`;
 ALTER TABLE `tbl_questions` ADD `ques_options_count` INT NOT NULL COMMENT 'Number of options attached with the question' AFTER `ques_clang_id`;
+
+ALTER TABLE `tbl_quizzes` ADD `quiz_active` TINYINT(1) NOT NULL AFTER `quiz_passmsg`;
