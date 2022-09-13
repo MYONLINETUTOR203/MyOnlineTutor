@@ -58,6 +58,7 @@ class CoursesController extends DashboardController
                 'crsdetail.course_subtitle',
                 'crsdetail.course_title',
                 'course.course_ratings',
+                'ordcrs.ordcrs_teacher_paid',
             ]);
             $srch->addOrder('crspro_status', 'ASC');
             $srch->addOrder('ordcrs_id', 'DESC');
@@ -113,6 +114,7 @@ class CoursesController extends DashboardController
                 FatApp::redirectUser(MyUtility::generateUrl('Courses'));
             }
         }
+
         $this->set('courseTitle', $courseTitle);
         $this->set('courseId', $courseId);
         $this->set("includeEditor", true);

@@ -217,26 +217,6 @@ $yesNoArr = AppConstant::getYesNoArr();
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_WELCOME_NOTE'); ?>
-                                    </label>
-                                    : <strong><?php echo empty($courseData['course_welcome']) ? Label::getLabel('LBL_NA') : $courseData['course_welcome']; ?></strong>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_CONGRATS_NOTE'); ?>
-                                    </label>
-                                    : <strong><?php echo empty($courseData['course_congrats']) ? Label::getLabel('LBL_NA') : $courseData['course_congrats']; ?></strong>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

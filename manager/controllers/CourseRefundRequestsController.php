@@ -25,9 +25,10 @@ class CourseRefundRequestsController extends AdminBaseController
      */
     public function index()
     {
+        $frmSearch = $this->getSearchForm($this->siteLangId);
+        $frmSearch->fill(FatApp::getQueryStringData());
         $this->set("canEdit", $this->objPrivilege->canEditCourseRefundRequests(true));
-        $this->set("frmSearch", $this->getSearchForm($this->siteLangId));
-
+        $this->set("frmSearch", $frmSearch);
         $this->_template->render();
     }
 

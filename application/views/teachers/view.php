@@ -397,6 +397,27 @@ if ($siteUserId == $teacher['user_id']) {
         </div>
     </div>
 </section>
+<?php if ($moreCourses) { ?>
+    <section class="section section--gray padding-bottom-20">
+        <div class="container container--narrow">
+            <div class="section__head d-flex justify-content-between align-items-center">
+                <h3>
+                    <?php
+                    $label = Label::getLabel('LBL_MORE_COURSES_FROM_{teacher-name}');
+                    echo str_replace('{teacher-name}', '<strong class="bold-700">' . ucfirst($teacher['user_first_name']) . '</strong>', $label);
+                    ?>
+                </h3>
+            </div>
+            <div class="section__body section-more-courses">
+                <?php echo $this->includeTemplate('courses/more-courses.php', [
+                    'moreCourses' => $moreCourses,
+                    'siteLangId' => $siteLangId,
+                    'siteUserId' => $siteUserId,
+                ]); ?>
+            </div>
+        </div>
+    </section>
+<?php } ?>
 <script type="text/javascript">
     $(document).ready(function() {
         viewFullAvailbility = function() {

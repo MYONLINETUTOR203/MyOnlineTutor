@@ -8,7 +8,6 @@ $arr_flds = [
     'cate_name' => Label::getLabel('LBL_CATEGORY'),
     'subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'coapre_updated' => Label::getLabel('LBL_PUBLISHED_ON'),
-    'course_status' => Label::getLabel('LBL_STATUS'),
     'course_active' => Label::getLabel('LBL_ACTIVE'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
@@ -44,9 +43,6 @@ foreach ($arrListing as $row) {
                 break;
             case 'coapre_updated':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row[$key]), true);
-                break;
-            case 'course_status':
-                $td->appendElement('plaintext', [], Course::getStatuses($row[$key]), true);
                 break;
             case 'course_active':
                 $active = "active";

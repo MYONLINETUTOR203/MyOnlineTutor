@@ -30,6 +30,8 @@ $(function () {
         $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
         $('.sidebarJs').css({ 'display': '' });
         $('.lectureDetailJs, .tabsPanelJs').show();
+        $('.tabs-scrollable-js li').removeClass('is-active');
+        $('.crsDetailTabJs').parent().addClass('is-active');
     };
     getVideo = function (lectureId) {
         fcom.ajax(fcom.makeUrl('CoursePreview', 'getVideo', [courseId, lectureId]), '', function (res) {

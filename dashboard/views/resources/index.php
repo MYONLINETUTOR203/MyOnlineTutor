@@ -3,6 +3,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'search(this); return(false);');
 $keywordFld = $frm->getField('keyword');
+$keywordFld->setFieldTagAttribute('id', 'planKeyword');
 $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_KEYWORD'));
 $levelFld = $frm->getField('plan_level');
 $btnReset = $frm->getField('btn_reset');

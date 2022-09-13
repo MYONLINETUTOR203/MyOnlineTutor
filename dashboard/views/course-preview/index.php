@@ -120,7 +120,7 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                                         </a>
                                     </li>
                                     <li class="is-active">
-                                        <a href="javascript:void(0);" onclick="loadLecture(0);">
+                                        <a href="javascript:void(0);" class="crsDetailTabJs" onclick="loadLecture(0);">
                                             <?php echo Label::getLabel('LBL_LECTURE_DETAIL'); ?>
                                         </a>
                                     </li>

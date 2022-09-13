@@ -142,7 +142,11 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
     var TYPE_FREE = "<?php echo Course::TYPE_FREE; ?>";
     var TYPE_PAID = "<?php echo Course::TYPE_PAID; ?>";
     $(document).ready(function() {
-        $('input[name="course_tags"]').tagit();
+        $('input[name="course_tags"]').tagit({
+            caseSensitive : false, 
+            allowDuplicates: false,
+            allowSpaces: true,
+        });
         $('.ui-autocomplete-input').attr('name', 'tags');
         $('form input[name="course_tags"]').on('keypress', function(e) {
             var keyCode = e.keyCode || e.which;
