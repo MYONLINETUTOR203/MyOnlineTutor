@@ -83,7 +83,11 @@
                                         </span>
                                     <?php } ?>
                                 </div>
-                                <div class="profile-meta d-flex align-items-center margin-top-5 border-top padding-top-5">
+
+                                <div class="course-tite__tutor border-top margin-top-5 padding-top-5">
+                                    <h5><?php echo Label::getLabel('LBL_TUTOR_DETAILS'); ?></h5>
+                                </div>
+                                <div class="profile-meta d-flex align-items-center padding-top-5">
                                     <div class="profile-meta__media margin-right-4">
                                         <span class="avtar avtar--small" data-title="<?php echo strtoupper($order['teacher_first_name'][0]); ?>">
                                             <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $order['teacher_id'], 'SMALL'], CONF_WEBROOT_FRONTEND); ?>" alt="<?php echo ucwords($order['teacher_first_name'] . ' ' . $order['teacher_last_name']) ?>">
