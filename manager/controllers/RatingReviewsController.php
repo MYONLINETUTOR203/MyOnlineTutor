@@ -112,6 +112,9 @@ class RatingReviewsController extends AdminBaseController
         }
         if ($data['ratrev_type'] == AppConstant::COURSE) {
             $this->objPrivilege->canEditCourseReviews();
+            $course = new Course(FatUtility::int($data['ratrev_type_id']));
+            $course = $course->get();
+            $data['course_name'] = $course['course_title'] ?? '';
         } else {
             $this->objPrivilege->canEditTeacherReviews();
         }

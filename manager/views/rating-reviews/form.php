@@ -7,9 +7,23 @@ $frm->developerTags['fld_default_col'] = 12;
 $overallRating = round($data["ratrev_overall"]);
 ?>
 <div class="repeatedrow">
-    <h3><?php echo Label::getLabel('LBL_TEACHER_RATING_INFORMATION'); ?></h3>
+    <h3>
+        <?php 
+            if ($data['ratrev_type'] == AppConstant::COURSE) {
+                echo Label::getLabel('LBL_COURSE_RATING_INFORMATION');
+            } else {
+                echo Label::getLabel('LBL_TEACHER_RATING_INFORMATION');
+            }
+        ?>
+    </h3>
     <div class="rowbody">
         <div class="listview">
+            <?php if ($data['ratrev_type'] == AppConstant::COURSE && !empty($data['course_name'])) { ?>
+            <dl class="list">
+                <dt><?php echo Label::getLabel('LBL_COURSE_NAME'); ?></dt>
+                <dd><?php echo $data['course_name']; ?></dd>
+            </dl>
+            <?php } ?>
             <dl class="list">
                 <dt><?php echo Label::getLabel('LBL_REVIEWED_BY'); ?></dt>
                 <dd><?php echo $data['learner_first_name'] . ' ' . $data['learner_last_name']; ?></dd>
