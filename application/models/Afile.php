@@ -656,9 +656,9 @@ class Afile extends FatModel
                 static::SIZE_LARGE => [600, 600]
             ],
             static::TYPE_FRONT_LOGO => [
-                static::SIZE_SMALL => [100, 10],
-                static::SIZE_MEDIUM => [140, 40],
-                static::SIZE_LARGE => [168, 50]
+                static::SIZE_SMALL => [300, 114],
+                static::SIZE_MEDIUM => [300, 114],
+                static::SIZE_LARGE => [300, 114]
             ],
             static::TYPE_APPLY_TO_TEACH_BANNER => [
                 static::SIZE_SMALL => [100, 100],
@@ -686,14 +686,14 @@ class Afile extends FatModel
                 static::SIZE_LARGE => [800, 500]
             ],
             static::TYPE_ADMIN_LOGO => [
-                static::SIZE_SMALL => [100, 100],
-                static::SIZE_MEDIUM => [300, 300],
-                static::SIZE_LARGE => [600, 600]
+                static::SIZE_SMALL => [300, 114],
+                static::SIZE_MEDIUM => [300, 114],
+                static::SIZE_LARGE => [300, 114]
             ],
             static::TYPE_EMAIL_LOGO => [
-                static::SIZE_SMALL => [100, 100],
-                static::SIZE_MEDIUM => [300, 300],
-                static::SIZE_LARGE => [600, 600]
+                static::SIZE_SMALL => [200, 76],
+                static::SIZE_MEDIUM => [200, 76],
+                static::SIZE_LARGE => [200, 76]
             ],
             static::TYPE_FAVICON => [
                 static::SIZE_SMALL => [16, 16],
@@ -701,9 +701,9 @@ class Afile extends FatModel
                 static::SIZE_LARGE => [16, 16]
             ],
             static::TYPE_PAYMENT_PAGE_LOGO => [
-                static::SIZE_SMALL => [100, 37],
-                static::SIZE_MEDIUM => [100, 37],
-                static::SIZE_LARGE => [168, 37]
+                static::SIZE_SMALL => [200, 76],
+                static::SIZE_MEDIUM => [200, 76],
+                static::SIZE_LARGE => [200, 76]
             ],
             static::TYPE_ADMIN_PROFILE_IMAGE => [
                 static::SIZE_SMALL => [100, 100],
