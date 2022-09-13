@@ -33,7 +33,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                     <?php echo Label::getLabel('LBL_MY_COURSES'); ?>
                                 </a>
                             </li>
-                            <li><?php echo Label::getLabel('LBL_COURSE_DETAILS') ?></li>
+                            <li><?php echo $course['course_title']; ?></li>
                         </ul>
                     </div>
                     <h2 class="page-subtitle margin-bottom-6 lectureTitleJs"></h2>
