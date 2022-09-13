@@ -42,8 +42,8 @@ class CourseRequestsController extends AdminBaseController
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '');
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', Course::getRequestStatuses());
-        $frm->addDateField(Label::getLabel('LBL_START_TIME'), 'start_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
-        $frm->addDateField(Label::getLabel('LBL_END_TIME'), 'end_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
+        $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'start_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
+        $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'end_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
         $frm->addHiddenField('', 'teacher_id', '');
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));

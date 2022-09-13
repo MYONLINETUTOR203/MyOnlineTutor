@@ -37,6 +37,9 @@ class CourseRequestSearch extends YocoachSearch
         }
         if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
             $this->addCondition('course.course_user_id', '=', $post['teacher_id']);
+        } elseif (!empty($post['teacher'])) {
+            $fullName = 'mysql_func_CONCAT(u.user_first_name, " ", u.user_last_name)';
+            $this->addCondition($fullName, 'LIKE', '%' . $post['teacher'] . '%', 'AND', true);
         }
         if (isset($post['coapre_status']) && $post['coapre_status'] != '') {
             $this->addCondition('coapre_status', '=', $post['coapre_status']);

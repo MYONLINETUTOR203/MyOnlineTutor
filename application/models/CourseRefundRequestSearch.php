@@ -38,6 +38,9 @@ class CourseRefundRequestSearch extends YocoachSearch
         }
         if (isset($post['learner_id']) && $post['learner_id'] > 0) {
             $this->addCondition('corere_user_id', '=', $post['learner_id']);
+        } elseif (!empty($post['learner'])) {
+            $fullName = 'mysql_func_CONCAT(u.user_first_name, " ", u.user_last_name)';
+            $this->addCondition($fullName, 'LIKE', '%' . $post['learner'] . '%', 'AND', true);
         }
         if (isset($post['corere_status']) && $post['corere_status'] != '') {
             $this->addCondition('corere_status', '=', $post['corere_status']);
