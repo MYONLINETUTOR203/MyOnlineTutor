@@ -40,7 +40,9 @@ class HomeController extends MyAppController
             'topRatedTeachers' => $this->getTopRatedTeachers()
         ]);
         $class = new GroupClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $course = new CourseSearch($this->siteLangId, $this->siteUserId, 0);        
         $this->set('classes', $class->getUpcomingClasses());
+        $this->set('courses', $course->getPopularCourses());
         $this->_template->addJs(['js/app.timer.js']);
         $this->_template->render();
     }

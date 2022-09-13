@@ -448,6 +448,24 @@ class CourseSearch extends YocoachSearch
     }
 
     /**
+     * Get More Courses from Teacher
+     * 
+     * @param int $teacherId
+     * @param int $courseId
+     * @return array
+     */
+    public function getPopularCourses(): array
+    {
+        $this->addSearchListingFields();
+        $this->applyPrimaryConditions();
+        $this->applyOrderBy(0);
+        $this->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $this->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $this->setPageSize(AppConstant::PAGESIZE);
+        return $this->fetchAndFormat();
+    }
+
+    /**
      * Can Edit Course
      * 
      * @param array $course

@@ -194,6 +194,22 @@ if (count($classes) > 0) { ?>
         </div>
     </section>
 <?php }
+if (count($courses) > 0) { ?>
+    <section class="section section--gray padding-bottom-20 section--popular-courses">
+        <div class="container container--narrow">
+            <div class="section__head d-flex justify-content-between align-items-center">
+                <h2><?php echo Label::getLabel('LBL_POPULAR_COURSES'); ?></h2>
+            </div>
+            <div class="section__body">
+                <?php echo $this->includeTemplate('home/_partial/popularCourses.php', [
+                    'moreCourses' => $courses,
+                    'siteLangId' => $siteLangId,
+                    'siteUserId' => $siteUserId,
+                ]); ?>
+            </div>
+        </div>
+    </section>
+<?php } 
 if ($testmonialList) { ?>
     <section class="section section--quote">
         <div class="container container--narrow">
