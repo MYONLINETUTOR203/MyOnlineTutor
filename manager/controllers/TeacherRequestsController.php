@@ -166,7 +166,7 @@ class TeacherRequestsController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addMultipleFields([
-            'user_lang_id', 'tereq_status', 'tereq_user_id', 'tereq_comments',
+            'user_lang_id', 'tereq_status', 'tereq_user_id', 'tereq_language_id', 'tereq_comments',
             'tereq_reference', 'user_first_name', 'user_last_name', 'user_email', 'tereq_first_name',
             'tereq_last_name', 'tereq_gender', 'tereq_phone_number', 'tereq_phone_code', 'tereq_biography',
             'tereq_video_link', 'tereq_teach_langs', 'tereq_speak_langs', 'tereq_slang_proficiency'
@@ -192,8 +192,7 @@ class TeacherRequestsController extends AdminBaseController
                 'user_dashboard' => User::TEACHER,
                 'user_first_name' => $requestRow['tereq_first_name'],
                 'user_last_name' => $requestRow['tereq_last_name'],
-                'user_gender' => $requestRow['tereq_gender'],
-                'user_biography' => $requestRow['tereq_biography'],
+                'user_gender' => $requestRow['tereq_gender']
             ]);
             if (!$user->save()) {
                 $db->rollbackTransaction();
@@ -208,6 +207,17 @@ class TeacherRequestsController extends AdminBaseController
             if (!$userSetting->saveData($data)) {
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError($userSetting->getError());
+            }
+            $langData = [
+                'user_biography' => $requestRow['tereq_biography'],
+                'userlang_user_id' => $requestRow['tereq_user_id'],
+                'userlang_lang_id' => $requestRow['tereq_language_id'],
+            ];
+            $userLang = new TableRecord(User::DB_TBL_LANG);
+            $userLang->assignValues($langData);
+            if (!$userLang->addNew([], $langData)) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($userLang->getError());
             }
             $fileData = (new Afile(Afile::TYPE_TEACHER_APPROVAL_IMAGE))->getFile($requestRow['tereq_user_id']);
             if (!empty($fileData) && !empty($fileData['file_path'] != "")) {
