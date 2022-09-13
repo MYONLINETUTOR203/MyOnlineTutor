@@ -26,6 +26,13 @@ $levels = Course::getCourseLevels();
                     </span>
                     <h1 class="page-heading"><?php echo $course['course_title']; ?></h1>
                     <h4 class="page-subheading"><?php echo $course['course_subtitle']; ?></h4>
+                    <a class="mark-option <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $course['is_favorite']; ?>" onclick="toggleCourseFavorite('<?php echo $course['course_id']; ?>', this)" href="javascript:void(0)">
+                        <svg class="fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
+                            <g>
+                                <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z" />
+                            </g>
+                        </svg>
+                    </a>
                 </hgroup>
                 <div class="course-counts margin-bottom-6">
                     <div class="course-counts__item">
@@ -239,14 +246,6 @@ $levels = Course::getCourseLevels();
                                             <?php } ?>
                                         </div>
                                     </div>
-                                    <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $course['course_id'] ?>', this)" data-status="<?php echo ($course['is_favorite'] == AppConstant::YES) ? AppConstant::YES : AppConstant::NO; ?>" class="btn btn--bordered btn--favorite btn--block <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>">
-                                        <svg class="fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
-                                            <g>
-                                                <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z" />
-                                            </g>
-                                        </svg>
-                                        <span><?php echo Label::getLabel('LBL_MARK_FAVORITE'); ?></span>
-                                    </a>
                                     <div class="sharing-view align-center margin-top-12">
                                         <h6><?php echo Label::getLabel('LBL_SHARE_THIS_COURSE'); ?></h6>
                                         <ul class="social--share clearfix">
