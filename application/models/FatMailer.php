@@ -266,6 +266,23 @@ class FatMailer extends FatModel
     }
 
     /**
+     * Mark archived email attempted
+     *
+     * @return bool
+     */
+    private function markArchiveAttempted(): bool
+    {
+        $record = new TableRecord(static::DB_TBL_ARCHIVE);
+        $record->setFldValue('earch_attempted', date('Y-m-d H:i:s'));
+        $where = ['smt' => 'earch_id = ?', 'vals' => [$this->archiveId]];
+        if (!$record->update($where)) {
+            $this->error = $record->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Replace template variables
      *
      * @param string $string
@@ -348,17 +365,17 @@ class FatMailer extends FatModel
         $this->bccArr = explode(',', $archive['earch_bcc_email']);
         $this->attachments = array_filter(explode(',', $archive['earch_attachemnts']));
         $this->setFrom($archive['earch_from_email'], $archive['earch_from_name']);
-        if (count(array_merge($this->toArr, $this->ccArr, $this->bccArr)) < 1) {
-            $this->error = Label::getLabel('LBL_TO_EMAIL_ADDRESS_IS_REQUIRED!');
-            return false;
-        }
         if (empty($this->fromArr)) {
-            $this->fromArr = [FatApp::getConfig('CONF_FROM_EMAIL'), FatApp::getConfig('CONF_FROM_NAME_' . $this->langId, FatUtility::VAR_STRING, '')];
-        }
-        if (!$this->sendByPhpMailer($archive['earch_subject'], $archive['earch_body'])) {
-            return false;
+            $this->fromArr = [FatApp::getConfig('CONF_FROM_EMAIL'),
+                FatApp::getConfig('CONF_FROM_NAME_' . $this->langId, FatUtility::VAR_STRING, '')];
         }
         $this->archiveId = $archive['earch_id'];
+        if (
+                (count(array_merge($this->toArr, $this->ccArr, $this->bccArr)) < 1) ||
+                !$this->sendByPhpMailer($archive['earch_subject'], $archive['earch_body'])
+        ) {
+            return $this->markArchiveAttempted();
+        }
         return $this->markArchiveSent();
     }
 

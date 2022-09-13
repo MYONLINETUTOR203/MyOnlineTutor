@@ -7,6 +7,11 @@ $frm->developerTags['fld_default_col'] = 12;
 $typeFld = $frm->getField('prefer_type');
 $typeFld->addFieldTagAttribute('class', 'hide');
 $typeFld->setWrapperAttribute('class', 'hide');
+$preferenceId = $frm->getField('prefer_id')->value;
+$langForm = '';
+if (intval($preferenceId) > 0) {
+    $langForm = 'onclick="langForm(' . $preferenceId . ',' . $langId . ');"';
+}
 ?>
 <section class="section">
     <div class="sectionhead">
@@ -22,7 +27,7 @@ $typeFld->setWrapperAttribute('class', 'hide');
                         $inactive = ($preferId == 0) ? 'fat-inactive' : '';
                         foreach ($languages as $langId => $langName) {
                             ?>
-                            <li class=" lang-li-js <?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $preferId; ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                            <li class=" lang-li-js <?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php echo $langForm; ?>><?php echo $langName; ?></a></li>
                         <?php } ?>
                     </ul>
                     <div class="tabs_panel_wrap">

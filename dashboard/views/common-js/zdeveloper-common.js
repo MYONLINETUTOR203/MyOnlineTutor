@@ -198,9 +198,7 @@ $(document).ready(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup', [], confFrontEndUrl), fcom.frmData(frm), function (res) {
-            setTimeout(() => {
-                window.location.href = res.redirectUrl;
-            }, 1000);
+            window.location.reload();
         });
     };
     toggleNavDropDownForDevices = function () {

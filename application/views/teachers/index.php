@@ -15,6 +15,7 @@ $lessonType = $srchFrm->getField('lesson_type');
 $tests = $srchFrm->getField('tests');
 $ageGroup = $srchFrm->getField('age_group');
 $sorting = $srchFrm->getField('sorting');
+$pageno = $srchFrm->getField('pageno');
 $priceFrom = $srchFrm->getField('price_from');
 $priceTill = $srchFrm->getField('price_till');
 $jslabels = json_encode([
@@ -96,7 +97,7 @@ $jslabels = json_encode([
                                                     <?php foreach ($teachs->options as $id => $name) { ?>
                                                         <li>
                                                             <label class="select-option">
-                                                                <input class="select-option__input language-filter-js" type="checkbox" name="teachs[]" value="<?php echo $id; ?>" <?php echo ($id == $teachs->value) ? 'checked' : ''; ?> />
+                                                                <input class="select-option__input language-filter-js" type="checkbox" name="teachs[]" value="<?php echo $id; ?>" <?php echo in_array($id, $teachs->value) ? 'checked' : ''; ?> />
                                                                 <span class="select-option__item select-teachlang-js"><?php echo strtolower($name); ?></span>
                                                             </label>
                                                         </li>
@@ -148,7 +149,7 @@ $jslabels = json_encode([
                                                     <?php foreach ($price->options as $id => $name) { ?>
                                                         <li>
                                                             <label class="select-option">
-                                                                <input class="select-option__input price-filter-js" type="checkbox" name="price[]" value="<?php echo $id; ?>" <?php echo ($id == $price->value) ? 'checked' : ''; ?> />
+                                                                <input class="select-option__input price-filter-js" type="checkbox" name="price[]" value="<?php echo $id; ?>" <?php echo in_array($id, $price->value) ? 'checked' : ''; ?> />
                                                                 <span class="select-option__item"><?php echo $name; ?></span>
                                                             </label>
                                                         </li>
@@ -605,6 +606,7 @@ $jslabels = json_encode([
             </div>
         </div>
         <input type="text" name="sorting" value="<?php echo $sorting->value; ?>" style="display: none;" />
+        <input type="text" name="pageno" value="<?php echo $pageno->value; ?>" style="display: none;" />
         </form>
     </div>
     <div class="container container--narrow">

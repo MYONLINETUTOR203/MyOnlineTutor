@@ -195,13 +195,12 @@ $(document).ready(function () {
         if (!$(frm).validate()) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), fcom.frmData(frm), function (res) {
-            if (res.redirectUrl) {
-                setTimeout(() => {
-                    window.location.href = res.redirectUrl;
-                }, 1000);
-                return;
-            }
+        var data = fcom.frmData(frm);
+        if (document.frmSearchPaging) {
+            data += '&' + fcom.frmData(document.frmSearchPaging);
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), data, function (res) {
+            window.location.reload();
         });
     };
     signupForm = function () {

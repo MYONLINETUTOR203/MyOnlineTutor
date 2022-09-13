@@ -36,43 +36,6 @@
                     </div>
                 </form>
             </div>
-            <?php if (!empty($otherRequest)) { ?>
-                <div class="repeatedrow">
-                    <form class="web_form form_horizontal">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3><i class="ion-person icon"></i> <?php echo Label::getLabel('LBL_OTHER_REQUEST_INFORMATION'); ?></h3>
-                            </div>
-                        </div>
-                        <?php foreach ($otherRequest as $key => $value) { ?>
-                            <div class="rowbody other-request">
-                                <div class="listview ">
-                                    <dl class="list">
-                                        <dt><?php echo Label::getLabel('LBL_REFERENCE_NUMBER'); ?></dt>
-                                        <dd><?php echo $value['tereq_reference']; ?></dd>
-                                    </dl>
-                                    <dl class="list">
-                                        <dt><?php echo Label::getLabel('LBL_REQUESTED_ON'); ?></dt>
-                                        <dd><?php echo MyDate::formatDate($value['tereq_date']); ?></dd>
-                                    </dl>
-                                    <dl class="list">
-                                        <dt><?php echo Label::getLabel('LBL_Status'); ?></dt>
-                                        <dd><?php echo TeacherRequest::getStatuses($value['tereq_status']); ?></dd>
-                                    </dl>
-                                    <dl class="list">
-                                        <dt><?php echo Label::getLabel('LBL_COMMENTS/REASON'); ?></dt>
-                                        <dd><?php echo (!empty($value['tereq_comments'])) ? nl2br($value['tereq_comments']) : 'N/A'; ?></dd>
-                                    </dl>
-                                    <dl class="list">
-                                        <dt><?php echo Label::getLabel('LBL_APPROVED/CANCELLED_DATE'); ?></dt>
-                                        <dd><?php echo (TeacherRequest::STATUS_PENDING != $value['tereq_status']) ? MyDate::formatDate($value['tereq_status_updated']) : 'N/A'; ?></dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </form>
-                </div>
-            <?php } ?>
             <div class="repeatedrow">
                 <form class="web_form form_horizontal">
                     <div class="row">

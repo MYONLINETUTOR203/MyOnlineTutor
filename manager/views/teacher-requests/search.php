@@ -6,6 +6,7 @@ $arrFlds = [
     'tereq_reference' => Label::getLabel('LBL_REFERENCE_NUMBER'),
     'user_full_name' => Label::getLabel('LBL_NAME'),
     'user_email' => Label::getLabel('LBL_EMAIL'),
+    'tereq_comments' => Label::getLabel('LBL_COMMENTS'),
     'tereq_date' => Label::getLabel('LBL_REQUESTED_ON'),
     'status' => Label::getLabel('LBL_STATUS'),
     'action' => Label::getLabel('LBL_ACTION'),

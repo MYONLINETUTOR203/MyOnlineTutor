@@ -35,7 +35,7 @@ $(document).ready(function () {
         $('.select-teachlang-js:contains("' + keyword + '")').parent().parent().show();
     };
 
-    searchLanguage = function () {
+    searchLanguage = function (reset = false) {
         var language = [];
         $('input[name="language[]"]:checked').each(function () {
             language.push($(this).parent().find('.select-option__item').text());
@@ -47,6 +47,9 @@ $(document).ready(function () {
             $('.teachlang-placeholder-js').html(placeholder);
         } else {
             $('.teachlang-placeholder-js').html(LABELS.allLanguages);
+        }
+        if (reset === true) {
+            return;
         }
         search(document.frmSearch);
         $("body").trigger('click');
@@ -60,7 +63,7 @@ $(document).ready(function () {
         $("body").trigger('click');
     };
 
-    searchClasstype = function () {
+    searchClasstype = function (reset = false) {
         var classtype = [];
         $('input[name="classtype[]"]:checked').each(function () {
             classtype.push($(this).parent().find('.select-option__item').text());
@@ -71,6 +74,9 @@ $(document).ready(function () {
             $('.classtype-placeholder-js').html(placeholder);
         } else {
             $('.classtype-placeholder-js').html(LABELS.allClassTypes);
+        }
+        if (reset === true) {
+            return;
         }
         search(document.frmSearch);
         $("body").trigger('click');
@@ -84,7 +90,7 @@ $(document).ready(function () {
     };
 
 
-    searchDuration = function () {
+    searchDuration = function (reset = false) {
         var duration = [];
         $('input[name="duration[]"]:checked').each(function () {
             duration.push($(this).parent().find('.select-option__item').text());
@@ -95,6 +101,9 @@ $(document).ready(function () {
             $('.duration-placeholder-js').html(placeholder);
         } else {
             $('.duration-placeholder-js').html(LABELS.allDurations);
+        }
+        if (reset === true) {
+            return;
         }
         search(document.frmSearch);
         $("body").trigger('click');
@@ -213,6 +222,9 @@ $(document).ready(function () {
         $(element).parent('.toggle-dropdown').toggleClass("is-active");
     };
 
+    searchLanguage(true);
+    searchClasstype(true);
+    searchDuration(true);
     search(document.frmSearch);
 });
 

@@ -68,10 +68,6 @@ class AdminGuestController extends AdminController
             AdminAuth::setAuthToken(AdminAuth::getLoggedAdminId());
         }
         $redirectUrl = MyUtility::makeUrl('Home');
-        if (!empty($_SESSION[AdminAuth::REFER_PAGE_URL] ?? '')) {
-            $redirectUrl = $_SESSION[AdminAuth::REFER_PAGE_URL];
-            unset($_SESSION[AdminAuth::REFER_PAGE_URL]);
-        }
         FatUtility::dieJsonSuccess([
             'redirectUrl' => $redirectUrl,
             'msg' => Label::getLabel('LBL_LOGIN_SUCCESSFUL')

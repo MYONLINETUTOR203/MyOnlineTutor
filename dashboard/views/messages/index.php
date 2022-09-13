@@ -19,7 +19,7 @@ $submitFld->setWrapperAttribute('class', 'col-md-12');
     <div class="page__head">
         <div class="row">
             <div class="col-sm-6">
-                <h1><?php echo Label::getLabel('LBL_MY_WALLET'); ?></h1>
+                <h1><?php echo Label::getLabel('LBL_MY_MESSAGES'); ?></h1>
             </div>
         </div>
     </div>

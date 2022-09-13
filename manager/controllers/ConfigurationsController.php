@@ -680,9 +680,10 @@ class ConfigurationsController extends AdminBaseController
     {
         try {
             $mail = new FatMailer($this->siteLangId, 'test_email');
-            if ($mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')])) {
-                FatUtility::dieJsonSuccess("Mail sent to - " . FatApp::getConfig('CONF_SITE_OWNER_EMAIL'));
+            if (!$mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')])) {
+                FatUtility::dieJsonError($mail->getError());
             }
+            FatUtility::dieJsonSuccess("Mail sent to - " . FatApp::getConfig('CONF_SITE_OWNER_EMAIL'));
         } catch (Exception $e) {
             FatUtility::dieJsonError($e->getMessage());
         }
