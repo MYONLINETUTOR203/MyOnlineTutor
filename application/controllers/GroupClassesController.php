@@ -24,8 +24,10 @@ class GroupClassesController extends MyAppController
      */
     public function index()
     {
+        $searchSession = $_SESSION[AppConstant::SEARCH_SESSION] ?? [];
         $frm = GroupClassSearch::getSearchForm($this->siteLangId);
-        $frm->fill(FatApp::getPostedData());
+        $frm->fill(FatApp::getPostedData() + $searchSession);
+        unset($_SESSION[AppConstant::SEARCH_SESSION]);
         $this->set('srchFrm', $frm);
         $this->_template->addJs(['js/app.timer.js']);
         $this->_template->render();

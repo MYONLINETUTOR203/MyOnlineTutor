@@ -32,8 +32,10 @@ class TeachersController extends MyAppController
             $teachlangArr = array_column($teachLangs, 'tlang_slug', 'tlang_id');
             $postedData['teachs'] = array_search($slug, $teachlangArr);
         }
+        $searchSession = $_SESSION[AppConstant::SEARCH_SESSION] ?? [];
         $srchFrm = TeacherSearch::getSearchForm($this->siteLangId);
-        $srchFrm->fill($postedData);
+        $srchFrm->fill($postedData + $searchSession);
+        unset($_SESSION[AppConstant::SEARCH_SESSION]);
         $this->set('srchFrm', $srchFrm);
         $this->set('setMonthAndWeekNames', true);
         $this->set('languages', TeachLanguage::getAllLangs($this->siteLangId, true));

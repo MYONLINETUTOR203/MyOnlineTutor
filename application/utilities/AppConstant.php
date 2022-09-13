@@ -71,6 +71,7 @@ class AppConstant
     const VIEW_CALENDAR = 2;
     const VIEW_SHORT = 3;
     const VIEW_DASHBOARD_LISTING = 4;
+    const SEARCH_SESSION = 'SEARCH_SESSION';
 
     /**
      * Return Array Value

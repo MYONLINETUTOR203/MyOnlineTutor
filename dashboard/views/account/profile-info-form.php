@@ -180,6 +180,24 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
+                                            <label class="field_label"> <?php echo $countryField->getCaption(); ?>
+                                                <?php if ($countryField->requirement->isRequired()) { ?>
+                                                    <span class="spn_must_field">*</span>
+                                                <?php } ?>
+                                            </label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover custom-select-search">
+                                                <?php echo $countryField->getHTML(); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
                                             <label class="field_label"><?php echo Label::getLabel('LBL_PHONE'); ?>
                                                 <?php if ($phoneField->requirement->isRequired()) { ?>
                                                     <span class="spn_must_field">*</span>
@@ -194,24 +212,6 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                                         <li><?php echo $phoneField->getHTML(); ?></li>
                                                     </ul>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper">
-                                            <label class="field_label"> <?php echo $countryField->getCaption(); ?>
-                                                <?php if ($countryField->requirement->isRequired()) { ?>
-                                                    <span class="spn_must_field">*</span>
-                                                <?php } ?>
-                                            </label>
-                                        </div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover custom-select-search">
-                                                <?php echo $countryField->getHTML(); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -328,6 +328,12 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
 
     $(document).ready(function () {
         $("[name='user_timezone'], [name='user_country_id'], [name='user_phone_code']").select2();
+        $("[name='user_country_id']").on('change', function () {
+            $("[name='user_phone_code']").val($("[name='user_country_id']").val());
+            $("[name='user_phone_code']").css({width: '100%'});
+            $("[name='user_phone_code']").next().remove();
+            $("[name='user_phone_code']").select2();
+        });
         $('input[name="user_username"]').on('keypress', function (e) {
             if (e.which == 32) {
                 return false;
