@@ -1,6 +1,5 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$_SESSION[UserAuth::REFERRAL_PAGE_URL] = CommonHelper::getCurrentUrl();
 $stickyDemoHeader = '';
 if (FatApp::getConfig('conf_auto_restore_on', FatUtility::VAR_INT, 1) && MyUtility::isDemoUrl()) {
     $stickyDemoHeader = 'sticky-demo-header';
