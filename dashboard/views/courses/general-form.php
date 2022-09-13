@@ -160,8 +160,7 @@ $courseId = $courseIdFld->value;
                                         </label>
                                     </div>
                                     <div class="field-wraper">
-                                        <?php $strLen = 500 - strlen($descFld->value); ?>
-                                        <div class="field_cover field-count" data-length="500" field-count="<?php echo $strLen; ?>">
+                                        <div class="field_cover">
                                             <?php echo $descFld->getHtml(); ?>
                                         </div>
                                     </div>

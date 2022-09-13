@@ -19,7 +19,6 @@ if ($lecture['lecture_id'] > 0) {
 }
 $fld->setFieldTagAttribute('onclick', $action);
 $titleLength = 255;
-$descLength = 300;
 ?>
 <div class="card-box card-group-js is-active <?php echo ($lecture['lecture_id'] > 0) ? 'lecturePanelJs' : ''; ?>" id="sectionLectures<?php echo $lectureDivId ?>" <?php if ($lecture['lecture_id'] > 0) { ?> data-id="<?php echo $lecture['lecture_id'] ?>" <?php } ?>>
     <!-- [ LECTURE TITLE ========= -->
@@ -99,9 +98,7 @@ $descLength = 300;
                                     </label>
                                 </div>
                                 <div class="field-wraper">
-                                    <?php
-                                    $strLen = $descLength - strlen($descFld->value); ?>
-                                    <div class="field_cover field-count" data-length="<?php echo $descLength ?>" field-count="<?php echo $strLen; ?>">
+                                    <div class="field_cover">
                                         <?php echo $descFld->getHtml(); ?>
                                     </div>
                                 </div>
