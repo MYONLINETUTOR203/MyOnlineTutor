@@ -35,6 +35,12 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                         </svg>
                         <?php echo Label::getLabel('LBL_RETAKE_COURSE'); ?>
                     </a>
+                    <a href="<?php echo MyUtility::makeUrl('Courses', '', [], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary-bordered margin-1">
+                        <svg class="icon icon--png icon--small margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#arrow-back"></use>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_GO_BACK_TO_COURSE_LISTING'); ?>
+                    </a>
                     <?php if ($course['course_certificate'] == AppConstant::YES) { ?>
                         <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$progressId], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1">
                             <svg class="icon icon--png icon--small margin-right-2">
