@@ -231,6 +231,9 @@ class OrderCourseSearch extends YocoachSearch
         if ($this->userType == User::LEARNER && $date > $orderDate) {
             return false;
         }
+        if (!is_null($course['ordcrs_teacher_paid'])) {
+            return false;
+        }   
         if (isset($course['corere_status'])) {
             return false;
         }

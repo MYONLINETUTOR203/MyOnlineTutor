@@ -147,7 +147,6 @@ class OrderCourse extends MyAppModel
                 $this->error = Label::getLabel('LBL_ALLOWED_CANCELLATION_DURATION_HAS_PASSED');
                 return false;
             }
-
         }
         if ($course['order_status'] == Order::STATUS_CANCELLED) {
             $this->error = Label::getLabel('LBL_COURSE_ALREADY_CANCELLED');
