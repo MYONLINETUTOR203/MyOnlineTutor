@@ -112,4 +112,20 @@ class QuizSearch extends YocoachSearch
             'teacher.user_username' => 'teacher_username',
         ];
     }
+
+    public function getQuestions($quizId)
+    {
+        if ($quizId < 1) {
+            return [];
+        }
+        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
+        $srch->joinTable(Quiz::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id');
+        $srch->joinTable(Question::DB_TBL, 'INNER JOIN', 'ques_id = quique_ques_id');
+        $srch->addCondition('quique_quiz_id', '=', $quizId);
+        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch->addMultipleFields([
+            'quiz_id', 'ques_id', 'ques_title', 'ques_type'
+        ]);
+        return FatApp::getDb()->fetchAll($srch->getResultSet());
+    }
 }

@@ -31,23 +31,5 @@ $(function () {
         document.frmSearch.reset();
         search(document.frmSearch);
     };
-    form = function (id) {
-        fcom.ajax(fcom.makeUrl('Quizzes', 'form', [id]), '', function (response) {
-            $.facebox(response, 'facebox-medium');
-        });
-    };
-    /*
-    setup = function (frm) {
-        if (!$(frm).validate()) {
-            return;
-        }
-        var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('Questions', 'setup'), data, function(res){
-            search(document.frmQuesSearch);
-            $.facebox.close();
-        });
-
-    };
-     */
     search(document.frmSearch);
 });

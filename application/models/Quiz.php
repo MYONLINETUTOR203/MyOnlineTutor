@@ -4,6 +4,7 @@ class Quiz extends MyAppModel
 {
     public const DB_TBL = 'tbl_quizzes';
     public const DB_TBL_PREFIX = 'quiz_';
+    public const DB_TBL_QUIZ_QUESTIONS = 'tbl_quizzes_questions';
 
     public const TYPE_AUTO_GRADED = 1;
     public const TYPE_NON_GRADED = 2;
@@ -65,7 +66,7 @@ class Quiz extends MyAppModel
         $srch = new SearchBase(self::DB_TBL, 'quiz');
         $srch->addCondition('quiz_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addMultipleFields(['quiz_id', 'quiz_type', 'quiz_user_id']);
+        $srch->addMultipleFields(['quiz_id', 'quiz_type', 'quiz_user_id', 'quiz_title', 'quiz_detail']);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         return FatApp::getDb()->fetch($srch->getResultSet());
@@ -78,17 +79,81 @@ class Quiz extends MyAppModel
      */
     public function delete(): bool
     {
+        if (!$this->validate()) {
+            return false;
+        }
+        $this->setFldValue('quiz_deleted', date('Y-m-d H:i:s'));
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup quiz basic details
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function setup(array $data): bool
+    {
+        $quizId = $this->getMainTableRecordId();
+        if ($quizId > 0) {
+            if (!$this->validate()) {
+                return false;
+            }
+        }
+        $this->assignValues($data);
+        $this->assignValues([
+            'quiz_user_id' => $this->userId,
+            'quiz_active' => AppConstant::ACTIVE,
+            'quiz_status' => static::STATUS_DRAFTED,
+            'quiz_updated' => date('Y-m-d H:i:s')
+        ]);
+        if (empty($quizId)) {
+            $this->setFldValue('quiz_created', date('Y-m-d H:i:s'));
+        }
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Update quiz status
+     *
+     * @param int $status
+     * @return bool
+     */
+    public function updateStatus(int $status): bool
+    {
+        if (!$this->validate()) {
+            return false;
+        }
+        $status = ($status == AppConstant::ACTIVE) ? AppConstant::INACTIVE : AppConstant::ACTIVE;
+        $this->setFldValue('quiz_active', $status);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Validate quiz for update & delete actions
+     *
+     * @return bool
+     */
+    public function validate(): bool
+    {
         if (!$quiz = $this->getById()) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
             return false;
         }
         if ($this->userId != $quiz['quiz_user_id']) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
-            return false;
-        }
-        $this->setFldValue('quiz_deleted', date('Y-m-d H:i:s'));
-        if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
