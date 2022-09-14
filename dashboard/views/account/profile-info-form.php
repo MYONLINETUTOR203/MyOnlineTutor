@@ -9,7 +9,9 @@ if ($profileFrm->getField('user_username')) {
     $userUsername = $profileFrm->getField('user_username');
     $userUsername->addFieldTagAttribute('onchange', 'formatUrl(this);');
     $userUsername->developerTags['col'] = 12;
-    $userUsername->htmlAfterField = '<small class=" user_url_string margin-bottom-0">' . MyUtility::makeFullUrl('teachers', 'view', [], CONF_WEBROOT_FRONT_URL) . '/<b>' . $userUsername->value . '</b></small>';
+    $protocol = (FatApp::getConfig('CONF_USE_SSL')) ? 'https://' : 'http://';
+    $link = $protocol . $_SERVER['SERVER_NAME'] . MyUtility::makeUrl('teachers', 'view', [$userUsername->value], CONF_WEBROOT_FRONTEND);
+    $userUsername->htmlAfterField = '<small class="user_url_string margin-bottom-0"><a href="' . $link . '" target="_blank">' . $link . '</a></small>';
 }
 if ($profileFrm->getField('user_book_before')) {
     $profileFrm->getField('user_book_before')->htmlAfterField = "<br><small>" . Label::getLabel("htmlAfterField_booking_before_text") . ".</small>";

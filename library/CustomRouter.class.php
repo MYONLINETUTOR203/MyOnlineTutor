@@ -17,14 +17,13 @@ class CustomRouter
         $uriPath = array_values(array_filter(explode("/", $uriPath)));
         $langCodes = Language::getCodes();
         $langCode = strtolower($uriPath[0] ?? '');
-        $langId = $_COOKIE['CONF_SITE_LANGUAGE'] ?? 1;
+        $langId = $_COOKIE['CONF_SITE_LANGUAGE'] ?? CONF_DEFAULT_LANG;
         $urlLangId = array_search($langCode, $langCodes);
 
         if (CONF_LANGCODE_URL == AppConstant::YES) {
             if ($urlLangId !== false) {
                 $langId = $urlLangId;
                 array_shift($uriPath);
-                define('CONF_SITE_LANGUAGE', $urlLangId);
                 if (CONF_DEFAULT_LANG == $langId) {
                     MyUtility::setSiteLanguage(Language::getData($langId), true);
                     $params = array_slice($uriPath, 2);
@@ -98,10 +97,12 @@ class CustomRouter
             exit;
         }
 
-        $url = SeoUrl::getOriginalUrl(implode("/", $uriPath));
-        if (!empty($url)) {
-            if (!defined('CONF_SITE_LANGUAGE')) {
+        $url = SeoUrl::getOriginalUrl(implode("/", $uriPath), FatUtility::int($urlLangId));
+        if (!empty($url['seourl_original'])) {
+            if ($url['totalRecord'] == 1) {
                 define('CONF_SITE_LANGUAGE', $url['seourl_lang_id']);
+            } else {
+                define('CONF_SITE_LANGUAGE', $langId);
             }
             $uriPath = explode("/", $url['seourl_original']);
             $uriPath = array_values(array_filter($uriPath));
@@ -116,8 +117,10 @@ class CustomRouter
             }
             return;
         }
-
+        
         if (CONF_LANGCODE_URL == AppConstant::YES) {
+            $langId = ($urlLangId !== false) ? $urlLangId : $langId;
+            define('CONF_SITE_LANGUAGE', $langId);
             $params = array_slice($uriPath, 2);
             $controller = $uriPath[0] ?? 'Home';
             $action = $uriPath[1] ?? 'index';
