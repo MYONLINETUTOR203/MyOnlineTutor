@@ -458,7 +458,7 @@ class CourseSearch extends YocoachSearch
     {
         $this->addSearchListingFields();
         $this->applyPrimaryConditions();
-        $this->applyOrderBy(0);
+        $this->applyOrderBy(AppConstant::SORT_POPULARITY);
         $this->addCondition('course.course_status', '=', Course::PUBLISHED);
         $this->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $this->setPageSize(AppConstant::PAGESIZE);
