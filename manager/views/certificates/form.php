@@ -14,9 +14,10 @@ $mediaFrm->developerTags['fld_default_col'] = 12;
 $fld = $mediaFrm->getField('certpl_image');
 $fld->setFieldTagAttribute('onchange', 'setupMedia();');
 $fld->htmlAfterField .= '<small>' . str_replace('{dimensions}', implode('x', $dimensions), Label::getLabel('LBL_PREFERRED_DIMENSIONS_{dimensions}')) .  ' & ' . str_replace('{ext}', $imageExts, Label::getLabel('LBL_ALLOWED_FILE_EXTS_{ext}')) . '</small>';
-
 $fld = $frm->getField('btn_preview');
 $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
+$fld = $frm->getField('btn_reset');
+$fld->setFieldTagAttribute('onclick', 'resetToDefault()');
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -125,7 +126,6 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
-                                                                    <span> <?php echo Label::getLabel('LBL_TUTOR:', $data['certpl_lang_id']); ?></span>
                                                                     <div class="style-bold contentTrainerJs" contenteditable="true">
                                                                         <?php echo $content['trainer'] ?>
                                                                     </div>
@@ -138,8 +138,6 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                                                 </div>
 
                                                                 <div class="certificate-signs__right">
-
-                                                                    <span> <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:', $data['certpl_lang_id']); ?></span>
                                                                     <div class="style-bold contentCertNoJs" contenteditable="true">
                                                                         <?php echo $content['certificate_number'] ?>
                                                                     </div>

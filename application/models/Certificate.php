@@ -13,6 +13,7 @@ class Certificate extends MyAppModel
     const DB_TBL = 'tbl_order_courses';
     const DB_TBL_PREFIX = 'ordcrs_';
     const CERTIFICATE_NO_PREFIX = 'YC_';
+    const TYPE_COURSE = 'course_completion_certificate';
     
     private $userId;
     private $langId;

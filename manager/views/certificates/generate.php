@@ -15,7 +15,6 @@
                 <table border="0" cellspacing="0" style="width:100%">
                     <tr>
                         <td width="33.3%" class="certificate-signs__left">
-                            <?php echo Label::getLabel('LBL_TUTOR:', $langId); ?>
                             <b>
                                 <?php echo $content['trainer'] ?>
                             </b>
@@ -24,7 +23,6 @@
                             <img width="140" height="47" src="<?php echo $logoImg ?>" alt="">
                         </td>
                         <td width="33.3%" class="certificate-signs__right">
-                            <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:', $langId); ?>
                             <b>
                                 <?php echo $content['certificate_number'] ?>
                             </b>

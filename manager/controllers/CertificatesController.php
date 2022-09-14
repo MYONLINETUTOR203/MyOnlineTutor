@@ -233,6 +233,27 @@ class CertificatesController extends AdminBaseController
     }
 
     /**
+     * Get Default Certificate Content
+     */
+    public function getDefaultContent()
+    {
+        $post = FatApp::getPostedData();
+        if (empty($post['certpl_code'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $certData = [];
+        if ($post['certpl_code'] == Certificate::TYPE_COURSE) {
+            $certData = FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT');
+        }
+        return FatUtility::dieJsonSuccess([
+            'data' => json_decode($certData, true),
+            'msg' => '',
+        ]);
+    }
+
+
+
+    /**
      * Get Form
      *
      * @return Form
@@ -272,7 +293,9 @@ class CertificatesController extends AdminBaseController
 
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
         $fld_button = $frm->addButton('', 'btn_preview', Label::getLabel('LBL_Save_&_Preview'));
+        $fld_reset = $frm->addButton('', 'btn_reset', Label::getLabel('LBL_RESET_TO_DEFAULT'));
         $fld_submit->attachField($fld_button);
+        $fld_submit->attachField($fld_reset);
         return $frm;
     }
 
