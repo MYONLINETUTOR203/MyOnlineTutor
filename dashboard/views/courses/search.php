@@ -64,6 +64,17 @@ $requestStatuses = Course::getRefundStatuses();
                                 </span>
                             </div>
                         </div>
+                        <?php if ($siteUserType == User::LEARNER) { ?>
+                        <div class="course-stats__item">
+                            <strong>
+                                <?php
+                                    $progressLbl = Label::getLabel('LBL_{percent}%_COMPLETED');
+                                    $progressLbl = str_replace('{percent}', $course['crspro_progress'], $progressLbl);
+                                    echo $progressLbl;
+                                ?>
+                            </strong>
+                        </div>
+                        <?php } ?>
                     </div>
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <?php
