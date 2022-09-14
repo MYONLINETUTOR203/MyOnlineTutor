@@ -192,6 +192,9 @@ class CourseLanguagesController extends AdminBaseController
         if (empty(CourseLanguage::getAttributesById($cLangId, ['clang_id']))) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        if ($status == AppConstant::INACTIVE && $this->checkCoursesExistsForLang($cLangId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_ATTACHED_LANGUAGE_CANNOT_BE_DEACTIVATED.'));
+        }
         $courseLanguage = new CourseLanguage($cLangId);
         if (!$courseLanguage->changeStatus($status)) {
             FatUtility::dieJsonError($courseLanguage->getError());
@@ -208,6 +211,9 @@ class CourseLanguagesController extends AdminBaseController
         $cLangId = FatApp::getPostedData('cLangId', FatUtility::VAR_INT, 0);
         if (empty(CourseLanguage::getAttributesById($cLangId, 'clang_id'))) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        if ($this->checkCoursesExistsForLang($cLangId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_ATTACHED_LANGUAGE_CANNOT_BE_DELETED.'));
         }
         $courseLanguage = new CourseLanguage($cLangId);
         $courseLanguage->setFldValue('clang_deleted', date('Y-m-d H:i:s'));
@@ -266,5 +272,20 @@ class CourseLanguagesController extends AdminBaseController
             }
             FatUtility::dieJsonSuccess(Label::getLabel('LBL_ORDER_UPDATED_SUCCESSFULLY'));
         }
+    }
+
+    public function checkCoursesExistsForLang(int $cLangId)
+    {
+        $srch = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('course.course_clang_id', '=', $cLangId);
+        $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $srch->addFld('course.course_id');
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            return true;
+        }
+        return false;
     }
 }
