@@ -243,10 +243,10 @@ class CertificatesController extends AdminBaseController
         }
         $certData = [];
         if ($post['certpl_code'] == Certificate::TYPE_COURSE) {
-            $certData = FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT');
+            $certData = json_decode(FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT'), true);
         }
         return FatUtility::dieJsonSuccess([
-            'data' => json_decode($certData, true),
+            'data' => $certData,
             'msg' => '',
         ]);
     }

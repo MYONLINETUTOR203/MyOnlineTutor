@@ -43,12 +43,14 @@
     resetToDefault = function () {
         var data = fcom.frmData(document.frmCertificate);
         fcom.ajax(fcom.makeUrl('Certificates', 'getDefaultContent'), data, function(response) {
-            $('.contentHeadingJs').text(response.data.heading);
-            $('.contentPart1Js').text(response.data.content_part_1);
-            $('.contentLearnerJs').text(response.data.learner);
-            $('.contentPart2Js').text(response.data.content_part_2);
-            $('.contentTrainerJs').text(response.data.trainer);
-            $('.contentCertNoJs').text(response.data.certificate_number);
+            if (response.data) {
+                $('.contentHeadingJs').text(response.data.heading);
+                $('.contentPart1Js').text(response.data.content_part_1);
+                $('.contentLearnerJs').text(response.data.learner);
+                $('.contentPart2Js').text(response.data.content_part_2);
+                $('.contentTrainerJs').text(response.data.trainer);
+                $('.contentCertNoJs').text(response.data.certificate_number);
+            }
         }, { fOutMode: 'json' });
     }
 })();
