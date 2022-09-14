@@ -74,8 +74,11 @@ $priceSorting = AppConstant::getSortbyArr();
                     <div class="course-grid">
                         <div class="course-grid__head">
                             <div class="course-media ratio ratio--16by9">
-                                <a href="javascript:void(0);" onclick="showPreviewVideo('<?php echo $course['course_id']; ?>');">
-                                    <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $course['course_id'], 'MEDIUM', $siteLangId], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?>" alt="">
+                                <div class="course-media__preview">
+                                    <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_COURSE_IMAGE, $course['course_id'], 'MEDIUM', $siteLangId], CONF_WEBROOT_FRONT_URL) . '?=' . time(); ?>" alt="">   
+                                </div>
+                                <a href="javascript:void(0);" class="course-preview__action" onclick="showPreviewVideo('<?php echo $course['course_id']; ?>');">
+                                    <span></span>
                                 </a>
                             </div>
                             <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $course['course_id'] ?>', this)" data-status="<?php echo $course['is_favorite']; ?>" class="mark-option <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>">
