@@ -9,8 +9,8 @@
                             Instead you can <a class="underline color-primary" target="_blank" href="<?php echo MyUtility::generateUrl('Image', 'showPdf', [Afile::TYPE_CERTIFICATE_PDF, $ordcrsId], CONF_WEBROOT_FRONTEND) ?>#toolbar=0&navpanes=0&scrollbar=0">click here</a> to access the file directly.</p>
                     </object>
                 </div>
-                <div class="certificate-desc">
-                    <p class="font-small"></p>
+                <div class="certificate-desc padding-top-2">
+                    <p class="font-small"><?php echo Label::getLabel('LBL_CERTIFICATE_BOTTOM_TEXT'); ?></p>
                 </div>
             </div>
             <div class="layout-flex__small">
