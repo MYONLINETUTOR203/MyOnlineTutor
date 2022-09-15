@@ -57,6 +57,7 @@ $(function () {
         } else{
             $('#btnComplete' + $(this).val()).removeClass('btn--disabled');
         }
+        setProgress();
     });
     setCompleteCount = function (sectionId, obj) {
         $('.completedLecture' + sectionId).text($(obj).parents('.lecturesListJs').find('input[type="checkbox"]:checked').length);
@@ -73,6 +74,13 @@ $(function () {
         $(obj).prop('checked', true);
         setCompleteCount(sectionId, obj);
         $('#btnComplete' + lectureId).addClass('btn--disabled');
+        setProgress();
+    };
+    setProgress = function () {
+        var totalLectures = parseInt($('.sidebarJs').find('input[type="checkbox"]').length);
+        var completedLectures = parseInt($('.sidebarJs').find('input[type="checkbox"]:checked').length);
+        var percent = (completedLectures * 100) / totalLectures;
+        $('#progressBarJs').prop('style', "--percent:" + percent.toFixed(2));
     };
     getTutorInfo = function () {
         if (tutor == false) {
