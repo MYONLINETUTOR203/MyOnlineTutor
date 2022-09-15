@@ -19,11 +19,13 @@ $idFld->addFieldTagAttribute('id', 'tlang_id');
                         <li><a class="active" href="javascript:void(0);" onclick="form(<?php echo $tLangId ?>);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
                         <?php
                         $inactive = ($tLangId == 0) ? 'fat-inactive' : '';
+                        $mediaForm = ($tLangId > 0) ? 'onclick="mediaForm(' . $tLangId . ');"' : '';
                         foreach ($languages as $langId => $langName) {
+                            $langForm = (intval($tLangId) > 0) ? 'onclick="langForm(' . $tLangId . ',' . $langId . ');"' : '';
                             ?>
-                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $tLangId ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php echo $langForm; ?>><?php echo $langName; ?></a></li>
                         <?php } ?>
-                        <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" onclick="mediaForm(<?php echo $tLangId ?>);" ><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
+                        <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" <?php echo $mediaForm; ?> ><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">
