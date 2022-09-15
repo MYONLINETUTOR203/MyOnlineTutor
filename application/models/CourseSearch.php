@@ -221,12 +221,18 @@ class CourseSearch extends YocoachSearch
         switch ($sorting) {
             case AppConstant::SORT_PRICE_ASC:
                 $this->addOrder('course.course_price', 'ASC');
+                $this->addOrder('course.course_reviews', 'DESC');
+                $this->addOrder('course.course_ratings', 'DESC');
                 break;
             case AppConstant::SORT_PRICE_DESC:
                 $this->addOrder('course.course_price', 'DESC');
+                $this->addOrder('course.course_reviews', 'DESC');
+                $this->addOrder('course.course_ratings', 'DESC');
                 break;
             case AppConstant::SORT_POPULARITY:
                 $this->addOrder('course.course_students', 'DESC');
+                $this->addOrder('course.course_reviews', 'DESC');
+                $this->addOrder('course.course_ratings', 'DESC');
                 break;
             default:
                 $this->addOrder('course.course_students', 'DESC');
