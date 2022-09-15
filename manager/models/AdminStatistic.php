@@ -200,15 +200,22 @@ class AdminStatistic
      */
     private static function getCoursesTotal(bool $all = false): int
     {
-        $srch = new SearchBase(Course::DB_TBL, 'course');
+        $srch = new CourseSearch(0, 0, User::SUPPORT);
+        $srch->applyPrimaryConditions();
+        $srch->joinTable(
+            Course::DB_TBL_APPROVAL_REQUEST,
+            'INNER JOIN',
+            'course.course_id = coapre.coapre_course_id',
+            'coapre'
+        );
+        $srch->addCondition('coapre.coapre_status', '=', Course::REQUEST_APPROVED);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         if (!$all) {
             $datetime = MyDate::getStartEndDate(MyDate::TYPE_THIS_MONTH, NULL, true);
-            $srch->addCondition('course_created', '>=', $datetime['startDate']);
-            $srch->addCondition('course_created', '<=', $datetime['endDate']);
+            $srch->addCondition('course.course_created', '>=', $datetime['startDate']);
+            $srch->addCondition('course.course_created', '<=', $datetime['endDate']);
         }
-        $srch->addMultipleFields(['COUNT(course_id) AS totalCourses']);
+        $srch->addMultipleFields(['COUNT(course.course_id) AS totalCourses']);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $records = FatApp::getDb()->fetch($srch->getResultSet());
