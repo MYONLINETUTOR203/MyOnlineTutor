@@ -92,7 +92,11 @@ class CustomRouter
             }
             $redirect = $langCode . FatUtility::generateUrl($controller, $action, $params);
             $redirect = empty($uriQuery) ? $redirect : $redirect . '?' . $uriQuery;
-            header("Location:" . $redirect, true, intval($url['seourl_httpcode']));
+            $redirect = explode("/", trim($redirect, "/"));
+            foreach ($redirect as $key => $urlPath) {
+                $redirect[$key] = urlencode($urlPath);
+            }
+            header("Location:/" . implode("/", $redirect), true, intval($url['seourl_httpcode']));
             header("Connection: close");
             exit;
         }
@@ -117,7 +121,7 @@ class CustomRouter
             }
             return;
         }
-        
+
         if (CONF_LANGCODE_URL == AppConstant::YES) {
             $langId = ($urlLangId !== false) ? $urlLangId : $langId;
             define('CONF_SITE_LANGUAGE', $langId);
