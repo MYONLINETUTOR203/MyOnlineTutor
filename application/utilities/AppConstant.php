@@ -60,7 +60,7 @@ class AppConstant
     const CVV_NO_REGEX = "^[0-9]{3,4}$";
     const CLASS_TYPE_GROUP = 'group';
     const CLASS_TYPE_1_TO_1 = '1to1';
-    const INTRODUCTION_VIDEO_LINK_REGEX = "^(https|http):\/\/(?:www\.)?youtube.com\/embed\/[A-z0-9]+";
+    const INTRODUCTION_VIDEO_LINK_REGEX = "^(?:https?:)?(?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]{7,15})(?:[\?&][a-zA-Z0-9\_-]+=[a-zA-Z0-9\_-]+)*(?:[&\/\#].*)?$";
     const DATE_TIME_REGEX = "(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})";
     const PASSWORD_REGEX = "^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%-_]{8,15}$";
     const URL_REGEX = "(?=.{5,253}$)((http|https):\/\/)(www.)?[a-zA-Z0-9@:%._\\+~#?&\/\/=-]{2,253}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&\/\/=]*)";
