@@ -148,9 +148,9 @@ $(function () {
             $('.reviewFrmJs').removeAttr('onclick').addClass('btn--disabled');
         });
     };
-    getNotes = function () {
+    getNotes = function (id) {
         if (notes == false) {
-            fcom.ajax(fcom.makeUrl('LectureNotes', 'index'), {'course_id' : courseId}, function (res) {
+            fcom.ajax(fcom.makeUrl('LectureNotes', 'index'), {'course_id' : courseId, 'ordcrs_id': id}, function (res) {
                 $('.notesJs').html(res);
                 notesSearch(document.frmNotesSearch);
                 notes = true;
@@ -176,10 +176,11 @@ $(function () {
         $(frm.page).val(page);
         notesSearch(frm);
     };
-    notesForm = function (id) {
+    notesForm = function (id, ordcrsId) {
         fcom.ajax(fcom.makeUrl('LectureNotes', 'form', [id]), {
             'lecnote_lecture_id' : currentLectureId,
-            'lecnote_course_id' : courseId
+            'lecnote_course_id' : courseId,
+            'lecnote_ordcrs_id': ordcrsId,
         }, function (res) {
             $.facebox(res);
         });

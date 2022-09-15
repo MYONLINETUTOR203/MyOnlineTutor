@@ -28,9 +28,10 @@ class LectureNotesController extends DashboardController
         if ($courseId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        $ordcrs_id = FatApp::getPostedData('ordcrs_id');
         /* get notes form */
         $frm = $this->getSearchForm();
-        $frm->fill(['course_id' => $courseId]);
+        $frm->fill(['course_id' => $courseId, 'ordcrs_id' => $ordcrs_id]);
         $this->set('frm', $frm);
         $this->set('isPreview', FatApp::getPostedData('is_preview', FatUtility::VAR_INT, 0));
         $this->_template->render(false, false);
@@ -117,6 +118,17 @@ class LectureNotesController extends DashboardController
             }
         }
         $post['lecnote_user_id'] = $this->siteUserId;
+        $ordcrs = new OrderCourse($post['lecnote_ordcrs_id'], $this->siteUserId);
+        if (!$ordcrsData = $ordcrs->getOrderCourseById()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        if ($ordcrsData['ordcrs_course_id'] != $post['lecnote_course_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $lecture = new Lecture($post['lecnote_lecture_id']);
+        if (!$lectureData = $lecture->getByCourseId($post['lecnote_course_id'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
         if (!$note->setup($post)) {
             FatUtility::dieJsonError($note->getError());
         }
@@ -160,6 +172,7 @@ class LectureNotesController extends DashboardController
         $frm->addTextArea(Label::getLabel('LBl_NOTES'), 'lecnote_notes')->requirements()->setRequired();
         $frm->addHiddenField('', 'lecnote_course_id');
         $frm->addHiddenField('', 'lecnote_lecture_id');
+        $frm->addHiddenField('', 'lecnote_ordcrs_id');
         $frm->addHiddenField('', 'lecnote_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         $frm->addResetButton('', 'btn_cancel', Label::getLabel('LBL_CANCEL'));
@@ -175,6 +188,7 @@ class LectureNotesController extends DashboardController
         $frm = new Form('frmNotesSearch');
         $frm->addTextBox(Label::getLabel('LBl_SEARCH'), 'keyword');
         $frm->addHiddenField('', 'course_id');
+        $frm->addHiddenField('', 'ordcrs_id');
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField('', 'page', 1)->requirements()->setInt();
         $frm->addResetButton('', 'btn_reset', Label::getLabel('LBL_RESET'));

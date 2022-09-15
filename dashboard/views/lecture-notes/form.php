@@ -48,6 +48,7 @@ $frm->setFormTagAttribute('onsubmit', 'setupNotes(this); return(false);');
         <?php
         echo $frm->getFieldHtml('lecnote_course_id');
         echo $frm->getFieldHtml('lecnote_lecture_id');
+        echo $frm->getFieldHtml('lecnote_ordcrs_id');
         echo $frm->getFieldHtml('lecnote_id');
         ?>
         </form>

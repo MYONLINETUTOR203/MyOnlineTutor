@@ -52,7 +52,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);" onclick="getNotes();">
+                                        <a href="javascript:void(0);" onclick="getNotes('<?php echo $progress['crspro_ordcrs_id']; ?>');">
                                             <?php echo Label::getLabel('LBL_NOTES'); ?>
                                         </a>
                                     </li>

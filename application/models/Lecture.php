@@ -465,4 +465,25 @@ class Lecture extends MyAppModel
         }
         return $lectureIds;
     }
+
+    /**
+     * Get lecture by id
+     *
+     * @return array
+     */
+    public function getByCourseId(int $courseId)
+    {
+        $srch = new SearchBase(static::DB_TBL, 'lecture');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('lecture_course_id', '=', $courseId);
+        $srch->addCondition('lecture_id', '=', $this->getMainTableRecordId());
+        $srch->addMultipleFields([
+            'lecture.lecture_id',
+            'lecture.lecture_course_id',
+            'lecture.lecture_section_id',
+        ]); 
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
 }

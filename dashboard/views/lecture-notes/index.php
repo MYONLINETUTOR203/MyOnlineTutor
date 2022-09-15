@@ -6,6 +6,7 @@ $keywordFld->addFieldTagAttribute('placeholder', Label::getLabel('LBL_SEARCH_BY_
 $keywordFld->addFieldTagAttribute('id', 'notesKeywordJs');
 $btnReset = $frm->getField('btn_reset');
 $btnReset->addFieldTagAttribute('onclick', 'clearNotesSearch()');
+$ordCrsFld = $frm->getField('ordcrs_id');
 ?>
 <div class="col-lg-8">
     <div class="notes-container">
@@ -40,7 +41,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearNotesSearch()');
                 <div class="search-view__small">
                     <?php
                     $disableClass = '';
-                    $event = 'notesForm(0);';
+                    $event = 'notesForm(0,'.$ordCrsFld->value.');';
                     if ($isPreview == 1) {
                         $disableClass = 'btn--disabled';
                         $event = '';
