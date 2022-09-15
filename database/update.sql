@@ -1,3 +1,7 @@
+-- ------------------
+-- BR_RV-3.0.0_HOT_FIX
+-- ------------------
+
 ALTER TABLE `tbl_zoom_users` ADD `zmusr_zoom_type` INT NOT NULL AFTER `zmusr_zoom_id`;
 UPDATE `tbl_zoom_users` SET `zmusr_zoom_type` = '1';
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES 
