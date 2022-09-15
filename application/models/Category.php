@@ -237,7 +237,7 @@ class Category extends MyAppModel
         $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         if ($havingCourses == true) {
-            $srch->addCondition('cate_courses', '>', 0);
+            $srch->addCondition('cate_records', '>', 0);
         }
         
         $srch->doNotCalculateRecords();
@@ -304,19 +304,23 @@ class Category extends MyAppModel
     /**
      * Get Names
      * 
-     * @param int   $langId
      * @param array $catgIds
+     * @param int   $langId
      * @return array
      */
-    public static function getNames(int $langId, array $catgIds): array
+    public static function getNames(array $catgIds, int $langId): array
     {
         $catgIds = array_filter(array_unique($catgIds));
-        if ($langId == 0 || empty($catgIds)) {
+        if (empty($catgIds)) {
             return [];
         }
         $srch = new SearchBase(static::DB_TBL, 'cate');
-        $srch->joinTable(static::DB_LANG_TBL, 'LEFT JOIN', 'catelang.catelang_cate_id = cate.cate_id and catelang.catelang_lang_id =' . $langId, 'catelang');
-        $srch->addMultipleFields(['cate.cate_id', 'cate_name']);
+        $srch->joinTable(
+            static::DB_LANG_TBL,
+            'LEFT JOIN', 'catelang.catelang_cate_id = cate.cate_id and catelang.catelang_lang_id =' . $langId,
+            'catelang'
+        );
+        $srch->addMultipleFields(['cate.cate_id', 'IFNULL(cate_name, cate_identifier) as cate_name']);
         $srch->addCondition('cate.cate_id', 'IN', $catgIds);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());

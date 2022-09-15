@@ -91,6 +91,42 @@ class Quiz extends MyAppModel
     }
 
     /**
+     * Delete binded questions
+     *
+     * @param int $quesId
+     * @return boolean
+     */
+    public function deleteQuestion(int $quesId): bool
+    {
+        $db = FatApp::getDb();
+        $quizId = $this->getMainTableRecordId();
+
+        /* validate data */
+        $srch = new SearchBase(static::DB_TBL_QUIZ_QUESTIONS);
+        $srch->addCondition('quique_quiz_id', '=', $quizId);
+        $srch->addCondition('quique_ques_id', '=', $quesId);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if (!$db->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+
+        /* validate quiz */
+        if (!$this->validate()) {
+            return false;
+        }
+        
+        /* delete question */
+        $where = ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$quizId, $quesId]];
+        if (!$db->deleteRecords(static::DB_TBL_QUIZ_QUESTIONS, $where)) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Setup quiz basic details
      *
      * @param array $data

@@ -7,6 +7,14 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
     <div class="box-panel__container">
         <div class="card-controls-view card-box">
             <div class="page">
+                <div class="page__head">
+                    <a href="javascript:void(0);" onclick="addQuestions('<?php echo $quizId ?>')" class="btn color-secondary btn--bordered d-flex -float-right">
+                        <svg class="icon icon--uploader margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>/images/sprite.svg#uploader"></use>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_ADD_QUESTIONS'); ?>
+                    </a>
+                </div>
                 <div class="page__body">
                     <div class="table-scroll">
                         <table class="table table--styled table--responsive">
@@ -14,6 +22,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                 <tr class="title-row">
                                     <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE') ?></th>
                                     <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE') ?></th>
+                                    <th><?php echo $cateLbl = Label::getLabel('LBL_CATEGORY') ?></th>
+                                    <th><?php echo $subcateLbl = Label::getLabel('LBL_SUB_CATEGORY') ?></th>
                                     <th><?php echo $actionLbl = Label::getLabel('LBL_ACTION') ?></th>
                                 </tr>
                                 <?php if (count($questions) > 0) { ?>
@@ -22,7 +32,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                             <td>
                                                 <div class="flex-cell">
                                                     <div class="flex-cell__label">
-                                                        <?php echo $titleLbl; ?>: </div>
+                                                        <?php echo $titleLbl; ?>:
+                                                    </div>
                                                     <div class="flex-cell__content">
                                                         <div class="file-attachment">
                                                             <div class="d-flex">
@@ -55,12 +66,34 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                             <td>
                                                 <div class="flex-cell">
                                                     <div class="flex-cell__label">
+                                                        <?php echo $cateLbl; ?>: </div>
+                                                    <div class="flex-cell__content">
+                                                        <div style="max-width: 250px;">
+                                                            <?php echo $question['cate_name']; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="flex-cell">
+                                                    <div class="flex-cell__label">
+                                                        <?php echo $subcateLbl; ?>: </div>
+                                                    <div class="flex-cell__content">
+                                                        <div style="max-width: 250px;">
+                                                            <?php echo $question['subcate_name']; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="flex-cell">
+                                                    <div class="flex-cell__label">
                                                         <?php echo $actionLbl; ?>: </div>
                                                     <div class="flex-cell__content">
                                                         <div class="actions-group">
-                                                            <a href="javascript:void(0);" onclick="removeLectureResrc('317', '276');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                                            <a href="javascript:void(0);" onclick="remove('<?php echo $question['quique_quiz_id'] ?>', '<?php echo $question['quique_ques_id'] ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                                                 <svg class="icon icon--issue icon--small">
-                                                                    <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>/images/sprite.svg#delete-icon"></use>
+                                                                    <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>/images/sprite.svg#trash"></use>
                                                                 </svg>
                                                                 <div class="tooltip tooltip--top bg-black">
                                                                     <?php echo Label::getLabel('LBL_DELETE'); ?>

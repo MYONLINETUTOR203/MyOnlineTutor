@@ -66,7 +66,7 @@ class QuizzesController extends DashboardController
     public function form($id = 0)
     {
         $quiz = new Quiz($id, $this->siteUserId);
-        if (!$quiz->validate()) {
+        if ($id > 0 && !$quiz->validate()) {
             Message::addErrorMessage($quiz->getError());
             FatApp::redirectUser(MyUtility::generateUrl('Quizzes'));
         }
@@ -135,17 +135,88 @@ class QuizzesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $quiz = new Quiz($id, $this->siteUserId);
-        if (!$quiz->validate()) {
-            FatUtility::dieJsonError($quiz->getError());
+        if (!$data = $quiz->getById()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
+        }
+        if ($this->siteUserId != $data['quiz_user_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
         $quiz = new QuizSearch(0, $this->siteUserId, 0);
-        $questions = $quiz->getQuestions($id);
+        $questions = $quiz->getQuestions($id, $data['quiz_type']);
         $this->sets([
             'questions' => $questions,
             'quizId' => $id,
             'types' => Question::getQuesTypes(),
         ]);
         $this->_template->render(false, false);
+    }
+    public function questionForm()
+    {
+        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $quiz = new Quiz($id, $this->siteUserId);
+        /* validate data */
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+
+        $frm = $this->getQuestSearchForm();
+        $frm->fill(['quiz_id' => $id]);
+        $this->sets([
+            'frm' => $frm
+        ]);
+        $this->_template->render(false, false);
+    }
+
+    private function getQuestSearchForm()
+    {
+        $frm = QuestionSearch::getSearchForm($this->siteLangId);
+        $frm->addHiddenField('', 'quiz_id');
+        return $frm;
+    }
+
+    public function searchQuestions()
+    {
+        $id = FatApp::getPostedData('quiz_id', FatUtility::VAR_INT, 0);
+        $quiz = new Quiz($id, $this->siteUserId);
+        /* validate data */
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        $type = Quiz::getAttributesById($id, 'quiz_type');
+        /* get questions list */
+        $srch = new QuestionSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        if ($type == Quiz::TYPE_AUTO_GRADED) {
+            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
+        } else {
+            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
+        }
+        $srch->addMultipleFields([
+            'ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title'
+        ]);
+        $this->sets([
+            'questions' => $srch->fetchAndFormat()
+        ]);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Delete Questions
+     *
+     * @return void
+     */
+    public function deleteQuestion()
+    {
+        $quizId = FatApp::getPostedData('quizId', FatUtility::VAR_INT, 0);
+        $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
+        if ($quizId < 1 || $quesId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $quiz = new Quiz($quizId, $this->siteUserId);
+        if (!$quiz->deleteQuestion($quesId)) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
     }
 
     /**

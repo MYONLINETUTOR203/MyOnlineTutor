@@ -35,7 +35,7 @@ class QuestionSearch extends YocoachSearch
         $this->addCondition('ques.ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
-        if(0 < $this->userId){
+        if (0 < $this->userId) {
             $this->addCondition('ques_user_id', '=', $this->userId);
         }
     }
