@@ -28,6 +28,12 @@
                                     <dd><?php echo nl2br($requestData['corere_remark']); ?></dd>
                                 </dl>
                             <?php } ?>
+                            <?php if ($requestData['corere_comment'] != '') { ?>
+                                <dl class="list">
+                                    <dt><?php echo Label::getLabel('LBL_DECLINE_REASON/COMMENTS'); ?></dt>
+                                    <dd><?php echo nl2br($requestData['corere_comment']); ?></dd>
+                                </dl>
+                            <?php } ?>
                         </div>
                     </div>
                 </form>

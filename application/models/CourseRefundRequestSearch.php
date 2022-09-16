@@ -77,6 +77,7 @@ class CourseRefundRequestSearch extends YocoachSearch
             'corere.corere_id' => 'corere_id',
             'corere.corere_status' => 'corere_status',
             'corere.corere_remark' => 'corere_remark',
+            'corere.corere_comment' => 'corere_comment',
             'corere.corere_created' => 'corere_created',
             'ordcrs.ordcrs_id ' => 'ordcrs_id',
             'ordcrs.ordcrs_course_id ' => 'ordcrs_course_id',

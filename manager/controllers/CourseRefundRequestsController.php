@@ -156,18 +156,18 @@ class CourseRefundRequestsController extends AdminBaseController
         $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', $statusList, '');
         $status->requirements()->setRequired();
 
-        $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_remark', '');
+        $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_comment', '');
         $fld->requirements()->setRequired();
-        $requiredFld = new FormFieldRequirement('corere_remark', Label::getLabel('LBL_COMMENT'));
+        $requiredFld = new FormFieldRequirement('corere_comment', Label::getLabel('LBL_COMMENT'));
         $requiredFld->setRequired(true);
 
-        $notRequiredFld = new FormFieldRequirement('corere_remark', Label::getLabel('LBL_COMMENT'));
+        $notRequiredFld = new FormFieldRequirement('corere_comment', Label::getLabel('LBL_COMMENT'));
         $notRequiredFld->setRequired(false);
 
         $status->requirements()
-        ->addOnChangerequirementUpdate(Course::REFUND_APPROVED, 'eq', 'corere_remark', $notRequiredFld);
+        ->addOnChangerequirementUpdate(Course::REFUND_APPROVED, 'eq', 'corere_comment', $notRequiredFld);
         $status->requirements()
-        ->addOnChangerequirementUpdate(Course::REFUND_DECLINED, 'eq', 'corere_remark', $requiredFld);
+        ->addOnChangerequirementUpdate(Course::REFUND_DECLINED, 'eq', 'corere_comment', $requiredFld);
 
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_UPDATE'));
         return $frm;

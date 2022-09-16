@@ -319,6 +319,7 @@ class Course extends MyAppModel
         $db->startTransaction();
         $refundData = [
             'corere_status' => $status,
+            'corere_comment' => $data['corere_comment'],
             'corere_updated' => date('Y-m-d H:i:s')
         ];
         $where = ['smt' => 'corere_id = ?', 'vals'  => [$requestId]];
@@ -349,7 +350,7 @@ class Course extends MyAppModel
                 return false;
             }
         }
-        $request['corere_remark'] = $data['corere_remark'];
+        $request['corere_remark'] = $data['corere_comment'];
         $request = array_merge($request, $refundData);
         static::sendRefundStatusMailToLearner($request);
         $db->commitTransaction();

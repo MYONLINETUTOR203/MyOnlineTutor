@@ -8,7 +8,7 @@ $frm->developerTags['fld_default_col'] = 12;
 $fld = $frm->getField('corere_status');
 $fld->setFieldTagAttribute('onChange', 'showHideCommentBox(this.value);');
 
-$fld = $frm->getField('corere_remark');
+$fld = $frm->getField('corere_comment');
 $fld->setWrapperAttribute('id', 'remarkField');
 
 ?>
