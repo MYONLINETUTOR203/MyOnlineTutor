@@ -1,12 +1,18 @@
 var tutor = false;
 var notes = false;
 $(function () {
-    getLecture = function (next = 1) {
+    getLecture = function (next = 1, lectureCompleted = 0) {
+        
         fcom.updateWithAjax(fcom.makeUrl('CoursePreview', 'getLecture', [next]), {
             'course_id': courseId,
             'lecture_id': currentLectureId,
         }, function (res) {
+            if (lectureCompleted == 1) {
+                var sectionId = $('.lecturesListJs input[type="checkbox"][value="' + currentLectureId +'"]').data('section');
+                markComplete(sectionId, currentLectureId);
+            }
             loadLecture(res.lecture_id);
+           
         });
     };
     loadLecture = function (lectureId) {
@@ -151,5 +157,5 @@ $(function () {
             $('.notesHeadJs .form-search__action--reset').hide();
         }
     });
-    getLecture();
+    getLecture(1);
 });

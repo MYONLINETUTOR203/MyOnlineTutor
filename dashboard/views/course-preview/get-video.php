@@ -28,7 +28,7 @@ if ($lecture) {
 
                 function onPlayerStateChange(event) {
                     if (event.data === 0) {
-                        getLecture(1);
+                        getLecture(1, 1);
                     }
                 }
                 $(document).ready(function() {
