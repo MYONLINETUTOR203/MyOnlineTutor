@@ -248,6 +248,9 @@ class CourseProgress extends MyAppModel
 
     public function isLectureValid(int $lectureId)
     {
+        if($lectureId < 1) {
+            return true;
+        }
         $srch = new SearchBase(CourseProgress::DB_TBL, 'crspro');
         $srch->joinTable(OrderCourse::DB_TBL, 'INNER JOIN', 'ordcrs_id = crspro_ordcrs_id');
         $srch->joinTable(Lecture::DB_TBL, 'INNER JOIN', 'lecture_course_id = ordcrs_course_id ');
@@ -256,7 +259,7 @@ class CourseProgress extends MyAppModel
         $srch->addFld('crspro_id');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        if (!$result = FatApp::getDb()->fetch($srch->getResultSet())) {
+        if (!FatApp::getDb()->fetch($srch->getResultSet())) {
             return false;
         }
         return true;

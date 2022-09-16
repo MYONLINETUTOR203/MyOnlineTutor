@@ -107,6 +107,9 @@ class LectureNotesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
+        if($post['lecnote_lecture_id'] < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_A_LECTURE_FIRST_TO_ADD_NOTES'));
+        }
         $notesId = FatApp::getPostedData('lecnote_id', FatUtility::VAR_INT, 0);
         $note = new LectureNote($notesId);
         if ($notesId > 0) {
@@ -126,7 +129,7 @@ class LectureNotesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $lecture = new Lecture($post['lecnote_lecture_id']);
-        if (!$lectureData = $lecture->getByCourseId($post['lecnote_course_id'])) {
+        if (!$lecture->getByCourseId($post['lecnote_course_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         if (!$note->setup($post)) {
