@@ -56,16 +56,26 @@ class SeoUrl extends MyAppModel
      * @param string $customUrl
      * @return null|array
      */
-    public static function getOriginalUrl(string $customUrl)
+    public static function getOriginalUrl(string $customUrl, int $langId = null)
     {
         $srch = new SearchBase(static::DB_TBL);
-        $srch->addFld(['seourl_lang_id', 'seourl_original', 'seourl_httpcode']);
+        $srch->addFld(['seourl_lang_id', 'seourl_original', 'seourl_httpcode', 'count(*) as totalRecord']);
         $srch->addCondition('seourl_custom', '=', $customUrl);
-        if (defined('CONF_SITE_LANGUAGE')) {
-            $srch->addCondition('seourl_lang_id', '=', CONF_SITE_LANGUAGE);
+        if (!empty($langId)) {
+            $srch->addCondition('seourl_lang_id', '=', $langId);
         }
         $srch->doNotCalculateRecords();
-        return FatApp::getDb()->fetch($srch->getResultSet());
+        $srch->doNotLimitRecords();
+        $langCodes = Language::getCodes();
+        $langId = FatApp::getConfig('CONF_DEFAULT_LANG');
+        if (!CONF_LANGCODE_URL && !empty($_COOKIE['CONF_SITE_LANGUAGE'])) {
+            $langId = $_COOKIE['CONF_SITE_LANGUAGE'];
+        }
+        unset($langCodes[$langId]);
+        $langIds = array_keys($langCodes);
+        $langIds = $langId . ',' . implode(",", $langIds);
+        $rs = FatApp::getDb()->query($srch->getQuery() . ' ORDER BY FIELD(`seourl_lang_id`, ' . $langIds . ') ASC');
+        return FatApp::getDb()->fetch($rs);
     }
 
     /**
@@ -82,7 +92,17 @@ class SeoUrl extends MyAppModel
         $srch->addCondition('seourl_original', '=', $originalUrl);
         $srch->addCondition('seourl_lang_id', '=', $langId);
         $srch->doNotCalculateRecords();
-        return FatApp::getDb()->fetch($srch->getResultSet());
+        $srch->doNotLimitRecords();
+        $langCodes = Language::getCodes();
+        $langId = FatApp::getConfig('CONF_DEFAULT_LANG');
+        if (!CONF_LANGCODE_URL && !empty($_COOKIE['CONF_SITE_LANGUAGE'])) {
+            $langId = $_COOKIE['CONF_SITE_LANGUAGE'];
+        }
+        unset($langCodes[$langId]);
+        $langIds = array_keys($langCodes);
+        $langIds = $langId . ',' . implode(",", $langIds);
+        $rs = FatApp::getDb()->query($srch->getQuery() . ' ORDER BY FIELD(`seourl_lang_id`, ' . $langIds . ')');
+        return FatApp::getDb()->fetch($rs);
     }
 
     /**
