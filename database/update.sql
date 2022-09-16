@@ -1285,3 +1285,6 @@ UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\":\"Certifica
 INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT', '{\"heading\":\"Certificate Of Completion\",\"content_part_1\":\"This is to certify that\",\"learner\":\"{learner-name}\",\"content_part_2\":\"has successfully completed \\\"{course-name}\\\" \\\"{course-language}\\\" online course on {course-completed-date} in duration {course-duration}.\",\"trainer\":\"Tutor: {teacher-name}\",\"certificate_number\":\"Certificate No.: {certificate-number}\"}', '0');
 
 ALTER TABLE `tbl_course_refund_requests` ADD `corere_comment` TEXT NOT NULL COMMENT 'Admin Decline Comment' AFTER `corere_remark`;
+
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_cate_id` INT(11) NOT NULL AFTER `coapre_id`, ADD `coapre_subcate_id` INT(11) NOT NULL AFTER `coapre_cate_id`;
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_learners` JSON NOT NULL AFTER `coapre_duration`, ADD `coapre_requirements` JSON NOT NULL AFTER `coapre_learners`, ADD `coapre_learnings` JSON NOT NULL AFTER `coapre_requirements`;

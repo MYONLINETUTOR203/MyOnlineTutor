@@ -709,8 +709,12 @@ class Course extends MyAppModel
         $db = FatApp::getDb();
         if ($requestId < 1) {
             $course = $this->get();
+            $intendedLearner = new IntendedLearner();
+            $intendedLearnerData = $intendedLearner->get($this->getMainTableRecordId());
             $data = [
                 'coapre_course_id' => $this->getMainTableRecordId(),
+                'coapre_cate_id' => $course['course_cate_id'],
+                'coapre_subcate_id' => $course['course_subcate_id'],
                 'coapre_status' => static::REQUEST_PENDING,
                 'coapre_created' => date('Y-m-d H:i:s'),
                 'coapre_title' => $course['course_title'],
@@ -718,6 +722,9 @@ class Course extends MyAppModel
                 'coapre_details' => $course['course_details'],
                 'coapre_price' => CourseUtility::formatMoney($course['course_price'], $course['course_currency_id']),
                 'coapre_duration' => $course['course_duration'],
+                'coapre_learners' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNERS]),
+                'coapre_learnings' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNING]),
+                'coapre_requirements' => json_encode($intendedLearnerData[IntendedLearner::TYPE_REQUIREMENTS]),
             ];
         } else {
             $data = [
@@ -832,6 +839,8 @@ class Course extends MyAppModel
             'crsdetail.course_subtitle',
             'crsdetail.course_details',
             'course.course_id',
+            'course.course_cate_id',
+            'course.course_subcate_id',
             'course.course_lectures',
             'course.course_user_id',
             'course.course_reviews',

@@ -57,6 +57,8 @@ class Afile extends FatModel
     const TYPE_CERTIFICATE_IMAGE = 59;
     const TYPE_CERTIFICATE_PDF = 60;
     const TYPE_CERTIFICATE_LOGO = 61;
+    const TYPE_COURSE_REQUEST_IMAGE = 62;
+    const TYPE_COURSE_REQUEST_PREVIEW_VIDEO = 63;
 
     /* Image Sizes */
     const SIZE_SMALL = 'SMALL';
