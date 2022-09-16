@@ -1,5 +1,54 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.5.20220916
+
+Fixes:
+
+	Bug-066820 - Invalid video link is coming for some YouTube video URL
+	Bug-066795 - Learner is able to access other learner lecture info using loadLecture('390');
+	Bug-066788 - The progress bar is not changing when teacher completes the lecture on the preview page
+	Bug-066787 - Notes getting added in DB by changing the course and lecture id 
+	Bug-066785 - Courses count is not matching in admin dashboard and course listing
+	Bug-066679 - In Search, the keyword textbox placeholder is displayed 2 times in the Arabic language
+	Bug-066656 - Errors are coming when saving invalid YouTube video id in lecture media
+	Bug-066655 - Teacher is able to add/edit lectures media in other teacher courses
+	Bug-066645 - Learner is able to purchase inactive course if checkout popup is open
+	Bug-066635 - Help text is not coming under certificate on the certificate view page
+	Bug-066631 - Tutor and certificate number value not coming as RTL in Arabic certificate preview
+	Bug-066627 - Preview option should not come on deleted course request
+	Bug-066621 - In course order detail, admin commission should come and course status should not come
+	Bug-066618 - The learner is able to cancel the course although payment is done to the teacher
+	Bug-066615 - Sub categories are not getting reset after clearing the search
+	Bug-066613 - Course popularity sorting should work on the basis of enrolled students, reviews and rating 
+	Bug-066610 - Learner is able to access course resources page
+	Bug-066597 - Show course name on the course review detail
+	Bug-066596 - Remove welcome and congratulations note from admin panel
+	Bug-066591 - Unpaid course order is not cancelling after same 
+	Bug-066578 - Refund approved courses should come after clicking on cancelled courses tile
+	Bug-066573 - The latest courses should come on top in meta tag
+	Bug-066572 - Admin is able to add main category which has subcategories as subcategory of other category
+	Bug-066571 - Course attached category, subcategory and language should not be deleted and deactivated
+	Bug-066568 - "Go back to course listing" button should come on course completion page
+	Bug-066565 - The tutor related label should come above the tutor information
+	Bug-066558 - Course name should come instead of the "Course Detail" label
+	Bug-066557 - Courses and classes should come in the dropdown menu on the learning page
+	Bug-066556 - Show the decline comment on refund request detail
+	Bug-066555 - Course total amount should come in the course order detail
+	Bug-066554 - Pending status should not be there on course order filter > status
+	Bug-066553 - Discount and net amount should also come in the course orders listing
+	Bug-066503 - Course/Lecture duration is not coming if enter only numbers in lecture description
+	Bug-066483 - Replace "View Course request" link with the button in the email
+	Bug-066479 - Teacher search should also work without autocomplete selection
+	Bug-066468 - Course duration is not coming on the certificate view page
+	Bug-066460 - When user click on another Lecture then in same tab course Lecture, Lecture Details is appearing
+	Bug-066307 - Remove status column from manage courses listing
+	Bug-066305 - Latest resources should come on the top and no need of the date in lecture resources
+	Bug-066211 - Provide “restore to default” functionality for certificates
+	Bug-065999 - Rearrange sequence icon is not displaying on Ipad, tablets, and Android device
+	Bug-065967 - Review title is not coming in the reviews listing
+	Bug-065306 - Word limit validation is not working for the course description
+
+
 ## TV-4.1.4.20220907
 
 
