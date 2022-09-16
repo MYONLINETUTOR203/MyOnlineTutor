@@ -88,7 +88,18 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                                         <a href="<?php echo MyUtility::makeUrl('Lessons', '', [], CONF_WEBROOT_DASHBOARD); ?>">
                                             <?php echo Label::getLabel('LBL_Lessons'); ?>
                                         </a>
-                                    </li><?php
+                                    </li>
+                                    <li class="menu__item <?php echo ("Classes" == $controllerName) ? 'is-active' : ''; ?>">
+                                        <a href="<?php echo MyUtility::makeUrl('Classes', '', [], CONF_WEBROOT_DASHBOARD); ?>">
+                                            <?php echo Label::getLabel('LBL_Classes'); ?>
+                                        </a>
+                                    </li>
+                                    <li class="menu__item <?php echo ("Courses" == $controllerName) ? 'is-active' : ''; ?>">
+                                        <a href="<?php echo MyUtility::makeUrl('Courses', '', [], CONF_WEBROOT_DASHBOARD); ?>">
+                                            <?php echo Label::getLabel('LBL_Courses'); ?>
+                                        </a>
+                                    </li>
+                                    <?php
                                         }
                                             ?>
                                 <li class="menu__item <?php echo ("Account" == $controllerName && "profileInfo" == $action) ? 'is-active' : ''; ?>">
