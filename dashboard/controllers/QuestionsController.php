@@ -52,12 +52,13 @@ class QuestionsController extends DashboardController
                 'ques.ques_subcate_id',
                 'ques.ques_title',
                 'ques.ques_status',
+                'ques.ques_type',
             ]
         );
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('ques_status', 'DESC');
-        $srch->addOrder('ques_id');
+        $srch->addOrder('ques_id', 'DESC');
         $data = $srch->fetchAndFormat();
         $this->sets([
             'questions' => $data,
@@ -77,7 +78,7 @@ class QuestionsController extends DashboardController
     public function remove()
     {
         $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
-        $question = new Question($quesId);
+        $question = new Question($quesId, $this->siteUserId);
         if (!$question->delete()) {
             FatUtility::dieJsonError($question->getError());
         }
@@ -226,9 +227,19 @@ class QuestionsController extends DashboardController
         $fld->requirements()->setRequired();
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+
         $countFld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
         $countFld->requirements()->setRequired();
         $countFld->requirements()->setIntPositive();
+
+        $reqCountFld = new FormFieldRequirement('ques_options_count', Label::getLabel('LBL_OPTION_COUNT'));
+        $reqCountFld->setRequired(true);
+        $notReqCountFld = new FormFieldRequirement('ques_options_count', Label::getLabel('LBL_OPTION_COUNT'));
+        $notReqCountFld->setRequired(false);
+
+        $typeFld->requirements()->addOnChangerequirementUpdate(Question::TYPE_MANUAL, 'ne', 'ques_options_count', $reqCountFld);
+        $typeFld->requirements()->addOnChangerequirementUpdate(Question::TYPE_MANUAL, 'eq', 'ques_options_count', $notReqCountFld);
+
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
         $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;

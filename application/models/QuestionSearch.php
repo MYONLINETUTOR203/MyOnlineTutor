@@ -177,7 +177,7 @@ class QuestionSearch extends YocoachSearch
         $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $frm->addResetButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
+        $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
         return $frm;
     }
     

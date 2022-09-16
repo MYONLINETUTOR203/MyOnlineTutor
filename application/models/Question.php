@@ -153,6 +153,7 @@ class Question extends MyAppModel
      */
     public function setup($data)
     {
+        $categories = [];
         if ($this->mainTableRecordId > 0) {
             if (!$question = $this->getById()) {
                 $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
@@ -162,6 +163,7 @@ class Question extends MyAppModel
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
                 return false;
             }
+            $categories = [$question['ques_cate_id'], $question['ques_subcate_id']];
         }
         if (!$this->validate($data)) {
             return false;
@@ -183,10 +185,7 @@ class Question extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
-        $categories = [
-            $data['ques_cate_id'], $data['ques_subcate_id'],
-            $question['ques_cate_id'], $question['ques_subcate_id']
-        ];
+        $categories = array_merge($categories, [$data['ques_cate_id'], $data['ques_subcate_id']]);
         if (!$this->updateCount($categories)) {
             $db->rollbackTransaction();
             return false;

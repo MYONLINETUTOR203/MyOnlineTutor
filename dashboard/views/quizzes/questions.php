@@ -109,6 +109,19 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                             </tbody>
                         </table>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="field-set margin-bottom-0">
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <a class="btn btn--primary" href=" javascript:void(0);" onclick="settings('<?php echo $quizId ?>');">
+                                            <?php echo Label::getLabel('LBL_SAVE_&_NEXT') ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

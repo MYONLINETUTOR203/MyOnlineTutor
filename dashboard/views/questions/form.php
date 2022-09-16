@@ -6,10 +6,10 @@ $frm->setFormTagAttribute('onsubmit', 'setup(this); return false;');
 $titleFld = $frm->getField('ques_title');
 $typeFld = $frm->getField('ques_type');
 $typeFld->setFieldTagAttribute('id', 'ques_type');
-$typeFld->setFieldTagAttribute('onchange', 'showOptions(this.value)');
+$typeFld->setFieldTagAttribute('onchange', 'showOptions(this.value);');
 $detailFld = $frm->getField('ques_detail');
 $catFld = $frm->getField('ques_cate_id');
-$catFld->setFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCateAddQues")');
+$catFld->setFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCateAddQues");');
 $subCatFld = $frm->getField('ques_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCateAddQues');
 $hintFld = $frm->getField('ques_hint');
@@ -18,7 +18,7 @@ $marksFld->setFieldTagAttribute('oninput', "this.value = !!this.value && Math.ab
 $optionCount = $frm->getField('ques_options_count');
 $optionCount->setFieldTagAttribute('oninput', "this.value = !!this.value && Math.abs(this.value) >= 0 ? Math.abs(this.value) : null");
 $addOptionsFld = $frm->getField('add_options');
-$addOptionsFld->setFieldTagAttribute('onclick', 'addOptions()');
+$addOptionsFld->setFieldTagAttribute('onclick', 'addOptions();');
 $submitButton = $frm->getField('submit');
 ?>
 <div class="facebox-panel">
@@ -217,11 +217,7 @@ $submitButton = $frm->getField('submit');
 </div>
 
 <script>
-    var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
-    var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
-    var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
-
-    $(document).ready(function(){
+ $(document).ready(function(){
         getSubcategories('<?php echo $catFld->value ?? 0; ?>', '#subCateAddQues', '<?php echo $subCatFld->value ?? 0; ?>');
     });
 </script>

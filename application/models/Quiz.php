@@ -157,6 +157,40 @@ class Quiz extends MyAppModel
         return true;
     }
 
+    public function bindQuestions($questions)
+    {
+        /* validate data */
+        if (!$this->validate()) {
+            return false;
+        }
+        $db = FatApp::getDb();
+
+        /* validate question ids */
+        $srch = new SearchBase(Question::DB_TBL);
+        $srch->addCondition('ques_id', 'IN', $questions);
+        $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('ques_user_id', '=', $this->userId);
+        $srch->doNotCalculateRecords();
+        $srch->addFld('COUNT(ques_id) as count');
+        $count = $db->fetch($srch->getResultSet())['count'];
+        if ($count != count($questions)) {
+            $this->error = Label::getLabel('LBL_INVALID_DATA_SENT');
+            return false;
+        }
+        /* bind questions */
+        $data = ['quique_quiz_id' => $this->getMainTableRecordId()];
+        foreach ($questions as $quesId) {
+            $data['quique_ques_id'] = $quesId;
+            if (!$db->insertFromArray(static::DB_TBL_QUIZ_QUESTIONS, $data, false, [], $data)) {
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
     /**
      * Update quiz status
      *

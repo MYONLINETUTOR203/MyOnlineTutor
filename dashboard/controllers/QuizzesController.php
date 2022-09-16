@@ -135,88 +135,18 @@ class QuizzesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $quiz = new Quiz($id, $this->siteUserId);
-        if (!$data = $quiz->getById()) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
         }
-        if ($this->siteUserId != $data['quiz_user_id']) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
-        }
+        $type = Quiz::getAttributesById($id, 'quiz_type');
         $quiz = new QuizSearch(0, $this->siteUserId, 0);
-        $questions = $quiz->getQuestions($id, $data['quiz_type']);
+        $questions = $quiz->getQuestions($id, $type);
         $this->sets([
             'questions' => $questions,
             'quizId' => $id,
             'types' => Question::getQuesTypes(),
         ]);
         $this->_template->render(false, false);
-    }
-    public function questionForm()
-    {
-        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        $quiz = new Quiz($id, $this->siteUserId);
-        /* validate data */
-        if (!$quiz->validate()) {
-            FatUtility::dieJsonError($quiz->getError());
-        }
-
-        $frm = $this->getQuestSearchForm();
-        $frm->fill(['quiz_id' => $id]);
-        $this->sets([
-            'frm' => $frm
-        ]);
-        $this->_template->render(false, false);
-    }
-
-    private function getQuestSearchForm()
-    {
-        $frm = QuestionSearch::getSearchForm($this->siteLangId);
-        $frm->addHiddenField('', 'quiz_id');
-        return $frm;
-    }
-
-    public function searchQuestions()
-    {
-        $id = FatApp::getPostedData('quiz_id', FatUtility::VAR_INT, 0);
-        $quiz = new Quiz($id, $this->siteUserId);
-        /* validate data */
-        if (!$quiz->validate()) {
-            FatUtility::dieJsonError($quiz->getError());
-        }
-        $type = Quiz::getAttributesById($id, 'quiz_type');
-        /* get questions list */
-        $srch = new QuestionSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
-        $srch->applyPrimaryConditions();
-        if ($type == Quiz::TYPE_AUTO_GRADED) {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
-        } else {
-            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
-        }
-        $srch->addMultipleFields([
-            'ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title'
-        ]);
-        $this->sets([
-            'questions' => $srch->fetchAndFormat()
-        ]);
-        $this->_template->render(false, false);
-    }
-
-    /**
-     * Delete Questions
-     *
-     * @return void
-     */
-    public function deleteQuestion()
-    {
-        $quizId = FatApp::getPostedData('quizId', FatUtility::VAR_INT, 0);
-        $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
-        if ($quizId < 1 || $quesId < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-        $quiz = new Quiz($quizId, $this->siteUserId);
-        if (!$quiz->deleteQuestion($quesId)) {
-            FatUtility::dieJsonError($quiz->getError());
-        }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
     }
 
     /**
@@ -227,11 +157,41 @@ class QuizzesController extends DashboardController
     public function settings()
     {
         $id = FatApp::getPostedData('id');
+        if ($id < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $quiz = new Quiz($id, $this->siteUserId);
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        $data = Quiz::getAttributesById($id, [
+            'quiz_duration', 'quiz_attempts', 'quiz_passmark', 'quiz_failmsg', 'quiz_passmsg'
+        ]);
+        $frm = $this->getSettingForm();
+        $frm->fill(['quiz_id' => $id]);
+        $frm->fill($data);
         $this->sets([
-            // 'frm' => $frm,
+            'frm' => $frm,
             'quizId' => $id
         ]);
         $this->_template->render(false, false);
+    }
+
+    public function setupSettings()
+    {
+        $frm = $this->getSettingForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $quiz = new Quiz($post['quiz_id'], $this->siteUserId);
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        $quiz->assignValues($post);
+        if (!$quiz->save()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
     }
 
     /**
@@ -296,6 +256,25 @@ class QuizzesController extends DashboardController
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
         $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
+        return $frm;
+    }
+
+    private function getSettingForm()
+    {
+        $frm = new Form('frmSetting');
+        $durationFld = $frm->addRequiredField(Label::getLabel('LBL_DURATION'), 'quiz_duration', '');
+        $durationFld ->requirements()->setIntPositive();
+        $attempsFtd = $frm->addRequiredField(Label::getLabel('LBL_NO_OF_ATTEMPTS_ALLOWED'), 'quiz_attempts', '');
+        $attempsFtd->requirements()->setInt();
+        $percentFld = $frm->addRequiredField(Label::getLabel('LBL_PASS_PERCENTAGE'), 'quiz_passmark', '');
+        $percentFld->requirements()->setInt();
+        $percentFld->requirements()->setRange(1, 100);
+        $failFld = $frm->addTextArea(Label::getLabel('LBL_FAIL_MESSAGE'), 'quiz_failmsg', '');
+        $failFld->requirements()->setRequired();
+        $passFld = $frm->addTextArea(Label::getLabel('LBL_PASS_MESSAGE'), 'quiz_passmsg', '');
+        $passFld->requirements()->setRequired();
+        $frm->addHiddenField('', 'quiz_id');
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;
     }
 }

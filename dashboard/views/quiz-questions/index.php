@@ -5,7 +5,11 @@ $frm->setFormTagAttribute('onsubmit', 'searchQuestions(this); return(false);');
 $keyword = $frm->getField('keyword');
 $keyword->addFieldTagAttribute('placeholder', Label::getLabel('LBL_KEYWORD'));
 $cate = $frm->getField('ques_cate_id');
+$cate->addFieldTagAttribute('onchange', 'getSubcategories(this.value);');
 $subcate = $frm->getField('ques_subcate_id');
+$subcate->addFieldTagAttribute('id', 'quesSubCateJs');
+$btnclear = $frm->getField('btn_clear');
+$btnclear->addFieldTagAttribute('onclick', 'clearSearch();');
 ?>
 <div class="facebox-panel">
     <div class="facebox-panel__head padding-bottom-6">
@@ -14,7 +18,7 @@ $subcate = $frm->getField('ques_subcate_id');
                 <h6><?php echo Label::getLabel('LBL_ATTACH_QUESTIONS'); ?></h6>
             </div>
             <div>
-                <a href="javascript:void(0);" onclick="uploadResource('frmLectureForm');" class="btn btn--bordered color-secondary">
+                <a href="javascript:void(0);" onclick="attachQuestions();" class="btn btn--bordered color-secondary">
                     <svg class="icon">
                         <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#plus-more"></use>
                     </svg>
@@ -76,6 +80,7 @@ $subcate = $frm->getField('ques_subcate_id');
                             <div class="field-wraper">
                                 <div class="field_cover">
                                     <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                                    <?php echo $btnclear->getHtml(); ?>
                                 </div>
                             </div>
                         </div>
@@ -92,29 +97,27 @@ $subcate = $frm->getField('ques_subcate_id');
         </div>
     </div>
     <div class="facebox-panel__body padding-0">
-        <?php
-        /* $resrcFrm->setFormTagAttribute('id', 'frmLectureForm');
-        echo $resrcFrm->getFormTag();
-        echo $resrcFrm->getFieldHtml('lecsrc_type');
-        echo $resrcFrm->getFieldHtml('lecsrc_lecture_id');
-        echo $resrcFrm->getFieldHtml('lecsrc_course_id');
-        ?>
         <div class="table-scroll">
+            <?php
+            echo $quesFrm->getFormTag();
+            ?>
             <table class="table table--styled table--responsive" id="listingJs">
                 <tr class="title-row">
-                    <th></th>
-                    <th><?php echo $titleLabel = Label::getLabel('LBL_FILENAME'); ?></th>
-                    <th><?php echo $typeLabel = Label::getLabel('LBL_TYPE'); ?></th>
-                    <th><?php echo $dateLabel = Label::getLabel('LBL_DATE'); ?></th>
+                    <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE') ?></th>
+                    <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE') ?></th>
+                    <th><?php echo $cateLbl = Label::getLabel('LBL_CATEGORY') ?></th>
+                    <th><?php echo $subcateLbl = Label::getLabel('LBL_SUB_CATEGORY') ?></th>
+                    <th><?php echo $actionLbl = Label::getLabel('LBL_ACTION') ?></th>
                 </tr>
             </table>
-            <div class="show-more-container rvwLoadMoreJs padding-6" style="display:none;">
+            <?php echo $quesFrm->getFieldHtml('quiz_id'); ?>
+            </form>
+            <?php echo $quesFrm->getExternalJs(); ?>
+            <div class="show-more-container loadMoreJs padding-6" style="display:none;">
                 <div class="show-more d-flex justify-content-center">
-                    <a href="javascript:void(0);" class="btn btn--primary-bordered" data-page="1" onclick="resourcePaging(this)"><?php echo Label::getLabel('LBL_SHOW_MORE'); ?></a>
+                    <a href="javascript:void(0);" class="btn btn--primary-bordered" data-page="1" onclick="goToPage(this)"><?php echo Label::getLabel('LBL_SHOW_MORE'); ?></a>
                 </div>
             </div>
         </div>
-        </form>
-        <?php echo $resrcFrm->getExternalJs();  */ ?>
     </div>
 </div>

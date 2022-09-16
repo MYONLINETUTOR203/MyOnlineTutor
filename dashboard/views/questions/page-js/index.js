@@ -13,6 +13,7 @@ $(function () {
     clearSearch = function () {
         document.frmQuesSearch.reset();
         search(document.frmQuesSearch);
+        getSubcategories(0, '#subCategories');
     };
     remove = function (id) {
         if (!confirm(langLbl.confirmRemove)) {

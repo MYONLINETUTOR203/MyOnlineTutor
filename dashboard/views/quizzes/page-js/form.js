@@ -25,21 +25,53 @@ $(function () {
         });
     };
     addQuestions = function (id) {
-        fcom.ajax(fcom.makeUrl('Quizzes', 'questionForm'), { id }, function (resp) {
-            $.facebox(resp, 'facebox-medium padding-0');
+        fcom.ajax(fcom.makeUrl('QuizQuestions', 'index'), { id }, function (resp) {
+            $.facebox(resp, 'facebox-large padding-0');
             searchQuestions(document.frmQuesSearch);
         });
     };
-    searchQuestions = function (frm) {
-        fcom.ajax(fcom.makeUrl('Quizzes', 'searchQuestions'), fcom.frmData(frm), function (res) {
-            // $("#listing").html(res);
+    searchQuestions = function (frm, page = 1) {
+        document.frmQuesSearch.pageno.value = page;
+        fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'search'), fcom.frmData(frm), function (res) {
+            if (page > 1) {
+                $('#listingJs').append(res.html);
+            } else {
+                $('#listingJs').html(res.html);
+            }
+            if (res.loadMore == 1) {
+                $('.loadMoreJs a').data('page', res.nextPage);
+                $('.loadMoreJs').show();
+            } else {
+                $('.loadMoreJs').hide();
+            }
+        });
+    };
+    goToPage = function (_obj) {
+        searchQuestions(document.frmQuesSearch, $(_obj).data('page'));
+    }
+    clearSearch = function() {
+        document.frmQuesSearch.reset();
+        getSubcategories(0);
+        searchQuestions(document.frmQuesSearch);
+    };
+    getSubcategories = function (id) {
+        id = (id == '') ? 0 : id;
+        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id]), '', function (res) {
+            $('#quesSubCateJs').html(res);
+        });
+    };
+    attachQuestions = function () {
+        var frm = document.frmQuestions;
+        fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'setup'), fcom.frmData(frm), function (res) {
+            questions(res.quizId);
+            $.facebox.close();
         });
     };
     remove = function(quizId, quesId) {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Quizzes', 'deleteQuestion'), { quizId, quesId }, function (res) {
+        fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'delete'), { quizId, quesId }, function (res) {
             questions(quizId);
         });
     };
@@ -50,5 +82,13 @@ $(function () {
             $('#pageContentJs').html(resp);
         });
     };
+    setupSettings = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Quizzes', 'setupSettings'), fcom.frmData(frm), function (res) {
+            
+        });
+    }
     /* ] */
 });
