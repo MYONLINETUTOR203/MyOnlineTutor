@@ -17,11 +17,13 @@ $frm->developerTags['fld_default_col'] = 12;
                         <li><a class="active" href="javascript:void(0);"><?php echo Label::getLabel('LBL_GENERAL'); ?></a></li>
                         <?php
                         $inactive = ($sLangId == 0) ? 'fat-inactive' : '';
+                        $mediaForm = ($sLangId > 0) ? 'onclick="mediaForm(' . $sLangId . ');"' : '';
                         foreach ($languages as $langId => $langName) {
+                            $langForm = (intval($sLangId) > 0) ? 'onclick="langForm(' . $sLangId . ',' . $langId . ');"' : '';
                             ?>
-                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $sLangId ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php echo $langForm; ?>><?php echo $langName; ?></a></li>
                         <?php } ?>
-                        <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" onclick="mediaForm(<?php echo $sLangId; ?>);"><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
+                        <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" <?php echo $mediaForm; ?>><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">

@@ -130,6 +130,7 @@ class HomeController extends AdminBaseController
      */
     public function setLanguage($langId = 0)
     {
+        FatCache::clearAll();
         $langId = FatUtility::int($langId);
         if ($langId > 0) {
             $language = Language::getData($langId);

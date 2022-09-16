@@ -48,14 +48,6 @@
 </section>
 <?php $this->includeTemplate('_partial/contact-us-section.php', ['siteLangId' => $siteLangId]); ?>
 <script>
-    $(".settings__trigger-js").click(function() {
-        var t = $(this).parents(".toggle-group").children(".settings__target-js").is(":hidden");
-        $(".toggle-group .settings__target-js").hide();
-        $(".toggle-group .settings__trigger-js").removeClass("is--active");
-        if (t) {
-            $(this).parents(".toggle-group").children(".settings__target-js").toggle().parents(".toggle-group").children(".settings__trigger-js").addClass("is--active")
-        }
-    });
     $(".faq__trigger-js").click(function(e) {
         e.preventDefault();
         if ($(this).parents('.faq-group-js').hasClass('is-active')) {
