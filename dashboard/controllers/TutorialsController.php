@@ -133,6 +133,9 @@ class TutorialsController extends DashboardController
     public function getLectureData(int $lectureId, int $progressId)
     {
         $progress = new CourseProgress($progressId);
+        if (!$progress->isLectureValid($lectureId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
         if (!$progress->setCurrentLecture($lectureId)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNABLE_TO_RENDER_NEXT_LECTURE._PLEASE_TRY_AGAIN'));
         }
