@@ -59,6 +59,14 @@ class QuizQuestionsController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
+
+        /* get binded questions */
+        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
+        $srch->addCondition('quique_quiz_id', '=', $post['quiz_id']);
+        $srch->doNotCalculateRecords();
+        $srch->addFld('quique_ques_id');
+        $questions = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quique_ques_id');
+        $questions = array_keys($questions);
         
         /* get questions list */
         $type = Quiz::getAttributesById($post['quiz_id'], 'quiz_type');
@@ -71,6 +79,9 @@ class QuizQuestionsController extends DashboardController
             $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
         }
         $srch->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
+        if (count($questions) > 0) {
+            $srch->addDirectCondition('ques.ques_id NOT IN (' . implode(',', $questions) . ')');
+        }
         $srch->addMultipleFields([
             'ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title'
         ]);

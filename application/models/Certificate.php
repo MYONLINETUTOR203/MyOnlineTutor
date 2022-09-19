@@ -71,7 +71,7 @@ class Certificate extends MyAppModel
     public function getFormattedContent(array $data)
     {
         $srch = CertificateTemplate::getSearchObject($data['lang_id']);
-        $srch->addCondition('certpl_code', '=', 'quiz_completion_certificate');
+        $srch->addCondition('certpl_code', '=', 'evaluation_certificate');
         if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
             return false;
@@ -101,16 +101,6 @@ class Certificate extends MyAppModel
         );
         return json_decode($content, true);
     }
-
-    // public function generateSampleCertificate($filepath)
-    // {
-    //     // $url = MyUtility::generateFullUrl('Certificates', 'generateSample', [], CONF_WEBROOT_FRONTEND);
-    //     // if (!$this->createImage($url, $filepath, true)) {
-    //     //     return false;
-    //     // }
-
-    //     return true;
-    // }
 
     /**
      * Save created files data

@@ -168,15 +168,33 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $data = Quiz::getAttributesById($id, [
-            'quiz_duration', 'quiz_attempts', 'quiz_passmark', 'quiz_failmsg', 'quiz_passmsg'
-        ]);
-        $frm = $this->getSettingForm();
+
+        /* check certificate available or not */
+        $srch = CertificateTemplate::getSearchObject($this->siteLangId);
+        $srch->addCondition('certpl_code', '=', 'evaluation_certificate');
+        $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        $offerCertificate = true;
+        if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+            $offerCertificate = false;
+        }
+        
+        $frm = $this->getSettingForm($offerCertificate);
         $frm->fill(['quiz_id' => $id]);
+
+        $data = Quiz::getAttributesById($id, [
+            'quiz_duration', 'quiz_attempts', 'quiz_passmark', 'quiz_failmsg', 'quiz_passmsg',
+            'quiz_validity', 'quiz_certificate'
+        ]);
+        $data['quiz_duration'] = ($data['quiz_duration']) / 60;
+        $data['quiz_validity'] = ($data['quiz_validity']) / 3600;
+        $data['quiz_certificate'] = ($offerCertificate == false) ? AppConstant::NO : $data['quiz_certificate'];
         $frm->fill($data);
+
+
         $this->sets([
             'frm' => $frm,
-            'quizId' => $id
+            'quizId' => $id,
+            'offerCertificate' => $offerCertificate
         ]);
         $this->_template->render(false, false);
     }
@@ -191,8 +209,8 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $quiz->assignValues($post);
-        if (!$quiz->save()) {
+        
+        if (!$quiz->setupSettings($post, $this->siteLangId)) {
             FatUtility::dieJsonError($quiz->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
@@ -217,6 +235,11 @@ class QuizzesController extends DashboardController
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_STATUS_UPDATED_SUCCESSFULLY'));
     }
 
+    /**
+     * Delete quiz
+     *
+     * @return json
+     */
     public function delete()
     {
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
@@ -225,6 +248,19 @@ class QuizzesController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
+    }
+
+    /**
+     * Get quiz completion status
+     *
+     * @param int $id
+     * @return json
+     */
+    public function getCompletedStatus(int $id)
+    {
+        $quiz = new Quiz($id, $this->siteUserId);
+        $criteria  = $quiz->getCompletedStatus();
+        FatUtility::dieJsonSuccess($criteria);
     }
 
     /**
@@ -265,16 +301,29 @@ class QuizzesController extends DashboardController
         return $frm;
     }
 
-    private function getSettingForm()
+    private function getSettingForm($offerCertificate = true)
     {
         $frm = new Form('frmSetting');
-        $durationFld = $frm->addRequiredField(Label::getLabel('LBL_DURATION'), 'quiz_duration', '');
+        $durationFld = $frm->addTextBox(Label::getLabel('LBL_DURATION_(IN_MINS)'), 'quiz_duration', '');
         $durationFld ->requirements()->setIntPositive();
+        $durationFld->requirements()->setRange(0, 9999);
         $attempsFtd = $frm->addRequiredField(Label::getLabel('LBL_NO_OF_ATTEMPTS_ALLOWED'), 'quiz_attempts', '');
         $attempsFtd->requirements()->setInt();
+        $attempsFtd->requirements()->setRange(1, 10);
         $percentFld = $frm->addRequiredField(Label::getLabel('LBL_PASS_PERCENTAGE'), 'quiz_passmark', '');
-        $percentFld->requirements()->setInt();
+        $percentFld->requirements()->setFloat();
         $percentFld->requirements()->setRange(1, 100);
+        $percentFld = $frm->addRequiredField(Label::getLabel('LBL_VALIDITY_(IN_HOURS)'), 'quiz_validity', '');
+        $percentFld->requirements()->setInt();
+        $percentFld->requirements()->setRange(1, 9999);
+
+        if ($offerCertificate == false) {
+            $frm->addHiddenField('', 'quiz_certificate', AppConstant::NO);
+        } else {
+            $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'quiz_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
+            $fld->requirements()->setRequired();
+        }
+
         $failFld = $frm->addTextArea(Label::getLabel('LBL_FAIL_MESSAGE'), 'quiz_failmsg', '');
         $failFld->requirements()->setRequired();
         $passFld = $frm->addTextArea(Label::getLabel('LBL_PASS_MESSAGE'), 'quiz_passmsg', '');

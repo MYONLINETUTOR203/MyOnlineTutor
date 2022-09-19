@@ -274,3 +274,16 @@ ALTER TABLE `tbl_categories` ADD `cate_identifier` VARCHAR(100) NOT NULL AFTER `
 ALTER TABLE `tbl_questions` ADD `ques_options_count` INT NOT NULL COMMENT 'Number of options attached with the question' AFTER `ques_clang_id`;
 
 ALTER TABLE `tbl_quizzes` ADD `quiz_active` TINYINT(1) NOT NULL AFTER `quiz_passmsg`;
+
+ALTER TABLE tbl_quizzes  ADD quiz_validity INT NOT NULL  AFTER quiz_passmark,  ADD quiz_certificate TINYINT(1) NOT NULL  AFTER quiz_validity,  ADD quiz_questions INT NOT NULL  AFTER quiz_certificate;
+
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_DURATION_(IN_MINS)', 'Duration (In Mins)');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_VALIDITY_(IN_HOURS)', 'Validity (In Hours)');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_QUIZ_VALIDITY_INSTRUCTIONS', 'The validity of the quiz will be counted from the day of attachment.');
+
+DELETE FROM `tbl_certificate_templates` WHERE `certpl_code` = 'course_evaluation_certificate';
+DELETE FROM `tbl_certificate_templates` WHERE `certpl_code` = 'quiz_completion_certificate';
+
+INSERT INTO `tbl_certificate_templates` (`certpl_lang_id`, `certpl_code`, `certpl_name`, `certpl_body`, `certpl_vars`, `certpl_status`, `certpl_created`, `certpl_updated`, `certpl_deleted`) VALUES 
+(1, 'evaluation_certificate', 'Evaluation Certificate', '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"{teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{quiz-name}\\\" online quiz on {quiz-completed-date} in {quiz-duration}.\", \"certificate_number\": \"{certificate-number}\"}', '{learner-name} Learner name <br>\r\n{teacher-name} Teacher name <br>\r\n{quiz-name} Quiz Title <br>\r\n{quiz-completed-date} Quiz Completed On <br>\r\n{certificate-number} Certificate Number<br>\r\n{quiz-duration} Quiz Duration<br><br>', 1, '2022-09-19 04:00:00', '2022-09-19 04:00:00', NULL), 
+(2, 'evaluation_certificate', 'Evaluation Certificate', '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"{teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{quiz-name}\\\" online quiz on {quiz-completed-date} in {quiz-duration}.\", \"certificate_number\": \"{certificate-number}\"}', '{learner-name} Learner name <br>\r\n{teacher-name} Teacher name <br>\r\n{quiz-name} Quiz Title <br>\r\n{quiz-completed-date} Quiz Completed On <br>\r\n{certificate-number} Certificate Number<br>\r\n{quiz-duration} Quiz Duration<br><br>', 1, '2022-09-19 04:00:00', '2022-09-19 04:00:00', NULL);

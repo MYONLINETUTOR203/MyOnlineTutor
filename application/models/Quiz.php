@@ -10,7 +10,7 @@ class Quiz extends MyAppModel
     public const TYPE_NON_GRADED = 2;
 
     public const STATUS_DRAFTED = 1;
-    public const STATUS_COMPLETED = 2;
+    public const STATUS_PUBLISHED = 2;
 
     private $userId;
 
@@ -51,7 +51,7 @@ class Quiz extends MyAppModel
     {
         $arr = [
             static::STATUS_DRAFTED => Label::getLabel('LBL_DRAFTED'),
-            static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED')
+            static::STATUS_PUBLISHED => Label::getLabel('LBL_PUBLISHED')
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -61,15 +61,22 @@ class Quiz extends MyAppModel
      *
      * @return array
      */
-    public function getById()
+    public function getById(): array
     {
         $srch = new SearchBase(self::DB_TBL, 'quiz');
         $srch->addCondition('quiz_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addMultipleFields(['quiz_id', 'quiz_type', 'quiz_user_id', 'quiz_title', 'quiz_detail']);
+        $srch->addMultipleFields([
+            'quiz_id', 'quiz_type', 'quiz_user_id', 'quiz_title', 'quiz_detail',
+            'quiz_attempts', 'quiz_passmark', 'quiz_validity', 'quiz_failmsg', 'quiz_passmsg'
+        ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        return FatApp::getDb()->fetch($srch->getResultSet());
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        if (!$data) {
+            return [];
+        }
+        return $data;
     }
 
     /**
@@ -117,12 +124,32 @@ class Quiz extends MyAppModel
             return false;
         }
         
+        $db->startTransaction();
         /* delete question */
         $where = ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$quizId, $quesId]];
         if (!$db->deleteRecords(static::DB_TBL_QUIZ_QUESTIONS, $where)) {
             $this->error = $db->getError();
             return false;
         }
+
+        if (!$this->updateCount()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
+        /* check completion status */
+        $quizStatus = $this->getCompletedStatus();
+        if ($quizStatus['is_complete'] == AppConstant::YES) {
+            $this->setFldValue('quiz_status', static::STATUS_PUBLISHED);
+        } else {
+            $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
+        }
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+        $db->commitTransaction();
         return true;
     }
 
@@ -162,13 +189,20 @@ class Quiz extends MyAppModel
         return true;
     }
 
-    public function bindQuestions($questions)
+    /**
+     * Binding questions with quiz
+     *
+     * @param array $questions
+     * @return bool
+     */
+    public function bindQuestions(array $questions): bool
     {
         /* validate data */
         if (!$this->validate()) {
             return false;
         }
         $db = FatApp::getDb();
+        $db->startTransaction();
 
         /* validate question ids */
         $srch = new SearchBase(Question::DB_TBL);
@@ -183,6 +217,7 @@ class Quiz extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_DATA_SENT');
             return false;
         }
+        
         /* bind questions */
         $data = ['quique_quiz_id' => $this->getMainTableRecordId()];
         foreach ($questions as $quesId) {
@@ -192,7 +227,126 @@ class Quiz extends MyAppModel
                 return false;
             }
         }
+        
+        if (!$this->updateCount()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
+        /* check completion status */
+        $quizStatus = $this->getCompletedStatus();
+        if ($quizStatus['is_complete'] == AppConstant::YES) {
+            $this->setFldValue('quiz_status', static::STATUS_PUBLISHED);
+        } else {
+            $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
+        }
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+
         $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * Setup Settings
+     *
+     * @param array $data
+     * @param int   $langId
+     * @return bool
+     */
+    public function setupSettings(array $data, int $langId): bool
+    {
+        $srch = CertificateTemplate::getSearchObject($langId);
+        $srch->addCondition('certpl_code', '=', 'evaluation_certificate');
+        $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        if (!FatApp::getDb()->fetch($srch->getResultSet()) && $data['quiz_certificate'] == AppConstant::YES) {
+            $this->error = Label::getLabel('LBL_OFFER_CERTIFICATE_OPTION_HAS_BEEN_DISABLED_BY_ADMIN');
+            return false;
+        }
+        $data['quiz_duration'] = $data['quiz_duration'] * 60;
+        $data['quiz_validity'] = $data['quiz_validity'] * 3600;
+        $this->assignValues($data);
+
+        /* check completion status */
+        $quizStatus = $this->getCompletedStatus();
+        if ($quizStatus['is_complete'] == AppConstant::YES) {
+            $this->setFldValue('quiz_status', static::STATUS_PUBLISHED);
+        } else {
+            $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
+        }
+
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function getCompletedStatus()
+    {
+        if (!$data = $this->getById()) {
+            $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
+            return false;
+        }
+        if ($this->userId != $data['quiz_user_id']) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+        $criteria = ['general' => 0, 'settings' => 0, 'questions' => 0, 'is_complete' => AppConstant::NO];
+
+        /* get basic data */
+        if (!empty($data['quiz_type'])) {
+            $criteria['general'] = 1;
+        }
+
+        /* get questions count */
+        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('quique_ques_id');
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            $criteria['questions'] = 1;
+        }
+
+        /* check settings data */
+        if (
+            !empty($data['quiz_attempts']) && !empty($data['quiz_passmark']) && !empty($data['quiz_validity']) &&
+            !empty($data['quiz_failmsg']) && !empty($data['quiz_passmsg'])
+        ) {
+            $criteria['settings'] = 1;
+        }
+
+        if ($criteria['general'] == 1 && $criteria['questions'] == 1 && $criteria['settings'] == 1) {
+            $criteria['is_complete'] = AppConstant::YES;
+        }
+        return $criteria;
+    }
+
+    /**
+     * Count & update no of questions in a quiz
+     *
+     * @return bool
+     */
+    private function updateCount(): bool
+    {
+        $srch = new SearchBase(static::DB_TBL_QUIZ_QUESTIONS, 'quique');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id', 'quiz');
+        $srch->doNotCalculateRecords();
+        $srch->addCondition('quiz.quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('quiz.quiz_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
         return true;
     }
 

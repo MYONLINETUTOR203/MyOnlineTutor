@@ -146,6 +146,7 @@ class QuizSearch extends YocoachSearch
             'quique_quiz_id', 'quique_ques_id', 'quiz_id', 'ques_id', 'ques_title', 'ques_type',
             'ques_cate_id', 'ques_subcate_id'
         ]);
+        $srch->doNotCalculateRecords();
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (count($questions) < 1) {
             return [];
