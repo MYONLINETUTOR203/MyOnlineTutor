@@ -94,6 +94,7 @@ class QuizzesController extends DashboardController
             if ($data['quiz_user_id'] != $this->siteUserId) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             }
+            $data['quiz_type_id'] = $data['quiz_type'];
         }
         $frm = $this->getForm();
         $frm->fill($data);
@@ -112,7 +113,10 @@ class QuizzesController extends DashboardController
         $frm = $this->getForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
-        }  
+        }
+        if (!array_key_exists($post['quiz_type'], Quiz::getTypes())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_QUIZ_TYPE'));
+        }
         $quiz = new Quiz($post['quiz_id'], $this->siteUserId);
         if (!$quiz->setup($post)) {
             FatUtility::dieJsonError($quiz->getError());
@@ -232,7 +236,9 @@ class QuizzesController extends DashboardController
     {
         $frm = new Form('frmQuiz');
         $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '')->requirements()->setRequired();
-        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type', Quiz::getTypes())->requirements()->setRequired();
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type_id', Quiz::getTypes());
+        $fld->requirements()->setRequired();
+        $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
         +$frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));

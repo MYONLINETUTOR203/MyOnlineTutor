@@ -7,6 +7,9 @@ $(function () {
             window["oEdit_" + id].disableFocusOnLoad = true;
         });
     };
+    setType = function (value) {
+        $('#quizTypeJs').val(value);
+    };
     setup = function () {
         var frm = document.frmQuiz;
         if (!$(frm).validate()) {

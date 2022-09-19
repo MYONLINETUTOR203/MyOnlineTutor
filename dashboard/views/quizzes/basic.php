@@ -5,6 +5,13 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('onsubmit', 'setup(); return false;');
 $title = $frm->getField('quiz_title');
 $type = $frm->getField('quiz_type');
+$type->addFieldTagAttribute('id', 'quizTypeJs');
+$typeId = $frm->getField('quiz_type_id');
+if ($quizId > 0) {
+    $typeId->addFieldTagAttribute('disabled', 'disabled');
+} else {
+    $typeId->addFieldTagAttribute('onchange', 'setType(this.value)');
+}
 $detail = $frm->getField('quiz_detail');
 $submit = $frm->getField('submit');
 ?>
@@ -37,14 +44,15 @@ $submit = $frm->getField('submit');
                 <div class="field-set">
                     <div class="caption-wraper">
                         <label class="field_label">
-                            <?php echo $type->getCaption(); ?>
-                            <?php if ($type->requirement->isRequired()) { ?>
+                            <?php echo $typeId->getCaption(); ?>
+                            <?php if ($typeId->requirement->isRequired()) { ?>
                                 <span class="spn_must_field">*</span>
                             <?php } ?>
                         </label>
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
+                            <?php echo $typeId->getHtml(); ?>
                             <?php echo $type->getHtml(); ?>
                         </div>
                     </div>

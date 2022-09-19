@@ -139,6 +139,11 @@ class Quiz extends MyAppModel
             if (!$this->validate()) {
                 return false;
             }
+            $type = Quiz::getAttributesById($quizId, 'quiz_type');
+            if ($type != $data['quiz_type']) {
+                $this->error = Label::getLabel('LBL_QUIZ_TYPE_CANNOT_BE_MODIFIED');
+                return false;
+            }
         }
         $this->assignValues($data);
         $this->assignValues([
