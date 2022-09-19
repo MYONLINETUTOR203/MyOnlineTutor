@@ -107,7 +107,17 @@ class CourseRequestSearch extends YocoachSearch
         if (count($rows) == 0) {
             return [];
         }
-        
+        $categoryIds = [];
+        array_map(function($val) use(&$categoryIds){
+            $categoryIds = array_merge($categoryIds, [$val['coapre_cate_id'], $val['coapre_subcate_id']]);
+        }, $rows);
+        $categoryIds = array_unique($categoryIds);
+        $categories = CourseSearch::getCategoryNames($this->langId, array_unique($categoryIds));
+        foreach ($rows as $key => $row) {
+            $row['coapre_cate_name'] = array_key_exists($row['coapre_cate_id'], $categories) ? $categories[$row['coapre_cate_id']] : '';
+            $row['coapre_subcate_name'] = array_key_exists($row['coapre_subcate_id'], $categories) ? $categories[$row['coapre_subcate_id']] : '';
+            $rows[$key] = $row;
+        }           
         return $rows;
     }
 

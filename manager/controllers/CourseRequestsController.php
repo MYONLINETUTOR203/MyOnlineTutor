@@ -103,7 +103,12 @@ class CourseRequestsController extends AdminBaseController
         $srch->addSearchListingFields();
         $srch->joinUser();
         $srch->applySearchConditions(['coapre_id' => $requestId]);
-        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        $srch->setPageSize(1);
+        $courses = $srch->fetchAndFormat();
+        $data = current($courses);
+        $data['coapre_learners'] = json_decode($data['coapre_learners'], true); 
+        $data['coapre_learnings'] = json_decode($data['coapre_learnings'], true); 
+        $data['coapre_requirements'] = json_decode($data['coapre_requirements'], true); 
         $this->sets([
             'requestData' => $data
         ]);
