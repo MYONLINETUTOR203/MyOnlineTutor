@@ -10800,7 +10800,7 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 @media (min-width: 991px) {
   #facebox .content.facebox-large {
-    min-width: 920px;
+    min-width: 1000px;
     padding: 20px;
     display: block;
     overflow: auto; } }

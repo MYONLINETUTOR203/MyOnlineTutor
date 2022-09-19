@@ -40,7 +40,7 @@
 #facebox {
     .content.facebox-large{
         @media(min-width: theme('breakpoints.lg','value')) {
-            min-width: 920px;
+            min-width: 1000px;
             padding:20px; display: block; overflow: auto;
         }
     }

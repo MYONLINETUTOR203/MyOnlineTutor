@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 ?>
-<div class="container container--fixed">
+<div class="container container--narrow">
     <div class="page__head">
         <a href="<?php echo MyUtility::makeUrl('Courses') ?>" class="page-back">
             <svg class="icon icon--back margin-right-3">
