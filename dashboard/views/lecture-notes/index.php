@@ -34,6 +34,7 @@ $ordCrsFld = $frm->getField('ordcrs_id');
                         echo $frm->getFieldHtml('course_id');
                         echo $frm->getFieldHtml('pagesize');
                         echo $frm->getFieldHtml('page');
+                        echo $frm->getFieldHtml('ordcrs_id');
                         ?>
                         </form>
                     </div>

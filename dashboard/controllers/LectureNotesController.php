@@ -90,6 +90,7 @@ class LectureNotesController extends DashboardController
             }
             $data['lecnote_id'] = $notesId;
             $data['lecnote_notes'] = $notes['lecnote_notes'];
+            $data['lecnote_lecture_id'] = $notes['lecnote_lecture_id'];
         }
         $frm->fill($data);
         $this->set('frm', $frm);
@@ -108,7 +109,7 @@ class LectureNotesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         if($post['lecnote_lecture_id'] < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_A_LECTURE_FIRST_TO_ADD_NOTES'));
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_A_LECTURE_FIRST_TO_ADD/EDIT_NOTES'));
         }
         $notesId = FatApp::getPostedData('lecnote_id', FatUtility::VAR_INT, 0);
         $note = new LectureNote($notesId);
@@ -121,14 +122,14 @@ class LectureNotesController extends DashboardController
             }
         }
         $post['lecnote_user_id'] = $this->siteUserId;
-        $ordcrs = new OrderCourse($post['lecnote_ordcrs_id'], $this->siteUserId);
+        $ordcrs = new OrderCourse(FatUtility::int($post['lecnote_ordcrs_id']), $this->siteUserId);
         if (!$ordcrsData = $ordcrs->getOrderCourseById()) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         if ($ordcrsData['ordcrs_course_id'] != $post['lecnote_course_id']) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $lecture = new Lecture($post['lecnote_lecture_id']);
+        $lecture = new Lecture(FatUtility::int($post['lecnote_lecture_id']));
         if (!$lecture->getByCourseId($post['lecnote_course_id'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }

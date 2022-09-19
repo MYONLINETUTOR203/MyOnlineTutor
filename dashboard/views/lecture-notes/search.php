@@ -15,7 +15,7 @@ if (count($notes) == 0) {
             <div class="notes__actions">
                 <div class="actions-group">
                     <?php if ($isPreview == 0) { ?>
-                        <a href="javascript:void(0);" onclick="notesForm('<?php echo $note['lecnote_id']; ?>');" class="btn btn--equal btn--transparent color-black is-hover">
+                        <a href="javascript:void(0);" onclick="notesForm('<?php echo $note['lecnote_id']; ?>', '<?php echo $post['ordcrs_id'] ?>');" class="btn btn--equal btn--transparent color-black is-hover">
                             <svg class="icon icon--edit icon--small">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#edit"></use>
                             </svg>

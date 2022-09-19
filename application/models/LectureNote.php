@@ -60,7 +60,7 @@ class LectureNote extends MyAppModel
         $srch->joinTable(Lecture::DB_TBL, 'INNER JOIN', 'lecnote.lecnote_lecture_id = lec.lecture_id', 'lec');
         $srch->addCondition('lecnote_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('lecnote_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addMultipleFields(['lecnote_user_id', 'lecnote_notes']);
+        $srch->addMultipleFields(['lecnote_user_id', 'lecnote_notes', 'lecnote_lecture_id']);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetch($srch->getResultSet());
