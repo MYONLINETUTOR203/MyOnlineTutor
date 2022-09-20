@@ -16,6 +16,9 @@ class QuestionsController extends DashboardController
     public function __construct(string $action)
     {
         parent::__construct($action);
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
     }
 
     /**
@@ -49,12 +52,13 @@ class QuestionsController extends DashboardController
                 'ques.ques_subcate_id',
                 'ques.ques_title',
                 'ques.ques_status',
+                'ques.ques_type',
             ]
         );
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('ques_status', 'DESC');
-        $srch->addOrder('ques_id');
+        $srch->addOrder('ques_id', 'DESC');
         $data = $srch->fetchAndFormat();
         $this->sets([
             'questions' => $data,
@@ -69,12 +73,12 @@ class QuestionsController extends DashboardController
     }
 
     /**
-     * Remove Flashcard
+     * Remove Question
      */
     public function remove()
     {
         $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
-        $question = new Question($quesId);
+        $question = new Question($quesId, $this->siteUserId);
         if (!$question->delete()) {
             FatUtility::dieJsonError($question->getError());
         }
@@ -103,9 +107,9 @@ class QuestionsController extends DashboardController
     /**
      * Render add new question form
      *
-     * @return html
+     * @param int $id
      */
-    public function form($id = 0)
+    public function form(int $id = 0)
     {
         $question = $options = $answers = [];
         $type = 0;
@@ -119,7 +123,7 @@ class QuestionsController extends DashboardController
             $type = $question['ques_type'];
             $answers = json_decode($question['ques_answer']);
         }
-        $frm = $this->getForm(); 
+        $frm = $this->getForm();
         $frm->fill($question);
         $this->sets([
             'optionsFrm' => $this->getOptionsForm($type),
@@ -138,12 +142,12 @@ class QuestionsController extends DashboardController
         $frm = $this->getForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id', 'ques_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
-        }  
+        }
         if ($post['ques_type'] != Question::TYPE_MANUAL) {
             $optionFrm = $this->getOptionsForm($post['ques_type']);
             if (!$optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
                 FatUtility::dieJsonError(current($optionFrm->getValidationErrors()));
-            }  
+            }
             $post['answers'] = FatApp::getPostedData('ques_answer');
             $post['queopt_title'] = FatApp::getPostedData('queopt_title');
         }
@@ -201,8 +205,6 @@ class QuestionsController extends DashboardController
 
     /**
      * Get Questions Form
-     *
-     * @return Form
      */
     private function getForm()
     {
@@ -223,9 +225,29 @@ class QuestionsController extends DashboardController
         $fld->requirements()->setRequired();
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+
         $countFld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
         $countFld->requirements()->setRequired();
         $countFld->requirements()->setIntPositive();
+
+        $reqCountFld = new FormFieldRequirement('ques_options_count', Label::getLabel('LBL_OPTION_COUNT'));
+        $reqCountFld->setRequired(true);
+        $notReqCountFld = new FormFieldRequirement('ques_options_count', Label::getLabel('LBL_OPTION_COUNT'));
+        $notReqCountFld->setRequired(false);
+
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Question::TYPE_MANUAL,
+            'ne',
+            'ques_options_count',
+            $reqCountFld
+        );
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Question::TYPE_MANUAL,
+            'eq',
+            'ques_options_count',
+            $notReqCountFld
+        );
+
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
         $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;
@@ -241,7 +263,8 @@ class QuestionsController extends DashboardController
         $frm = new Form('frmOptions');
         $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired();
         if ($type == Question::TYPE_SINGLE) {
-            $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', [1 => Label::getLabel('LBL_IS_CORRECT?')]);
+            $options = [1 => Label::getLabel('LBL_IS_CORRECT?')];
+            $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', $options);
             $fld->requirements()->setRequired();
             $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_MARK_ANSWERS.'));
         } elseif ($type == Question::TYPE_MULTIPLE) {
@@ -251,5 +274,4 @@ class QuestionsController extends DashboardController
         }
         return $frm;
     }
-
 }

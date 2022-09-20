@@ -22,7 +22,9 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
             <div class="col-sm-auto">
                 <div class="buttons-group d-flex align-items-center">
                     <a href="javascript:void(0)" class="btn btn--secondary slide-toggle-js">
-                        <svg class="icon icon--search icon--small margin-right-2"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#search'; ?>"></use></svg>
+                        <svg class="icon icon--search icon--small margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#search'; ?>"></use>
+                        </svg>
                         <?php echo Label::getLabel('LBL_SEARCH'); ?>
                     </a>
                     <?php if ($siteUserType == User::TEACHER) { ?>
@@ -119,3 +121,8 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
         </div>
         <!-- ] -->
     </div>
+    <script>
+        var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
+        var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
+        var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
+    </script>
