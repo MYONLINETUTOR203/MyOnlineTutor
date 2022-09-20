@@ -30,7 +30,7 @@ class TeachersController extends MyAppController
         if (!empty($slug)) {
             $teachLangs = TeachLanguage::getTeachLanguages($this->siteLangId);
             $teachlangArr = array_column($teachLangs, 'tlang_slug', 'tlang_id');
-            $postedData['teachs'] = array_search($slug, $teachlangArr);
+            $postedData['teachs'] = [array_search($slug, $teachlangArr)];
         }
         $searchSession = $_SESSION[AppConstant::SEARCH_SESSION] ?? [];
         $srchFrm = TeacherSearch::getSearchForm($this->siteLangId);
