@@ -306,13 +306,14 @@ class CoursesController extends MyAppController
         }
         /* find tags */
         $tagsList = $this->getTags($keyword);
+        $keyword = strtolower($keyword);
         if (count($tagsList)) {
             $list = [];
             foreach ($tagsList as $tags) {
                 $tags = json_decode($tags['course_srchtags']);
                 if (count($tags) > 0) {
                     foreach ($tags as $tag) {
-                        if (stripos($tag, $keyword) !== FALSE) {
+                        if (stripos(strtolower($tag), $keyword) !== FALSE) {
                             $list[] = $tag;
                         }
                     }
@@ -429,7 +430,7 @@ class CoursesController extends MyAppController
         );
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
-        $srch->addCondition('course_srchtags', 'LIKE', '%' . $keyword . '%');
+        $srch->addCondition('mysql_func_LOWER(course_srchtags)', 'LIKE', '%' . strtolower($keyword) . '%', 'AND', true);
         $srch->addFld('course_srchtags');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
