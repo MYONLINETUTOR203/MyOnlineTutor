@@ -1,7 +1,7 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <section class="section">
     <div class="sectionhead">
-        <h4><?php echo Label::getLabel('LBL_COURSE_REQUEST_DETAIL'); ?></h4>
+        <h4><?php echo Label::getLabel('LBL_COURSE_REFUND_REQUEST_DETAIL'); ?></h4>
     </div>
     <div class="sectionbody space">
         <div class="add border-box border-box--space">
