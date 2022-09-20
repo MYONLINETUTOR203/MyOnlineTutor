@@ -215,6 +215,7 @@ class Lecture extends MyAppModel
         $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addOrder('section_order', 'ASC');
+        $srch->addOrder('lecture_order = 0', 'ASC');
         $srch->addOrder('lecture_order', 'ASC');
         $lectureIds = FatApp::getDb()->fetchAll($srch->getResultSet(), 'lecture_id');
         $lectureIds = array_keys($lectureIds);
