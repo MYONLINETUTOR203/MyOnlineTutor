@@ -175,11 +175,11 @@ class CourseSearch extends YocoachSearch
         }
         $customPriceSql = [];
         if (!empty($post['price_from'])) {
-            $priceFrom = FatUtility::int($post['price_from']);
+            $priceFrom = FatUtility::float($post['price_from']);
             $customPriceSql[] = 'course.course_price >= ' . round(MyUtility::convertToSystemCurrency($priceFrom), 2);
         }
         if (!empty($post['price_till'])) {
-            $priceTill = FatUtility::int($post['price_till']);
+            $priceTill = FatUtility::float($post['price_till']);
             $customPriceSql[] = 'course.course_price <= ' . round(MyUtility::convertToSystemCurrency($priceTill), 2);
         }
         if (count($customPriceSql) > 0) {
