@@ -68,14 +68,18 @@ class LectureResourcesController extends DashboardController
      */
     public function setup()
     {
-        $frm = $this->getForm(Lecture::TYPE_RESOURCE_LIBRARY);
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['resources'])) {
-            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        $type = FatApp::getPostedData('lecsrc_type', FatUtility::VAR_INT, 0);
+        $typesList = Lecture::getTypes();
+        if (!in_array($type, array_keys($typesList))) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
 
+        $frm = $this->getForm($type);
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData() + $_FILES)) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
         if (Course::getAttributesById($post['lecsrc_course_id'], 'course_user_id') != $this->siteUserId) {
-            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
-            return false;
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
         if (Lecture::getAttributesById($post['lecsrc_lecture_id'], 'lecture_course_id') != $post['lecsrc_course_id']) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
@@ -93,9 +97,6 @@ class LectureResourcesController extends DashboardController
         }
         if ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_LIBRARY) {
             $resources = FatApp::getPostedData('resources');
-            if (empty($resources) || count($resources) < 1) {
-                FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_RESOURCES_FROM_THE_LIST'));
-            }
             foreach ($resources as $resource) {
                 $lecture = new Lecture($post['lecsrc_lecture_id']);
                 if (!$lecture->setupResources(
@@ -147,8 +148,11 @@ class LectureResourcesController extends DashboardController
 
         if ($type == Lecture::TYPE_RESOURCE_LIBRARY) {
             $frm->addCheckBox('', 'resources[]', '');
+        } elseif ($type == Lecture::TYPE_RESOURCE_UPLOAD_FILE) {
+            $fld = $frm->addFileUpload(Label::getLabel('LBl_UPLOAD_RESOURCE'), 'resource_files[]', ['id' => 'resource_file']);
+            $fld->requirements()->setRequired();
         } else {
-            $frm->addFileUpload(Label::getLabel('LBl_UPLOAD_RESOURCE'), 'resource_files[]', ['id' => 'resource_file']);
+            FatUtility::dieJsonError(Label::getLabel('LBl_INVALID_TYPE'));
         }
         $fld = $frm->addHiddenField('', 'lecsrc_lecture_id');
         $fld = $frm->addHiddenField('', 'lecsrc_type', $type);

@@ -31,6 +31,22 @@ class Lecture extends MyAppModel
     }
 
     /**
+     * Get Resource Types List
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getTypes(int $key = null)
+    {
+        $arr = [
+            static::TYPE_RESOURCE_EXTERNAL_URL => Label::getLabel('LBL_EXTERNAL_URL'),
+            static::TYPE_RESOURCE_UPLOAD_FILE => Label::getLabel('LBL_UPLOAD_FILE'),
+            static::TYPE_RESOURCE_LIBRARY => Label::getLabel('LBL_RESOURCE_LIBRARY')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
      * Setup data
      *
      * @param array $data
