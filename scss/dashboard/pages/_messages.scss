@@ -2,7 +2,7 @@
 $window: "window";
 
 .#{$window}{
-  position: relative; height: 100vh; padding: theme('padding.10');   display: flex; max-width: 1800px; margin: 0 auto;
+  position: relative; height: calc(100vh - 90px); padding: theme('padding.10');   display: flex; max-width: 1800px; margin: 0 auto;
 
   @media (max-width:theme('breakpoints.xl','value')) {
       &{ height: calc(100vh - 80px);padding: theme('padding.6'); 

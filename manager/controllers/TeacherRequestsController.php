@@ -40,64 +40,49 @@ class TeacherRequestsController extends AdminBaseController
         $post = $srchForm->getFormDataFromArray(FatApp::getPostedData());
         $srch = new SearchBase(TeacherRequest::DB_TBL, 'tereq');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user.user_id = tereq.tereq_user_id', 'user');
-        $srch->addMultipleFields([
-            'user_username', 'user_email', 'user_deleted', 'user_first_name', 'user_last_name', 'tereq_id',
-            'tereq_user_id', 'tereq_status', 'tereq_date', 'tereq_reference', 'tereq_first_name', 'tereq_last_name'
-        ]);
+        $srch->addMultipleFields(['tereq_comments', 'user_username', 'user_email', 'user_deleted',
+            'user_first_name', 'user_last_name', 'tereq_id', 'tereq_user_id', 'tereq_status',
+            'tereq_date', 'tereq_reference', 'tereq_first_name', 'tereq_last_name']);
         $srch->addCondition('tereq.tereq_step', '=', 5);
         $srch->addOrder('tereq_id', 'desc');
         $srch->setPageNumber($page);
         $srch->setPageSize($pagesize);
-        $laterstRecordsrch = new SearchBase(TeacherRequest::DB_TBL, 'str');
-        $laterstRecordsrch->joinTable(User::DB_TBL, 'INNER JOIN', 'su.user_id = str.tereq_user_id', 'su');
-        $laterstRecordsrch->doNotCalculateRecords();
-        $laterstRecordsrch->doNotLimitRecords();
-        $laterstRecordsrch->addMultipleFields(['max(str.tereq_id) as maxId']);
-        $laterstRecordsrch->addCondition('str.tereq_step', '=', 5);
         if (!empty($post['keyword'])) {
-            $cnd = $laterstRecordsrch->addCondition('tereq_reference', '=', '%' . $post['keyword'] . '%', 'AND');
+            $cnd = $srch->addCondition('tereq_reference', '=', '%' . $post['keyword'] . '%', 'AND');
             $cnd->attachCondition('mysql_func_concat(`user_first_name`," ",`user_last_name`)', 'like', '%' . $post['keyword'] . '%', 'OR', true);
             $cnd->attachCondition('user_email', 'like', '%' . $post['keyword'] . '%', 'OR');
             $cnd->attachCondition('user_username', 'like', '%' . $post['keyword'] . '%', 'OR');
             $cnd->attachCondition('tereq_reference', 'like', '%' . $post['keyword'] . '%', 'OR');
         }
-        $laterstRecordsrch->addGroupBy('str.tereq_user_id');
         if (!empty($post['date_from'])) {
             if ($post['status'] > -1) {
-                $laterstRecordsrch->addCondition('str.tereq_status', '=', $post['status']);
+                $srch->addCondition('tereq.tereq_status', '=', $post['status']);
             }
             $post['date_from'] = MyDate::formatToSystemTimezone($post['date_from']);
-            $laterstRecordsrch->addCondition('str.tereq_date', '>=', $post['date_from'], 'AND', true);
+            $srch->addCondition('tereq.tereq_date', '>=', $post['date_from'], 'AND', true);
         }
         if ($post['status'] > -1) {
             $srch->addCondition('tereq.tereq_status', '=', $post['status']);
         }
         if (!empty($post['date_to'])) {
             if ($post['status'] > -1 && empty($post['date_from'])) {
-                $laterstRecordsrch->addCondition('str.tereq_status', '=', $post['status']);
+                $srch->addCondition('tereq.tereq_status', '=', $post['status']);
             }
             $post['date_to'] = MyDate::formatToSystemTimezone($post['date_to'] . " 23:59:59");
-            $laterstRecordsrch->addCondition('str.tereq_date', '<=', $post['date_to'], 'AND', true);
+            $srch->addCondition('tereq.tereq_date', '<=', $post['date_to'], 'AND', true);
         }
-        $srch->joinTable("(" . $laterstRecordsrch->getQuery() . ")", 'INNER JOIN', 'latestR.maxId = tereq.tereq_id', 'latestR');
         $this->sets([
             'arrListing' => FatApp::getDb()->fetchAll($srch->getResultSet()),
             'canEdit' => $this->objPrivilege->canEditTeacherRequests(true),
-            'postedData' => $post,
-            'page' => $page,
-            'pageSize' => $pagesize,
-            'pagingArr' => [
-                'page' => $page,
-                'pageCount' => $srch->pages(),
-                'recordCount' => $srch->recordCount()
+            'postedData' => $post, 'page' => $page, 'pageSize' => $pagesize,
+            'pagingArr' => ['page' => $page, 'pageCount' => $srch->pages(), 'recordCount' => $srch->recordCount()
             ]
         ]);
         $this->_template->render(false, false);
     }
 
-    public function view($requestId)
+    public function view(int $requestId)
     {
-        $requestId = FatUtility::int($requestId);
         $srch = new SearchBase(TeacherRequest::DB_TBL, 'tereq');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'u.user_id = tereq.tereq_user_id', 'u');
         $srch->addDirectCondition('u.user_deleted IS NULL');
@@ -122,24 +107,16 @@ class TeacherRequestsController extends AdminBaseController
         $row['tereq_teach_langs'] = json_decode($row['tereq_teach_langs'], true);
         $row['tereq_speak_langs'] = json_decode($row['tereq_speak_langs'], true);
         $row['tereq_slang_proficiency'] = json_decode($row['tereq_slang_proficiency'], true);
-        $srch = new SearchBase(TeacherRequest::DB_TBL, 'tr');
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'u.user_id = tr.tereq_user_id', 'u');
-        $srch->addCondition('tereq_user_id', '=', $row['tereq_user_id']);
-        $srch->addCondition('tereq_id', '!=', $requestId);
-        $srch->addOrder('tereq_id', 'desc');
-        $otherRequest = FatApp::getDb()->fetchAll($srch->getResultSet());
         $userImage = (new Afile(Afile::TYPE_TEACHER_APPROVAL_IMAGE))->getFile($row['tereq_user_id']);
         if (empty($userImage)) {
             $userImage = (new Afile(Afile::TYPE_USER_PROFILE_IMAGE))->getFile($row['tereq_user_id']);
         }
         $this->sets([
-            'row' => $row,
-            'userImage' => $userImage,
+            'row' => $row, 'userImage' => $userImage,
             'photoIdRow' => (new Afile(Afile::TYPE_TEACHER_APPROVAL_PROOF))->getFile($row['tereq_user_id']),
             'speakLanguagesArr' => SpeakLanguage::getNames($this->siteLangId, $row['tereq_speak_langs']),
             'teachLanguages' => TeachLanguage::getNames($this->siteLangId, $row['tereq_teach_langs']),
-            'speakLanguageProfArr' => SpeakLanguage::getProficiencies(),
-            'otherRequest' => $otherRequest,
+            'speakLanguageProfArr' => SpeakLanguage::getProficiencies()
         ]);
         $this->_template->render(false, false);
     }
@@ -189,7 +166,7 @@ class TeacherRequestsController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addMultipleFields([
-            'user_lang_id', 'tereq_status', 'tereq_user_id', 'tereq_comments',
+            'user_lang_id', 'tereq_status', 'tereq_user_id', 'tereq_language_id', 'tereq_comments',
             'tereq_reference', 'user_first_name', 'user_last_name', 'user_email', 'tereq_first_name',
             'tereq_last_name', 'tereq_gender', 'tereq_phone_number', 'tereq_phone_code', 'tereq_biography',
             'tereq_video_link', 'tereq_teach_langs', 'tereq_speak_langs', 'tereq_slang_proficiency'
@@ -215,8 +192,7 @@ class TeacherRequestsController extends AdminBaseController
                 'user_dashboard' => User::TEACHER,
                 'user_first_name' => $requestRow['tereq_first_name'],
                 'user_last_name' => $requestRow['tereq_last_name'],
-                'user_gender' => $requestRow['tereq_gender'],
-                'user_biography' => $requestRow['tereq_biography'],
+                'user_gender' => $requestRow['tereq_gender']
             ]);
             if (!$user->save()) {
                 $db->rollbackTransaction();
@@ -231,6 +207,17 @@ class TeacherRequestsController extends AdminBaseController
             if (!$userSetting->saveData($data)) {
                 $db->rollbackTransaction();
                 FatUtility::dieJsonError($userSetting->getError());
+            }
+            $langData = [
+                'user_biography' => $requestRow['tereq_biography'],
+                'userlang_user_id' => $requestRow['tereq_user_id'],
+                'userlang_lang_id' => $requestRow['tereq_language_id'],
+            ];
+            $userLang = new TableRecord(User::DB_TBL_LANG);
+            $userLang->assignValues($langData);
+            if (!$userLang->addNew([], $langData)) {
+                $db->rollbackTransaction();
+                FatUtility::dieJsonError($userLang->getError());
             }
             $fileData = (new Afile(Afile::TYPE_TEACHER_APPROVAL_IMAGE))->getFile($requestRow['tereq_user_id']);
             if (!empty($fileData) && !empty($fileData['file_path'] != "")) {

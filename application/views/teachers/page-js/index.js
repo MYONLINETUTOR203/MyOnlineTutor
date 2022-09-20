@@ -34,7 +34,7 @@ $(document).ready(function () {
         $('.select-teachlang-js:contains("' + keyword + '")').parent().parent().show();
     };
 
-    searchLanguage = function () {
+    searchLanguage = function (reset = false) {
         var language = [];
         $('input[name="teachs[]"]:checked').each(function () {
             language.push($(this).parent().find('.select-option__item').text());
@@ -46,24 +46,12 @@ $(document).ready(function () {
             $('.teachlang-placeholder-js').html(placeholder);
         } else {
             $('.teachlang-placeholder-js').html(LABELS.allLanguages);
+        }
+        if (reset === true) {
+            return;
         }
         search(document.frmSearch);
         $("body").trigger('click');
-    };
-
-    resetSearchLanguage = function () {
-        var language = [];
-        $('input[name="teachs[]"]:checked').each(function () {
-            language.push($(this).parent().find('.select-option__item').text());
-        });
-        if (language.length > 0) {
-            var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + language.join(', ') +
-                    '</span><span class="selected-filters__action" onclick="clearLanguage();"></span></div>';
-            $('input[name="teach_language"]').val('').trigger('keyup');
-            $('.teachlang-placeholder-js').html(placeholder);
-        } else {
-            $('.teachlang-placeholder-js').html(LABELS.allLanguages);
-        }
     };
 
     clearLanguage = function () {
@@ -74,7 +62,7 @@ $(document).ready(function () {
         $("body").trigger('click');
     };
 
-    searchPrice = function () {
+    searchPrice = function (reset = false) {
         var price = [];
         if (!isNaN(parseInt($('input[name="price_from"]').val()))) {
             price.push($('input[name="price_from"]').val());
@@ -92,6 +80,9 @@ $(document).ready(function () {
         } else {
             $('.price-placeholder-js').html(LABELS.allPrices);
         }
+        if (reset === true) {
+            return;
+        }
         search(document.frmSearch);
         $("body").trigger('click');
     };
@@ -105,7 +96,7 @@ $(document).ready(function () {
         $("body").trigger('click');
     };
 
-    searchAvailbility = function () {
+    searchAvailbility = function (reset = false) {
         var avaialbility = [];
         $('input[name="days[]"]:checked, input[name="slots[]"]:checked').each(function () {
             avaialbility.push($(this).parent().find('.select-option__item').text());
@@ -116,6 +107,9 @@ $(document).ready(function () {
             $('.availbility-placeholder-js').html(placeholder);
         } else {
             $('.availbility-placeholder-js').html(LABELS.selectTiming);
+        }
+        if (reset === true) {
+            return;
         }
         search(document.frmSearch);
         $("body").trigger('click');
@@ -195,6 +189,7 @@ $(document).ready(function () {
         var data = fcom.frmData(frmSearch);
         fcom.ajax(fcom.makeUrl('Teachers', 'search'), data, function (response) {
             $('#listing').html(response);
+            $(".gototop").trigger('click');
         });
     };
 
@@ -330,7 +325,10 @@ $(document).ready(function () {
             $.facebox(response, 'facebox-large');
         });
     };
-    resetSearchLanguage();
+    searchLanguage(true);
+    searchPrice(true);
+    searchAvailbility(true);
+    countSelectedFilters();
     search(document.frmSearch);
 });
 

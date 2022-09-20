@@ -63,6 +63,7 @@ var fcom = {
             fcom.process();
         }
         o.fOutMode = o.fOutMode.toLowerCase();
+        $("form").find("input[type='submit']").prop('disabled', true);
         $.ajax({
             method: "POST",
             url: url,
@@ -71,6 +72,7 @@ var fcom = {
             dataType: o.fOutMode,
             async: (options && options.async === false) ? false : true,
             success: function (res) {
+                $("form").find("input[type='submit']").prop('disabled', false);
                 if (o.fOutMode == "json" || isJson(res)) {
                     var response = (o.fOutMode == "json") ? res : JSON.parse(res);
                     if (response.status == 1) {
@@ -94,6 +96,7 @@ var fcom = {
                 }
             },
             error: function (jqXHR, textStatus, error) {
+                $("form").find("input[type='submit']").prop('disabled', false);
                 if (textStatus == "parsererror" && jqXHR.statusText == "OK") {
                     alert('Seems some json error.' + jqXHR.responseText);
                     return;
@@ -197,6 +200,7 @@ var fcom = {
         data.append('maxRetry', o.maxRetry);
         data.append('retryNumber', o.retryNumber);
         fcom.process();
+        $("form").find("input[type='submit']").prop('disabled', true);
         $.ajax({
             method: "POST",
             enctype: 'multipart/form-data',
@@ -208,6 +212,7 @@ var fcom = {
             timeout: o.timeout,
             dataType: o.fOutMode,
             success: function (res) {
+                $("form").find("input[type='submit']").prop('disabled', false);
                 var repeatCount = fcom.logAjaxRequest(url, data, res, o.ajaxLoopHandler);
                 if (repeatCount >= 2 && o.ajaxLoopHandler) {
                     setTimeout(function () {
@@ -228,6 +233,7 @@ var fcom = {
                 }
             },
             error: function (jqXHR, textStatus, error) {
+                $("form").find("input[type='submit']").prop('disabled', false);
                 if (textStatus == "parsererror" && jqXHR.statusText == "OK") {
                     alert('Seems some json error.' + jqXHR.responseText);
                     return;

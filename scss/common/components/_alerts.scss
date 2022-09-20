@@ -129,7 +129,7 @@ $alert: "alert";
 $alert-position: "alert-position";
 
 .#{$alert-position}{position: fixed; opacity: 0;visibility: hidden;z-index: -1; padding: theme('padding.4');
-  &.animated{opacity: 1;visibility: visible;z-index: 100;}
+  &.animated{opacity: 1;visibility: visible;z-index: 1000;}
   .#{$alert}{margin-bottom: 0;}
 
   @media(min-width: theme('breakpoints.sm','value')){

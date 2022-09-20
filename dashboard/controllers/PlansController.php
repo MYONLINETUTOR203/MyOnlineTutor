@@ -244,7 +244,7 @@ class PlansController extends DashboardController
     {
         $frm = new Form('planSearchFrm');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '', ['placeholder' => Label::getLabel('LBL_KEYWORD'), 'id' => 'planKeyword']);
-        $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'plan_level', Plan::getLevels(), '', ['id' => 'planLevel']);
+        $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'plan_level', Plan::getLevels(), '', ['id' => 'planLevel'], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField('', 'pageno', 1)->requirements()->setInt();
         $frm->addHiddenField('', 'listing_type');

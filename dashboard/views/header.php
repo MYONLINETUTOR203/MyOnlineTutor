@@ -1,6 +1,5 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$_SESSION[UserAuth::REFERRAL_PAGE_URL] = CommonHelper::getCurrentUrl();
 $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
 ?>
 <!doctype html>
@@ -54,11 +53,8 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
             ?>
             <script src="<?php echo CONF_WEBROOT_URL; ?>innovas/scripts/innovaeditor.js"></script>
             <script src="<?php echo CONF_WEBROOT_URL; ?>innovas/scripts/common/webfont.js"></script>
-            <?php
-        }
-        if (FatApp::getConfig('CONF_ENABLE_PWA', FatUtility::VAR_BOOLEAN, false)) {
-            ?>
-            <link rel="manifest" href="<?php echo MyUtility::makeUrl('Pwa'); ?>">
+        <?php } if (FatApp::getConfig('CONF_ENABLE_PWA', FatUtility::VAR_BOOLEAN, false)) { ?>
+            <link rel="manifest" href="<?php echo MyUtility::makeUrl('Pwa', '', [], CONF_WEBROOT_FRONTEND); ?>">
             <script>
                 if ("serviceWorker" in navigator) {
                     navigator.serviceWorker.register("<?php echo CONF_WEBROOT_FRONTEND; ?>sw.js");

@@ -1,9 +1,6 @@
 <?php
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-if ($controllerName != 'AdminGuest' && $controllerName != 'Error') {
-    $_SESSION[AdminAuth::REFER_PAGE_URL] = CommonHelper::getCurrentUrl();
-}
 if (isset($includeEditor) && true === $includeEditor) {
     $extendEditorJs = 'true';
 } else {

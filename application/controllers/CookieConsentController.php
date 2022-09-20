@@ -102,9 +102,10 @@ class CookieConsentController extends MyAppController
         }
         $url = implode("/", $uriPath);
         $originalUrl = SeoUrl::getOriginalUrl($url);
-        if (!empty($originalUrl)) {
+        if (!empty($originalUrl['seourl_original'])) {
             $url = $originalUrl['seourl_original'];
         }
+        FatCache::clearAll();
         $uriPath = explode("/", $url);
         $params = array_slice($uriPath, 2);
         $controller = $uriPath[0] ?? '';

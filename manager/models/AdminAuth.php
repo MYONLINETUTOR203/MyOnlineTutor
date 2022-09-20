@@ -10,7 +10,6 @@ class AdminAuth extends FatModel
 {
 
     const SESSION_ELEMENT = 'YOCOACH_ADMIN';
-    const REFER_PAGE_URL = 'REFER_PAGE_URL';
     const REMEMBER_ELEMENT = 'YOCOACH_REMEMBER_ME';
 
     public static $_instance;

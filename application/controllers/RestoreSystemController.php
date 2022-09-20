@@ -66,6 +66,7 @@ class RestoreSystemController extends MyAppController
             $this->resetRestoreTime(CONF_DB_NAME);
             /* @TODO : Send an email notification */
         }
+        FatCache::clearAll();
         FatUtility::dieJsonSuccess('Restored Successfully!');
     }
 
