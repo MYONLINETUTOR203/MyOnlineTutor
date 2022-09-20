@@ -66,27 +66,27 @@
                     <ul>
                         <?php if ($objPrivilege->canViewCourseLanguage(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('CourseLanguages'); ?>"><?php echo Label::getLabel('LBL_MANAGE_COURSE_LANGUAGES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('CourseLanguages'); ?>"><?php echo Label::getLabel('LBL_COURSE_LANGUAGES'); ?></a>
                             </li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCategories(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CATEGORIES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_CATEGORIES'); ?></a>
                             </li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCourses(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Courses'); ?>"><?php echo Label::getLabel('LBL_MANAGE_COURSES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Courses'); ?>"><?php echo Label::getLabel('LBL_COURSES'); ?></a>
                             </li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCourseRequests(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('CourseRequests'); ?>"><?php echo Label::getLabel('LBL_MANAGE_APPROVAL_REQUESTS'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('CourseRequests'); ?>"><?php echo Label::getLabel('LBL_APPROVAL_REQUESTS'); ?></a>
                             </li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCertificates(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CERTIFICATES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_CERTIFICATES'); ?></a>
                             </li>
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCourseReviews(true)) { ?>
@@ -96,7 +96,7 @@
                         <?php } ?>
                         <?php if ($objPrivilege->canViewCourseRefundRequests(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('CourseRefundRequests'); ?>"><?php echo Label::getLabel('LBL_MANAGE_REFUND_REQUESTS'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('CourseRefundRequests'); ?>"><?php echo Label::getLabel('LBL_REFUND_REQUESTS'); ?></a>
                             </li>
                         <?php } ?>
                     </ul>
