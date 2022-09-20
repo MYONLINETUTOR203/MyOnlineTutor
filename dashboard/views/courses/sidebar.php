@@ -1,25 +1,25 @@
 <div class="page-layout__sticky">
     <div class="page-steps margin-bottom-6 tabs-scrollable-js">
         <ul>
-            <li class="is-active general-info-js is-progress">
+            <li class="<?php echo ($active == 1) ? 'is-active' : ''; ?> general-info-js is-progress">
                 <a href="javascript:void(0)" <?php if ($courseId > 0) { ?> onclick="generalForm();" <?php } ?>>
                     <?php echo Label::getLabel('LBL_BASIC_DETAILS'); ?>
                     <span class="step-sign"></span>
                 </a>
             </li>
-            <li class="intended-learner-js <?php echo ($active >= 2) ? 'is-active' : ''; ?> is-progress">
+            <li class="intended-learner-js <?php echo ($active == 2) ? 'is-active' : ''; ?> is-progress">
                 <a href=" javascript:void(0)" <?php if ($courseId > 0) { ?> onclick="intendedLearnersForm();" <?php } ?>>
                     <?php echo Label::getLabel('LBL_INTENDED_LEARNERS'); ?>
                     <span class="step-sign"></span>
                 </a>
             </li>
-            <li class="course-price-js <?php echo ($active >= 3) ? 'is-active' : ''; ?> is-progress">
+            <li class="course-price-js <?php echo ($active == 3) ? 'is-active' : ''; ?> is-progress">
                 <a href="javascript:void(0)" <?php if ($courseId > 0) { ?> onclick="priceForm();" <?php } ?>>
                     <?php echo Label::getLabel('LBL_PRICE'); ?>
                     <span class="step-sign"></span>
                 </a>
             </li>
-            <li class="curriculum-js <?php echo ($active >= 4) ? 'is-active' : ''; ?> is-progress">
+            <li class="curriculum-js <?php echo ($active == 4) ? 'is-active' : ''; ?> is-progress">
                 <a href=" javascript:void(0)" <?php if ($courseId > 0) { ?> onclick="curriculumForm();" <?php } ?>>
                     <?php echo Label::getLabel('LBL_CURRICULUM'); ?>
                     <span class="step-sign"></span>
@@ -37,7 +37,7 @@
         <?php
         $class = '';
         if ($fld = $frm->getField('btn_save')) {
-            $class = 'margin-top-2';?>
+            $class = 'margin-top-2'; ?>
             <div class="page-actions__group">
                 <?php
                 $fld->setFieldTagAttribute('class', 'btn btn--primary');
