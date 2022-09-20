@@ -87,6 +87,9 @@ class MetaTagSearch extends SearchBase
     {
         $this->joinTable(Course::DB_TBL, 'RIGHT OUTER JOIN', 'mt.meta_record_id = crs.course_slug AND mt.meta_type=' . $metaType, 'crs');
         $this->joinTable(Course::DB_TBL_LANG, 'LEFT OUTER JOIN', 'crsdetail.course_id = crs.course_id', 'crsdetail');
+        $this->joinTable(User::DB_TBL, 'INNER JOIN', 'crs.course_user_id = teacher.user_id', 'teacher');
+        $this->joinTable(Category::DB_TBL, 'INNER JOIN', 'cate.cate_id = crs.course_cate_id', 'cate');
+        $this->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = crs.course_clang_id', 'clang');
     }
 
     /**
@@ -156,6 +159,13 @@ class MetaTagSearch extends SearchBase
                 $this->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
                 $this->addCondition('course_active', '=', AppConstant::ACTIVE);
                 $this->addCondition('course_status', '=', Course::PUBLISHED);
+                $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+                $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+                $this->addCondition('teacher.user_username', '!=', "");
+                $this->addDirectCondition('teacher.user_deleted IS NULL');
+                $this->addDirectCondition('teacher.user_verified IS NOT NULL');
+                $this->addCondition('teacher.user_active', '=', AppConstant::ACTIVE);
+                $this->addCondition('teacher.user_is_teacher', '=', AppConstant::YES);
                 if (isset($condition) && $condition) {
                     $condition->attachCondition('crsdetail.course_title', 'like', '%' . $criteria['keyword']['val'] . '%', 'OR');
                 }
