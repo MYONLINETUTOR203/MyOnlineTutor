@@ -399,7 +399,6 @@ class Course extends MyAppModel
         if ($data['course_id'] < 1) {
             $this->setFldValue('course_created', date('Y-m-d H:i:s'));
         }
-        $this->setFldValue('course_slug', CommonHelper::seoUrl($data['course_title']));
         $this->setFldValue('course_user_id', $this->userId);
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_status', Course::DRAFTED);
@@ -410,6 +409,15 @@ class Course extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+
+        $this->setFldValue('course_id', $this->getMainTableRecordId());
+        $this->setFldValue('course_slug', $this->getSlug($data['course_title']));
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+
         $assignValues = [
             'course_id' => $this->getMainTableRecordId(),
             'course_title' => $data['course_title'],
@@ -425,7 +433,32 @@ class Course extends MyAppModel
         return true;
     }
 
-    private function validate($data)
+    /**
+     * Function to validate & create unique slug
+     *
+     * @param string $title
+     * @return string
+     */
+    private function getSlug(string $title)
+    {
+        $srch = new SearchBase(static::DB_TBL_LANG);
+        $srch->addCondition('mysql_func_LOWER(course_title)', '=', strtolower($title), 'AND', true);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('course_title');
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            return CommonHelper::seoUrl($title) . '-' . $this->getMainTableRecordId();
+        }
+        return CommonHelper::seoUrl($title);
+    }
+
+    /**
+     * Validate form values
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function validate(array $data)
     {
         /* validate categories */
         $categories = [$data['course_cate_id'], $data['course_subcate_id']];
