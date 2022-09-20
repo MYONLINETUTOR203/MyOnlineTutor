@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $count = count($questions);
 ?>
-<?php echo $this->includeTemplate('quizzes/navigation.php', ['quizId' => $quizId, 'active' => 2, 'isComplete' => ($count > 0) ? true : false]) ?>
+<?php echo $this->includeTemplate('quizzes/navigation.php', ['quizId' => $quizId, 'active' => 2]) ?>
 <div class="tabs-data">
     <div class="box-panel__container">
 
@@ -24,17 +24,29 @@ $count = count($questions);
             <div class="page__body">
                 <div class="table-scroll">
                     <table class="table table--styled table--responsive">
-                        <tbody>
+                        <thead>
                             <tr class="title-row">
+                                <th></th>
                                 <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE') ?></th>
                                 <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE') ?></th>
                                 <th><?php echo $cateLbl = Label::getLabel('LBL_CATEGORY') ?></th>
                                 <th><?php echo $subcateLbl = Label::getLabel('LBL_SUB_CATEGORY') ?></th>
                                 <th><?php echo $actionLbl = Label::getLabel('LBL_ACTION') ?></th>
                             </tr>
+                        </thead>
+                        <tbody class="sortableJs">
                             <?php if (count($questions) > 0) { ?>
                                 <?php foreach ($questions as $question) { ?>
-                                    <tr>
+                                    <tr data-id="<?php echo $question['quique_quiz_id'] . '_' . $question['quique_ques_id'] ?>">
+                                        <td>
+                                            <a href=" javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
+                                                <svg class="svg-icon" viewBox="0 0 16 12.632">
+                                                    <path d="M7.579 9.263v1.684H0V9.263zm1.684-4.211v1.684H0V5.053zM7.579.842v1.684H0V.842zM13.474 12.632l-2.527-3.789H16z"></path>
+                                                    <path d="M12.632 2.105h1.684v7.579h-1.684z"></path>
+                                                    <path d="M13.473 0L16 3.789h-5.053z"></path>
+                                                </svg>
+                                            </a>
+                                        </td>
                                         <td>
                                             <div class="flex-cell">
                                                 <div class="flex-cell__label">
@@ -128,3 +140,13 @@ $count = count($questions);
 
     </div>
 </div>
+<script type="text/javascript">
+    $(function() {
+        $(".sortableJs").sortable({
+            handle: ".sortHandlerJs",
+            update: function(event, ui) {
+                updateOrder('<?php echo $quizId ?>');
+            }
+        });
+    });
+</script>

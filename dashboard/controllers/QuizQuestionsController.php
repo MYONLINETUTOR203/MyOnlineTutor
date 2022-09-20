@@ -127,15 +127,22 @@ class QuizQuestionsController extends DashboardController
         ]);
     }
 
-    private function getSearchForm()
+    /**
+     * Update questions display order
+     */
+    public function updateOrder()
     {
-        $frm = QuestionSearch::getSearchForm($this->siteLangId);
-        $frm->addHiddenField('', 'quiz_id');
-        return $frm;
+        $order = FatApp::getPostedData('order');
+        $id = FatApp::getPostedData('id');
+        $quiz = new Quiz($id, $this->siteUserId);
+        if (!$quiz->updateOrder($order)) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_ORDER_UPDATED_SUCCESSFULLY'));
     }
 
     /**
-     * Delete Questions
+     * Delete Binded Questions
      *
      * @return void
      */
@@ -151,6 +158,16 @@ class QuizQuestionsController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
+    }
+
+    /**
+     * Search Form
+     */
+    private function getSearchForm()
+    {
+        $frm = QuestionSearch::getSearchForm($this->siteLangId);
+        $frm->addHiddenField('', 'quiz_id');
+        return $frm;
     }
 
     /**

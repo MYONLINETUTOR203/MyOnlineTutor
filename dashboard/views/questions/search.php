@@ -71,7 +71,7 @@ $types = Question::getQuesTypes();
                                 </svg>
                                 <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_EDIT'); ?></div>
                             </a>
-                            <a href="javascript:void(0);" onclick="remove('<?php echo $question['ques_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                            <a href="javascript:void(0);" onclick="remove('<?php echo $question['ques_id']; ?>', '<?php echo $question['is_binded']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                 <svg class="icon icon--issue icon--small">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#trash'; ?>"></use>
                                 </svg>

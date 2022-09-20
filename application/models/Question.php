@@ -84,10 +84,10 @@ class Question extends MyAppModel
     /**
      * Get Question Options
      *
-     * @param int $optionsIds
+     * @param array $optionsIds
      * @return array
      */
-    public function getQuesOptions($optionsIds = [])
+    public function getQuesOptions(array $optionsIds = [])
     {
         $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
         $srch->addMultipleFields(['queopt_id', 'queopt_title']);
@@ -151,7 +151,7 @@ class Question extends MyAppModel
      * @param array $data
      * @return bool
      */
-    public function setup($data)
+    public function setup(array $data)
     {
         $categories = [];
         if ($this->mainTableRecordId > 0) {
@@ -206,10 +206,12 @@ class Question extends MyAppModel
         $db = FatApp::getDb();
 
         /* delete old questions */
-        if (!$db->deleteRecords(
-            static::DB_TBL_OPTIONS,
-            ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]
-        )) {
+        if (
+            !$db->deleteRecords(
+                static::DB_TBL_OPTIONS,
+                ['smt' => 'queopt_ques_id = ?', 'vals' => [$quesId]]
+            )
+        ) {
             $this->error = $db->getError();
             return false;
         }
@@ -242,6 +244,12 @@ class Question extends MyAppModel
         return true;
     }
 
+    /**
+     * Update Questions Count In Categories
+     *
+     * @param array $cateIds
+     * @return bool
+     */
     private function updateCount(array $cateIds)
     {
         if (count($cateIds) < 1) {
@@ -252,7 +260,7 @@ class Question extends MyAppModel
         $db = FatApp::getDb();
         if (
             !$db->query(
-            "UPDATE " . Category::DB_TBL . "
+                "UPDATE " . Category::DB_TBL . "
                 LEFT JOIN(
                     SELECT cat.ques_cate_id AS catId,
                         COUNT(*) AS totalRecord

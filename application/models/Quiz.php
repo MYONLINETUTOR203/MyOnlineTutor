@@ -144,6 +144,7 @@ class Quiz extends MyAppModel
         } else {
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
+        $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
@@ -240,6 +241,7 @@ class Quiz extends MyAppModel
         } else {
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
+        $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
@@ -277,7 +279,7 @@ class Quiz extends MyAppModel
         } else {
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
-
+        $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
@@ -285,6 +287,47 @@ class Quiz extends MyAppModel
         return true;
     }
 
+    /**
+     * Update display order
+     *
+     * @param array $order
+     * @return bool
+     */
+    public function updateOrder(array $order): bool
+    {
+        $order = FatApp::getPostedData('order');
+        if (empty($order)) {
+            $this->error = Label::getLabel('LBL_INVALID_DATA_SENT');
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        foreach ($order as $i => $id) {
+            if (FatUtility::int($id) < 1) {
+                continue;
+            }
+            $data = explode('_', $id);
+            if (
+                !$db->updateFromArray(
+                    Quiz::DB_TBL_QUIZ_QUESTIONS,
+                    ['quique_order' => $i],
+                    ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$data[0], $data[1]]]
+                )
+            ) {
+                $db->rollbackTransaction();
+                $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED_WHILE_UPDATING_ORDER');
+                return false;
+            }
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
+     * Get quiz completed status
+     *
+     * @return array
+     */
     public function getCompletedStatus()
     {
         if (!$data = $this->getById()) {

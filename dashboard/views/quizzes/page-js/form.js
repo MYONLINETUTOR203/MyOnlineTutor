@@ -83,6 +83,19 @@ $(function () {
         });
         getCompletedStatus(quizId);
     };
+    updateOrder = function (id) {
+        var order = [''];
+        $('.sortableJs tr').each(function () {
+            order.push($(this).data('id'));
+        });
+        fcom.ajax(fcom.makeUrl('QuizQuestions', 'updateOrder'), {
+            'order': order,
+            'id': id
+        }, function (res) {
+            questions(id);
+            getCompletedStatus(id);
+        });
+    };
     /* ] */
     /* Settings [ */
     settings = function (id) {

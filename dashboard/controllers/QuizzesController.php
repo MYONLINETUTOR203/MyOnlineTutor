@@ -59,11 +59,11 @@ class QuizzesController extends DashboardController
     }
 
     /**
-     * Render add new question form
+     * Render add new quiz layout
      *
-     * @return html
+     * @param intr $id
      */
-    public function form($id = 0)
+    public function form(int $id = 0)
     {
         $quiz = new Quiz($id, $this->siteUserId);
         if ($id > 0 && !$quiz->validate()) {
@@ -78,7 +78,7 @@ class QuizzesController extends DashboardController
     }
 
     /**
-     * Render add new question form
+     * Render add quiz basic form
      *
      * @return html
      */
@@ -199,6 +199,9 @@ class QuizzesController extends DashboardController
         $this->_template->render(false, false);
     }
 
+    /**
+     * Setup quiz settings
+     */
     public function setupSettings()
     {
         $frm = $this->getSettingForm();
@@ -276,7 +279,7 @@ class QuizzesController extends DashboardController
         $fld->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
-        +$frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
+        $frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;
     }
@@ -301,7 +304,12 @@ class QuizzesController extends DashboardController
         return $frm;
     }
 
-    private function getSettingForm($offerCertificate = true)
+    /**
+     * Get settings form
+     *
+     * @param bool $offerCertificate
+     */
+    private function getSettingForm(bool $offerCertificate = true)
     {
         $frm = new Form('frmSetting');
         $durationFld = $frm->addTextBox(Label::getLabel('LBL_DURATION_(IN_MINS)'), 'quiz_duration', '');
@@ -320,7 +328,12 @@ class QuizzesController extends DashboardController
         if ($offerCertificate == false) {
             $frm->addHiddenField('', 'quiz_certificate', AppConstant::NO);
         } else {
-            $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'quiz_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
+            $fld = $frm->addRadioButtons(
+                Label::getLabel('LBL_OFFER_CERTIFICATE'),
+                'quiz_certificate',
+                AppConstant::getYesNoArr(),
+                AppConstant::NO
+            );
             $fld->requirements()->setRequired();
         }
 

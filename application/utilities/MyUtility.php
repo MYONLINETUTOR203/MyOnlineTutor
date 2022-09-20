@@ -374,7 +374,8 @@ class MyUtility extends FatUtility
             'lessonNotAvailable' => Label::getLabel('LBL_LESSON_NOT_AVAILABLE'),
             'currencyLeft' => self::getCurrencyLeftSymbol(),
             'currencyRight' => self::getCurrencyRightSymbol(),
-            'selectQuestions' => Label::getLabel('LBL_PLEASE_ADD_QUESTION(S)')
+            'selectQuestions' => Label::getLabel('LBL_PLEASE_ADD_QUESTION(S)'),
+            'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION')
         ];
     }
 

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * This class is used to handle quiz Search 
- * 
+ * This class is used to handle quiz Search
+ *
  * @package YoCoach
  * @author Fatbit Team
  */
@@ -10,7 +10,7 @@ class QuizSearch extends YocoachSearch
 {
 
     /* Initialize Quiz Search
-     * 
+     *
      * @param int $langId
      * @param int $userId
      * @param int $userType
@@ -39,7 +39,7 @@ class QuizSearch extends YocoachSearch
 
     /**
      * Apply Search Conditions
-     * 
+     *
      * @param array $post
      * @return void
      */
@@ -61,7 +61,7 @@ class QuizSearch extends YocoachSearch
 
     /**
      * Fetch & Format quiztions
-     * 
+     *
      * @return array
      */
     public function fetchAndFormat(): array
@@ -75,8 +75,6 @@ class QuizSearch extends YocoachSearch
 
     /**
      * Add Search Listing Fields
-     *
-     * @return void
      */
     public function addSearchListingFields(): void
     {
@@ -147,6 +145,7 @@ class QuizSearch extends YocoachSearch
             'ques_cate_id', 'ques_subcate_id'
         ]);
         $srch->doNotCalculateRecords();
+        $srch->addOrder('quique_order', 'ASC');
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (count($questions) < 1) {
             return [];
