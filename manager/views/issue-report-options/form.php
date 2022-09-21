@@ -18,8 +18,9 @@ $frm->developerTags['fld_default_col'] = 12;
                         <?php
                         $inactive = ($optId == 0) ? 'fat-inactive' : '';
                         foreach ($languages as $langId => $langName) {
+                            $langForm = (intval($optId) > 0) ? 'onclick="langForm(' . $optId . ',' . $langId . ');"' : '';
                             ?>
-                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $optId ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
+                            <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php echo $langForm; ?>><?php echo $langName; ?></a></li>
                         <?php } ?>
                     </ul>
                     <div class="tabs_panel_wrap">

@@ -46,12 +46,12 @@ $slideshow: "slideshow";
     position: absolute;
     #{theme('direction.left','value')}:5%;
     top: 50%;
-    min-width:500px;
-    max-width: 500px;
+    min-width:530px;
+    max-width: 530px;
     color: #111;
     transform: translateY(-50%);
     z-index: 2;
-    padding: theme('padding.14') theme('padding.10');
+    padding: theme('padding.14') theme('padding.12');
     text-align: center;
     backdrop-filter: saturate(180%) blur(20px);
     background: rgba(255,255,255,0.7);
@@ -140,7 +140,7 @@ $slideshow: "slideshow";
             pointer-events: none;
         }
         svg{
-            fill: theme('color.gray.1000');
+            fill: theme('color.gray.1000'); 
         }
         input[type="text"]{
           
@@ -893,7 +893,7 @@ $card: 'card';
     left: -170px;
 }
 
-.slick-arrow{
+.home.home-index .slick-arrow{
     background: transparent;
     box-shadow: none;
     &::before{
@@ -1384,7 +1384,7 @@ $card: 'card';
         top: calc(50% - 10rem); background-color: theme('color.white');
     }
     .slick-arrow.slick-next{
-        #{theme('direction.right','value')}: 1.6rem; color: theme('color.black');
+        color: theme('color.black');
         @media(min-width: theme('breakpoints.xl','value')){
             &:before{border-color: currentColor;}
         }
@@ -1393,7 +1393,7 @@ $card: 'card';
         // }
     }
     .slick-arrow.slick-prev{
-        #{theme('direction.left','value')}: 1.6rem;color: theme('color.black');
+        color: theme('color.black');
         @media(min-width: theme('breakpoints.xl','value')){
             &:before{border-color: currentColor;}
         }

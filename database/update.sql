@@ -1,3 +1,7 @@
+-- ------------------
+-- BR_RV-3.0.0_HOT_FIX
+-- ------------------
+
 ALTER TABLE `tbl_zoom_users` ADD `zmusr_zoom_type` INT NOT NULL AFTER `zmusr_zoom_id`;
 UPDATE `tbl_zoom_users` SET `zmusr_zoom_type` = '1';
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES 
@@ -43,6 +47,7 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 (1, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'Receiver have redeemed gift card.'),
 (2, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'قام المستلم باسترداد بطاقة الهدايا.');
 
+
 ALTER TABLE `tbl_teacher_requests` DROP `tereq_gender`;
 ALTER TABLE `tbl_users` DROP `user_gender`;
 
@@ -68,3 +73,11 @@ UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"600\" cellspacing
 UPDATE `tbl_email_templates` SET `etpl_body` = '<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>\r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Tutor Request Status Update</h2></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center\">Dear {user_full_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Here is an update regarding your Tutor request reference number - {reference_number}.<br />\r\n									<br />\r\n									 The request processing is completed and it has been {new_request_status}.</p>\r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Admin Comments: {request_comments}</p>{login_link}</td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', `etpl_vars` = '{user_first_name} - First Name of the email receiver.<br/> \r\n{user_last_name} - Last Name of the email receiver.<br/> \r\n{user_full_name} - Full Name of the email receiver.<br/> \r\n{new_request_status} New Request Status (Approved/Declined) <br> \r\n{reference_number} Reference Number of the request<br> \r\n{request_comments} Admin comments<br> \r\n{login_link} Login Page Link<br> \r\n{website_name} Name of our website<br> ' WHERE `tbl_email_templates`.`etpl_code` = 'teacher_request_status_change_learner' AND `tbl_email_templates`.`etpl_lang_id` = 2;
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.2.20220902(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+-- -----------------------
+-- After 15 September 2022
+-- -----------------------
+UPDATE `tbl_navigation_links` SET `nlink_url` = '{siteroot}blog/contribution-form' WHERE `tbl_navigation_links`.`nlink_id` = 76;
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_TEACHER_PRICING', 'Pricing'),(2, 'LBL_TEACHER_PRICING', 'التسعير');

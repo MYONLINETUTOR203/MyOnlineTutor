@@ -83,6 +83,7 @@ $("document").ready(function () {
         arrows: true,
         adaptiveHeight: true,
         dots: false,
+        rtl: (langLbl.layoutDirection == 'rtl') ? true : false,
         prevArrow: '<button class="slick-prev cursor-hide" aria-label="Previous" type="button">Previous</button>',
         nextArrow: '<button class="slick-next cursor-hide" aria-label="Next" type="button">Next</button>',
         responsive: [

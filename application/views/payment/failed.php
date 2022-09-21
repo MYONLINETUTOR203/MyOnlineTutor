@@ -19,7 +19,11 @@
                     <?php } ?>
                     <span class="-gap"></span>
                     <div class="-align-center">
-                        <h6><?php echo CommonHelper::renderHtml($textMessage); ?> </h6>
+                        <h6>
+                            <?php echo Label::getLabel('MSG_YOUR_ORDER_PAYMENT_HAS_FAILED'); ?>
+                            <a class="-color-secondary underline" href="<?php echo MyUtility::makeUrl('Contact'); ?>">
+                                <?php echo Label::getLabel('LBL_CONTACT_HERE'); ?></a>
+                        </h6>
                     </div>
                 </div>
             </div>

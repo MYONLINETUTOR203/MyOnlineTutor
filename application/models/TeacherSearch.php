@@ -278,8 +278,9 @@ class TeacherSearch extends YocoachSearch
         }
         $srch = new SearchBase(Country::DB_TBL, 'country');
         $on = 'clang.countrylang_country_id = country.country_id AND clang.countrylang_lang_id = ' . $langId;
-        $srch->joinTable(Country::DB_TBL_LANG, 'INNER JOIN', $on, 'clang');
-        $srch->addMultipleFields(['country_id', 'country_code', 'country_name']);
+        $srch->joinTable(Country::DB_TBL_LANG, 'LEFT JOIN', $on, 'clang');
+        $srch->addMultipleFields(['country_id', 'country_code',
+            'IFNULL(country_name, country_identifier) AS country_name']);
         $srch->addCondition('country.country_id', 'IN', $countryIds);
         $srch->doNotCalculateRecords();
         $result = $srch->getResultSet();

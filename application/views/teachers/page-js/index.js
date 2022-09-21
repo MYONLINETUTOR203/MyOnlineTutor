@@ -188,6 +188,7 @@ $(document).ready(function () {
         var data = fcom.frmData(frmSearch);
         fcom.ajax(fcom.makeUrl('Teachers', 'search'), data, function (response) {
             $('#listing').html(response);
+            $(".gototop").trigger('click');
         });
     };
 
