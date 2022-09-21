@@ -52,6 +52,7 @@ class CoursesController extends MyAppController
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('teacher.user_username', '!=', "");
         $courses = $srch->fetchAndFormat();
         $recordCount = $srch->recordCount();
         /* checkout form */
@@ -94,6 +95,7 @@ class CoursesController extends MyAppController
             'userlang'
         );
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('teacher.user_username', '!=', "");
         $srch->setPageSize(1);
         $courses = $srch->fetchAndFormat(true);
         if (empty($courses)) {
@@ -376,6 +378,7 @@ class CoursesController extends MyAppController
         $srch->applyPrimaryConditions();
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('teacher.user_username', '!=', "");
         $srch->addMultiplefields(['course.course_id as id', 'crsdetail.course_title as name']);
         if (!empty($keyword)) {
             $srch->addCondition('crsdetail.course_title', 'LIKE', '%' . $keyword . '%');

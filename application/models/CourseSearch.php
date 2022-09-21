@@ -253,7 +253,6 @@ class CourseSearch extends YocoachSearch
         $this->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
-        $this->addCondition('teacher.user_username', '!=', "");
         $this->addDirectCondition('teacher.user_deleted IS NULL');
         $this->addDirectCondition('teacher.user_verified IS NOT NULL');
         $this->addCondition('teacher.user_active', '=', AppConstant::ACTIVE);
