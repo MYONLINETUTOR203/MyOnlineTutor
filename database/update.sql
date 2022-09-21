@@ -83,3 +83,4 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 (1, 'LBL_TEACHER_PRICING', 'Pricing'),(2, 'LBL_TEACHER_PRICING', 'التسعير');
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.0.20220921(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+UPDATE `tbl_configurations` SET `conf_val` = 'RV-1.0.0(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';

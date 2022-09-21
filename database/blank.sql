@@ -1,25 +1,18 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Jun 21, 2022 at 11:21 AM
--- Server version: 8.0.29-0ubuntu0.20.04.3
--- PHP Version: 7.4.29
+-- Host: 127.0.0.1:3306
+-- Generation Time: Sep 21, 2022 at 04:50 AM
+-- Server version: 5.7.36
+-- PHP Version: 7.4.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
--- Database: `empty`
+-- Database: `onlinetutor_blank`
 --
 
 -- --------------------------------------------------------
@@ -28,10 +21,13 @@ SET time_zone = "+00:00";
 -- Table structure for table `tbl_abusive_words`
 --
 
-CREATE TABLE `tbl_abusive_words` (
-  `abusive_id` int NOT NULL,
-  `abusive_lang_id` int NOT NULL,
-  `abusive_keyword` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_abusive_words`;
+CREATE TABLE IF NOT EXISTS `tbl_abusive_words` (
+  `abusive_id` int(11) NOT NULL AUTO_INCREMENT,
+  `abusive_lang_id` int(11) NOT NULL,
+  `abusive_keyword` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`abusive_id`),
+  UNIQUE KEY `abusive_word` (`abusive_keyword`,`abusive_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -40,15 +36,17 @@ CREATE TABLE `tbl_abusive_words` (
 -- Table structure for table `tbl_admin`
 --
 
-CREATE TABLE `tbl_admin` (
-  `admin_id` int NOT NULL,
-  `admin_username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `admin_password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `admin_email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `admin_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `admin_timezone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `admin_active` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_admin`;
+CREATE TABLE IF NOT EXISTS `tbl_admin` (
+  `admin_id` int(11) NOT NULL AUTO_INCREMENT,
+  `admin_username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_timezone` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admin_active` tinyint(4) NOT NULL,
+  PRIMARY KEY (`admin_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_admin`
@@ -63,13 +61,16 @@ INSERT INTO `tbl_admin` (`admin_id`, `admin_username`, `admin_password`, `admin_
 -- Table structure for table `tbl_admin_auth_token`
 --
 
-CREATE TABLE `tbl_admin_auth_token` (
-  `admauth_admin_id` int NOT NULL,
-  `admauth_token` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_admin_auth_token`;
+CREATE TABLE IF NOT EXISTS `tbl_admin_auth_token` (
+  `admauth_admin_id` int(11) NOT NULL,
+  `admauth_token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `admauth_expiry` datetime NOT NULL,
-  `admauth_browser` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admauth_browser` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `admauth_last_access` datetime NOT NULL,
-  `admauth_last_ip` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `admauth_last_ip` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`admauth_token`),
+  KEY `admrm_admin_id` (`admauth_admin_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='To store admin cookies information, Remember Me functionality';
 
 -- --------------------------------------------------------
@@ -78,14 +79,17 @@ CREATE TABLE `tbl_admin_auth_token` (
 -- Table structure for table `tbl_admin_commissions`
 --
 
-CREATE TABLE `tbl_admin_commissions` (
-  `comm_id` int NOT NULL,
-  `comm_user_id` int DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_admin_commissions`;
+CREATE TABLE IF NOT EXISTS `tbl_admin_commissions` (
+  `comm_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comm_user_id` int(11) DEFAULT NULL,
   `comm_lessons` decimal(10,2) NOT NULL,
   `comm_classes` decimal(10,2) NOT NULL,
   `comm_courses` decimal(10,2) NOT NULL,
-  `comm_created` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `comm_created` datetime NOT NULL,
+  PRIMARY KEY (`comm_id`),
+  UNIQUE KEY `comm_user_id` (`comm_user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_admin_commissions`
@@ -100,9 +104,10 @@ INSERT INTO `tbl_admin_commissions` (`comm_id`, `comm_user_id`, `comm_lessons`, 
 -- Table structure for table `tbl_admin_password_reset_requests`
 --
 
-CREATE TABLE `tbl_admin_password_reset_requests` (
-  `aprr_admin_id` int NOT NULL,
-  `aprr_token` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_admin_password_reset_requests`;
+CREATE TABLE IF NOT EXISTS `tbl_admin_password_reset_requests` (
+  `aprr_admin_id` int(11) NOT NULL,
+  `aprr_token` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `aprr_expiry` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -112,10 +117,12 @@ CREATE TABLE `tbl_admin_password_reset_requests` (
 -- Table structure for table `tbl_admin_permissions`
 --
 
-CREATE TABLE `tbl_admin_permissions` (
-  `admperm_admin_id` int NOT NULL,
-  `admperm_section_id` int NOT NULL,
-  `admperm_value` int NOT NULL
+DROP TABLE IF EXISTS `tbl_admin_permissions`;
+CREATE TABLE IF NOT EXISTS `tbl_admin_permissions` (
+  `admperm_admin_id` int(11) NOT NULL,
+  `admperm_section_id` int(11) NOT NULL,
+  `admperm_value` int(11) NOT NULL,
+  PRIMARY KEY (`admperm_admin_id`,`admperm_section_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -124,16 +131,19 @@ CREATE TABLE `tbl_admin_permissions` (
 -- Table structure for table `tbl_attached_files`
 --
 
-CREATE TABLE `tbl_attached_files` (
-  `file_id` int NOT NULL,
-  `file_type` int NOT NULL,
-  `file_record_id` int NOT NULL,
-  `file_lang_id` int NOT NULL,
-  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `file_order` int NOT NULL,
-  `file_added` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_attached_files`;
+CREATE TABLE IF NOT EXISTS `tbl_attached_files` (
+  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_type` int(11) NOT NULL,
+  `file_record_id` int(11) NOT NULL,
+  `file_lang_id` int(11) NOT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_order` int(11) NOT NULL,
+  `file_added` datetime DEFAULT NULL,
+  PRIMARY KEY (`file_id`),
+  KEY `afile_type` (`file_type`,`file_record_id`,`file_lang_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1768 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_attached_files`
@@ -220,11 +230,13 @@ INSERT INTO `tbl_attached_files` (`file_id`, `file_type`, `file_record_id`, `fil
 -- Table structure for table `tbl_availability`
 --
 
-CREATE TABLE `tbl_availability` (
-  `avail_id` int NOT NULL,
-  `avail_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_availability`;
+CREATE TABLE IF NOT EXISTS `tbl_availability` (
+  `avail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `avail_user_id` int(11) NOT NULL,
   `avail_starttime` datetime NOT NULL,
-  `avail_endtime` datetime NOT NULL
+  `avail_endtime` datetime NOT NULL,
+  PRIMARY KEY (`avail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -233,14 +245,17 @@ CREATE TABLE `tbl_availability` (
 -- Table structure for table `tbl_bank_transfers`
 --
 
-CREATE TABLE `tbl_bank_transfers` (
-  `bnktras_id` bigint NOT NULL,
-  `bnktras_order_id` bigint NOT NULL,
+DROP TABLE IF EXISTS `tbl_bank_transfers`;
+CREATE TABLE IF NOT EXISTS `tbl_bank_transfers` (
+  `bnktras_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `bnktras_order_id` bigint(20) NOT NULL,
   `bnktras_amount` decimal(10,2) NOT NULL,
-  `bnktras_txn_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bnktras_status` int NOT NULL,
-  `bnktras_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bnktras_datetime` datetime NOT NULL
+  `bnktras_txn_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bnktras_status` int(11) NOT NULL,
+  `bnktras_response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bnktras_datetime` datetime NOT NULL,
+  PRIMARY KEY (`bnktras_id`),
+  KEY `ordpay_order_id` (`bnktras_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -249,13 +264,15 @@ CREATE TABLE `tbl_bank_transfers` (
 -- Table structure for table `tbl_bible_content`
 --
 
-CREATE TABLE `tbl_bible_content` (
-  `biblecontent_id` int NOT NULL,
-  `biblecontent_title` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `biblecontent_url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `biblecontent_order` int NOT NULL,
-  `biblecontent_active` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_bible_content`;
+CREATE TABLE IF NOT EXISTS `tbl_bible_content` (
+  `biblecontent_id` int(11) NOT NULL AUTO_INCREMENT,
+  `biblecontent_title` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `biblecontent_url` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `biblecontent_order` int(11) NOT NULL,
+  `biblecontent_active` tinyint(4) NOT NULL,
+  PRIMARY KEY (`biblecontent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_bible_content`
@@ -290,10 +307,12 @@ INSERT INTO `tbl_bible_content` (`biblecontent_id`, `biblecontent_title`, `bible
 -- Table structure for table `tbl_bible_content_lang`
 --
 
-CREATE TABLE `tbl_bible_content_lang` (
-  `biblecontentlang_biblecontent_id` int NOT NULL,
-  `biblecontentlang_lang_id` int NOT NULL,
-  `biblecontentlang_biblecontent_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_bible_content_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_bible_content_lang` (
+  `biblecontentlang_biblecontent_id` int(11) NOT NULL,
+  `biblecontentlang_lang_id` int(11) NOT NULL,
+  `biblecontentlang_biblecontent_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`biblecontentlang_biblecontent_id`,`biblecontentlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -352,15 +371,17 @@ INSERT INTO `tbl_bible_content_lang` (`biblecontentlang_biblecontent_id`, `bible
 -- Table structure for table `tbl_blog_contributions`
 --
 
-CREATE TABLE `tbl_blog_contributions` (
-  `bcontributions_id` int NOT NULL,
-  `bcontributions_author_first_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bcontributions_author_last_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bcontributions_author_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bcontributions_author_phone` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_blog_contributions`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_contributions` (
+  `bcontributions_id` int(11) NOT NULL AUTO_INCREMENT,
+  `bcontributions_author_first_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bcontributions_author_last_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bcontributions_author_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bcontributions_author_phone` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `bcontributions_status` tinyint(1) NOT NULL,
   `bcontributions_added_on` datetime NOT NULL,
-  `bcontributions_user_id` int NOT NULL
+  `bcontributions_user_id` int(11) NOT NULL,
+  PRIMARY KEY (`bcontributions_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -369,17 +390,19 @@ CREATE TABLE `tbl_blog_contributions` (
 -- Table structure for table `tbl_blog_post`
 --
 
-CREATE TABLE `tbl_blog_post` (
-  `post_id` int NOT NULL,
-  `post_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_blog_post`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post` (
+  `post_id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `post_published` tinyint(1) NOT NULL,
   `post_comment_opened` tinyint(1) NOT NULL,
   `post_added_on` datetime NOT NULL,
   `post_published_on` datetime DEFAULT NULL,
   `post_updated_on` datetime NOT NULL,
-  `post_view_count` bigint NOT NULL,
-  `post_deleted` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `post_view_count` bigint(20) NOT NULL,
+  `post_deleted` tinyint(1) NOT NULL,
+  PRIMARY KEY (`post_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_blog_post`
@@ -395,15 +418,17 @@ INSERT INTO `tbl_blog_post` (`post_id`, `post_identifier`, `post_published`, `po
 -- Table structure for table `tbl_blog_post_categories`
 --
 
-CREATE TABLE `tbl_blog_post_categories` (
-  `bpcategory_id` int NOT NULL,
-  `bpcategory_identifier` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bpcategory_parent` int NOT NULL,
-  `bpcategory_order` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_blog_post_categories`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post_categories` (
+  `bpcategory_id` int(11) NOT NULL AUTO_INCREMENT,
+  `bpcategory_identifier` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bpcategory_parent` int(11) NOT NULL,
+  `bpcategory_order` int(11) NOT NULL,
   `bpcategory_featured` tinyint(1) NOT NULL,
   `bpcategory_active` tinyint(1) NOT NULL,
-  `bpcategory_deleted` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `bpcategory_deleted` tinyint(1) NOT NULL,
+  PRIMARY KEY (`bpcategory_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_blog_post_categories`
@@ -419,10 +444,12 @@ INSERT INTO `tbl_blog_post_categories` (`bpcategory_id`, `bpcategory_identifier`
 -- Table structure for table `tbl_blog_post_categories_lang`
 --
 
-CREATE TABLE `tbl_blog_post_categories_lang` (
-  `bpcategorylang_bpcategory_id` int NOT NULL,
-  `bpcategorylang_lang_id` int NOT NULL,
-  `bpcategory_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_blog_post_categories_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post_categories_lang` (
+  `bpcategorylang_bpcategory_id` int(11) NOT NULL,
+  `bpcategorylang_lang_id` int(11) NOT NULL,
+  `bpcategory_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`bpcategorylang_bpcategory_id`,`bpcategorylang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -441,18 +468,20 @@ INSERT INTO `tbl_blog_post_categories_lang` (`bpcategorylang_bpcategory_id`, `bp
 -- Table structure for table `tbl_blog_post_comments`
 --
 
-CREATE TABLE `tbl_blog_post_comments` (
-  `bpcomment_id` int NOT NULL,
-  `bpcomment_post_id` int NOT NULL,
-  `bpcomment_user_id` int NOT NULL,
-  `bpcomment_author_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bpcomment_author_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bpcomment_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_blog_post_comments`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post_comments` (
+  `bpcomment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `bpcomment_post_id` int(11) NOT NULL,
+  `bpcomment_user_id` int(11) NOT NULL,
+  `bpcomment_author_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bpcomment_author_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bpcomment_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `bpcomment_approved` tinyint(1) NOT NULL,
   `bpcomment_deleted` tinyint(1) NOT NULL,
   `bpcomment_added_on` datetime NOT NULL,
-  `bpcomment_user_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bpcomment_user_agent` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `bpcomment_user_ip` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bpcomment_user_agent` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`bpcomment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -461,13 +490,15 @@ CREATE TABLE `tbl_blog_post_comments` (
 -- Table structure for table `tbl_blog_post_lang`
 --
 
-CREATE TABLE `tbl_blog_post_lang` (
-  `postlang_post_id` int NOT NULL,
-  `postlang_lang_id` int NOT NULL,
-  `post_author_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_short_description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `post_description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_blog_post_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post_lang` (
+  `postlang_post_id` int(11) NOT NULL,
+  `postlang_lang_id` int(11) NOT NULL,
+  `post_author_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_short_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`postlang_post_id`,`postlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -486,9 +517,11 @@ INSERT INTO `tbl_blog_post_lang` (`postlang_post_id`, `postlang_lang_id`, `post_
 -- Table structure for table `tbl_blog_post_to_category`
 --
 
-CREATE TABLE `tbl_blog_post_to_category` (
-  `ptc_bpcategory_id` int NOT NULL,
-  `ptc_post_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_blog_post_to_category`;
+CREATE TABLE IF NOT EXISTS `tbl_blog_post_to_category` (
+  `ptc_bpcategory_id` int(11) NOT NULL,
+  `ptc_post_id` int(11) NOT NULL,
+  PRIMARY KEY (`ptc_bpcategory_id`,`ptc_post_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -505,14 +538,16 @@ INSERT INTO `tbl_blog_post_to_category` (`ptc_bpcategory_id`, `ptc_post_id`) VAL
 -- Table structure for table `tbl_commission_history`
 --
 
-CREATE TABLE `tbl_commission_history` (
-  `comhis_id` int NOT NULL,
-  `comhis_user_id` int DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_commission_history`;
+CREATE TABLE IF NOT EXISTS `tbl_commission_history` (
+  `comhis_id` int(11) NOT NULL AUTO_INCREMENT,
+  `comhis_user_id` int(11) DEFAULT NULL,
   `comhis_lessons` decimal(10,2) NOT NULL,
   `comhis_classes` double(10,2) NOT NULL,
   `comhis_courses` decimal(10,2) NOT NULL,
-  `comhis_created` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `comhis_created` datetime NOT NULL,
+  PRIMARY KEY (`comhis_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_commission_history`
@@ -527,10 +562,12 @@ INSERT INTO `tbl_commission_history` (`comhis_id`, `comhis_user_id`, `comhis_les
 -- Table structure for table `tbl_configurations`
 --
 
-CREATE TABLE `tbl_configurations` (
-  `conf_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `conf_val` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `conf_common` tinyint NOT NULL
+DROP TABLE IF EXISTS `tbl_configurations`;
+CREATE TABLE IF NOT EXISTS `tbl_configurations` (
+  `conf_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conf_val` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conf_common` tinyint(4) NOT NULL,
+  PRIMARY KEY (`conf_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -658,6 +695,7 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_WEBSITE_NAME_2', 'Yo!Coach', 0),
 ('CONF_WELCOME_EMAIL_REGISTRATION', '1', 0),
 ('CONF_YOCOACH_VERSION', 'RV-1.0.0(YoCoach RV-3.0)', 1),
+('CONF_ZOOM_FREE_MEETING_DURATION', '45', 0),
 ('FRONTEND_DATE_FORMAT', 'M d, Y', 0),
 ('MINIMUM_GIFT_CARD_AMOUNT', '10', 1),
 ('MINIMUM_WALLET_RECHARGE_AMOUNT', '99', 1);
@@ -668,12 +706,14 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 -- Table structure for table `tbl_content_pages`
 --
 
-CREATE TABLE `tbl_content_pages` (
-  `cpage_id` int NOT NULL,
-  `cpage_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cpage_layout` tinyint NOT NULL,
-  `cpage_deleted` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_content_pages`;
+CREATE TABLE IF NOT EXISTS `tbl_content_pages` (
+  `cpage_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cpage_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cpage_layout` tinyint(4) NOT NULL,
+  `cpage_deleted` tinyint(1) NOT NULL,
+  PRIMARY KEY (`cpage_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_content_pages`
@@ -690,23 +730,26 @@ INSERT INTO `tbl_content_pages` (`cpage_id`, `cpage_identifier`, `cpage_layout`,
 -- Table structure for table `tbl_content_pages_block_lang`
 --
 
-CREATE TABLE `tbl_content_pages_block_lang` (
-  `cpblocklang_id` int NOT NULL,
-  `cpblocklang_lang_id` int NOT NULL,
-  `cpblocklang_cpage_id` int NOT NULL,
-  `cpblocklang_block_id` int NOT NULL,
-  `cpblocklang_text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_content_pages_block_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_content_pages_block_lang` (
+  `cpblocklang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cpblocklang_lang_id` int(11) NOT NULL,
+  `cpblocklang_cpage_id` int(11) NOT NULL,
+  `cpblocklang_block_id` int(11) NOT NULL,
+  `cpblocklang_text` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`cpblocklang_id`),
+  UNIQUE KEY `cpblocklang_lang_id` (`cpblocklang_lang_id`,`cpblocklang_cpage_id`,`cpblocklang_block_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_content_pages_block_lang`
 --
 
 INSERT INTO `tbl_content_pages_block_lang` (`cpblocklang_id`, `cpblocklang_lang_id`, `cpblocklang_cpage_id`, `cpblocklang_block_id`, `cpblocklang_text`) VALUES
-(1, 1, 1, 1, '\r\n<section class=\"section\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<div class=\"main__title\">\r\n						<h2>It starts with<br />\r\n							Who We Are.</h2></div></div></div>\r\n			<div class=\"col-lg-7\">\r\n				<div class=\"who-we__content\">\r\n					<p>&nbsp;<span style=\"color: rgb(17, 17, 17); font-size: var(--font-size-h5); font-weight: 600;\">We build an organization to help people to learn online.</span></p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">Yo!Coach is a self-hosted solution that helps entrepreneurs to launch online tutoring and consultation platforms where multiple tutors or consultants can register and deliver one-to-one or group online sessions to learners. It is a highly scalable and fully customizable solution to meet the business requirements of the users. The solution is pre-integrated with Cometchat, Lesson Space, and Zoom to support features such as video chat, Whiteboard, Textpad, code editor, multiple screen sharing, etc. which improves the interaction between tutor and learner during an online session.</p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">For seamless payment transactions, Yo!Coach is integrated with secured payment gateways like Paypal, Authorize.net, Stripe, Paystack, PayGate, 2Checkout/2CO. It is a complete solution with robust functionalities and essential features that guarantee high performance and competitive results. In addition to this, Yo!Coach is also available as PWA</p></div></div></div></div></section>\r\n<section class=\"section section--value\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row flex-lg-nowrap\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"panel-left\">\r\n					<h6 class=\"small-title\">Our Core Values</h6>\r\n					<h2>We love clients who<br />\r\n						understand our values</h2>\r\n					<div class=\"slider-nav\">\r\n						<button type=\"button\" class=\"prev-slide\" aria-label=\"Previous\"></button>&nbsp;\r\n						<button type=\"button\" class=\"next-slide\" aria-label=\"Next\"></button></div></div></div>\r\n			<div class=\"col-lg-12\">\r\n				<div class=\"panel-right\">\r\n					<div class=\"slider slider--value slider--onehalf slider-onehalf-js\">\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>01</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>Every solution was taking too much time with nothing less than 6 - 8 months, and it was time we did not have. That\'s when Wale found FATbit\'s Yo!Coach. We explored our vision around what Yo!Coach had to offer, and to our surprise, it fit exactly what we had in mind, and we had a live demo of Yo!Coach. We took the chance of picking up a solution to run our vision on, and we haven\'t regretted it any bit. So far, it\'s been a good one for the team.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Mr. Chin Wei Seong</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WTutors</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>02</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>We are a brick-and-mortar physical location language school franchise. Once the COVID-19 shut down happened we needed to move online. Yo!Coach provides a very modern platform for us to execute not only language learning but all types of learning.</p>\r\n										<p>&nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-Ray D Angelo</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Portal Teach</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>03</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>My journey with FATbit has been a long one. It took hours and patience to get the website done and to the exact expectations I asked for. FATbit never gives up, they always deliver what they say no matter how much overtime they spend on the project and customer. My developer Eddie, my sales contact Kesa went over and above the call of duty to stay on top of this project. End result; A beautiful and powerfully functional site that will change the world’s way of learning a new language. Thank you FATbit.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Kelly</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WeYakYak</p></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--mission\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-5 col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<h6 class=\"small-title\">Our mission &amp; Vision</h6>\r\n					<div class=\"main__title\">\r\n						<h2>Get to know about our<br />\r\n							mission and vision</h2></div><a href=\"https://yocoach3.bestech.4qcteam.com/contact\" class=\"btn btn--primary\">Contact Us</a></div></div>\r\n			<div class=\"col-md-7 col-lg-7\">\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025272-mission.png\" alt=\"Our Mission\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Mission</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Our mission is to help entrepreneurs and tutors set up their own online tutoring platforms like Verbling, Preply, and Cambly. We help them reach the pinnacle of their career by enabling them to launch their own tutoring platform using our readymade solution.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025364-vision.png\" alt=\"our Inspiration &amp; Vision\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Inspiration &amp; Vison</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>We, being the leaders and industry experts, provide our turnkey edtech solution, to help entrepreneurs to start their tutoring businesses. Our aim is to offer an easy and hassle-free process for them to enter the market and become a pioneer.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025272-mission.png\" alt=\"Our Goal\" /></div>\r\n						<h4>Our Goal</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus Temporibus autem.</p></div></div></div></div></div></section>\r\n<section class=\"section section--team\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"team\">\r\n			<div class=\"team__head\">\r\n				<div class=\"row\">\r\n					<div class=\"col-lg-5\">\r\n						<div class=\"primary-content\">\r\n							<h6 class=\"small-title\">People</h6>\r\n							<div class=\"main__title\">\r\n								<h2>Meet our team<br />\r\n									of experts</h2></div></div></div>\r\n					<div class=\"col-lg-7\">\r\n						<p class=\"team-content\">Our highly knowledgeable and experienced team members have a creative, collaborative, and committed nature which enables Yo!Coach to be a highly effective company.</p></div></div></div>\r\n			<div class=\"team__body\">\r\n				<div class=\"row\">\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349417-ceo364x364.png\" alt=\"Stephen Fleming CEO &amp; Founder\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Stephen Fleming</h6>\r\n								<p>CEO &amp; Founder</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349567-marketinghead364x3641.png\" alt=\"Nathan Astle Sales Marketing Head\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Nathan Astle</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349739-creativedirector364x3642.png\" alt=\"James Anderson Creative Director\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>James Anderson</h6>\r\n								<p>Creative Director</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349751-techlead364x3643.png\" alt=\"Mark Boucher\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Mark Boucher</h6>\r\n								<p>Tech Lead</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349756-saleshead364x3644.png\" alt=\"Steve Waugh\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Steve Waugh</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349761-creativedirector2364x3645.png\" alt=\"Damien Martyn\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Damien Martyn</h6>\r\n								<p>Creative Director</p></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--step\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>How to start learning with Yo!Coach?</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"step-wrapper\">\r\n				<div class=\"step-container__head\">\r\n					<div class=\"step-tabs slider-tabs--js\">\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">01.&nbsp;</span><span class=\"slider-tabs__label\">Search</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">02.&nbsp;</span><span class=\"slider-tabs__label\">Book</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">03.&nbsp;</span><span class=\"slider-tabs__label\">Learn</span></button></div></div></div>\r\n				<div class=\"step-container__body\">\r\n					<div class=\"step-slider step-slider-js\">\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021362-search.png\" alt=\"Search through hundreds of best teachers\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Search through hundreds of best teachers</h3>\r\n											<p>Use filters like price, language, proficiency, subject, location, to search for your preferred teacher</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a data-src=\"https://www.youtube.com/embed/q_Fy8DceWZM?autoplay=1\" class=\"btn-video play-video\">&nbsp;\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021522-Book.png\" alt=\"Book lessons with the best teacher for you\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Book lessons with the best teacher for you</h3>\r\n											<p>Go through the teacher’s profile and book a lesson after making the payment.</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021648-learn.png\" alt=\"Log in to Rtist and Start learning\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Log in to Start learning</h3>\r\n											<p>Attend online lessons and start learning.</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div>\r\n											<div class=\"step__actions\"><br />\r\n												</div></div></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--achievement\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351210-translater.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">130 +</h3>\r\n						<p>Languages Available to Learn</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351215-teacher.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">10,000+</h3>\r\n						<p>Teachers From 120 Countries</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351220-learner.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">5,000,000+</h3>\r\n						<p>Learners From 180 Countries</p></div></div></div></div></div></section>  '),
+(1, 1, 1, 1, '\r\n<section class=\"section\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<div class=\"main__title\">\r\n						<h2>It starts with<br />\r\n							Who We Are.</h2></div></div></div>\r\n			<div class=\"col-lg-7\">\r\n				<div class=\"who-we__content\">\r\n					<p>&nbsp;<span style=\"color: rgb(17, 17, 17); font-size: var(--font-size-h5); font-weight: 600;\">We build an organization to help people to learn online.</span></p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">Yo!Coach is a self-hosted solution that helps entrepreneurs to launch online tutoring and consultation platforms where multiple tutors or consultants can register and deliver one-to-one or group online sessions to learners. It is a highly scalable and fully customizable solution to meet the business requirements of the users. The solution is pre-integrated with Cometchat, Lesson Space, and Zoom to support features such as video chat, Whiteboard, Textpad, code editor, multiple screen sharing, etc. which improves the interaction between tutor and learner during an online session.</p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">For seamless payment transactions, Yo!Coach is integrated with secured payment gateways like Paypal, Authorize.net, Stripe, Paystack, PayGate, 2Checkout/2CO. It is a complete solution with robust functionalities and essential features that guarantee high performance and competitive results. In addition to this, Yo!Coach is also available as PWA</p></div></div></div></div></section>\r\n<section class=\"section section--value\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row flex-lg-nowrap\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"panel-left\">\r\n					<h6 class=\"small-title\">Our Core Values</h6>\r\n					<h2>We love clients who<br />\r\n						understand our values</h2>\r\n					<div class=\"slider-nav\">\r\n						<button type=\"button\" class=\"prev-slide\" aria-label=\"Previous\"></button>&nbsp;\r\n						<button type=\"button\" class=\"next-slide\" aria-label=\"Next\"></button></div></div></div>\r\n			<div class=\"col-lg-12\">\r\n				<div class=\"panel-right\">\r\n					<div class=\"slider slider--value slider--onehalf slider-onehalf-js\">\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>01</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>Every solution was taking too much time with nothing less than 6 - 8 months, and it was time we did not have. That\'s when Wale found FATbit\'s Yo!Coach. We explored our vision around what Yo!Coach had to offer, and to our surprise, it fit exactly what we had in mind, and we had a live demo of Yo!Coach. We took the chance of picking up a solution to run our vision on, and we haven\'t regretted it any bit. So far, it\'s been a good one for the team.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Mr. Chin Wei Seong</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WTutors</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>02</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>We are a brick-and-mortar physical location language school franchise. Once the COVID-19 shut down happened we needed to move online. Yo!Coach provides a very modern platform for us to execute not only language learning but all types of learning.</p>\r\n										<p>&nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-Ray D Angelo</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Portal Teach</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>03</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>My journey with FATbit has been a long one. It took hours and patience to get the website done and to the exact expectations I asked for. FATbit never gives up, they always deliver what they say no matter how much overtime they spend on the project and customer. My developer Eddie, my sales contact Kesa went over and above the call of duty to stay on top of this project. End result; A beautiful and powerfully functional site that will change the world’s way of learning a new language. Thank you FATbit.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Kelly</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WeYakYak</p></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--mission\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-5 col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<h6 class=\"small-title\">Our mission &amp; Vision</h6>\r\n					<div class=\"main__title\">\r\n						<h2>Get to know about our<br />\r\n							mission and vision</h2></div><a href=\"https://yocoach3.bestech.4qcteam.com/contact\" class=\"btn btn--primary\">Contact Us</a></div></div>\r\n			<div class=\"col-md-7 col-lg-7\">\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025272-mission.png\" alt=\"Our Mission\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Mission</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Our mission is to help entrepreneurs and tutors set up their own online tutoring platforms like Verbling, Preply, and Cambly. We help them reach the pinnacle of their career by enabling them to launch their own tutoring platform using our readymade solution.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025364-vision.png\" alt=\"our Inspiration &amp; Vision\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Inspiration &amp; Vison</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>We, being the leaders and industry experts, provide our turnkey edtech solution, to help entrepreneurs to start their tutoring businesses. Our aim is to offer an easy and hassle-free process for them to enter the market and become a pioneer.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025272-mission.png\" alt=\"Our Goal\" /></div>\r\n						<h4>Our Goal</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus Temporibus autem.</p></div></div></div></div></div></section>\r\n<section class=\"section section--team\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"team\">\r\n			<div class=\"team__head\">\r\n				<div class=\"row\">\r\n					<div class=\"col-lg-5\">\r\n						<div class=\"primary-content\">\r\n							<h6 class=\"small-title\">People</h6>\r\n							<div class=\"main__title\">\r\n								<h2>Meet our team<br />\r\n									of experts</h2></div></div></div>\r\n					<div class=\"col-lg-7\">\r\n						<p class=\"team-content\">Our highly knowledgeable and experienced team members have a creative, collaborative, and committed nature which enables Yo!Coach to be a highly effective company.</p></div></div></div>\r\n			<div class=\"team__body\">\r\n				<div class=\"row\">\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349417-ceo364x364.png\" alt=\"Stephen Fleming CEO &amp; Founder\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Stephen Fleming</h6>\r\n								<p>CEO &amp; Founder</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349567-marketinghead364x3641.png\" alt=\"Nathan Astle Sales Marketing Head\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Nathan Astle</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349739-creativedirector364x3642.png\" alt=\"James Anderson Creative Director\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>James Anderson</h6>\r\n								<p>Creative Director</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349751-techlead364x3643.png\" alt=\"Mark Boucher\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Mark Boucher</h6>\r\n								<p>Tech Lead</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349756-saleshead364x3644.png\" alt=\"Steve Waugh\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Steve Waugh</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349761-creativedirector2364x3645.png\" alt=\"Damien Martyn\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Damien Martyn</h6>\r\n								<p>Creative Director</p></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--step\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>How to start learning with Yo!Coach?</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"step-wrapper\">\r\n				<div class=\"step-container__head\">\r\n					<div class=\"step-tabs slider-tabs--js\">\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">01.&nbsp;</span><span class=\"slider-tabs__label\">Search</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">02.&nbsp;</span><span class=\"slider-tabs__label\">Book</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">03.&nbsp;</span><span class=\"slider-tabs__label\">Learn</span></button></div></div></div>\r\n				<div class=\"step-container__body\">\r\n					<div class=\"step-slider step-slider-js\">\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021362-search.png\" alt=\"Search through hundreds of best teachers\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Search through hundreds of best teachers</h3>\r\n											<p>Use filters like price, language, proficiency, subject, location, to search for your preferred teacher</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a data-src=\"https://www.youtube.com/embed/q_Fy8DceWZM?autoplay=1\" class=\"btn-video play-video\">&nbsp;\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021522-Book.png\" alt=\"Book lessons with the best teacher for you\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Book lessons with the best teacher for you</h3>\r\n											<p>Go through the teacher’s profile and book a lesson after making the payment.</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"/teachers#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021648-learn.png\" alt=\"Log in to Rtist and Start learning\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Log in to Start learning</h3>\r\n											<p>Attend online lessons and start learning.</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"/teachers#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div>\r\n											<div class=\"step__actions\"><br />\r\n												</div></div></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--achievement\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351210-translater.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">130 +</h3>\r\n						<p>Languages Available to Learn</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351215-teacher.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">10,000+</h3>\r\n						<p>Teachers From 120 Countries</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351220-learner.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">5,000,000+</h3>\r\n						<p>Learners From 180 Countries</p></div></div></div></div></div></section>  '),
 (2, 1, 1, 2, ''),
 (3, 1, 1, 3, ''),
-(4, 2, 1, 1, '\r\n<section class=\"section\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<div class=\"main__title\">\r\n						<h2>It starts with<br />\r\n							Who We Are.</h2></div></div></div>\r\n			<div class=\"col-lg-7\">\r\n				<div class=\"who-we__content\">\r\n					<p>&nbsp;<span style=\"color: rgb(17, 17, 17); font-size: var(--font-size-h5); font-weight: 600;\">We build a organization to help people to learn online.</span></p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">Yo!Coach is a self-hosted solution that helps entrepreneurs to launch online tutoring and consultation platforms where multiple tutors or consultants can register and deliver one-to-one or group online sessions to learners. It is a highly scalable and fully customizable solution to meet the business requirements of the users. The solution is pre-integrated with Cometchat, Lesson Space, and Zoom to support features such as video chat, Whiteboard, Textpad, code editor, multiple screen sharing, etc. which improves the interaction between tutor and learner during an online session.</p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">For seamless payment transactions, Yo!Coach is integrated with secured payment gateways like Paypal, Authorize.net, Stripe, Paystack, PayGate, 2Checkout/2CO. It is a complete solution with robust functionalities and essential features that guarantee high performance and competitive results. In addition to this, Yo!Coach is also available as PWA</p></div></div></div></div></section>\r\n<section class=\"section section--value\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row flex-lg-nowrap\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"panel-left\">\r\n					<h6 class=\"small-title\">Our Core Values</h6>\r\n					<h2>We love clients who<br />\r\n						understand our values</h2>\r\n					<div class=\"slider-nav\">\r\n						<button type=\"button\" class=\"prev-slide\" aria-label=\"Previous\"></button>&nbsp;\r\n						<button type=\"button\" class=\"next-slide\" aria-label=\"Next\"></button></div></div></div>\r\n			<div class=\"col-lg-12\">\r\n				<div class=\"panel-right\">\r\n					<div class=\"slider slider--value slider--onehalf slider-onehalf-js\">\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>01</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>Every solution was taking too much time with nothing less than 6 - 8 months, and it was time we did not have. That\'s when Wale found FATbit\'s Yo!Coach. We explored our vision around what Yo!Coach had to offer, and to our surprise, it fit exactly what we had in mind, and we had a live demo of Yo!Coach. We took the chance of picking up a solution to run our vision on, and we haven\'t regretted it any bit. So far, it\'s been a good one for the team.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Mr. Chin Wei Seong</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WTutors</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>02</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>We are a brick-and-mortar physical location language school franchise. Once the COVID-19 shut down happened we needed to move online. Yo!Coach provides a very modern platform for us to execute not only language learning but all types of learning.</p>\r\n										<p>&nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-Ray D Angelo</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Portal Teach</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>03</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>My journey with FATbit has been a long one. It took hours and patience to get the website done and to the exact expectations I asked for. FATbit never gives up, they always deliver what they say no matter how much overtime they spend on the project and customer. My developer Eddie, my sales contact Kesa went over and above the call of duty to stay on top of this project. End result; A beautiful and powerfully functional site that will change the world’s way of learning a new language. Thank you FATbit.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Kelly</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WeYakYak</p></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--mission\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-5 col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<h6 class=\"small-title\">Our mission &amp; Vision</h6>\r\n					<div class=\"main__title\">\r\n						<h2>Get to know about our<br />\r\n							mission and vision</h2></div><a href=\"https://yocoach3.bestech.4qcteam.com/contact\" class=\"btn btn--primary\">Contact Us</a></div></div>\r\n			<div class=\"col-md-7 col-lg-7\">\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025272-mission.png\" alt=\"Our Mission\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Mission</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Our mission is to help entrepreneurs and tutors set up their own online tutoring platforms like Verbling, Preply, and Cambly. We help them reach the pinnacle of their career by enabling them to launch their own tutoring platform using our readymade solution.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025364-vision.png\" alt=\"our Inspiration &amp; Vision\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Inspiration &amp; Vison</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>We, being the leaders and industry experts, provide our turnkey edtech solution, to help entrepreneurs to start their tutoring businesses. Our aim is to offer an easy and hassle-free process for them to enter the market and become a pioneer.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025272-mission.png\" alt=\"Our Goal\" /></div>\r\n						<h4>Our Goal</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus Temporibus autem.</p></div></div></div></div></div></section>\r\n<section class=\"section section--team\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"team\">\r\n			<div class=\"team__head\">\r\n				<div class=\"row\">\r\n					<div class=\"col-lg-5\">\r\n						<div class=\"primary-content\">\r\n							<h6 class=\"small-title\">People</h6>\r\n							<div class=\"main__title\">\r\n								<h2>Meet our team<br />\r\n									of experts</h2></div></div></div>\r\n					<div class=\"col-lg-7\">\r\n						<p class=\"team-content\">Our highly knowledgeable and experienced team members have a creative, collaborative, and committed nature which enables Yo!Coach to be a highly effective company.</p></div></div></div>\r\n			<div class=\"team__body\">\r\n				<div class=\"row\">\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349417-ceo364x364.png\" alt=\"Stephen Fleming CEO &amp; Founder\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Stephen Fleming</h6>\r\n								<p>CEO &amp; Founder</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349567-marketinghead364x3641.png\" alt=\"Nathan Astle Sales Marketing Head\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Nathan Astle</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349739-creativedirector364x3642.png\" alt=\"James Anderson Creative Director\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>James Anderson</h6>\r\n								<p>Creative Director</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349751-techlead364x3643.png\" alt=\"Mark Boucher\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Mark Boucher</h6>\r\n								<p>Tech Lead</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349756-saleshead364x3644.png\" alt=\"Steve Waugh\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Steve Waugh</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349761-creativedirector2364x3645.png\" alt=\"Damien Martyn\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Damien Martyn</h6>\r\n								<p>Creative Director</p></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--step\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>How to start learning with Yo!Coach?</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"step-wrapper\">\r\n				<div class=\"step-container__head\">\r\n					<div class=\"step-tabs slider-tabs--js\">\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">01.&nbsp;</span><span class=\"slider-tabs__label\">Search</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">02.&nbsp;</span><span class=\"slider-tabs__label\">Book</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">03.&nbsp;</span><span class=\"slider-tabs__label\">Learn</span></button></div></div></div>\r\n				<div class=\"step-container__body\">\r\n					<div class=\"step-slider step-slider-js\">\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021362-search.png\" alt=\"Search through hundreds of best teachers\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Search through hundreds of best teachers</h3>\r\n											<p>Use filters like price, language, proficiency, subject, location, to search for your preferred teacher</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a data-src=\"https://www.youtube.com/embed/q_Fy8DceWZM?autoplay=1\" class=\"btn-video play-video\">&nbsp;\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021522-Book.png\" alt=\"Book lessons with the best teacher for you\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Book lessons with the best teacher for you</h3>\r\n											<p>Go through the teacher’s profile and book a lesson after making the payment.</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021648-learn.png\" alt=\"Log in to Rtist and Start learning\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Log in to Start learning</h3>\r\n											<p>Attend online lessons and start learning.</p>\r\n											<div class=\"step__actions\"><a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"https://yocoach3.bestech.4qcteam.com/admin/content-pages#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div>\r\n											<div class=\"step__actions\"><br />\r\n												</div></div></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--achievement\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351210-translater.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">130 +</h3>\r\n						<p>Languages Available to Learn</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351215-teacher.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">10,000+</h3>\r\n						<p>Teachers From 120 Countries</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351220-learner.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">5,000,000+</h3>\r\n						<p>Learners From 180 Countries</p></div></div></div></div></div></section>'),
+(4, 2, 1, 1, '\r\n<section class=\"section\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<div class=\"main__title\">\r\n						<h2>It starts with<br />\r\n							Who We Are.</h2></div></div></div>\r\n			<div class=\"col-lg-7\">\r\n				<div class=\"who-we__content\">\r\n					<p>&nbsp;<span style=\"color: rgb(17, 17, 17); font-size: var(--font-size-h5); font-weight: 600;\">We build a organization to help people to learn online.</span></p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">Yo!Coach is a self-hosted solution that helps entrepreneurs to launch online tutoring and consultation platforms where multiple tutors or consultants can register and deliver one-to-one or group online sessions to learners. It is a highly scalable and fully customizable solution to meet the business requirements of the users. The solution is pre-integrated with Cometchat, Lesson Space, and Zoom to support features such as video chat, Whiteboard, Textpad, code editor, multiple screen sharing, etc. which improves the interaction between tutor and learner during an online session.</p>\r\n					<p open=\"\" sans\";=\"\" background-color:=\"\" rgb(255,=\"\" 255,=\"\" 255);\"=\"\" style=\"box-sizing: border-box; outline: 0px; margin-top: 0px; margin-bottom: var(--margin-8); line-height: 36px; color: rgb(17, 17, 17); font-size: var(--font-size-medium);\">For seamless payment transactions, Yo!Coach is integrated with secured payment gateways like Paypal, Authorize.net, Stripe, Paystack, PayGate, 2Checkout/2CO. It is a complete solution with robust functionalities and essential features that guarantee high performance and competitive results. In addition to this, Yo!Coach is also available as PWA</p></div></div></div></div></section>\r\n<section class=\"section section--value\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row flex-lg-nowrap\">\r\n			<div class=\"col-lg-5\">\r\n				<div class=\"panel-left\">\r\n					<h6 class=\"small-title\">Our Core Values</h6>\r\n					<h2>We love clients who<br />\r\n						understand our values</h2>\r\n					<div class=\"slider-nav\">\r\n						<button type=\"button\" class=\"prev-slide\" aria-label=\"Previous\"></button>&nbsp;\r\n						<button type=\"button\" class=\"next-slide\" aria-label=\"Next\"></button></div></div></div>\r\n			<div class=\"col-lg-12\">\r\n				<div class=\"panel-right\">\r\n					<div class=\"slider slider--value slider--onehalf slider-onehalf-js\">\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>01</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>Every solution was taking too much time with nothing less than 6 - 8 months, and it was time we did not have. That\'s when Wale found FATbit\'s Yo!Coach. We explored our vision around what Yo!Coach had to offer, and to our surprise, it fit exactly what we had in mind, and we had a live demo of Yo!Coach. We took the chance of picking up a solution to run our vision on, and we haven\'t regretted it any bit. So far, it\'s been a good one for the team.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Mr. Chin Wei Seong</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WTutors</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>02</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>We are a brick-and-mortar physical location language school franchise. Once the COVID-19 shut down happened we needed to move online. Yo!Coach provides a very modern platform for us to execute not only language learning but all types of learning.</p>\r\n										<p>&nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-Ray D Angelo</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Portal Teach</p></div></div></div></div>\r\n						<div>\r\n							<div class=\"slider__item\">\r\n								<div class=\"slide-box\">\r\n									<div class=\"slide-box__head\">\r\n										<div class=\"count__box\">\r\n											<h2>03</h2></div>\r\n										<div class=\"slide-box__title\">\r\n											<h5>Words of Appreciation</h5></div></div>\r\n									<div class=\"slide-box__body\">\r\n										<p>My journey with FATbit has been a long one. It took hours and patience to get the website done and to the exact expectations I asked for. FATbit never gives up, they always deliver what they say no matter how much overtime they spend on the project and customer. My developer Eddie, my sales contact Kesa went over and above the call of duty to stay on top of this project. End result; A beautiful and powerfully functional site that will change the world’s way of learning a new language. Thank you FATbit.</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -Kelly</p>\r\n										<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;WeYakYak</p></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--mission\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-5 col-lg-5\">\r\n				<div class=\"primary-content\">\r\n					<h6 class=\"small-title\">Our mission &amp; Vision</h6>\r\n					<div class=\"main__title\">\r\n						<h2>Get to know about our<br />\r\n							mission and vision</h2></div><a href=\"https://yocoach3.bestech.4qcteam.com/contact\" class=\"btn btn--primary\">Contact Us</a></div></div>\r\n			<div class=\"col-md-7 col-lg-7\">\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025272-mission.png\" alt=\"Our Mission\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Mission</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Our mission is to help entrepreneurs and tutors set up their own online tutoring platforms like Verbling, Preply, and Cambly. We help them reach the pinnacle of their career by enabling them to launch their own tutoring platform using our readymade solution.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025364-vision.png\" alt=\"our Inspiration &amp; Vision\" /></div>\r\n						<h4><br />\r\n							</h4>\r\n						<h4>Our Inspiration &amp; Vison</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>We, being the leaders and industry experts, provide our turnkey edtech solution, to help entrepreneurs to start their tutoring businesses. Our aim is to offer an easy and hassle-free process for them to enter the market and become a pioneer.</p></div></div>\r\n				<div class=\"mission\">\r\n					<div class=\"mission__head\">\r\n						<div class=\"mission__media\"><img src=\"image/editor-image/1650025272-mission.png\" alt=\"Our Goal\" /></div>\r\n						<h4>Our Goal</h4></div>\r\n					<div class=\"mission__body\">\r\n						<p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus Temporibus autem.</p></div></div></div></div></div></section>\r\n<section class=\"section section--team\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"team\">\r\n			<div class=\"team__head\">\r\n				<div class=\"row\">\r\n					<div class=\"col-lg-5\">\r\n						<div class=\"primary-content\">\r\n							<h6 class=\"small-title\">People</h6>\r\n							<div class=\"main__title\">\r\n								<h2>Meet our team<br />\r\n									of experts</h2></div></div></div>\r\n					<div class=\"col-lg-7\">\r\n						<p class=\"team-content\">Our highly knowledgeable and experienced team members have a creative, collaborative, and committed nature which enables Yo!Coach to be a highly effective company.</p></div></div></div>\r\n			<div class=\"team__body\">\r\n				<div class=\"row\">\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349417-ceo364x364.png\" alt=\"Stephen Fleming CEO &amp; Founder\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Stephen Fleming</h6>\r\n								<p>CEO &amp; Founder</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349567-marketinghead364x3641.png\" alt=\"Nathan Astle Sales Marketing Head\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Nathan Astle</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349739-creativedirector364x3642.png\" alt=\"James Anderson Creative Director\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>James Anderson</h6>\r\n								<p>Creative Director</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349751-techlead364x3643.png\" alt=\"Mark Boucher\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Mark Boucher</h6>\r\n								<p>Tech Lead</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349756-saleshead364x3644.png\" alt=\"Steve Waugh\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Steve Waugh</h6>\r\n								<p>Sales/Marketing Head</p></div></div></div>\r\n					<div class=\"col-sm-6 col-lg-4\">\r\n						<div class=\"tile\">\r\n							<div class=\"tile__head\">\r\n								<div class=\"tile__media \"><img src=\"image/editor-image/1650349761-creativedirector2364x3645.png\" alt=\"Damien Martyn\" /></div></div>\r\n							<div class=\"tile__body\">\r\n								<h6>Damien Martyn</h6>\r\n								<p>Creative Director</p></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--step\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>How to start learning with Yo!Coach?</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"step-wrapper\">\r\n				<div class=\"step-container__head\">\r\n					<div class=\"step-tabs slider-tabs--js\">\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">01.&nbsp;</span><span class=\"slider-tabs__label\">Search</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">02.&nbsp;</span><span class=\"slider-tabs__label\">Book</span></button></div>\r\n						<div>\r\n							<button class=\"slider-tabs__action\"><span class=\"slider-tabs__number\">03.&nbsp;</span><span class=\"slider-tabs__label\">Learn</span></button></div></div></div>\r\n				<div class=\"step-container__body\">\r\n					<div class=\"step-slider step-slider-js\">\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021362-search.png\" alt=\"Search through hundreds of best teachers\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Search through hundreds of best teachers</h3>\r\n											<p>Use filters like price, language, proficiency, subject, location, to search for your preferred teacher</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a data-src=\"https://www.youtube.com/embed/q_Fy8DceWZM?autoplay=1\" class=\"btn-video play-video\">&nbsp;\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021522-Book.png\" alt=\"Book lessons with the best teacher for you\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Book lessons with the best teacher for you</h3>\r\n											<p>Go through the teacher’s profile and book a lesson after making the payment.</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"/teachers#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div></div></div></div></div></div>\r\n						<div>\r\n							<div class=\"step\">\r\n								<div class=\"row \">\r\n									<div class=\"col-md-6 col-lg-5 col-xl-6\">\r\n										<div class=\"step__inner\">\r\n											<div class=\"step__media\"><img src=\"image/editor-image/1650021648-learn.png\" alt=\"Log in to Rtist and Start learning\" /></div></div></div>\r\n									<div class=\"col-md-6 col-lg-7 col-xl-6\">\r\n										<div class=\"step__content\">\r\n											<h3>&nbsp;</h3>\r\n											<h3>Log in to Start learning</h3>\r\n											<p>Attend online lessons and start learning.</p>\r\n											<div class=\"step__actions\"><a href=\"/teachers#\" class=\"btn btn--primary\">Browse Tutors</a>&nbsp;<a href=\"/teachers#\" class=\"btn-video\">\r\n													<svg class=\"icon icon--play\">\r\n														<use xlink:href=\"images/sprite.yo-coach.svg#play\"></use></svg>&nbsp;Watch Video</a></div>\r\n											<div class=\"step__actions\"><br />\r\n												</div></div></div></div></div></div></div></div></div></div></div></section>\r\n<section class=\"section section--achievement\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"row\">\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351210-translater.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">130 +</h3>\r\n						<p>Languages Available to Learn</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351215-teacher.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">10,000+</h3>\r\n						<p>Teachers From 120 Countries</p></div></div></div>\r\n			<div class=\"col-md-4\">\r\n				<div class=\"box\">\r\n					<div class=\"box__head\">\r\n						<div class=\"achievement-media\"><img src=\"image/editor-image/1650351220-learner.png\" alt=\"Image\" /></div></div>\r\n					<div class=\"box__body\">\r\n						<h3 class=\"achievement-title\">5,000,000+</h3>\r\n						<p>Learners From 180 Countries</p></div></div></div></div></div></section>'),
 (5, 2, 1, 2, '\r\n');
 
 -- --------------------------------------------------------
@@ -715,13 +758,15 @@ INSERT INTO `tbl_content_pages_block_lang` (`cpblocklang_id`, `cpblocklang_lang_
 -- Table structure for table `tbl_content_pages_lang`
 --
 
-CREATE TABLE `tbl_content_pages_lang` (
-  `cpagelang_cpage_id` int NOT NULL,
-  `cpagelang_lang_id` int NOT NULL,
-  `cpage_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cpage_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cpage_image_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cpage_image_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_content_pages_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_content_pages_lang` (
+  `cpagelang_cpage_id` int(11) NOT NULL,
+  `cpagelang_lang_id` int(11) NOT NULL,
+  `cpage_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cpage_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cpage_image_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cpage_image_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`cpagelang_cpage_id`,`cpagelang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -746,13 +791,16 @@ INSERT INTO `tbl_content_pages_lang` (`cpagelang_cpage_id`, `cpagelang_lang_id`,
 -- Table structure for table `tbl_countries`
 --
 
-CREATE TABLE `tbl_countries` (
-  `country_id` int UNSIGNED NOT NULL,
-  `country_code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country_dial_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_countries`;
+CREATE TABLE IF NOT EXISTS `tbl_countries` (
+  `country_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `country_code` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_dial_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`country_id`),
+  UNIQUE KEY `country_code` (`country_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_countries`
@@ -962,10 +1010,13 @@ INSERT INTO `tbl_countries` (`country_id`, `country_code`, `country_identifier`,
 -- Table structure for table `tbl_countries_lang`
 --
 
-CREATE TABLE `tbl_countries_lang` (
-  `countrylang_country_id` int NOT NULL,
-  `countrylang_lang_id` int NOT NULL,
-  `country_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_countries_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_countries_lang` (
+  `countrylang_country_id` int(11) NOT NULL,
+  `countrylang_lang_id` int(11) NOT NULL,
+  `country_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`countrylang_country_id`,`countrylang_lang_id`),
+  UNIQUE KEY `countrylang_lang_id` (`countrylang_lang_id`,`country_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1176,24 +1227,26 @@ INSERT INTO `tbl_countries_lang` (`countrylang_country_id`, `countrylang_lang_id
 -- Table structure for table `tbl_coupons`
 --
 
-CREATE TABLE `tbl_coupons` (
-  `coupon_id` int NOT NULL,
-  `coupon_identifier` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `coupon_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `coupon_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_coupons`;
+CREATE TABLE IF NOT EXISTS `tbl_coupons` (
+  `coupon_id` int(11) NOT NULL AUTO_INCREMENT,
+  `coupon_identifier` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `coupon_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `coupon_user_id` int(11) NOT NULL,
   `coupon_min_order` decimal(10,2) NOT NULL,
   `coupon_max_discount` decimal(10,2) NOT NULL,
-  `coupon_discount_type` int NOT NULL,
+  `coupon_discount_type` int(11) NOT NULL,
   `coupon_discount_value` decimal(10,2) DEFAULT NULL,
-  `coupon_max_uses` int NOT NULL,
-  `coupon_user_uses` int NOT NULL,
-  `coupon_used_uses` int NOT NULL,
+  `coupon_max_uses` int(11) NOT NULL,
+  `coupon_user_uses` int(11) NOT NULL,
+  `coupon_used_uses` int(11) NOT NULL,
   `coupon_start_date` date NOT NULL,
   `coupon_end_date` date NOT NULL,
   `coupon_active` tinyint(1) NOT NULL,
   `coupon_created` datetime NOT NULL,
   `coupon_updated` datetime DEFAULT NULL,
-  `coupon_deleted` datetime DEFAULT NULL
+  PRIMARY KEY (`coupon_id`),
+  UNIQUE KEY `coupon_code` (`coupon_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1202,13 +1255,16 @@ CREATE TABLE `tbl_coupons` (
 -- Table structure for table `tbl_coupons_history`
 --
 
-CREATE TABLE `tbl_coupons_history` (
-  `couhis_id` int NOT NULL,
-  `couhis_order_id` int NOT NULL,
-  `couhis_coupon_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_coupons_history`;
+CREATE TABLE IF NOT EXISTS `tbl_coupons_history` (
+  `couhis_id` int(11) NOT NULL AUTO_INCREMENT,
+  `couhis_order_id` int(11) NOT NULL,
+  `couhis_coupon_id` int(11) NOT NULL,
   `couhis_coupon` json DEFAULT NULL,
   `couhis_created` datetime NOT NULL,
-  `couhis_released` datetime DEFAULT NULL
+  `couhis_released` datetime DEFAULT NULL,
+  PRIMARY KEY (`couhis_id`),
+  UNIQUE KEY `couhis_order_id` (`couhis_order_id`,`couhis_coupon_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1217,11 +1273,13 @@ CREATE TABLE `tbl_coupons_history` (
 -- Table structure for table `tbl_coupons_lang`
 --
 
-CREATE TABLE `tbl_coupons_lang` (
-  `couponlang_coupon_id` int NOT NULL,
-  `couponlang_lang_id` int NOT NULL,
-  `coupon_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `coupon_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_coupons_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_coupons_lang` (
+  `couponlang_coupon_id` int(11) NOT NULL,
+  `couponlang_lang_id` int(11) NOT NULL,
+  `coupon_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `coupon_description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`couponlang_coupon_id`,`couponlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1230,12 +1288,15 @@ CREATE TABLE `tbl_coupons_lang` (
 -- Table structure for table `tbl_cron_log`
 --
 
-CREATE TABLE `tbl_cron_log` (
-  `cronlog_id` int NOT NULL,
-  `cronlog_cron_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_cron_log`;
+CREATE TABLE IF NOT EXISTS `tbl_cron_log` (
+  `cronlog_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cronlog_cron_id` int(11) NOT NULL,
   `cronlog_started_at` datetime NOT NULL,
   `cronlog_ended_at` datetime DEFAULT NULL,
-  `cronlog_details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `cronlog_details` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`cronlog_id`),
+  KEY `cronlog_cron_id` (`cronlog_cron_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1244,13 +1305,15 @@ CREATE TABLE `tbl_cron_log` (
 -- Table structure for table `tbl_cron_schedules`
 --
 
-CREATE TABLE `tbl_cron_schedules` (
-  `cron_id` int NOT NULL,
-  `cron_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cron_command` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cron_duration` int NOT NULL COMMENT 'Minutes',
-  `cron_active` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_cron_schedules`;
+CREATE TABLE IF NOT EXISTS `tbl_cron_schedules` (
+  `cron_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cron_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cron_command` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cron_duration` int(11) NOT NULL COMMENT 'Minutes',
+  `cron_active` tinyint(4) NOT NULL,
+  PRIMARY KEY (`cron_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_cron_schedules`
@@ -1270,7 +1333,11 @@ INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_
 (11, 'Send Archived Emails', 'sendArchivedEmails', 1, 1),
 (12, 'recurring Subscription', 'recurringSubscription', 1, 1),
 (13, 'cancel bank transfer pending orders', 'cancelBankTransPendingOrders', 1, 1),
-(14, 'Group Class/Package cancelled due to no bookings', 'cancelNotBookedClasses', 1, 1);
+(14, 'Group Class/Package cancelled due to no bookings', 'cancelNotBookedClasses', 1, 1),
+(16, 'shuffle/revoke Zoom License', 'shuffleZoomLicense', 1, 1),
+(17, 'Send Wallet Balance maintain Reminder for subscription before one day ', 'sendWalletBalanceReminder/2', 1, 1),
+(18, 'Send Wallet Balance maintain Reminder for subscription before 3 day', 'sendWalletBalanceReminder/3', 1, 1),
+(19, 'Send Wallet Balance maintain Reminder for subscription before 7 day', 'sendWalletBalanceReminder/4', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1278,17 +1345,20 @@ INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_
 -- Table structure for table `tbl_currencies`
 --
 
-CREATE TABLE `tbl_currencies` (
-  `currency_id` int NOT NULL,
-  `currency_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `currency_symbol_left` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `currency_symbol_right` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_currencies`;
+CREATE TABLE IF NOT EXISTS `tbl_currencies` (
+  `currency_id` int(11) NOT NULL AUTO_INCREMENT,
+  `currency_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `currency_symbol_left` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `currency_symbol_right` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `currency_value` decimal(12,8) NOT NULL,
   `currency_active` tinyint(1) NOT NULL,
   `currency_is_default` tinyint(1) NOT NULL,
   `currency_date_modified` datetime NOT NULL,
-  `currency_order` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `currency_order` int(11) NOT NULL,
+  PRIMARY KEY (`currency_id`),
+  UNIQUE KEY `currency_code` (`currency_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_currencies`
@@ -1308,10 +1378,12 @@ INSERT INTO `tbl_currencies` (`currency_id`, `currency_code`, `currency_symbol_l
 -- Table structure for table `tbl_currencies_lang`
 --
 
-CREATE TABLE `tbl_currencies_lang` (
-  `currencylang_currency_id` int NOT NULL,
-  `currencylang_lang_id` int NOT NULL,
-  `currency_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_currencies_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_currencies_lang` (
+  `currencylang_currency_id` int(11) NOT NULL,
+  `currencylang_lang_id` int(11) NOT NULL,
+  `currency_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`currencylang_currency_id`,`currencylang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1338,19 +1410,23 @@ INSERT INTO `tbl_currencies_lang` (`currencylang_currency_id`, `currencylang_lan
 -- Table structure for table `tbl_email_archives`
 --
 
-CREATE TABLE `tbl_email_archives` (
-  `earch_id` int NOT NULL,
-  `earch_tpl_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_from_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_from_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_to_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_cc_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_bcc_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_subject` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_body` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `earch_attachemnts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_email_archives`;
+CREATE TABLE IF NOT EXISTS `tbl_email_archives` (
+  `earch_id` int(11) NOT NULL AUTO_INCREMENT,
+  `earch_tpl_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_from_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_from_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_to_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_cc_email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_bcc_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_subject` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_body` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_attachemnts` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `earch_attempted` datetime DEFAULT NULL,
   `earch_senton` datetime DEFAULT NULL,
-  `earch_added` datetime NOT NULL
+  `earch_added` datetime NOT NULL,
+  PRIMARY KEY (`earch_id`),
+  KEY `emailarchive_tpl_name` (`earch_tpl_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1359,15 +1435,17 @@ CREATE TABLE `tbl_email_archives` (
 -- Table structure for table `tbl_email_templates`
 --
 
-CREATE TABLE `tbl_email_templates` (
-  `etpl_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `etpl_lang_id` int NOT NULL,
-  `etpl_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `etpl_subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `etpl_body` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `etpl_vars` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_email_templates`;
+CREATE TABLE IF NOT EXISTS `tbl_email_templates` (
+  `etpl_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `etpl_lang_id` int(11) NOT NULL,
+  `etpl_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `etpl_subject` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `etpl_body` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `etpl_vars` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `etpl_status` tinyint(1) NOT NULL,
-  `etpl_quick_send` tinyint NOT NULL
+  `etpl_quick_send` tinyint(4) NOT NULL,
+  PRIMARY KEY (`etpl_code`,`etpl_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1439,19 +1517,21 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('learner_package_purchased', 2, 'حزمة حجز البريد الإلكتروني للمتعلم', 'تم حجز الحزمة في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									                                                                        </p> \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the booking process.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your booking for the package \"{class_name}\" is confirmed with the teacher \"{teacher_name}\".</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\n									                                                                        Thanks for booking with us!!</p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{learner_name}\n{teacher_name}\n{class_name}\n', 1, 0),
 ('learner_schedule_email', 1, 'Learner Scheduled/Rescheduled Lesson', 'Lesson {action} at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lesson {action}!</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> \"{learner_name}\" has {action} a lesson with you. Please see the details below:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Lesson Name</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_name}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled On</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_date}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Time Slot</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_start_time} - {lesson_end_time}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{learner_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name <br>\r\n{teacher_name} Teacher name <br>\r\n{lesson_name} Scheduled Lesson <br>\r\n{learner_comment} Learner message <br>\r\n{lesson_date} Scheduled Date <br>\r\n{lesson_start_time} Scheduled Start Time <br>\r\n{lesson_end_time} Lesson end time <br>\r\n{action} Scheduled or Rescheduled', 1, 1),
 ('learner_schedule_email', 2, 'الدرس المجدول / المعاد جدولته للمتعلم', 'الدرس {action} في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lesson {action}!</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> \"{learner_name}\" has {action} a lesson with you. Please see the details below:</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Lesson Name</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_name}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled On</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_date}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Time Slot</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{lesson_start_time} - {lesson_end_time}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Comment</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{learner_comment}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{learner_name} Learner name <br>\n{teacher_name} Teacher name <br>\n{lesson_name} Scheduled Lesson <br>\n{learner_comment} Learner message <br>\n{lesson_date} Scheduled Date <br>\n{lesson_start_time} Scheduled Start Time <br>\n{lesson_end_time} Lesson end time <br>\n{action} Scheduled or Rescheduled', 1, 1),
+('license_alert', 1, '{meeting_tool} License Alert', '{meeting_tool} license alert {website_name}', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">License Alert</span></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \r\n								<p style=\"line-height: 20px;\"><span style=\"color: rgb(103, 103, 103); font-size: 14px;\">This is an update regarding sessions on the platform. Meeting tool licenses available on the platform are less than the classes scheduled simultaneously. Please find details of the classes below:</span></p>\r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n									<tbody>\r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Sessions&nbsp;</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{session_count}</td>\r\n										</tr>  \r\n									</tbody>\r\n								</table></td>\r\n						</tr>\r\n					</tbody>\r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{start_time} class Start Time <br>{end_time} class End Time <br>{session_count} Total Scheduled Sessions count', 1, 0),
+('license_alert', 2, '{meeting_tool} License Alert', '{meeting_tool} license alert {website_name}', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">License Alert</span></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \r\n								<p style=\"line-height: 20px;\"><span style=\"color: rgb(103, 103, 103); font-size: 14px;\">This is an update regarding sessions on the platform. Meeting tool licenses available on the platform are less than the classes scheduled simultaneously. Please find details of the classes below:</span></p>\r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n									<tbody>\r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Sessions&nbsp;</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{session_count}</td>\r\n										</tr>  \r\n									</tbody>\r\n								</table></td>\r\n						</tr>\r\n					</tbody>\r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{start_time} class Start Time <br>{end_time} class End Time <br>{session_count} Total Scheduled Sessions count', 1, 0),
 ('new_registration_admin', 1, 'New Registration - Admin', 'New Registration on {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\"> \r\n                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">New Account Created!</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A new registration has been received on <a style=\"color: {primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the user details:</p> \r\n                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_full_name}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_email}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_email} Email Address of the person registered<br />\r\n{user_full_name} Full Name of the person registered<br />\r\n{website_name} Name of the website<br />\r\n{website_url} Website url<br>', 1, 0),
-('new_registration_admin', 2, 'تسجيل جديد - إداري', 'تسجيل جديد على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\"> \n                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">New Account Created!</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A new registration has been received on <a style=\"color: {primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the user details:</p> \n                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_full_name}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_email}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_email} Email Address of the person registered<br />\n{user_full_name} Full Name of the person registered<br />\n{website_name} Name of the website<br />\n{website_url} Website url<br>', 1, 0),
-('new_withdrawal_request_mail_to_admin', 1, 'New Withdrawal Request to admin', 'Withdrawal Request Received on {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\"> \r\n                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Withdrawal Request</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                                        \r\n					<tbody>                                                \r\n						<tr>                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A money withdrawal request has been received from a user. Please find the details below and process the request further:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">                                                                                                \r\n												<div>&nbsp;</div>                                                                                                \r\n												<div><span style=\"color: rgb(38, 50, 56); font-family: Roboto, Arial, sans-serif; font-size: 13px;\">Transaction </span>ID</div>                                                                                        </td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{txn_id}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_first_name} {user_last_name}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Request Date</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Amount<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_amount}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Payout type</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payout_type}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Withdrawal Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table>                                                                \r\n								<p>&nbsp;</p>                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Payout Details</h3>                                                                {other_details}\r\n                                                        </td>                                                \r\n						</tr>                                        \r\n					</tbody>                                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_first_name} User First Name of the email receiver.<br />\r\n{user_last_name} User last Name<br />\r\n{payout_type} - Paypal payout or Bank <br>\r\n{withdrawal_comment} - withdrawal comment <br>\r\n{txn_id} - Transaction ID<br/>\r\n{withdrawal_amount} - Withdrawal Amount<br>\r\n{other_details} - Payout deatils in table view <br>\r\n{request_date} - withdrawal request data<br>', 1, 0);
+('new_registration_admin', 2, 'تسجيل جديد - إداري', 'تسجيل جديد على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\"> \n                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">New Account Created!</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A new registration has been received on <a style=\"color: {primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the user details:</p> \n                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Name</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_full_name}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"153\">Email<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"620\">{user_email}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_email} Email Address of the person registered<br />\n{user_full_name} Full Name of the person registered<br />\n{website_name} Name of the website<br />\n{website_url} Website url<br>', 1, 0);
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES
+('new_withdrawal_request_mail_to_admin', 1, 'New Withdrawal Request to admin', 'Withdrawal Request Received on {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\"> \r\n                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Withdrawal Request</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                                        \r\n					<tbody>                                                \r\n						<tr>                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A money withdrawal request has been received from a user. Please find the details below and process the request further:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">                                                                                                \r\n												<div>&nbsp;</div>                                                                                                \r\n												<div><span style=\"color: rgb(38, 50, 56); font-family: Roboto, Arial, sans-serif; font-size: 13px;\">Transaction </span>ID</div>                                                                                        </td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{txn_id}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_first_name} {user_last_name}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Request Date</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Amount<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_amount}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Payout type</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payout_type}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Withdrawal Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table>                                                                \r\n								<p>&nbsp;</p>                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Payout Details</h3>                                                                {other_details}\r\n                                                        </td>                                                \r\n						</tr>                                        \r\n					</tbody>                                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_first_name} User First Name of the email receiver.<br />\r\n{user_last_name} User last Name<br />\r\n{payout_type} - Paypal payout or Bank <br>\r\n{withdrawal_comment} - withdrawal comment <br>\r\n{txn_id} - Transaction ID<br/>\r\n{withdrawal_amount} - Withdrawal Amount<br>\r\n{other_details} - Payout deatils in table view <br>\r\n{request_date} - withdrawal request data<br>', 1, 0),
 ('new_withdrawal_request_mail_to_admin', 2, 'طلب سحب جديد للمسؤول', 'تم استلام طلب سحب على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\"> \n                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Withdrawal Request</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                                        \n					<tbody>                                                \n						<tr>                                                        \n							<td style=\"padding:40px 0 60px;\">                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A money withdrawal request has been received from a user. Please find the details below and process the request further:</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">                                                                                                \n												<div>&nbsp;</div>                                                                                                \n												<div><span style=\"color: rgb(38, 50, 56); font-family: Roboto, Arial, sans-serif; font-size: 13px;\">Transaction </span>ID</div>                                                                                        </td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{txn_id}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_first_name} {user_last_name}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Request Date</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Amount<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_amount}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Payout type</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payout_type}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Withdrawal Comment</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_comment}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table>                                                                \n								<p>&nbsp;</p>                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Payout Details</h3>                                                                {other_details}\n                                                        </td>                                                \n						</tr>                                        \n					</tbody>                                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_first_name} User First Name of the email receiver.<br />\n{user_last_name} User last Name<br />\n{payout_type} - Paypal payout or Bank <br>\n{withdrawal_comment} - withdrawal comment <br>\n{txn_id} - Transaction ID<br/>\n{withdrawal_amount} - Withdrawal Amount<br>\n{other_details} - Payout deatils in table view <br>\n{request_date} - withdrawal request data<br>', 1, 0),
 ('new_withdrawal_request_mail_to_user', 1, 'Withdrawal Request Submission Email to user', 'Withdrawal Request Submitted Successfully', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\">                                </h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">                                    Withdrawal Request</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_first_name} {user_last_name}</h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the withdrawal request process!</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A notification has been sent to the Admin for further processing. You will be notified via email when your request will be processed.</p>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your withdrawal request details:</p>                                \r\n                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n                                                                        \r\n									<tbody>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Transaction ID</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{txn_id}</td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Request Date</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Amount</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_amount}</td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Payout type</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payout_type}</td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Withdrawal Comment</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_comment}</td>                                        \r\n                                                                                \r\n										</tr>                                    \r\n                                                                        \r\n									</tbody>                                \r\n                                                                \r\n								</table>                                                                \r\n								<p>&nbsp;</p>                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Payout Details</h3>{other_details}\r\n                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table>', '{user_first_name} First Name of the email receiver.<br />\r\n{user_last_name} Last Name of the email receiver.<br />\r\n{payout_type} - Paypal payout or Bank <br>\r\n{txn_id} - Transaction ID<br/>\r\n{withdrawal_amount} - Withdrawal Amount<br>\r\n{other_details} - Payout deatils in table view <br>\r\n{request_date} - withdrawal request data<br>\r\n{withdrawal_comment} - withdrawal comment <br>', 1, 0),
 ('new_withdrawal_request_mail_to_user', 2, 'طلب سحب إرسال بريد إلكتروني إلى المستخدم', 'تم تقديم طلب السحب بنجاح', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\">                                </h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">                                    Withdrawal Request</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_first_name} {user_last_name}</h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the withdrawal request process!</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">A notification has been sent to the Admin for further processing. You will be notified via email when your request will be processed.</p>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your withdrawal request details:</p>                                \n                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n                                                                        \n									<tbody>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Transaction ID</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{txn_id}</td>                                        \n                                                                                \n										</tr>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Request Date</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                        \n                                                                                \n										</tr>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Amount</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_amount}</td>                                        \n                                                                                \n										</tr>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Payout type</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payout_type}</td>                                        \n                                                                                \n										</tr>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Withdrawal Comment</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{withdrawal_comment}</td>                                        \n                                                                                \n										</tr>                                    \n                                                                        \n									</tbody>                                \n                                                                \n								</table>                                                                \n								<p>&nbsp;</p>                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Payout Details</h3>{other_details}\n                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table>', '{user_first_name} First Name of the email receiver.<br />\n{user_last_name} Last Name of the email receiver.<br />\n{payout_type} - Paypal payout or Bank <br>\n{txn_id} - Transaction ID<br/>\n{withdrawal_amount} - Withdrawal Amount<br>\n{other_details} - Payout deatils in table view <br>\n{request_date} - withdrawal request data<br>\n{withdrawal_comment} - withdrawal comment <br>', 1, 0),
 ('no_booking_class_or_package_cancelled', 1, 'Group Class/Package cancelled due to no bookings', 'Group Class/Package cancelled due to no bookings', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\"> \r\n        <tbody> \r\n                <tr> \r\n                        <td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"> \r\n                                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \r\n                                        <tbody> \r\n                                                <tr> \r\n                                                        <td style=\"padding:20px 0;\"> \r\n                                                                <h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5> \r\n                                                                <h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class/Package Cancelled</h2> </td> \r\n                                                </tr> \r\n                                        </tbody> \r\n                                </table> </td> \r\n                </tr> \r\n                <tr> \r\n                        <td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \"> \r\n                                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \r\n                                        <tbody> \r\n                                                <tr> \r\n                                                        <td style=\"padding:40px 0 60px;\"> \r\n                                                                <h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3> \r\n                                                                <p style=\"font-size: 14px; line-height: 20px;color: #676767;\">\r\n																<span style=\"color: rgb(84, 87, 91); font-family: opensans; font-size:14px;white-space: pre-wrap;background-color: rgb(255, 255, 255);\">Group Class/Package ({title}) has been automatically canceled due to no bookings\r\n																</span>\r\n																<br />\r\n                                                                        </p> </td> \r\n                                                </tr> \r\n                                        </tbody> \r\n                                </table> </td> \r\n                </tr> \r\n        </tbody>\r\n</table>', '{title} Class/Package title <br>\r\n{teacher_name} Teacher name <br>', 1, 0),
 ('no_booking_class_or_package_cancelled', 2, 'تم إلغاء فئة المجموعة / الحزمة بسبب عدم وجود حجوزات', 'تم إلغاء فئة المجموعة / الحزمة بسبب عدم وجود حجوزات', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\"> \n        <tbody> \n                <tr> \n                        <td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"> \n                                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \n                                        <tbody> \n                                                <tr> \n                                                        <td style=\"padding:20px 0;\"> \n                                                                <h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5> \n                                                                <h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class/Package Cancelled</h2> </td> \n                                                </tr> \n                                        </tbody> \n                                </table> </td> \n                </tr> \n                <tr> \n                        <td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \"> \n                                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \n                                        <tbody> \n                                                <tr> \n                                                        <td style=\"padding:40px 0 60px;\"> \n                                                                <h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3> \n                                                                <p style=\"font-size: 14px; line-height: 20px;color: #676767;\">\n																<span style=\"color: rgb(84, 87, 91); font-family: opensans; font-size:14px;white-space: pre-wrap;background-color: rgb(255, 255, 255);\">Group Class/Package ({title}) has been automatically canceled due to no bookings\n																</span>\n																<br />\n                                                                        </p> </td> \n                                                </tr> \n                                        </tbody> \n                                </table> </td> \n                </tr> \n        </tbody>\n</table>', '{title} Class/Package title <br>\n{teacher_name} Teacher name <br>', 1, 0),
 ('order_cancelled_by_admin', 1, 'Order cancelled by Admin - Learner', 'Order Cancelled By Admin', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Order Cancelled</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We noticed that you didn\'t completed your order {order_id}. Due to its unpaid status and considering that you are not interested for this order Admin has cancelled this order.</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, you can check orders section : <a style=\"color:{primary-color}\" href=\"{link}\">Click Here</a></p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{order_id} Cancelled order id <br>\r\n{user_name} User name <br>\r\n{link} Orders listing url\r\n\r\n', 1, 0),
-('order_cancelled_by_admin', 2, 'تم إلغاء الطلب من قبل المسؤول - المتعلم', 'تم إلغاء الطلب من قبل المسؤول', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Order Cancelled</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We noticed that you didn\'t completed your order {order_id}. Due to its unpaid status and considering that you are not interested for this order Admin has cancelled this order.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, you can check orders section : <a style=\"color:{primary-color}\" href=\"{link}\">Click Here</a></p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{order_id} Cancelled order id <br>\n{user_name} User name <br>\n{link} Orders listing url\n\n', 1, 0),
-('order_paid_to_admin', 1, 'Order Payment Received Email To Admin', 'Order Payment Received', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Payment Received</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\r\n									                                                                        <br />\r\n									                                                                        A new order has been placed and its payment has been received successfully.</p>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the order details:</p>                                \r\n                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{customer}</td>                                        \r\n                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Order Id</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\"><a href=\"{order_link}\" style=\"color: {primary-color};\" target=\"_blank\">{orderid}</a></td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Amount Paid</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payment}</td>                                        \r\n                                                                                \r\n										</tr>                                    \r\n                                                                        \r\n									</tbody>                                \r\n                                                                \r\n								</table>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{customer} Learner name<br>\r\n{payment} Amount Paid <br>\r\n{orderid} Order Id<br>\r\n{order_link} Order Link<br>', 1, 0);
+('order_cancelled_by_admin', 2, 'تم إلغاء الطلب من قبل المسؤول - المتعلم', 'تم إلغاء الطلب من قبل المسؤول', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Order Cancelled</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We noticed that you didn\'t completed your order {order_id}. Due to its unpaid status and considering that you are not interested for this order Admin has cancelled this order.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, you can check orders section : <a style=\"color:{primary-color}\" href=\"{link}\">Click Here</a></p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{order_id} Cancelled order id <br>\n{user_name} User name <br>\n{link} Orders listing url\n\n', 1, 0);
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES
+('order_paid_to_admin', 1, 'Order Payment Received Email To Admin', 'Order Payment Received', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Payment Received</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\r\n									                                                                        <br />\r\n									                                                                        A new order has been placed and its payment has been received successfully.</p>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the order details:</p>                                \r\n                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{customer}</td>                                        \r\n                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Order Id</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\"><a href=\"{order_link}\" style=\"color: {primary-color};\" target=\"_blank\">{orderid}</a></td>                                        \r\n                                                                                \r\n										</tr>                                        \r\n                                                                                \r\n										<tr>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Amount Paid</td>                                            \r\n                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payment}</td>                                        \r\n                                                                                \r\n										</tr>                                    \r\n                                                                        \r\n									</tbody>                                \r\n                                                                \r\n								</table>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{customer} Learner name<br>\r\n{payment} Amount Paid <br>\r\n{orderid} Order Id<br>\r\n{order_link} Order Link<br>', 1, 0),
 ('order_paid_to_admin', 2, 'طلب الدفع المستلم بالبريد الإلكتروني إلى المسؤول', 'تم استلام دفعة الطلب', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Payment Received</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									                                                                        <br />\n									                                                                        A new order has been placed and its payment has been received successfully.</p>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the order details:</p>                                \n                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n                                                                        \n									<tbody>                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">User Name</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{customer}</td>                                        \n                                                                                \n										</tr>                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Order Id</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\"><a href=\"{order_link}\" style=\"color: {primary-color};\" target=\"_blank\">{orderid}</a></td>                                        \n                                                                                \n										</tr>                                        \n                                                                                \n										<tr>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Amount Paid</td>                                            \n                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payment}</td>                                        \n                                                                                \n										</tr>                                    \n                                                                        \n									</tbody>                                \n                                                                \n								</table>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{customer} Learner name<br>\n{payment} Amount Paid <br>\n{orderid} Order Id<br>\n{order_link} Order Link<br>', 1, 0),
 ('order_paid_to_customer', 1, 'Order Payment Email To Learner', 'Order Payment Received', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Payment Successful</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear {customer}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\r\n									<br />\r\n									We are glad to inform you that your order booking is complete and its payment has been received successfully.</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the order details:</p>                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                                                                \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Order Id</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{orderid}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Amount Paid</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payment}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\r\n									Thanks for booking with us!!</p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{customer} Learner name<br>\r\n{orderid} Order id <br>\r\n{payment} Amount Paid <br>', 1, 0),
 ('order_paid_to_customer', 2, 'طلب الدفع بالبريد الإلكتروني إلى المتعلم', 'تم استلام دفعة الطلب', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Payment Successful</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear {customer}</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									<br />\n									We are glad to inform you that your order booking is complete and its payment has been received successfully.</p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are the order details:</p>                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                                                                \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Order Id</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{orderid}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Amount Paid</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{payment}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\n									Thanks for booking with us!!</p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{customer} Learner name<br>\n{orderid} Order id <br>\n{payment} Amount Paid <br>', 1, 0),
@@ -1460,10 +1540,10 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('recurring_subscription', 1, 'Recurring subscription', 'Recurring subscription {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Subscription</span></td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your recurring subscription updated</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Lessons</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{seheduled_lessons}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Unscheduled Lessons</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{unscheduled_lessons}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table></td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table>', '{learner_name} Learner Name <br>\r\n{start_time} Subscription Start Time <br>\r\n{end_time} Subscription End Time <br>\r\n{seheduled_lessons} Total Scheduled lessons in subscription <br>\r\n{unscheduled_lessons} Total Unscheduled lessons in subscription\r\n\r\n', 1, 0),
 ('recurring_subscription', 2, 'الالتحاق الامن', 'الاشتراك المتكرر {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Subscription</span></td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your recurring subscription updated</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>                                                                                \n										</tr>                                      \n                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>                                                                                \n										</tr>                                      \n                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Lessons</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{seheduled_lessons}</td>                                                                                \n										</tr>                                      \n                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Unscheduled Lessons</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{unscheduled_lessons}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table></td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table>', '{learner_name} Learner Name <br>\n{start_time} Subscription Start Time <br>\n{end_time} Subscription End Time <br>\n{seheduled_lessons} Total Scheduled lessons in subscription <br>\n{unscheduled_lessons} Total Unscheduled lessons in subscription\n\n', 1, 0),
 ('teacher_class_book_email', 1, 'Class Booking Email To Learner', 'New Class Booked at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\r\n									                                                                        </p> \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the booking process.</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your booking for the class \"{class_name}\" is confirmed with the teacher \"{teacher_name}\".</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\r\n									                                                                        Thanks for booking with us!!</p>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{learner_name}\r\n{teacher_name}\r\n{class_name}\r\n\r\n', 1, 0),
-('teacher_class_book_email', 2, 'بريد إلكتروني لحجز الفصل للمتعلم', 'صف جديد محجوز في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									                                                                        </p> \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the booking process.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your booking for the class \"{class_name}\" is confirmed with the teacher \"{teacher_name}\".</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\n									                                                                        Thanks for booking with us!!</p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{learner_name}\n{teacher_name}\n{class_name}\n\n', 1, 0),
-('teacher_class_cancelled_email', 1, 'Teacher Cancelled Class Email', 'Teacher Cancelled Class Email at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class Canceled</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your class booked with {teacher_name}. <br />\r\n									{teacher_name} has canceled the class and below are the complete details:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Class Name</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{class_name}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, please visit your class detail <a style=\"color:#00B3BD\" href=\"{class_url}\">here</a>                            </p></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name<br>\r\n{teacher_name} Teacher Name<br>\r\n{class_name} Class name<br>\r\n{teacher_comment} Comment<br>\r\n{class_url} Link to class detail<br>', 1, 0),
-('teacher_class_cancelled_email', 2, 'ألغى المعلم البريد الإلكتروني للفصل الدراسي', 'ألغى المعلم البريد الإلكتروني للفصل الدراسي في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class Canceled</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your class booked with {teacher_name}. <br />\n									{teacher_name} has canceled the class and below are the complete details:</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Class Name</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{class_name}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, please visit your class detail <a style=\"color:#00B3BD\" href=\"{class_url}\">here</a>                            </p></td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{learner_name} Learner name<br>\n{teacher_name} Teacher Name<br>\n{class_name} Class name<br>\n{teacher_comment} Comment<br>\n{class_url} Link to class detail<br>', 1, 0);
+('teacher_class_book_email', 2, 'بريد إلكتروني لحجز الفصل للمتعلم', 'صف جديد محجوز في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									                                                                        </p> \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have successfully completed the booking process.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your booking for the class \"{class_name}\" is confirmed with the teacher \"{teacher_name}\".</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\n									                                                                        Thanks for booking with us!!</p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{learner_name}\n{teacher_name}\n{class_name}\n\n', 1, 0);
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES
+('teacher_class_cancelled_email', 1, 'Teacher Cancelled Class Email', 'Teacher Cancelled Class Email at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class Canceled</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your class booked with {teacher_name}. <br />\r\n									{teacher_name} has canceled the class and below are the complete details:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Class Name</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{class_name}</td>                                                                                \r\n										</tr>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, please visit your class detail <a style=\"color:#00B3BD\" href=\"{class_url}\">here</a>                            </p></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name<br>\r\n{teacher_name} Teacher Name<br>\r\n{class_name} Class name<br>\r\n{teacher_comment} Comment<br>\r\n{class_url} Link to class detail<br>', 1, 0),
+('teacher_class_cancelled_email', 2, 'ألغى المعلم البريد الإلكتروني للفصل الدراسي', 'ألغى المعلم البريد الإلكتروني للفصل الدراسي في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Class Canceled</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your class booked with {teacher_name}. <br />\n									{teacher_name} has canceled the class and below are the complete details:</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Class Name</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{class_name}</td>                                                                                \n										</tr>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">For more details, please visit your class detail <a style=\"color:#00B3BD\" href=\"{class_url}\">here</a>                            </p></td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{learner_name} Learner name<br>\n{teacher_name} Teacher Name<br>\n{class_name} Class name<br>\n{teacher_comment} Comment<br>\n{class_url} Link to class detail<br>', 1, 0),
 ('teacher_issue_resolved_email', 1, 'Issue Resolved Email To Learner', 'Issue Resolved', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Issue Resolved</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your teacher {teacher_name} has resolved the issue reported by you for {session_type} \"{class_lesson_name}\" which was scheduled on {schedule_date} {start_time} - {end_time} </p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Please check the details below and proceed further:</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                      \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Action</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{issue_resolve_type}</td>                                        \r\n										</tr>                                                                                \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Comment</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name <br>\r\n{teacher_name} Teacher name <br>\r\n{session_type} Class or Lesson <br>\r\n{class_lesson_name} Class or lesson name<br>\r\n{schedule_date} Scheduled date<br>\r\n{start_time} Start time<br>\r\n{end_time} End time<br>\r\n{issue_resolve_type}  by teacher<br>\r\n{teacher_comment} Teacher comment<br>', 1, 0),
 ('teacher_issue_resolved_email', 2, 'تم حل المشكلة بالبريد الإلكتروني للمتعلم', 'تم حل المشكلة', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Issue Resolved</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your teacher {teacher_name} has resolved the issue reported by you for {session_type} \"{class_lesson_name}\" which was scheduled on {schedule_date} {start_time} - {end_time} </p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Please check the details below and proceed further:</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                      \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Action</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{issue_resolve_type}</td>                                        \n										</tr>                                                                                \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Comment</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{learner_name} Learner name <br>\n{teacher_name} Teacher name <br>\n{session_type} Class or Lesson <br>\n{class_lesson_name} Class or lesson name<br>\n{schedule_date} Scheduled date<br>\n{start_time} Start time<br>\n{end_time} End time<br>\n{issue_resolve_type}  by teacher<br>\n{teacher_comment} Teacher comment<br>', 1, 0),
 ('teacher_lesson_book_email', 1, 'Lessons Booking Email To Teacher', 'Learner Has Booked the Lessons', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \r\n \r\n        \r\n	<tbody> \r\n \r\n                \r\n		<tr> \r\n \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"> \r\n \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \r\n \r\n                                        \r\n					<tbody> \r\n \r\n                                                \r\n						<tr> \r\n \r\n                                                        \r\n							<td style=\"padding:20px 0;\"> \r\n \r\n \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5> \r\n \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lessons Booked</h2> </td> \r\n \r\n                                                \r\n						</tr> \r\n \r\n                                        \r\n					</tbody> \r\n \r\n                                \r\n				</table> </td> \r\n \r\n                \r\n		</tr> \r\n \r\n                \r\n		<tr> \r\n \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \"> \r\n \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\"> \r\n \r\n                                        \r\n					<tbody> \r\n \r\n                                                \r\n						<tr> \r\n \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\"> \r\n \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3> \r\n \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We are glad to inform you that you have received lessons booking.</p> \r\n \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">{learner_name} is booking for the lessons \"{tlang_name}\"</p> \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><a href=\"{lesson_url}\" target=\"_blank\">Click here to view Lessons</a><br />\r\n									                                                                         Thanks for coaching with us!</p> </td> \r\n \r\n                                                \r\n						</tr> \r\n \r\n                                        \r\n					</tbody> \r\n \r\n                                \r\n				</table> </td> \r\n \r\n                \r\n		</tr> \r\n \r\n        \r\n	</tbody>\r\n</table>', '{learner_name} Learner name\r\n{teacher_name} Teacher Name\r\n{tlang_name} Teach language name\r\n{lesson_url} Website url', 1, 0),
@@ -1473,11 +1553,11 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('teacher_package_purchased', 1, 'Package Booking Email To Teacher', 'New Class Package Booked at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\r\n									                                                                        </p> \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">{learner_name} booked your package <span style=\"color: rgb(103, 103, 103); font-size: 14px; text-align: center; background-color: rgb(255, 255, 255);\">\"{class_name}\"<br />\r\n										                                                                                </span></p>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{learner_name}\r\n{teacher_name}\r\n{class_name}\r\n\r\n', 1, 0),
 ('teacher_package_purchased', 2, 'حزمة حجز البريد الإلكتروني للمعلم', 'تم حجز حزمة صف جديدة في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Booking Successful!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Congratulations!!<br />\n									                                                                        </p> \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">{learner_name} booked your package <span style=\"color: rgb(103, 103, 103); font-size: 14px; text-align: center; background-color: rgb(255, 255, 255);\">\"{class_name}\"<br />\n										                                                                                </span></p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{learner_name}\n{teacher_name}\n{class_name}\n\n', 1, 0),
 ('teacher_request_received', 1, 'New Teacher Request - Admin', 'New Teacher Request on {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Teacher Request</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have received a new request from a learner to become a tutor. Please check the details below and process the request further:</p>                                                                \r\n                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                                                                \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Reference Number</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{refnum}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Name</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{name}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Phone<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{phone}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Requested On</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{refnum} Request Reference Number<br>\r\n{name} Applicant name<br>\r\n{phone} Phone Number<br>\r\n{request_date} Requested On - Datetime<br>', 1, 0),
-('teacher_request_received', 2, 'طلب مدرس جديد - إداري', 'طلب مدرس جديد على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Teacher Request</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have received a new request from a learner to become a tutor. Please check the details below and process the request further:</p>                                                                \n                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                                                                \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Reference Number</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{refnum}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Name</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{name}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Phone<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{phone}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Requested On</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{refnum} Request Reference Number<br>\n{name} Applicant name<br>\n{phone} Phone Number<br>\n{request_date} Requested On - Datetime<br>', 1, 0),
-('teacher_request_status_change_learner', 1, 'Tutor Request Status Update Email to Learners', 'Tutor  Request {new_request_status} at {website_name}', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\r\n    <tbody><tr>\r\n            <td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">\r\n                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">\r\n                    <tbody>\r\n                        <tr>\r\n                            <td style=\"padding:20px 0;\">\r\n                                <h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>\r\n                                <h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Tutor Request Status Update</h2>\r\n                            </td>\r\n                        </tr>\r\n                    </tbody>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">\r\n                <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">\r\n                    <tbody>\r\n                        <tr>\r\n                            <td style=\"padding:40px 0 60px;\">\r\n                                <h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center\">Dear {user_full_name} </h3>\r\n                                <p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Here is an update regarding your Tutor request reference number - {reference_number}.<br><br> The request processing is completed and it has been {new_request_status}.</p>\r\n								\r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Admin Comments: {request_comments}</p>\r\n                            </td>\r\n                        </tr>\r\n                    </tbody>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </tbody>\r\n</table>\r\n\r\n\r\n', '{user_first_name} - First Name of the email receiver.<br/> \r\n{user_last_name} - Last Name of the email receiver.<br/> \r\n{user_full_name} - Full Name of the email receiver.<br/> \r\n{new_request_status} New Request Status (Approved/Declined) <br> \r\n{reference_number} Reference Number of the request<br> \r\n{request_comments} Admin comments<br> \r\n{website_name} Name of our website<br> ', 1, 0),
-('teacher_request_status_change_learner', 2, 'تحديث حالة طلب المعلم بالبريد الإلكتروني للمتعلمين', 'طلب مدرس {new_request_status} في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Tutor Request Status Update</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center\">Dear {user_full_name} </h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Here is an update regarding your Tutor request reference number - {reference_number}.<br />\n									<br />\n									 The request processing is completed and it has been {new_request_status}.</p>                                                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Admin Comments: {request_comments}</p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_first_name} - First Name of the email receiver.<br/> \n{user_last_name} - Last Name of the email receiver.<br/> \n{user_full_name} - Full Name of the email receiver.<br/> \n{new_request_status} New Request Status (Approved/Declined) <br> \n{reference_number} Reference Number of the request<br> \n{request_comments} Admin comments<br> \n{website_name} Name of our website<br> ', 1, 0),
-('teacher_reschedule_email', 1, 'Teacher Reschedule Lesson Email', 'Teacher Reschedule Lesson Email at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lesson {action}</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We have an update regarding your lesson booked with {teacher_name}. <br />\r\n									 Your teacher has {action} the lesson \"{lesson_name}\"</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Teacher Comment : {teacher_comment}</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\r\n									 For more details, please view your lesson <a style=\"color:{primary-color}\" href=\"{lesson_url}\">here</a>.</p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name<br>\r\n{teacher_name} Teacher name<br>\r\n{lesson_name} Lesson name <br>\r\n{action} Action Performed<br>\r\n{teacher_comment} Comment<br>\r\n{lesson_url} Lesson page link<br>', 1, 0);
+('teacher_request_received', 2, 'طلب مدرس جديد - إداري', 'طلب مدرس جديد على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"> </h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\"> Teacher Request</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\"> Dear Admin</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You have received a new request from a learner to become a tutor. Please check the details below and process the request further:</p>                                                                \n                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                                                                \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Reference Number</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{refnum}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Name</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{name}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Phone<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span></td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{phone}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\"> Requested On</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{request_date}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{refnum} Request Reference Number<br>\n{name} Applicant name<br>\n{phone} Phone Number<br>\n{request_date} Requested On - Datetime<br>', 1, 0);
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES
+('teacher_request_status_change_learner', 1, 'Tutor Request Status Update Email to Learners', 'Tutor  Request {new_request_status} at {website_name}', '<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>\r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Tutor Request Status Update</h2></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center\">Dear {user_full_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Here is an update regarding your Tutor request reference number - {reference_number}.<br />\r\n									<br />\r\n									 The request processing is completed and it has been {new_request_status}.</p>\r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Admin Comments: {request_comments}</p>{login_link}</td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_first_name} - First Name of the email receiver.<br/> \r\n{user_last_name} - Last Name of the email receiver.<br/> \r\n{user_full_name} - Full Name of the email receiver.<br/> \r\n{new_request_status} New Request Status (Approved/Declined) <br> \r\n{reference_number} Reference Number of the request<br> \r\n{request_comments} Admin comments<br> \r\n{login_link} Login Page Link<br> \r\n{website_name} Name of our website<br>', 1, 0),
+('teacher_request_status_change_learner', 2, 'تحديث حالة طلب المعلم بالبريد الإلكتروني للمتعلمين', 'طلب مدرس {new_request_status} في {website_name}', '<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>\r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Tutor Request Status Update</h2></td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center\">Dear {user_full_name} </h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Here is an update regarding your Tutor request reference number - {reference_number}.<br />\r\n									<br />\r\n									 The request processing is completed and it has been {new_request_status}.</p>\r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Admin Comments: {request_comments}</p>{login_link}</td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table></td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_first_name} - First Name of the email receiver.<br/> \r\n{user_last_name} - Last Name of the email receiver.<br/> \r\n{user_full_name} - Full Name of the email receiver.<br/> \r\n{new_request_status} New Request Status (Approved/Declined) <br> \r\n{reference_number} Reference Number of the request<br> \r\n{request_comments} Admin comments<br> \r\n{login_link} Login Page Link<br> \r\n{website_name} Name of our website<br> ', 1, 0),
+('teacher_reschedule_email', 1, 'Teacher Reschedule Lesson Email', 'Teacher Reschedule Lesson Email at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lesson {action}</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We have an update regarding your lesson booked with {teacher_name}. <br />\r\n									 Your teacher has {action} the lesson \"{lesson_name}\"</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Teacher Comment : {teacher_comment}</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\r\n									 For more details, please view your lesson <a style=\"color:{primary-color}\" href=\"{lesson_url}\">here</a>.</p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{learner_name} Learner name<br>\r\n{teacher_name} Teacher name<br>\r\n{lesson_name} Lesson name <br>\r\n{action} Action Performed<br>\r\n{teacher_comment} Comment<br>\r\n{lesson_url} Lesson page link<br>', 1, 0),
 ('teacher_reschedule_email', 2, 'إعادة جدولة المعلم بالبريد الإلكتروني للدرس', 'إعادة جدولة المعلم بالبريد الإلكتروني للدرس على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Lesson {action}</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name}</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">We have an update regarding your lesson booked with {teacher_name}. <br />\n									 Your teacher has {action} the lesson \"{lesson_name}\"</p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Teacher Comment : {teacher_comment}</p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"><br />\n									 For more details, please view your lesson <a style=\"color:{primary-color}\" href=\"{lesson_url}\">here</a>.</p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{learner_name} Learner name<br>\n{teacher_name} Teacher name<br>\n{lesson_name} Lesson name <br>\n{action} Action Performed<br>\n{teacher_comment} Comment<br>\n{lesson_url} Lesson page link<br>', 1, 0),
 ('teacher_subscription_cancelled_email', 1, 'Subscription Cancelled Email To Teacher', 'Subscription Cancelled By Learner at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Subscription Cancelled</span></td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is to update you that the lesson Subscription booked with {learner_name}<br />\r\n									                                                                        has been Cancelled</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table></td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table>', '{learner_name} Learner Name <br>\r\n{teacher_name} Teacher Name<br>{teacher_comment} Teacher Comment<br>', 1, 0),
 ('teacher_subscription_cancelled_email', 2, 'تم إلغاء الاشتراك بالبريد الإلكتروني للمعلم', 'ألغى المتعلم الاشتراك في {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Subscription Cancelled</span></td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {teacher_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is to update you that the lesson Subscription booked with {learner_name}<br />\n									                                                                        has been Cancelled</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Reason/Comment</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{teacher_comment}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table></td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table>', '{learner_name} Learner Name <br>\n{teacher_name} Teacher Name<br>{teacher_comment} Teacher Comment<br>', 1, 0),
@@ -1490,10 +1570,10 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ('user_email_change_verification', 1, 'Email Verification Link', 'Email Verification at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Email Verification!</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> We have received an email update request from your account.</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You are almost done!!<br />\r\n									But before being able to access your account with new email, you just need to verify your email address by clicking on below button:</p>                                                                <a href=\"{verification_url}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Verify Account</a>                                                                \r\n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">Or copy &amp; paste this url to your web browser: <a style=\"color:{primary-color};\" href=\"javascript:void(0);\">{verification_url}</a></p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_full_name} Name of the email receiver.<br> \r\n{verification_url} Url to verify email<br> ', 1, 1),
 ('user_email_change_verification', 2, 'رابط التحقق من البريد الإلكتروني', 'التحقق من البريد الإلكتروني على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Email Verification!</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> We have received an email update request from your account.</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">You are almost done!!<br />\n									But before being able to access your account with new email, you just need to verify your email address by clicking on below button:</p>                                                                <a href=\"{verification_url}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Verify Account</a>                                                                \n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">Or copy &amp; paste this url to your web browser: <a style=\"color:{primary-color};\" href=\"javascript:void(0);\">{verification_url}</a></p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_full_name} Name of the email receiver.<br> \n{verification_url} Url to verify email<br> ', 1, 1),
 ('user_email_verification', 1, 'Email Confirmation on Registration', 'Email Verification at {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:20px 0;\">                                \r\n                                                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n                                                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Account Verification!</h2>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Congratulations!!</p>                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your account has been created successfully at  <a style=\"color:{primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \r\n                                                                \r\n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">You are almost ready to explore the portal. Before being able to access your account, you just need to verify your email address by clicking on below button:</p>                                                                \r\n								<p><a href=\"{verification_url}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Verify Account</a></p>                                                                \r\n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">Or copy &amp; paste this url to your web browser: <a style=\"color:{primary-color};\" href=\"javascript:void(0);\">{verification_url}</a></p>                            </td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{user_full_name} Name of the email receiver.<br> \r\n{website_name} Name of our website<br> \r\n{website_url} website url <br>\r\n{verification_url} Url to verify email<br> ', 1, 1),
-('user_email_verification', 2, 'تأكيد البريد الإلكتروني عند التسجيل', 'التحقق من البريد الإلكتروني على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Account Verification!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Congratulations!!</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your account has been created successfully at  <a style=\"color:{primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \n                                                                \n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">You are almost ready to explore the portal. Before being able to access your account, you just need to verify your email address by clicking on below button:</p>                                                                \n								<p><a href=\"{verification_url}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Verify Account</a></p>                                                                \n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">Or copy &amp; paste this url to your web browser: <a style=\"color:{primary-color};\" href=\"javascript:void(0);\">{verification_url}</a></p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{user_full_name} Name of the email receiver.<br> \n{website_name} Name of our website<br> \n{website_url} website url <br>\n{verification_url} Url to verify email<br> ', 1, 1),
-('user_password_changed_successfully', 1, 'Password Changed Successfully', 'Password reset successfully {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Password Update Successful</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">It seems that you have recently updated your password and your action is successful. You have successfully updated your password.</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your new credentials:</p>                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Email</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_email}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Password</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_password}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Now, you are ready to use your new password.</p>                                \r\n								<p><a href=\"{login_link}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Login</a></p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_full_name} User name<br>\r\n{user_email} User email<br>\r\n{user_password} New password<br>\r\n{login_link} Link to login page<br>', 1, 0),
-('user_password_changed_successfully', 2, 'تم تغيير الرقم السري بنجاح', 'إعادة تعيين كلمة المرور بنجاح {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Password Update Successful</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">It seems that you have recently updated your password and your action is successful. You have successfully updated your password.</p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your new credentials:</p>                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Email</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_email}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Password</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_password}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Now, you are ready to use your new password.</p>                                \n								<p><a href=\"{login_link}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Login</a></p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_full_name} User name<br>\n{user_email} User email<br>\n{user_password} New password<br>\n{login_link} Link to login page<br>', 1, 0);
+('user_email_verification', 2, 'تأكيد البريد الإلكتروني عند التسجيل', 'التحقق من البريد الإلكتروني على {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:20px 0;\">                                \n                                                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n                                                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Account Verification!</h2>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\"> Congratulations!!</p>                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Your account has been created successfully at  <a style=\"color:{primary-color};\" href=\"{website_url}\">{website_name}</a></p>                                \n                                                                \n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">You are almost ready to explore the portal. Before being able to access your account, you just need to verify your email address by clicking on below button:</p>                                                                \n								<p><a href=\"{verification_url}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Verify Account</a></p>                                                                \n								<p style=\"font-size: 14px;line-height: 20px;color: #676767;\">Or copy &amp; paste this url to your web browser: <a style=\"color:{primary-color};\" href=\"javascript:void(0);\">{verification_url}</a></p>                            </td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{user_full_name} Name of the email receiver.<br> \n{website_name} Name of our website<br> \n{website_url} website url <br>\n{verification_url} Url to verify email<br> ', 1, 1);
 INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES
+('user_password_changed_successfully', 1, 'Password Changed Successfully', 'Password reset successfully {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:20px 0;\">                                \r\n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \r\n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Password Update Successful</h2>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">It seems that you have recently updated your password and your action is successful. You have successfully updated your password.</p>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your new credentials:</p>                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \r\n									<tbody>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Email</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_email}</td>                                        \r\n										</tr>                                        \r\n										<tr>                                            \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Password</td>                                            \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_password}</td>                                        \r\n										</tr>                                    \r\n									</tbody>                                \r\n								</table>                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Now, you are ready to use your new password.</p>                                \r\n								<p><a href=\"{login_link}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Login</a></p>                            </td>                        \r\n						</tr>                    \r\n					</tbody>                \r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{user_full_name} User name<br>\r\n{user_email} User email<br>\r\n{user_password} New password<br>\r\n{login_link} Link to login page<br>', 1, 0),
+('user_password_changed_successfully', 2, 'تم تغيير الرقم السري بنجاح', 'إعادة تعيين كلمة المرور بنجاح {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n	<tbody>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:20px 0;\">                                \n								<h5 style=\"margin: 0;padding: 0; text-transform: uppercase; font-size: 16px;font-weight: 500;color: #333;\"></h5>                                \n								<h2 style=\"margin:8px 0 0;padding: 0; font-size:30px;font-weight: 700;color: {primary-color};text-align:center;\">Password Update Successful</h2>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>        \n		<tr>            \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n					<tbody>                        \n						<tr>                            \n							<td style=\"padding:40px 0 60px;\">                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {user_full_name}</h3>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">It seems that you have recently updated your password and your action is successful. You have successfully updated your password.</p>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Below are your new credentials:</p>                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                    \n									<tbody>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Email</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_email}</td>                                        \n										</tr>                                        \n										<tr>                                            \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Password</td>                                            \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{user_password}</td>                                        \n										</tr>                                    \n									</tbody>                                \n								</table>                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Now, you are ready to use your new password.</p>                                \n								<p><a href=\"{login_link}\" style=\"background:{secondary-color}; color:{secondary-inverse-color}; text-decoration:none;font-size:16px; font-weight:500;padding:10px 30px;display:inline-block;border-radius:3px;\">Login</a></p>                            </td>                        \n						</tr>                    \n					</tbody>                \n				</table>            </td>        \n		</tr>    \n	</tbody>\n</table>', '{user_full_name} User name<br>\n{user_email} User email<br>\n{user_password} New password<br>\n{login_link} Link to login page<br>', 1, 0),
 ('wallet_balance_low_for_subscription', 1, 'Wallet balance low for recurring Subscription', 'Wallet balance low for recurring Subscription {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Wallet balance Alert!</span></td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your wallet balance is low for the recurring subscription. Kindly update your wallet balance to continue the subscription.</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Current Balance</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{current_balance}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Subscription Amount</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{subscription_amount}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table></td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table> ', '{learner_name} Learner Name {current_balance} Current Balance {subscription_amount} Subscription Amount', 1, 0),
 ('wallet_balance_low_for_subscription', 2, 'رصيد المحفظة منخفض للاشتراك المتكرر', 'انخفاض رصيد المحفظة مقابل الاشتراك المتكرر {website_name}', '\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \n        \n	<tbody>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Wallet balance Alert!</span></td>        \n                \n		</tr>        \n                \n		<tr>            \n                        \n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \n                                \n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \n                                        \n					<tbody>                        \n                                                \n						<tr>                            \n                                                        \n							<td style=\"padding:40px 0 60px;\">                                \n                                                                \n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \n                                                                \n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">This is an update regarding your wallet balance is low for the recurring subscription. Kindly update your wallet balance to continue the subscription.</p>                                                                \n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \n									<tbody>                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Current Balance</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{current_balance}</td>                                                                                \n										</tr>                                      \n                                                                                \n										<tr>                                                                                        \n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Subscription Amount</td>                                                                                        \n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{subscription_amount}</td>                                                                                \n										</tr>                                                                        \n									</tbody>                                                                \n								</table></td>                        \n                                                \n						</tr>                    \n                                        \n					</tbody>                \n                                \n				</table>            </td>        \n                \n		</tr>    \n        \n	</tbody>\n</table> ', '{learner_name} Learner Name {current_balance} Current Balance {subscription_amount} Subscription Amount', 1, 0),
 ('wallet_balance_maintain_for_subscription', 1, 'Wallet balance maintain for recurring Subscription', 'Wallet balance maintain for recurring Subscription {website_name}', '\r\n<table width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">    \r\n        \r\n	<tbody>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">Wallet balance maintain Alert!</span></td>        \r\n                \r\n		</tr>        \r\n                \r\n		<tr>            \r\n                        \r\n			<td style=\"background:#fff;padding:0 40px; text-align:left; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n                                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n                                        \r\n					<tbody>                        \r\n                                                \r\n						<tr>                            \r\n                                                        \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n                                                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear {learner_name} </h3>                                \r\n                                                                \r\n								<p style=\"font-size: 14px; line-height: 20px;color: #676767;\">Please maintain your wallet balance for the recurring subscription</p>                                                                \r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">                                                                        \r\n									<tbody>                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Current Balance</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{current_balance}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Subscription Amount</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{subscription_amount}</td>                                                                                \r\n										</tr>                                      \r\n                                                                                \r\n										<tr>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Subscription&nbsp;recurring Date</td>                                                                                        \r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{sub_recurring_date}</td>                                                                                \r\n										</tr>                                                                        \r\n									</tbody>                                                                \r\n								</table></td>                        \r\n                                                \r\n						</tr>                    \r\n                                        \r\n					</tbody>                \r\n                                \r\n				</table>            </td>        \r\n                \r\n		</tr>    \r\n        \r\n	</tbody>\r\n</table>', '{learner_name} Learner Name <br>\r\n{current_balance} Learner Name <br>\r\n{subscription_amount} subscription amount\r\n{sub_recurring_date} subscription recurring date', 1, 0),
@@ -1507,13 +1587,15 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 -- Table structure for table `tbl_extra_pages`
 --
 
-CREATE TABLE `tbl_extra_pages` (
-  `epage_id` int NOT NULL,
-  `epage_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `epage_type` tinyint NOT NULL,
+DROP TABLE IF EXISTS `tbl_extra_pages`;
+CREATE TABLE IF NOT EXISTS `tbl_extra_pages` (
+  `epage_id` int(11) NOT NULL AUTO_INCREMENT,
+  `epage_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `epage_type` tinyint(4) NOT NULL,
   `epage_active` tinyint(1) NOT NULL,
-  `epage_default_content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `epage_default_content` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`epage_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_extra_pages`
@@ -1537,11 +1619,13 @@ INSERT INTO `tbl_extra_pages` (`epage_id`, `epage_identifier`, `epage_type`, `ep
 -- Table structure for table `tbl_extra_pages_lang`
 --
 
-CREATE TABLE `tbl_extra_pages_lang` (
-  `epagelang_epage_id` int NOT NULL,
-  `epagelang_lang_id` int NOT NULL,
-  `epage_label` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `epage_content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_extra_pages_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_extra_pages_lang` (
+  `epagelang_epage_id` int(11) NOT NULL,
+  `epagelang_lang_id` int(11) NOT NULL,
+  `epage_label` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `epage_content` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  UNIQUE KEY `epagelang_epage_id` (`epagelang_epage_id`,`epagelang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1551,16 +1635,16 @@ CREATE TABLE `tbl_extra_pages_lang` (
 INSERT INTO `tbl_extra_pages_lang` (`epagelang_epage_id`, `epagelang_lang_id`, `epage_label`, `epage_content`) VALUES
 (1, 1, 'Teacher Profile info bar', '<div class=\"infobar__list-content\">\r\n										<ol>\r\n											<li>Profile needs to be 80% completed</li>\r\n											<li>You have to complete lorem ipsum dolar summit text</li>\r\n											<li>After verify all the details you have to mark availbility in calendar section.</li>\r\n										</ol>\r\n									</div>'),
 (1, 2, 'Teacher Profile info bar', '<div class=\"infobar__list-content\">\r\n										<ol>\r\n											<li>Profile needs to be 80% completed</li>\r\n											<li>You have to complete lorem ipsum dolar summit text</li>\r\n											<li>After verify all the details you have to mark availbility in calendar section.</li>\r\n										</ol>\r\n									</div>'),
-(2, 1, 'We make language learning easy & simpler', '\r\n<section class=\"section section--services\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>We make language learning easy &amp; simpler</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"row\">\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650274062-professionaltutors.png\" alt=\"Professional Tutors\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Professional Tutors</h3>\r\n							<p>Choose from over a myriad of professional &amp; experienced teachers to be fluent in any language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650275015-1on1.png\" alt=\"1-on-1 Live sessions\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>1-on-1 Live sessions</h3>\r\n							<p>Connect with your teachers via 1-on-1 live chat sessions and build a deeper understanding of a language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/120x120_3.png\" alt=\"Group Classes\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Group Classes</h3>\r\n							<p>Feel motivated, enthusiastic, and improve your social interaction via group lessons.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/120x120_4.png\" alt=\"Convenience &amp; Flexibility\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Convenience &amp; Flexibility</h3>\r\n							<p>Schedule lessons as per your availability and learn at your own pace with no constraints of time and place.</p></div></div></div></div></div></div></section> '),
-(2, 2, 'We make language learning easy & simpler', '\r\n<section class=\"section section--services\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>We make language learning easy &amp; simpler</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"row\">\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650274062-professionaltutors.png\" alt=\"Professional Tutors\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Professional Tutors</h3>\r\n							<p>Choose from over a myriad of professional &amp; experienced teachers to be fluent in any language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650275015-1on1.png\" alt=\"1-on-1 Live sessions\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>1-on-1 Live sessions</h3>\r\n							<p>Connect with your teachers via 1-on-1 live chat sessions and build a deeper understanding of a language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/120x120_3.png\" alt=\"Group Classes\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Group Classes</h3>\r\n							<p>Feel motivated, enthusiastic, and improve your social interaction via group lessons.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/120x120_4.png\" alt=\"Convenience &amp; Flexibility\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Convenience &amp; Flexibility</h3>\r\n							<p>Schedule lessons as per your availability and learn at your own pace with no constraints of time and place.</p></div></div></div></div></div></div></section> '),
+(2, 1, 'We make language learning easy & simpler', '\r\n<section class=\"section section--services\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>We make language learning easy &amp; simpler</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"row\">\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650274062-professionaltutors.png\" alt=\"Professional Tutors\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Professional Tutors</h3>\r\n							<p>Choose from over a myriad of professional &amp; experienced teachers to be fluent in any language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650275015-1on1.png\" alt=\"1-on-1 Live sessions\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>1-on-1 Live sessions</h3>\r\n							<p>Connect with your teachers via 1-on-1 live chat sessions and build a deeper understanding of a language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"images/120x120_3.png\" alt=\"Group Classes\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Group Classes</h3>\r\n							<p>Feel motivated, enthusiastic, and improve your social interaction via group lessons.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"images/120x120_4.png\" alt=\"Convenience &amp; Flexibility\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Convenience &amp; Flexibility</h3>\r\n							<p>Schedule lessons as per your availability and learn at your own pace with no constraints of time and place.</p></div></div></div></div></div></div></section> '),
+(2, 2, 'We make language learning easy & simpler', '\r\n<section class=\"section section--services\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"section__head\">\r\n			<h2>We make language learning easy &amp; simpler</h2></div>\r\n		<div class=\"section__body\">\r\n			<div class=\"row\">\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650274062-professionaltutors.png\" alt=\"Professional Tutors\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Professional Tutors</h3>\r\n							<p>Choose from over a myriad of professional &amp; experienced teachers to be fluent in any language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"/image/editor-image/1650275015-1on1.png\" alt=\"1-on-1 Live sessions\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>1-on-1 Live sessions</h3>\r\n							<p>Connect with your teachers via 1-on-1 live chat sessions and build a deeper understanding of a language.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"images/120x120_3.png\" alt=\"Group Classes\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Group Classes</h3>\r\n							<p>Feel motivated, enthusiastic, and improve your social interaction via group lessons.</p></div></div></div>\r\n				<div class=\"col-md-6\">\r\n					<div class=\"service\">\r\n						<div class=\"service__media\"><img src=\"images/120x120_4.png\" alt=\"Convenience &amp; Flexibility\" style=\"float: none; margin: 0px; width: 60px; height: 60px;\" /><br />\r\n							</div>\r\n						<div class=\"service__content\">\r\n							<h3>Convenience &amp; Flexibility</h3>\r\n							<p>Schedule lessons as per your availability and learn at your own pace with no constraints of time and place.</p></div></div></div></div></div></div></section> '),
 (3, 1, 'Browse Tutor', '\r\n<section class=\"section section--cta\" style=\"background-image:url(/image/editor-image/1650020667-cta.jpg);\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"cta-content\">          \r\n			<h2>Speak any language fluently with the help of professional tutors</h2><a class=\"btn btn--secondary btn--large\" href=\"/teachers/languages\">Browse Tutors</a></div></div></section>  '),
 (3, 2, 'Browse Tutor', '\r\n<section class=\"section section--cta\" style=\"background-image:url(/image/editor-image/1650020667-cta.jpg);\">\r\n	<div class=\"container container--narrow\">\r\n		<div class=\"cta-content\">          \r\n			<h2>Speak any language fluently with the help of professional tutors</h2><a class=\"btn btn--secondary btn--large\" href=\"/teachers/languages\">Browse Tutors</a></div></div></section>  '),
 (4, 1, 'Contact Banner', '\r\n<div class=\"intro-head\">\r\n	<h6 class=\"small-title\"><img src=\"background-image:url(images/cta.jpg)\" alt=\"\" border=\"0\" style=\"margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;\" />Contact Us</h6>\r\n	<h2>Let’s build your online tutoring platform</h2>\r\n	<div><br />\r\n		</div></div>\r\n<div class=\"about-media\">\r\n	<div class=\"media\"><img src=\"/image/editor-image/1650023804-contacthero.png\" alt=\"Let’s build your online tutoring platform\" /></div></div>'),
 (4, 2, 'Contact Banner', '\r\n<div class=\"intro-head\">\r\n	<h6 class=\"small-title\"><img src=\"background-image:url(images/cta.jpg)\" alt=\"\" border=\"0\" style=\"margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;\" />Contact Us</h6>\r\n	<h2>Let’s build your online tutoring platform</h2>\r\n	<div><br />\r\n		</div></div>\r\n<div class=\"about-media\">\r\n	<div class=\"media\"><img src=\"/image/editor-image/1650023804-contacthero.png\" alt=\"Let’s build your online tutoring platform\" /></div></div>'),
 (5, 1, 'Contact Left Section', '<div class=\"col-md-5 col-lg-4\"><div class=\"contact-info\"><div class=\"contact-info__row\"><div class=\"contact__icon\"><svg class=\"icon icon--address\"><use xlink:href=\"images/sprite.yo-coach.svg#address\"></use></svg></div><div class=\"contact__content\"><h6>Address</h6><p>Yo-Coach Pvt. Ltd.<br> Plot No. 268, Lorem Ipsum, Industrial Area<br> Sector 82, Mohali, Punjab</p></div></div><div class=\"contact-info__row\"><div class=\"contact__icon\"> <svg class=\"icon icon--mail\"><use xlink:href=\"images/sprite.yo-coach.svg#mail\"></use></svg></div><div class=\"contact__content\"><h6>Email</h6><p>sales@yo-oach.com <br> info@yo-coach.com</p></div></div><div class=\"contact-info__row\"><div class=\"contact__icon\"><svg class=\"icon icon--telephone\"><use xlink:href=\"images/sprite.yo-coach.svg#telephone\"></use></svg></div><div class=\"contact__content\"><h6>Phone no.</h6><p>(+44) 020 7846 0316 <br> (+44) 020 7846 0316 <br> (+44) 020 7846 0316</p></div></div></div></div>'),
 (5, 2, 'Contact Left Section', '<div class=\"col-md-5 col-lg-4\"><div class=\"contact-info\"><div class=\"contact-info__row\"><div class=\"contact__icon\"><svg class=\"icon icon--address\"><use xlink:href=\"images/sprite.yo-coach.svg#address\"></use></svg></div><div class=\"contact__content\"><h6>Address</h6><p>Yo-Coach Pvt. Ltd.<br> Plot No. 268, Lorem Ipsum, Industrial Area<br> Sector 82, Mohali, Punjab</p></div></div><div class=\"contact-info__row\"><div class=\"contact__icon\"> <svg class=\"icon icon--mail\"><use xlink:href=\"images/sprite.yo-coach.svg#mail\"></use></svg></div><div class=\"contact__content\"><h6>Email</h6><p>sales@yo-oach.com <br> info@yo-coach.com</p></div></div><div class=\"contact-info__row\"><div class=\"contact__icon\"><svg class=\"icon icon--telephone\"><use xlink:href=\"images/sprite.yo-coach.svg#telephone\"></use></svg></div><div class=\"contact__content\"><h6>Phone no.</h6><p>(+44) 020 7846 0316 <br> (+44) 020 7846 0316 <br> (+44) 020 7846 0316</p></div></div></div></div>'),
-(6, 1, 'Benefits to become a tutor', '\r\n<section class=\"section section--services\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"section__head\">                \r\n			<h2>Benefits to become a tutor on Yo!Coach?</h2>            </div>            \r\n		<div class=\"section__body\">                \r\n			<div class=\"row\">                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_1.png\" alt=\"Earn Money Online\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Earn Money Online</h3>                                \r\n							<p>Opportunity to earn money online working from home<br />\r\n								</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_2.png\" alt=\"Work Anywhere, Anytime\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Work Anywhere, Anytime</h3>                                \r\n							<p>Flexibility to teach at home without wasting productive time.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_3.png\" alt=\"Teach on Your Schedule\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Teach on Your Schedule.</h3>                                \r\n							<p>Ability to perform your teaching duties at your own convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_4.png\" alt=\"Manage Your Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Manage Your Students</h3>                                \r\n							<p>Teach as many or as few students as your convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_5.png\" alt=\"Find More Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Find More Students</h3>                                \r\n							<p>Ability to teach students from across the globe without traveling.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_6.png\" alt=\"Safety and Security\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Safety and Security</h3>                                \r\n							<p>Considering all the benefits, you will be professionally satisfied.</p>                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section>   '),
-(6, 2, 'Benefits to become a tutor', '\r\n<section class=\"section section--services\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"section__head\">                \r\n			<h2>Benefits to become a tutor on Yo!Coach?</h2>            </div>            \r\n		<div class=\"section__body\">                \r\n			<div class=\"row\">                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_1.png\" alt=\"Earn Money Online\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Earn Money Online</h3>                                \r\n							<p>Opportunity to earn money online working from home<br />\r\n								</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_2.png\" alt=\"Work Anywhere, Anytime\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Work Anywhere, Anytime</h3>                                \r\n							<p>Flexibility to teach at home without wasting productive time.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_3.png\" alt=\"Teach on Your Schedule\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Teach on Your Schedule.</h3>                                \r\n							<p>Ability to perform your teaching duties at your own convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_4.png\" alt=\"Manage Your Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Manage Your Students</h3>                                \r\n							<p>Teach as many or as few students as your convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_5.png\" alt=\"Find More Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Find More Students</h3>                                \r\n							<p>Ability to teach students from across the globe without traveling.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"https://teach.yo-coach.com/images/55x55_6.png\" alt=\"Safety and Security\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Safety and Security</h3>                                \r\n							<p>Considering all the benefits, you will be professionally satisfied.</p>                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section>   '),
+(6, 1, 'Benefits to become a tutor', '\r\n<section class=\"section section--services\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"section__head\">                \r\n			<h2>Benefits to become a tutor on Yo!Coach?</h2>            </div>            \r\n		<div class=\"section__body\">                \r\n			<div class=\"row\">                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_1.png\" alt=\"Earn Money Online\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Earn Money Online</h3>                                \r\n							<p>Opportunity to earn money online working from home<br />\r\n								</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_2.png\" alt=\"Work Anywhere, Anytime\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Work Anywhere, Anytime</h3>                                \r\n							<p>Flexibility to teach at home without wasting productive time.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_3.png\" alt=\"Teach on Your Schedule\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Teach on Your Schedule.</h3>                                \r\n							<p>Ability to perform your teaching duties at your own convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_4.png\" alt=\"Manage Your Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Manage Your Students</h3>                                \r\n							<p>Teach as many or as few students as your convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n						<div class=\"service__media\"><img src=\"images/55x55_5.png\" alt=\"Find More Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Find More Students</h3>                                \r\n							<p>Ability to teach students from across the globe without traveling.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_6.png\" alt=\"Safety and Security\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Safety and Security</h3>                                \r\n							<p>Considering all the benefits, you will be professionally satisfied.</p>                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section>   '),
+(6, 2, 'Benefits to become a tutor', '\r\n<section class=\"section section--services\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"section__head\">                \r\n			<h2>Benefits to become a tutor on Yo!Coach?</h2>            </div>            \r\n		<div class=\"section__body\">                \r\n			<div class=\"row\">                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_1.png\" alt=\"Earn Money Online\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Earn Money Online</h3>                                \r\n							<p>Opportunity to earn money online working from home<br />\r\n								</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_2.png\" alt=\"Work Anywhere, Anytime\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Work Anywhere, Anytime</h3>                                \r\n							<p>Flexibility to teach at home without wasting productive time.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_3.png\" alt=\"Teach on Your Schedule\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Teach on Your Schedule.</h3>                                \r\n							<p>Ability to perform your teaching duties at your own convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_4.png\" alt=\"Manage Your Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Manage Your Students</h3>                                \r\n							<p>Teach as many or as few students as your convenience.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n						<div class=\"service__media\"><img src=\"images/55x55_5.png\" alt=\"Find More Students\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Find More Students</h3>                                \r\n							<p>Ability to teach students from across the globe without traveling.</p>                            </div>                        </div>                    </div>                    \r\n				<div class=\"col-lg-6\">                        \r\n					<div class=\"service service--horizontal\">                            \r\n                      \r\n						<div class=\"service__media\"><img src=\"images/55x55_6.png\" alt=\"Safety and Security\" /><br />\r\n							</div>                            \r\n						<div class=\"service__content\">                                \r\n							<h3>Safety and Security</h3>                                \r\n							<p>Considering all the benefits, you will be professionally satisfied.</p>                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section>   '),
 (7, 1, 'Apply to teach features section', '\r\n<section class=\"section \" id=\"how-it-works\" style=\"background-color: var(--color-gray-100);\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"row justify-content-between\">                \r\n			<div class=\"col-xl-4 col-lg-4 col-md-6\">                    \r\n				<div class=\"section__head align-left margin-bottom-5\">                        \r\n					<h2>Teach students from over 180 countries</h2>                    </div>                    \r\n				<ul class=\"list-group list-group--line margin-bottom-5\">                        \r\n					<li class=\"list-group--item\">Steady stream of new students</li>                        \r\n					<li class=\"list-group--item\">Smart calendar</li>                        \r\n					<li class=\"list-group--item\">Interactive classroom</li>                        \r\n					<li class=\"list-group--item\">Convenient payment methods</li>                        \r\n					<li class=\"list-group--item\">Training webinars</li>                        \r\n					<li class=\"list-group--item\">Supportive tutor community</li>                    \r\n				</ul>                    \r\n				<button class=\"btn btn--secondary \">Apply to Teach</button></div>                \r\n			<div class=\"col-xl-6 col-lg-6 col-md-6\">                    \r\n				<div class=\"media_group\">                        \r\n					<div class=\"media_group--item\">                            \r\n                      \r\n						<div class=\"ratio ratio--4by3\">                                <img src=\"/image/editor-image/1650023574-apply43.png\" alt=\"Image\" />                            </div>                        </div>                        \r\n					<div class=\"media_group--item media_group--item-small\">                            \r\n                      \r\n						<div class=\"ratio ratio--4by3\">                                <img src=\"/image/editor-image/1650023662-apply2.png\" alt=\"Image\" />                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section> '),
 (7, 2, 'Apply to teach features section', '\r\n<section class=\"section \" id=\"how-it-works\" style=\"background-color: var(--color-gray-100);\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"row justify-content-between\">                \r\n			<div class=\"col-xl-4 col-lg-4 col-md-6\">                    \r\n				<div class=\"section__head align-left margin-bottom-5\">                        \r\n					<h2>Teach students from over 180 countries</h2>                    </div>                    \r\n				<ul class=\"list-group list-group--line margin-bottom-5\">                        \r\n					<li class=\"list-group--item\">Steady stream of new students</li>                        \r\n					<li class=\"list-group--item\">Smart calendar</li>                        \r\n					<li class=\"list-group--item\">Interactive classroom</li>                        \r\n					<li class=\"list-group--item\">Convenient payment methods</li>                        \r\n					<li class=\"list-group--item\">Training webinars</li>                        \r\n					<li class=\"list-group--item\">Supportive tutor community</li>                    \r\n				</ul>                    \r\n				<button class=\"btn btn--secondary \">Apply to Teach</button></div>                \r\n			<div class=\"col-xl-6 col-lg-6 col-md-6\">                    \r\n				<div class=\"media_group\">                        \r\n					<div class=\"media_group--item\">                            \r\n                      \r\n						<div class=\"ratio ratio--4by3\">                                <img src=\"/image/editor-image/1650023574-apply43.png\" alt=\"Image\" />                            </div>                        </div>                        \r\n					<div class=\"media_group--item media_group--item-small\">                            \r\n                      \r\n						<div class=\"ratio ratio--4by3\">                                <img src=\"/image/editor-image/1650023662-apply2.png\" alt=\"Image\" />                            </div>                        </div>                    </div>                </div>            </div>        </div>    </section> '),
 (8, 1, 'Apply to teach Become a tutor', '<section class=\"section section--services\">        \r\n	<div class=\"container container--narrow\">            \r\n		<div class=\"section__head \">                \r\n			<h2>How to become a tutor on Yo!Coach?</h2>            </div>            \r\n		<div class=\"section__body\">                \r\n			<div class=\"service--wrapper\">                    \r\n				<div class=\"row\">                        \r\n					<div class=\"col-lg-4\">                            \r\n						<div class=\"service service--vertical\">                                \r\n                          \r\n							<div class=\"service__media\">                                    <img src=\"/images/register.png\" />                                </div>                                \r\n							<div class=\"service__content\">                                    \r\n								<h3>Register on Yo!Coach</h3>                                    \r\n								<p>Excepteur sint proident, occaecat cupidatat non proident, culpa qui officia velit, sed quia non deseruntadipisci proident,</p>                                </div>                            </div>                        </div>                        \r\n					<div class=\"col-lg-4\">                            \r\n						<div class=\"service service--vertical\">                                \r\n							<div class=\"service__media\">                                    <img src=\"/images/cv.png\" />                                </div>                                \r\n							<div class=\"service__content\">                                    \r\n								<h3>Complete Profile</h3>                                    \r\n								<p>Excepteur sint proident, occaecat cupidatat non proident, culpa qui officia velit, sed quia non deseruntadipisci proident,.</p>                                </div>                            </div>                        </div>                        \r\n					<div class=\"col-lg-4\">                            \r\n						<div class=\"service service--vertical\">                                \r\n							<div class=\"service__media\">                                    <img src=\"/images/online-learning.png\" />                                </div>                                \r\n							<div class=\"service__content\">                                    \r\n								<h3>Start Teaching</h3>                                    \r\n								<p>Excepteur sint proident, occaecat cupidatat non proident, culpa qui officia velit, sed quia non deseruntadipisci proident,.</p>                                </div>                            </div>                        </div>                    </div>                </div>           </div>        </div>    </section>'),
@@ -1576,9 +1660,10 @@ INSERT INTO `tbl_extra_pages_lang` (`epagelang_epage_id`, `epagelang_lang_id`, `
 -- Table structure for table `tbl_failed_login_attempts`
 --
 
-CREATE TABLE `tbl_failed_login_attempts` (
-  `attempt_username` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attempt_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_failed_login_attempts`;
+CREATE TABLE IF NOT EXISTS `tbl_failed_login_attempts` (
+  `attempt_username` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempt_ip` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `attempt_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1588,13 +1673,15 @@ CREATE TABLE `tbl_failed_login_attempts` (
 -- Table structure for table `tbl_faq`
 --
 
-CREATE TABLE `tbl_faq` (
-  `faq_id` int NOT NULL,
-  `faq_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_faq`;
+CREATE TABLE IF NOT EXISTS `tbl_faq` (
+  `faq_id` int(11) NOT NULL AUTO_INCREMENT,
+  `faq_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `faq_category` tinyint(1) NOT NULL,
   `faq_active` tinyint(1) NOT NULL,
-  `faq_added_on` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `faq_added_on` datetime NOT NULL,
+  PRIMARY KEY (`faq_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_faq`
@@ -1617,14 +1704,16 @@ INSERT INTO `tbl_faq` (`faq_id`, `faq_identifier`, `faq_category`, `faq_active`,
 -- Table structure for table `tbl_faq_categories`
 --
 
-CREATE TABLE `tbl_faq_categories` (
-  `faqcat_id` int NOT NULL,
-  `faqcat_identifier` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_faq_categories`;
+CREATE TABLE IF NOT EXISTS `tbl_faq_categories` (
+  `faqcat_id` int(11) NOT NULL AUTO_INCREMENT,
+  `faqcat_identifier` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `faqcat_active` tinyint(1) NOT NULL,
   `faqcat_deleted` tinyint(1) NOT NULL,
-  `faqcat_order` int NOT NULL,
-  `faqcat_featured` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `faqcat_order` int(11) NOT NULL,
+  `faqcat_featured` tinyint(1) NOT NULL,
+  PRIMARY KEY (`faqcat_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_faq_categories`
@@ -1642,10 +1731,12 @@ INSERT INTO `tbl_faq_categories` (`faqcat_id`, `faqcat_identifier`, `faqcat_acti
 -- Table structure for table `tbl_faq_categories_lang`
 --
 
-CREATE TABLE `tbl_faq_categories_lang` (
-  `faqcatlang_faqcat_id` int NOT NULL,
-  `faqcatlang_lang_id` int NOT NULL,
-  `faqcat_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_faq_categories_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_faq_categories_lang` (
+  `faqcatlang_faqcat_id` int(11) NOT NULL,
+  `faqcatlang_lang_id` int(11) NOT NULL,
+  `faqcat_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`faqcatlang_faqcat_id`,`faqcatlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1654,11 +1745,13 @@ CREATE TABLE `tbl_faq_categories_lang` (
 -- Table structure for table `tbl_faq_lang`
 --
 
-CREATE TABLE `tbl_faq_lang` (
-  `faqlang_faq_id` int NOT NULL,
-  `faqlang_lang_id` int NOT NULL,
-  `faq_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `faq_description` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_faq_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_faq_lang` (
+  `faqlang_faq_id` int(11) NOT NULL,
+  `faqlang_lang_id` int(11) NOT NULL,
+  `faq_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `faq_description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`faqlang_faq_id`,`faqlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1684,15 +1777,17 @@ INSERT INTO `tbl_faq_lang` (`faqlang_faq_id`, `faqlang_lang_id`, `faq_title`, `f
 -- Table structure for table `tbl_flashcards`
 --
 
-CREATE TABLE `tbl_flashcards` (
-  `flashcard_id` int NOT NULL,
-  `flashcard_type` int DEFAULT NULL,
-  `flashcard_type_id` int DEFAULT NULL,
-  `flashcard_user_id` int NOT NULL,
-  `flashcard_tlang_id` int DEFAULT NULL,
-  `flashcard_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `flashcard_detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `flashcard_addedon` datetime NOT NULL
+DROP TABLE IF EXISTS `tbl_flashcards`;
+CREATE TABLE IF NOT EXISTS `tbl_flashcards` (
+  `flashcard_id` int(11) NOT NULL AUTO_INCREMENT,
+  `flashcard_type` int(11) DEFAULT NULL,
+  `flashcard_type_id` int(11) DEFAULT NULL,
+  `flashcard_user_id` int(11) NOT NULL,
+  `flashcard_tlang_id` int(11) DEFAULT NULL,
+  `flashcard_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `flashcard_detail` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `flashcard_addedon` datetime NOT NULL,
+  PRIMARY KEY (`flashcard_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1701,14 +1796,16 @@ CREATE TABLE `tbl_flashcards` (
 -- Table structure for table `tbl_gdpr_requests`
 --
 
-CREATE TABLE `tbl_gdpr_requests` (
-  `gdpreq_id` int NOT NULL,
-  `gdpreq_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_gdpr_requests`;
+CREATE TABLE IF NOT EXISTS `tbl_gdpr_requests` (
+  `gdpreq_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gdpreq_user_id` int(11) NOT NULL,
   `gdpreq_type` tinyint(1) NOT NULL,
-  `gdpreq_reason` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gdpreq_reason` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `gdpreq_status` tinyint(1) NOT NULL,
   `gdpreq_added_on` datetime NOT NULL,
-  `gdpreq_updated_on` datetime DEFAULT NULL
+  `gdpreq_updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`gdpreq_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1717,11 +1814,13 @@ CREATE TABLE `tbl_gdpr_requests` (
 -- Table structure for table `tbl_general_availability`
 --
 
-CREATE TABLE `tbl_general_availability` (
-  `gavail_id` int NOT NULL,
-  `gavail_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_general_availability`;
+CREATE TABLE IF NOT EXISTS `tbl_general_availability` (
+  `gavail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gavail_user_id` int(11) NOT NULL,
   `gavail_starttime` datetime NOT NULL,
-  `gavail_endtime` datetime NOT NULL
+  `gavail_endtime` datetime NOT NULL,
+  PRIMARY KEY (`gavail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1730,12 +1829,14 @@ CREATE TABLE `tbl_general_availability` (
 -- Table structure for table `tbl_google_calendar_events`
 --
 
-CREATE TABLE `tbl_google_calendar_events` (
-  `gocaev_id` int NOT NULL,
-  `gocaev_user_id` int NOT NULL,
-  `gocaev_event_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gocaev_record_id` int NOT NULL,
-  `gocaev_record_type` int NOT NULL
+DROP TABLE IF EXISTS `tbl_google_calendar_events`;
+CREATE TABLE IF NOT EXISTS `tbl_google_calendar_events` (
+  `gocaev_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gocaev_user_id` int(11) NOT NULL,
+  `gocaev_event_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gocaev_record_id` int(11) NOT NULL,
+  `gocaev_record_type` int(11) NOT NULL,
+  PRIMARY KEY (`gocaev_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1744,26 +1845,28 @@ CREATE TABLE `tbl_google_calendar_events` (
 -- Table structure for table `tbl_group_classes`
 --
 
-CREATE TABLE `tbl_group_classes` (
-  `grpcls_id` int NOT NULL,
-  `grpcls_type` int NOT NULL,
-  `grpcls_parent` int NOT NULL,
-  `grpcls_slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `grpcls_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `grpcls_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `grpcls_teacher_id` int NOT NULL,
-  `grpcls_tlang_id` int NOT NULL,
-  `grpcls_duration` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_group_classes`;
+CREATE TABLE IF NOT EXISTS `tbl_group_classes` (
+  `grpcls_id` int(11) NOT NULL AUTO_INCREMENT,
+  `grpcls_type` int(11) NOT NULL,
+  `grpcls_parent` int(11) NOT NULL,
+  `grpcls_slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `grpcls_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `grpcls_description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `grpcls_teacher_id` int(11) NOT NULL,
+  `grpcls_tlang_id` int(11) NOT NULL,
+  `grpcls_duration` int(11) NOT NULL,
   `grpcls_start_datetime` datetime NOT NULL,
   `grpcls_end_datetime` datetime NOT NULL,
   `grpcls_teacher_starttime` datetime DEFAULT NULL,
   `grpcls_teacher_endtime` datetime DEFAULT NULL,
-  `grpcls_total_seats` int NOT NULL,
-  `grpcls_booked_seats` int NOT NULL,
+  `grpcls_total_seats` int(11) NOT NULL,
+  `grpcls_booked_seats` int(11) NOT NULL,
   `grpcls_entry_fee` float(10,2) NOT NULL,
-  `grpcls_status` int NOT NULL,
-  `grpcls_metool_id` int NOT NULL,
-  `grpcls_added_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `grpcls_status` int(11) NOT NULL,
+  `grpcls_metool_id` int(11) NOT NULL,
+  `grpcls_added_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`grpcls_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1772,11 +1875,13 @@ CREATE TABLE `tbl_group_classes` (
 -- Table structure for table `tbl_group_classes_lang`
 --
 
-CREATE TABLE `tbl_group_classes_lang` (
-  `gclang_grpcls_id` int NOT NULL,
-  `gclang_lang_id` int NOT NULL,
-  `grpcls_title` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `grpcls_description` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_group_classes_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_group_classes_lang` (
+  `gclang_grpcls_id` int(11) NOT NULL,
+  `gclang_lang_id` int(11) NOT NULL,
+  `grpcls_title` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `grpcls_description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`gclang_grpcls_id`,`gclang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -1785,12 +1890,14 @@ CREATE TABLE `tbl_group_classes_lang` (
 -- Table structure for table `tbl_issue_report_options`
 --
 
-CREATE TABLE `tbl_issue_report_options` (
-  `tissueopt_id` int NOT NULL,
-  `tissueopt_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tissueopt_order` int NOT NULL,
-  `tissueopt_active` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_issue_report_options`;
+CREATE TABLE IF NOT EXISTS `tbl_issue_report_options` (
+  `tissueopt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tissueopt_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tissueopt_order` int(11) NOT NULL,
+  `tissueopt_active` int(11) NOT NULL,
+  PRIMARY KEY (`tissueopt_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_issue_report_options`
@@ -1810,11 +1917,13 @@ INSERT INTO `tbl_issue_report_options` (`tissueopt_id`, `tissueopt_identifier`, 
 -- Table structure for table `tbl_issue_report_options_lang`
 --
 
-CREATE TABLE `tbl_issue_report_options_lang` (
-  `tissueoptlang_tissueopt_id` int NOT NULL,
-  `tissueoptlang_lang_id` int NOT NULL,
-  `tissueoptlang_title` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_issue_report_options_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_issue_report_options_lang` (
+  `tissueoptlang_tissueopt_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tissueoptlang_lang_id` int(11) NOT NULL,
+  `tissueoptlang_title` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`tissueoptlang_tissueopt_id`,`tissueoptlang_lang_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_issue_report_options_lang`
@@ -1834,14 +1943,16 @@ INSERT INTO `tbl_issue_report_options_lang` (`tissueoptlang_tissueopt_id`, `tiss
 -- Table structure for table `tbl_languages`
 --
 
-CREATE TABLE `tbl_languages` (
-  `language_id` int NOT NULL,
-  `language_code` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `language_flag` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `language_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_languages`;
+CREATE TABLE IF NOT EXISTS `tbl_languages` (
+  `language_id` int(11) NOT NULL AUTO_INCREMENT,
+  `language_code` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `language_flag` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `language_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `language_active` tinyint(1) NOT NULL DEFAULT '1',
-  `language_direction` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `language_direction` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`language_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_languages`
@@ -1850,14 +1961,14 @@ CREATE TABLE `tbl_languages` (
 INSERT INTO `tbl_languages` (`language_id`, `language_code`, `language_flag`, `language_name`, `language_active`, `language_direction`) VALUES
 (1, 'EN', 'en.png', 'English', 1, 'ltr'),
 (2, 'AR', 'ar.png', 'Arabic', 1, 'rtl'),
-(3, 'ZH', 'zh.png', 'Chinese', '1', 'ltr'),
-(4, 'FR', 'fr.png', 'French', '1', 'ltr'),
-(5, 'TH', 'th.png', 'Thai', '1', 'ltr'),
-(6, 'VI', 'vi.png', 'Vietnamese', '1', 'ltr'),
-(7, 'ES', 'es.png', 'Spanish', '1', 'ltr'),
-(8, 'RU', 'ru.png', 'Russian', '1', 'ltr'),
-(9, 'SW', 'sw.png', 'Swahili', '1', 'ltr'),
-(10, 'HE', 'he.png', 'Hebrew', '1', 'rtl');
+(3, 'ZH', 'zh.png', 'Chinese', 1, 'ltr'),
+(4, 'FR', 'fr.png', 'French', 1, 'ltr'),
+(5, 'TH', 'th.png', 'Thai', 1, 'ltr'),
+(6, 'VI', 'vi.png', 'Vietnamese', 1, 'ltr'),
+(7, 'ES', 'es.png', 'Spanish', 1, 'ltr'),
+(8, 'RU', 'ru.png', 'Russian', 1, 'ltr'),
+(9, 'SW', 'sw.png', 'Swahili', 1, 'ltr'),
+(10, 'HE', 'he.png', 'Hebrew', 1, 'rtl');
 
 -- --------------------------------------------------------
 
@@ -1865,12 +1976,15 @@ INSERT INTO `tbl_languages` (`language_id`, `language_code`, `language_flag`, `l
 -- Table structure for table `tbl_language_labels`
 --
 
-CREATE TABLE `tbl_language_labels` (
-  `label_id` int NOT NULL,
-  `label_lang_id` int NOT NULL,
-  `label_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `label_caption` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_language_labels`;
+CREATE TABLE IF NOT EXISTS `tbl_language_labels` (
+  `label_id` int(11) NOT NULL AUTO_INCREMENT,
+  `label_lang_id` int(11) NOT NULL,
+  `label_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label_caption` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`label_id`),
+  UNIQUE KEY `label_key` (`label_key`,`label_lang_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12662 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_language_labels`
@@ -4438,7 +4552,6 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (2756, 1, 'LBL_REPORT', 'Report'),
 (2757, 1, 'LBL_END_CLASS_CONFIRM_MSG', 'Are you sure you want to end the class?'),
 (2758, 1, 'MSG_GO_TO_CLASSES', 'Go to Classes'),
-(2760, 1, 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}', 'Your payment has been failed. Please contact admin at {contactURL}'),
 (2761, 1, 'LBL_PAYMENT_FAILED', 'Payment Failed'),
 (2762, 2, 'LBL_PAGE_IDENTIFIER', 'معرف الصفحة'),
 (2808, 2, 'VIEW_LISTING', 'قائمة'),
@@ -4677,10 +4790,10 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (3274, 2, 'TMZ_ASIA/AQTAU', 'آسيا/aqtau'),
 (3276, 2, 'TMZ_ASIA/ANADYR', 'آسيا/anadyr'),
 (3278, 2, 'TMZ_ASIA/AMMAN', 'آسيا/عمان'),
-(3280, 2, 'TMZ_ASIA/ALMATY', 'آسيا/الماتي');
-INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
+(3280, 2, 'TMZ_ASIA/ALMATY', 'آسيا/الماتي'),
 (3282, 2, 'TMZ_ASIA/ADEN', 'آسيا/عدن'),
-(3284, 2, 'TMZ_ARCTIC/LONGYEARBYEN', 'القطب الشمالي/longyearbyen'),
+(3284, 2, 'TMZ_ARCTIC/LONGYEARBYEN', 'القطب الشمالي/longyearbyen');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
 (3286, 2, 'TMZ_ANTARCTICA/VOSTOK', 'أنتاركتيكا/فوستوك'),
 (3288, 2, 'TMZ_ANTARCTICA/TROLL', 'أنتاركتيكا/القزم'),
 (3290, 2, 'TMZ_ANTARCTICA/SYOWA', 'أنتاركتيكا/سيوا'),
@@ -5559,11 +5672,11 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (5384, 2, 'LBL_MIN', 'دقيقة'),
 (5386, 2, 'LBL_METHOD_FEE_SETUPS', 'إعدادات الرسوم'),
 (5388, 2, 'LBL_META_TITLE', 'عنوان الفوقية'),
-(5390, 2, 'LBL_META_TAGS_SETUP', 'إعداد علامات التعريف');
-INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
+(5390, 2, 'LBL_META_TAGS_SETUP', 'إعداد علامات التعريف'),
 (5392, 2, 'LBL_META_TAGS_LISTING', 'قائمة العلامات الوصفية'),
 (5396, 2, 'LBL_META_TAG_SETUP', 'إعداد علامة التعريف'),
-(5398, 2, 'LBL_MESSAGING', 'المراسلة'),
+(5398, 2, 'LBL_MESSAGING', 'المراسلة');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
 (5400, 2, 'LBL_MESSAGES', 'رسائل'),
 (5402, 2, 'LBL_MESSAGE', 'رسالة'),
 (5404, 2, 'LBL_MENU', 'قائمة الطعام'),
@@ -6433,11 +6546,11 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (7389, 1, 'LBL_USES/USER', 'Uses/User'),
 (7390, 1, 'LBL_DATE_TILL', 'Date Till'),
 (7391, 1, 'LBL_COUPON_SETUP', 'Coupon Setup'),
-(7392, 2, 'LBL_CLASS_SEARCH_HEADLINE', 'اختر المعلمين ذوي الخبرة والحصول على أفضل تجربة تعليمية.');
-INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
+(7392, 2, 'LBL_CLASS_SEARCH_HEADLINE', 'اختر المعلمين ذوي الخبرة والحصول على أفضل تجربة تعليمية.'),
 (7393, 2, 'LBL_ORIGINAL_URL', 'عنوان URL الأصلي'),
 (7394, 2, 'LBL_CUSTOM_URL', 'عنوان URL المخصص'),
-(7395, 2, 'LBL_HTTP_CODE', 'رمز HTTP'),
+(7395, 2, 'LBL_HTTP_CODE', 'رمز HTTP');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES
 (7396, 2, 'LBL_301_REDIRECT_PERMANENTLY', '301 إعادة التوجيه بشكل دائم'),
 (7397, 2, 'LBL_302_REDIRECT_TEMPRARY', '302 إعادة توجيه مؤقت'),
 (7398, 2, 'LBL_EXAMPLE_CUSTOM_URL_EXAMPLE', 'مثال على سبيل المثال عنوان URL المخصص'),
@@ -6614,7 +6727,6 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (8813, 2, 'MSG_LESSONS_ORDERS', 'أوامر الدرس'),
 (8815, 2, 'MSG_LESSON_TOP_LANGUAGES', 'درس أعلى اللغات'),
 (8817, 2, 'MSG_LESSON_STATS', 'إحصائيات الدرس'),
-(8819, 2, 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}', 'لقد فشل دفعتك. يرجى الاتصال المسؤول على {contacturl}'),
 (8823, 2, 'MSG_LANGUAGE_LABELS', 'ملصقات اللغة'),
 (8825, 2, 'MSG_ISSUE_REPORT_OPTIONS', 'خيارات تقرير القضية'),
 (8831, 2, 'MSG_HOMEPAGE_SLIDES', 'شرائح الصفحة الرئيسية'),
@@ -6900,7 +7012,9 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 (12654, 1, 'LBL_EXPIRE', 'Expire'),
 (12655, 1, 'MSG_WRITE_PERMISSION_DENIED', 'Write Permission Denied'),
 (12656, 1, 'LBL_FACEBOOK_LOGIN', 'Facebook Login'),
-(12657, 1, 'LBL_NOT_CONFIGURED_PLEASE_CONTACT_SUPPORT', 'Not Configured Please Contact Support');
+(12657, 1, 'LBL_NOT_CONFIGURED_PLEASE_CONTACT_SUPPORT', 'Not Configured Please Contact Support'),
+(12660, 1, 'LBL_TEACHER_PRICING', 'Pricing'),
+(12661, 2, 'LBL_TEACHER_PRICING', 'التسعير');
 
 -- --------------------------------------------------------
 
@@ -6908,15 +7022,17 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 -- Table structure for table `tbl_meetings`
 --
 
-CREATE TABLE `tbl_meetings` (
-  `meet_id` int NOT NULL,
-  `meet_user_id` int NOT NULL,
-  `meet_metool_id` int NOT NULL,
-  `meet_record_id` int NOT NULL,
-  `meet_record_type` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_meetings`;
+CREATE TABLE IF NOT EXISTS `tbl_meetings` (
+  `meet_id` int(11) NOT NULL AUTO_INCREMENT,
+  `meet_user_id` int(11) NOT NULL,
+  `meet_metool_id` int(11) NOT NULL,
+  `meet_record_id` int(11) NOT NULL,
+  `meet_record_type` int(11) NOT NULL,
   `meet_details` json NOT NULL,
   `meet_created` datetime NOT NULL,
-  `meet_updated` datetime DEFAULT NULL
+  `meet_updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`meet_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -6925,13 +7041,15 @@ CREATE TABLE `tbl_meetings` (
 -- Table structure for table `tbl_meeting_tools`
 --
 
-CREATE TABLE `tbl_meeting_tools` (
-  `metool_id` int NOT NULL,
-  `metool_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `metool_status` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_meeting_tools`;
+CREATE TABLE IF NOT EXISTS `tbl_meeting_tools` (
+  `metool_id` int(11) NOT NULL AUTO_INCREMENT,
+  `metool_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `metool_status` int(11) NOT NULL,
   `metool_settings` json NOT NULL,
-  `metool_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `metool_info` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`metool_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_meeting_tools`
@@ -6948,14 +7066,18 @@ INSERT INTO `tbl_meeting_tools` (`metool_id`, `metool_code`, `metool_status`, `m
 -- Table structure for table `tbl_meta_tags`
 --
 
-CREATE TABLE `tbl_meta_tags` (
-  `meta_id` int NOT NULL,
-  `meta_controller` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_action` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_meta_tags`;
+CREATE TABLE IF NOT EXISTS `tbl_meta_tags` (
+  `meta_id` int(11) NOT NULL AUTO_INCREMENT,
+  `meta_controller` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_action` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
   `meta_type` tinyint(1) NOT NULL,
-  `meta_record_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_identifier` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `meta_record_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_identifier` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`meta_id`),
+  UNIQUE KEY `meta_identifier` (`meta_identifier`),
+  UNIQUE KEY `meta_controller` (`meta_controller`,`meta_action`,`meta_record_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_meta_tags`
@@ -6970,16 +7092,18 @@ INSERT INTO `tbl_meta_tags` (`meta_id`, `meta_controller`, `meta_action`, `meta_
 -- Table structure for table `tbl_meta_tags_lang`
 --
 
-CREATE TABLE `tbl_meta_tags_lang` (
-  `metalang_meta_id` int NOT NULL,
-  `metalang_lang_id` int NOT NULL,
-  `meta_title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_keywords` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_other_meta_tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_og_title` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_og_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_og_description` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_meta_tags_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_meta_tags_lang` (
+  `metalang_meta_id` int(11) NOT NULL,
+  `metalang_lang_id` int(11) NOT NULL,
+  `meta_title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_keywords` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_other_meta_tags` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_og_title` varchar(90) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_og_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_og_description` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`metalang_meta_id`,`metalang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -6988,14 +7112,16 @@ CREATE TABLE `tbl_meta_tags_lang` (
 -- Table structure for table `tbl_navigations`
 --
 
-CREATE TABLE `tbl_navigations` (
-  `nav_id` int NOT NULL,
-  `nav_identifier` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_navigations`;
+CREATE TABLE IF NOT EXISTS `tbl_navigations` (
+  `nav_id` int(11) NOT NULL AUTO_INCREMENT,
+  `nav_identifier` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nav_active` tinyint(1) DEFAULT NULL,
   `nav_is_multilevel` tinyint(1) NOT NULL,
   `nav_type` tinyint(1) NOT NULL,
-  `nav_deleted` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `nav_deleted` tinyint(1) NOT NULL,
+  PRIMARY KEY (`nav_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_navigations`
@@ -7013,10 +7139,12 @@ INSERT INTO `tbl_navigations` (`nav_id`, `nav_identifier`, `nav_active`, `nav_is
 -- Table structure for table `tbl_navigations_lang`
 --
 
-CREATE TABLE `tbl_navigations_lang` (
-  `navlang_nav_id` int NOT NULL,
-  `navlang_lang_id` int NOT NULL,
-  `nav_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_navigations_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_navigations_lang` (
+  `navlang_nav_id` int(11) NOT NULL,
+  `navlang_lang_id` int(11) NOT NULL,
+  `nav_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`navlang_nav_id`,`navlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -7038,20 +7166,22 @@ INSERT INTO `tbl_navigations_lang` (`navlang_nav_id`, `navlang_lang_id`, `nav_na
 -- Table structure for table `tbl_navigation_links`
 --
 
-CREATE TABLE `tbl_navigation_links` (
-  `nlink_id` int NOT NULL,
-  `nlink_nav_id` int NOT NULL,
-  `nlink_cpage_id` int NOT NULL,
-  `nlink_category_id` int NOT NULL,
-  `nlink_identifier` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nlink_target` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nlink_type` tinyint NOT NULL,
-  `nlink_parent_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_navigation_links`;
+CREATE TABLE IF NOT EXISTS `tbl_navigation_links` (
+  `nlink_id` int(11) NOT NULL AUTO_INCREMENT,
+  `nlink_nav_id` int(11) NOT NULL,
+  `nlink_cpage_id` int(11) NOT NULL,
+  `nlink_category_id` int(11) NOT NULL,
+  `nlink_identifier` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nlink_target` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nlink_type` tinyint(4) NOT NULL,
+  `nlink_parent_id` int(11) NOT NULL,
   `nlink_login_protected` tinyint(1) NOT NULL,
   `nlink_deleted` tinyint(1) NOT NULL,
-  `nlink_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nlink_order` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `nlink_url` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nlink_order` int(11) NOT NULL,
+  PRIMARY KEY (`nlink_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_navigation_links`
@@ -7069,7 +7199,7 @@ INSERT INTO `tbl_navigation_links` (`nlink_id`, `nlink_nav_id`, `nlink_cpage_id`
 (73, 2, 0, 0, 'Group Classes', '_self', 2, 0, 0, 0, '{SITEROOT}group-classes', 0),
 (74, 3, 0, 0, 'Apply to Teach', '_self', 2, 0, 0, 0, '{SITEROOT}teacher-request', 2),
 (75, 3, 0, 0, 'Blog', '_self', 2, 0, 0, 0, '{SITEROOT}blog', 1),
-(76, 3, 0, 0, 'Contribute to Blog', '_self', 2, 0, 0, 0, 'https://yocoach3.bestech.4qcteam.com/blog/contribution-form', 3);
+(76, 3, 0, 0, 'Contribute to Blog', '_self', 2, 0, 0, 0, '{siteroot}blog/contribution-form', 3);
 
 -- --------------------------------------------------------
 
@@ -7077,10 +7207,12 @@ INSERT INTO `tbl_navigation_links` (`nlink_id`, `nlink_nav_id`, `nlink_cpage_id`
 -- Table structure for table `tbl_navigation_links_lang`
 --
 
-CREATE TABLE `tbl_navigation_links_lang` (
-  `nlinklang_nlink_id` int NOT NULL,
-  `nlinklang_lang_id` int NOT NULL,
-  `nlink_caption` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_navigation_links_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_navigation_links_lang` (
+  `nlinklang_nlink_id` int(11) NOT NULL,
+  `nlinklang_lang_id` int(11) NOT NULL,
+  `nlink_caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`nlinklang_nlink_id`,`nlinklang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -7118,16 +7250,18 @@ INSERT INTO `tbl_navigation_links_lang` (`nlinklang_nlink_id`, `nlinklang_lang_i
 -- Table structure for table `tbl_notifications`
 --
 
-CREATE TABLE `tbl_notifications` (
-  `notifi_id` int NOT NULL,
-  `notifi_user_id` int NOT NULL,
-  `notifi_user_type` tinyint NOT NULL,
-  `notifi_type` int NOT NULL,
-  `notifi_title` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notifi_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notifi_link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_notifications`;
+CREATE TABLE IF NOT EXISTS `tbl_notifications` (
+  `notifi_id` int(11) NOT NULL AUTO_INCREMENT,
+  `notifi_user_id` int(11) NOT NULL,
+  `notifi_user_type` tinyint(4) NOT NULL,
+  `notifi_type` int(11) NOT NULL,
+  `notifi_title` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifi_desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifi_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `notifi_read` datetime DEFAULT NULL,
-  `notifi_added` datetime NOT NULL
+  `notifi_added` datetime NOT NULL,
+  PRIMARY KEY (`notifi_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7136,15 +7270,18 @@ CREATE TABLE `tbl_notifications` (
 -- Table structure for table `tbl_offer_prices`
 --
 
-CREATE TABLE `tbl_offer_prices` (
-  `offpri_id` int NOT NULL,
-  `offpri_teacher_id` int NOT NULL,
-  `offpri_learner_id` int NOT NULL,
-  `offpri_classes` int NOT NULL,
-  `offpri_lessons` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_offer_prices`;
+CREATE TABLE IF NOT EXISTS `tbl_offer_prices` (
+  `offpri_id` int(11) NOT NULL AUTO_INCREMENT,
+  `offpri_teacher_id` int(11) NOT NULL,
+  `offpri_learner_id` int(11) NOT NULL,
+  `offpri_classes` int(11) NOT NULL,
+  `offpri_lessons` int(11) NOT NULL,
   `offpri_class_price` json DEFAULT NULL COMMENT '[{duration:30, offer:20},{duration:60,offer:10}]',
   `offpri_lesson_price` json DEFAULT NULL COMMENT '[{duration:30, offer:20},{duration:60,offer:10}]	',
-  `offpri_package_price` decimal(10,2) DEFAULT NULL
+  `offpri_package_price` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`offpri_id`),
+  UNIQUE KEY `offpri_teacher_id` (`offpri_teacher_id`,`offpri_learner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7153,22 +7290,25 @@ CREATE TABLE `tbl_offer_prices` (
 -- Table structure for table `tbl_orders`
 --
 
-CREATE TABLE `tbl_orders` (
-  `order_id` bigint NOT NULL,
-  `order_display_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `order_type` tinyint NOT NULL,
-  `order_user_id` int NOT NULL,
-  `order_item_count` int NOT NULL,
-  `order_pmethod_id` int DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_orders`;
+CREATE TABLE IF NOT EXISTS `tbl_orders` (
+  `order_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `order_display_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `order_type` tinyint(4) NOT NULL,
+  `order_user_id` int(11) NOT NULL,
+  `order_item_count` int(11) NOT NULL,
+  `order_pmethod_id` int(11) DEFAULT NULL,
   `order_discount_value` decimal(10,2) DEFAULT NULL,
-  `order_currency_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `order_currency_code` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `order_currency_value` decimal(10,8) DEFAULT NULL,
-  `order_payment_status` tinyint NOT NULL,
-  `order_status` tinyint NOT NULL,
+  `order_payment_status` tinyint(4) NOT NULL,
+  `order_status` tinyint(4) NOT NULL,
   `order_total_amount` decimal(10,2) NOT NULL,
   `order_net_amount` decimal(10,2) NOT NULL,
   `order_addedon` datetime NOT NULL,
-  `order_related_order_id` bigint DEFAULT NULL
+  `order_related_order_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`order_id`),
+  KEY `order_user_id` (`order_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7177,11 +7317,12 @@ CREATE TABLE `tbl_orders` (
 -- Table structure for table `tbl_order_classes`
 --
 
-CREATE TABLE `tbl_order_classes` (
-  `ordcls_id` bigint NOT NULL,
-  `ordcls_type` int NOT NULL,
-  `ordcls_order_id` bigint NOT NULL,
-  `ordcls_grpcls_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_classes`;
+CREATE TABLE IF NOT EXISTS `tbl_order_classes` (
+  `ordcls_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ordcls_type` int(11) NOT NULL,
+  `ordcls_order_id` bigint(20) NOT NULL,
+  `ordcls_grpcls_id` int(11) NOT NULL,
   `ordcls_starttime` datetime DEFAULT NULL,
   `ordcls_endtime` datetime DEFAULT NULL,
   `ordcls_teacher_paid` decimal(10,2) DEFAULT NULL,
@@ -7190,10 +7331,12 @@ CREATE TABLE `tbl_order_classes` (
   `ordcls_amount` decimal(10,2) NOT NULL,
   `ordcls_discount` decimal(10,2) DEFAULT NULL,
   `ordcls_refund` decimal(10,2) DEFAULT NULL,
-  `ordcls_status` int NOT NULL,
-  `ordcls_reviewed` int NOT NULL,
+  `ordcls_status` int(11) NOT NULL,
+  `ordcls_reviewed` int(11) NOT NULL,
   `ordcls_updated` datetime DEFAULT NULL,
-  `ordcls_ended_by` tinyint DEFAULT NULL
+  `ordcls_ended_by` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`ordcls_id`),
+  KEY `ordcls_order_id` (`ordcls_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7202,16 +7345,18 @@ CREATE TABLE `tbl_order_classes` (
 -- Table structure for table `tbl_order_giftcards`
 --
 
-CREATE TABLE `tbl_order_giftcards` (
-  `ordgift_id` int NOT NULL,
-  `ordgift_order_id` bigint NOT NULL,
-  `ordgift_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ordgift_receiver_id` int NOT NULL,
-  `ordgift_receiver_name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ordgift_receiver_email` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_giftcards`;
+CREATE TABLE IF NOT EXISTS `tbl_order_giftcards` (
+  `ordgift_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ordgift_order_id` bigint(20) NOT NULL,
+  `ordgift_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ordgift_receiver_id` int(11) NOT NULL,
+  `ordgift_receiver_name` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ordgift_receiver_email` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ordgift_status` tinyint(1) NOT NULL,
   `ordgift_expiry` datetime NOT NULL,
-  `ordgift_usedon` datetime DEFAULT NULL
+  `ordgift_usedon` datetime DEFAULT NULL,
+  PRIMARY KEY (`ordgift_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7220,13 +7365,14 @@ CREATE TABLE `tbl_order_giftcards` (
 -- Table structure for table `tbl_order_lessons`
 --
 
-CREATE TABLE `tbl_order_lessons` (
-  `ordles_id` bigint NOT NULL,
-  `ordles_type` int NOT NULL,
-  `ordles_order_id` bigint NOT NULL,
-  `ordles_teacher_id` int NOT NULL,
-  `ordles_tlang_id` int DEFAULT NULL,
-  `ordles_duration` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_lessons`;
+CREATE TABLE IF NOT EXISTS `tbl_order_lessons` (
+  `ordles_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ordles_type` int(11) NOT NULL,
+  `ordles_order_id` bigint(20) NOT NULL,
+  `ordles_teacher_id` int(11) NOT NULL,
+  `ordles_tlang_id` int(11) DEFAULT NULL,
+  `ordles_duration` int(11) NOT NULL,
   `ordles_lesson_starttime` datetime DEFAULT NULL,
   `ordles_lesson_endtime` datetime DEFAULT NULL,
   `ordles_teacher_starttime` datetime DEFAULT NULL,
@@ -7239,11 +7385,13 @@ CREATE TABLE `tbl_order_lessons` (
   `ordles_amount` decimal(10,2) NOT NULL,
   `ordles_discount` decimal(10,2) DEFAULT NULL,
   `ordles_refund` decimal(10,2) DEFAULT NULL,
-  `ordles_status` int NOT NULL,
+  `ordles_status` int(11) NOT NULL,
   `ordles_updated` datetime DEFAULT NULL,
-  `ordles_reviewed` tinyint NOT NULL,
-  `ordles_ended_by` int DEFAULT NULL,
-  `ordles_metool_id` int NOT NULL
+  `ordles_reviewed` tinyint(4) NOT NULL,
+  `ordles_ended_by` int(11) DEFAULT NULL,
+  `ordles_metool_id` int(11) NOT NULL,
+  PRIMARY KEY (`ordles_id`),
+  KEY `ordles_order_id` (`ordles_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7252,14 +7400,17 @@ CREATE TABLE `tbl_order_lessons` (
 -- Table structure for table `tbl_order_packages`
 --
 
-CREATE TABLE `tbl_order_packages` (
-  `ordpkg_id` bigint NOT NULL,
-  `ordpkg_order_id` bigint NOT NULL,
-  `ordpkg_package_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_packages`;
+CREATE TABLE IF NOT EXISTS `tbl_order_packages` (
+  `ordpkg_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ordpkg_order_id` bigint(20) NOT NULL,
+  `ordpkg_package_id` int(11) NOT NULL,
   `ordpkg_commission` decimal(10,2) NOT NULL,
   `ordpkg_amount` decimal(10,2) NOT NULL,
   `ordpkg_discount` decimal(10,2) DEFAULT NULL,
-  `ordpkg_status` int NOT NULL
+  `ordpkg_status` int(11) NOT NULL,
+  PRIMARY KEY (`ordpkg_id`),
+  KEY `ordcls_order_id` (`ordpkg_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7268,15 +7419,18 @@ CREATE TABLE `tbl_order_packages` (
 -- Table structure for table `tbl_order_payments`
 --
 
-CREATE TABLE `tbl_order_payments` (
-  `ordpay_id` bigint NOT NULL,
-  `ordpay_order_id` bigint NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_payments`;
+CREATE TABLE IF NOT EXISTS `tbl_order_payments` (
+  `ordpay_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ordpay_order_id` bigint(20) NOT NULL,
   `ordpay_amount` decimal(10,2) NOT NULL,
-  `ordpay_pmethod_id` int NOT NULL,
-  `ordpay_txn_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ordpay_status` int NOT NULL,
-  `ordpay_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ordpay_datetime` datetime NOT NULL
+  `ordpay_pmethod_id` int(11) NOT NULL,
+  `ordpay_txn_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ordpay_status` int(11) NOT NULL,
+  `ordpay_response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ordpay_datetime` datetime NOT NULL,
+  PRIMARY KEY (`ordpay_id`),
+  KEY `ordpay_order_id` (`ordpay_order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7285,16 +7439,18 @@ CREATE TABLE `tbl_order_payments` (
 -- Table structure for table `tbl_order_subscriptions`
 --
 
-CREATE TABLE `tbl_order_subscriptions` (
-  `ordsub_id` int NOT NULL,
-  `ordsub_order_id` bigint NOT NULL,
-  `ordsub_teacher_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_order_subscriptions`;
+CREATE TABLE IF NOT EXISTS `tbl_order_subscriptions` (
+  `ordsub_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ordsub_order_id` bigint(20) NOT NULL,
+  `ordsub_teacher_id` int(11) NOT NULL,
   `ordsub_startdate` datetime NOT NULL,
   `ordsub_enddate` datetime NOT NULL,
-  `ordsub_recurring` tinyint NOT NULL,
-  `ordsub_status` int NOT NULL,
+  `ordsub_recurring` tinyint(4) NOT NULL,
+  `ordsub_status` int(11) NOT NULL,
   `ordsub_created` datetime NOT NULL,
-  `ordsub_updated` datetime NOT NULL
+  `ordsub_updated` datetime NOT NULL,
+  PRIMARY KEY (`ordsub_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7303,11 +7459,13 @@ CREATE TABLE `tbl_order_subscriptions` (
 -- Table structure for table `tbl_payment_gateway_response`
 --
 
-CREATE TABLE `tbl_payment_gateway_response` (
-  `pgres_id` int NOT NULL,
-  `pgres_order_id` bigint NOT NULL,
-  `pgres_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pgres_created` datetime NOT NULL
+DROP TABLE IF EXISTS `tbl_payment_gateway_response`;
+CREATE TABLE IF NOT EXISTS `tbl_payment_gateway_response` (
+  `pgres_id` int(11) NOT NULL AUTO_INCREMENT,
+  `pgres_order_id` bigint(20) NOT NULL,
+  `pgres_response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pgres_created` datetime NOT NULL,
+  PRIMARY KEY (`pgres_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7316,16 +7474,19 @@ CREATE TABLE `tbl_payment_gateway_response` (
 -- Table structure for table `tbl_payment_methods`
 --
 
-CREATE TABLE `tbl_payment_methods` (
-  `pmethod_id` int NOT NULL,
-  `pmethod_type` tinyint NOT NULL,
-  `pmethod_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_payment_methods`;
+CREATE TABLE IF NOT EXISTS `tbl_payment_methods` (
+  `pmethod_id` int(11) NOT NULL AUTO_INCREMENT,
+  `pmethod_type` tinyint(4) NOT NULL,
+  `pmethod_code` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `pmethod_active` tinyint(1) NOT NULL,
-  `pmethod_order` int NOT NULL,
-  `pmethod_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pmethod_order` int(11) NOT NULL,
+  `pmethod_info` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `pmethod_fees` json DEFAULT NULL,
-  `pmethod_settings` json DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `pmethod_settings` json DEFAULT NULL,
+  PRIMARY KEY (`pmethod_id`),
+  UNIQUE KEY `pmethod_code` (`pmethod_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_payment_methods`
@@ -7348,15 +7509,17 @@ INSERT INTO `tbl_payment_methods` (`pmethod_id`, `pmethod_type`, `pmethod_code`,
 -- Table structure for table `tbl_plans`
 --
 
-CREATE TABLE `tbl_plans` (
-  `plan_id` int NOT NULL,
-  `plan_teacher_id` int NOT NULL,
-  `plan_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan_detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan_level` int NOT NULL,
-  `plan_tags` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan_links` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+DROP TABLE IF EXISTS `tbl_plans`;
+CREATE TABLE IF NOT EXISTS `tbl_plans` (
+  `plan_id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan_teacher_id` int(11) NOT NULL,
+  `plan_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plan_detail` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plan_level` int(11) NOT NULL,
+  `plan_tags` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plan_links` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `plan_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`plan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7365,9 +7528,11 @@ CREATE TABLE `tbl_plans` (
 -- Table structure for table `tbl_plan_classes`
 --
 
-CREATE TABLE `tbl_plan_classes` (
-  `plancls_plan_id` int NOT NULL,
-  `plancls_grpcls_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_plan_classes`;
+CREATE TABLE IF NOT EXISTS `tbl_plan_classes` (
+  `plancls_plan_id` int(11) NOT NULL,
+  `plancls_grpcls_id` int(11) NOT NULL,
+  PRIMARY KEY (`plancls_plan_id`,`plancls_grpcls_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7376,9 +7541,11 @@ CREATE TABLE `tbl_plan_classes` (
 -- Table structure for table `tbl_plan_lessons`
 --
 
-CREATE TABLE `tbl_plan_lessons` (
-  `planles_plan_id` int NOT NULL,
-  `planles_ordles_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_plan_lessons`;
+CREATE TABLE IF NOT EXISTS `tbl_plan_lessons` (
+  `planles_plan_id` int(11) NOT NULL,
+  `planles_ordles_id` int(11) NOT NULL,
+  PRIMARY KEY (`planles_plan_id`,`planles_ordles_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7387,12 +7554,14 @@ CREATE TABLE `tbl_plan_lessons` (
 -- Table structure for table `tbl_preferences`
 --
 
-CREATE TABLE `tbl_preferences` (
-  `prefer_id` int NOT NULL,
-  `prefer_type` int NOT NULL,
-  `prefer_order` int NOT NULL,
-  `prefer_identifier` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_preferences`;
+CREATE TABLE IF NOT EXISTS `tbl_preferences` (
+  `prefer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `prefer_type` int(11) NOT NULL,
+  `prefer_order` int(11) NOT NULL,
+  `prefer_identifier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`prefer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_preferences`
@@ -7514,10 +7683,12 @@ INSERT INTO `tbl_preferences` (`prefer_id`, `prefer_type`, `prefer_order`, `pref
 -- Table structure for table `tbl_preferences_lang`
 --
 
-CREATE TABLE `tbl_preferences_lang` (
-  `preferlang_prefer_id` int NOT NULL,
-  `preferlang_lang_id` int NOT NULL,
-  `prefer_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_preferences_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_preferences_lang` (
+  `preferlang_prefer_id` int(11) NOT NULL,
+  `preferlang_lang_id` int(11) NOT NULL,
+  `prefer_title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`preferlang_prefer_id`,`preferlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -7640,12 +7811,14 @@ INSERT INTO `tbl_preferences_lang` (`preferlang_prefer_id`, `preferlang_lang_id`
 -- Table structure for table `tbl_pricing_slabs`
 --
 
-CREATE TABLE `tbl_pricing_slabs` (
-  `prislab_id` int NOT NULL,
-  `prislab_min` int NOT NULL,
-  `prislab_max` int NOT NULL,
-  `prislab_active` tinyint NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_pricing_slabs`;
+CREATE TABLE IF NOT EXISTS `tbl_pricing_slabs` (
+  `prislab_id` int(11) NOT NULL AUTO_INCREMENT,
+  `prislab_min` int(11) NOT NULL,
+  `prislab_max` int(11) NOT NULL,
+  `prislab_active` tinyint(4) NOT NULL,
+  PRIMARY KEY (`prislab_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_pricing_slabs`
@@ -7664,19 +7837,21 @@ INSERT INTO `tbl_pricing_slabs` (`prislab_id`, `prislab_min`, `prislab_max`, `pr
 -- Table structure for table `tbl_rating_reviews`
 --
 
-CREATE TABLE `tbl_rating_reviews` (
-  `ratrev_id` int NOT NULL,
-  `ratrev_type` int NOT NULL,
-  `ratrev_type_id` int NOT NULL,
-  `ratrev_lang_id` int NOT NULL,
-  `ratrev_user_id` int NOT NULL,
-  `ratrev_teacher_id` int NOT NULL,
-  `ratrev_overall` tinyint DEFAULT NULL,
-  `ratrev_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ratrev_detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `ratrev_status` tinyint NOT NULL,
+DROP TABLE IF EXISTS `tbl_rating_reviews`;
+CREATE TABLE IF NOT EXISTS `tbl_rating_reviews` (
+  `ratrev_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ratrev_type` int(11) NOT NULL,
+  `ratrev_type_id` int(11) NOT NULL,
+  `ratrev_lang_id` int(11) NOT NULL,
+  `ratrev_user_id` int(11) NOT NULL,
+  `ratrev_teacher_id` int(11) NOT NULL,
+  `ratrev_overall` tinyint(4) DEFAULT NULL,
+  `ratrev_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ratrev_detail` text COLLATE utf8mb4_unicode_ci,
+  `ratrev_status` tinyint(4) NOT NULL,
   `ratrev_teacher_notify` tinyint(1) NOT NULL,
-  `ratrev_created` datetime NOT NULL
+  `ratrev_created` datetime NOT NULL,
+  PRIMARY KEY (`ratrev_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7685,13 +7860,16 @@ CREATE TABLE `tbl_rating_reviews` (
 -- Table structure for table `tbl_reminders`
 --
 
-CREATE TABLE `tbl_reminders` (
-  `rem_id` int NOT NULL,
-  `rem_minutes` int NOT NULL,
-  `rem_user_id` int NOT NULL,
-  `rem_record_type` int NOT NULL,
-  `rem_record_id` int NOT NULL,
-  `rem_senton` datetime NOT NULL
+DROP TABLE IF EXISTS `tbl_reminders`;
+CREATE TABLE IF NOT EXISTS `tbl_reminders` (
+  `rem_id` int(11) NOT NULL AUTO_INCREMENT,
+  `rem_minutes` int(11) NOT NULL,
+  `rem_user_id` int(11) NOT NULL,
+  `rem_record_type` int(11) NOT NULL,
+  `rem_record_id` int(11) NOT NULL,
+  `rem_senton` datetime NOT NULL,
+  PRIMARY KEY (`rem_id`),
+  UNIQUE KEY `rem_minutes` (`rem_minutes`,`rem_user_id`,`rem_record_id`,`rem_record_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7700,17 +7878,19 @@ CREATE TABLE `tbl_reminders` (
 -- Table structure for table `tbl_reported_issues`
 --
 
-CREATE TABLE `tbl_reported_issues` (
-  `repiss_id` int NOT NULL,
-  `repiss_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `repiss_record_id` int NOT NULL,
-  `repiss_record_type` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_reported_issues`;
+CREATE TABLE IF NOT EXISTS `tbl_reported_issues` (
+  `repiss_id` int(11) NOT NULL AUTO_INCREMENT,
+  `repiss_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `repiss_record_id` int(11) NOT NULL,
+  `repiss_record_type` int(11) NOT NULL,
   `repiss_reported_on` datetime NOT NULL,
-  `repiss_reported_by` int NOT NULL,
-  `repiss_status` int NOT NULL,
-  `repiss_last_action` tinyint DEFAULT NULL,
-  `repiss_comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `repiss_updated_on` datetime DEFAULT NULL
+  `repiss_reported_by` int(11) NOT NULL,
+  `repiss_status` int(11) NOT NULL,
+  `repiss_last_action` tinyint(4) DEFAULT NULL,
+  `repiss_comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `repiss_updated_on` datetime DEFAULT NULL,
+  PRIMARY KEY (`repiss_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7719,14 +7899,17 @@ CREATE TABLE `tbl_reported_issues` (
 -- Table structure for table `tbl_reported_issues_log`
 --
 
-CREATE TABLE `tbl_reported_issues_log` (
-  `reislo_id` int NOT NULL,
-  `reislo_repiss_id` int NOT NULL,
-  `reislo_action` int NOT NULL,
-  `reislo_comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_reported_issues_log`;
+CREATE TABLE IF NOT EXISTS `tbl_reported_issues_log` (
+  `reislo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `reislo_repiss_id` int(11) NOT NULL,
+  `reislo_action` int(11) NOT NULL,
+  `reislo_comment` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reislo_added_on` datetime NOT NULL,
-  `reislo_added_by` int NOT NULL,
-  `reislo_added_by_type` int NOT NULL
+  `reislo_added_by` int(11) NOT NULL,
+  `reislo_added_by_type` int(11) NOT NULL,
+  PRIMARY KEY (`reislo_id`),
+  KEY `reislo_repiss_id` (`reislo_repiss_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7735,8 +7918,9 @@ CREATE TABLE `tbl_reported_issues_log` (
 -- Table structure for table `tbl_sales_stats`
 --
 
-CREATE TABLE `tbl_sales_stats` (
-  `slstat_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_sales_stats`;
+CREATE TABLE IF NOT EXISTS `tbl_sales_stats` (
+  `slstat_id` int(11) NOT NULL AUTO_INCREMENT,
   `slstat_date` date NOT NULL,
   `slstat_les_sales` decimal(10,2) DEFAULT NULL,
   `slstat_les_refund` decimal(10,2) DEFAULT NULL,
@@ -7747,7 +7931,9 @@ CREATE TABLE `tbl_sales_stats` (
   `slstat_cls_refund` decimal(10,2) DEFAULT NULL,
   `slstat_cls_teacher_paid` decimal(10,2) DEFAULT NULL,
   `slstat_cls_discount` decimal(10,2) DEFAULT NULL,
-  `slstat_cls_earnings` decimal(10,2) DEFAULT NULL
+  `slstat_cls_earnings` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`slstat_id`),
+  UNIQUE KEY `slstat_date` (`slstat_date`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7756,13 +7942,17 @@ CREATE TABLE `tbl_sales_stats` (
 -- Table structure for table `tbl_seo_urls`
 --
 
-CREATE TABLE `tbl_seo_urls` (
-  `seourl_id` int NOT NULL,
-  `seourl_lang_id` int NOT NULL DEFAULT '1',
-  `seourl_original` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `seourl_custom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `seourl_httpcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_seo_urls`;
+CREATE TABLE IF NOT EXISTS `tbl_seo_urls` (
+  `seourl_id` int(11) NOT NULL AUTO_INCREMENT,
+  `seourl_lang_id` int(11) NOT NULL DEFAULT '1',
+  `seourl_original` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seourl_custom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seourl_httpcode` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`seourl_id`),
+  UNIQUE KEY `original` (`seourl_lang_id`,`seourl_original`) USING BTREE,
+  UNIQUE KEY `custom` (`seourl_lang_id`,`seourl_custom`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_seo_urls`
@@ -7786,20 +7976,22 @@ INSERT INTO `tbl_seo_urls` (`seourl_id`, `seourl_lang_id`, `seourl_original`, `s
 -- Table structure for table `tbl_session_logs`
 --
 
-CREATE TABLE `tbl_session_logs` (
-  `sesslog_id` int NOT NULL,
-  `sesslog_record_id` int NOT NULL,
-  `sesslog_record_type` int NOT NULL,
-  `sesslog_user_id` int NOT NULL,
-  `sesslog_user_type` int NOT NULL,
-  `sesslog_prev_status` int NOT NULL,
-  `sesslog_changed_status` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_session_logs`;
+CREATE TABLE IF NOT EXISTS `tbl_session_logs` (
+  `sesslog_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sesslog_record_id` int(11) NOT NULL,
+  `sesslog_record_type` int(11) NOT NULL,
+  `sesslog_user_id` int(11) NOT NULL,
+  `sesslog_user_type` int(11) NOT NULL,
+  `sesslog_prev_status` int(11) NOT NULL,
+  `sesslog_changed_status` int(11) NOT NULL,
   `sesslog_prev_starttime` datetime DEFAULT NULL,
   `sesslog_prev_endtime` datetime DEFAULT NULL,
   `sesslog_changed_starttime` datetime DEFAULT NULL,
   `sesslog_changed_endtime` datetime DEFAULT NULL,
-  `sesslog_comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sesslog_created` datetime NOT NULL
+  `sesslog_comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sesslog_created` datetime NOT NULL,
+  PRIMARY KEY (`sesslog_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -7808,15 +8000,17 @@ CREATE TABLE `tbl_session_logs` (
 -- Table structure for table `tbl_slides`
 --
 
-CREATE TABLE `tbl_slides` (
-  `slide_id` int NOT NULL,
-  `slide_identifier` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slide_record_id` int NOT NULL,
-  `slide_url` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slide_target` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_slides`;
+CREATE TABLE IF NOT EXISTS `tbl_slides` (
+  `slide_id` int(11) NOT NULL AUTO_INCREMENT,
+  `slide_identifier` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slide_record_id` int(11) NOT NULL,
+  `slide_url` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slide_target` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slide_active` tinyint(1) NOT NULL,
-  `slide_order` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `slide_order` int(11) NOT NULL,
+  PRIMARY KEY (`slide_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_slides`
@@ -7834,13 +8028,15 @@ INSERT INTO `tbl_slides` (`slide_id`, `slide_identifier`, `slide_record_id`, `sl
 -- Table structure for table `tbl_social_platforms`
 --
 
-CREATE TABLE `tbl_social_platforms` (
-  `splatform_id` int NOT NULL,
-  `splatform_identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `splatform_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `splatform_order` int NOT NULL,
-  `splatform_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_social_platforms`;
+CREATE TABLE IF NOT EXISTS `tbl_social_platforms` (
+  `splatform_id` int(11) NOT NULL AUTO_INCREMENT,
+  `splatform_identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `splatform_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `splatform_order` int(11) NOT NULL,
+  `splatform_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`splatform_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_social_platforms`
@@ -7863,12 +8059,14 @@ INSERT INTO `tbl_social_platforms` (`splatform_id`, `splatform_identifier`, `spl
 -- Table structure for table `tbl_speak_languages`
 --
 
-CREATE TABLE `tbl_speak_languages` (
-  `slang_id` int NOT NULL,
-  `slang_order` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_speak_languages`;
+CREATE TABLE IF NOT EXISTS `tbl_speak_languages` (
+  `slang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `slang_order` int(11) NOT NULL,
   `slang_active` tinyint(1) NOT NULL,
-  `slang_identifier` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `slang_identifier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`slang_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_speak_languages`
@@ -8064,10 +8262,12 @@ INSERT INTO `tbl_speak_languages` (`slang_id`, `slang_order`, `slang_active`, `s
 -- Table structure for table `tbl_speak_languages_lang`
 --
 
-CREATE TABLE `tbl_speak_languages_lang` (
-  `slanglang_slang_id` int NOT NULL,
-  `slanglang_lang_id` int NOT NULL,
-  `slang_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_speak_languages_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_speak_languages_lang` (
+  `slanglang_slang_id` int(11) NOT NULL,
+  `slanglang_lang_id` int(11) NOT NULL,
+  `slang_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`slanglang_slang_id`,`slanglang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -8268,27 +8468,29 @@ INSERT INTO `tbl_speak_languages_lang` (`slanglang_slang_id`, `slanglang_lang_id
 -- Table structure for table `tbl_teacher_requests`
 --
 
-CREATE TABLE `tbl_teacher_requests` (
-  `tereq_id` bigint NOT NULL,
-  `tereq_user_id` bigint NOT NULL,
-  `tereq_reference` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_language_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_teacher_requests`;
+CREATE TABLE IF NOT EXISTS `tbl_teacher_requests` (
+  `tereq_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tereq_user_id` bigint(20) NOT NULL,
+  `tereq_reference` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_language_id` int(11) NOT NULL,
   `tereq_date` datetime NOT NULL,
   `tereq_status` tinyint(1) NOT NULL,
   `tereq_status_updated` datetime NOT NULL,
-  `tereq_comments` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_attempts` int NOT NULL,
-  `tereq_step` int NOT NULL DEFAULT '1',
-  `tereq_terms` tinyint NOT NULL,
-  `tereq_first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_phone_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_video_link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tereq_biography` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_comments` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_attempts` int(11) NOT NULL,
+  `tereq_step` int(11) NOT NULL DEFAULT '1',
+  `tereq_terms` tinyint(4) NOT NULL,
+  `tereq_first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_phone_code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_phone_number` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_video_link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tereq_biography` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `tereq_teach_langs` json NOT NULL,
   `tereq_speak_langs` json NOT NULL,
-  `tereq_slang_proficiency` json NOT NULL
+  `tereq_slang_proficiency` json NOT NULL,
+  PRIMARY KEY (`tereq_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8297,20 +8499,22 @@ CREATE TABLE `tbl_teacher_requests` (
 -- Table structure for table `tbl_teacher_stats`
 --
 
-CREATE TABLE `tbl_teacher_stats` (
-  `testat_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_teacher_stats`;
+CREATE TABLE IF NOT EXISTS `tbl_teacher_stats` (
+  `testat_user_id` int(11) NOT NULL,
   `testat_ratings` decimal(10,2) NOT NULL,
-  `testat_reviewes` int NOT NULL,
-  `testat_students` int NOT NULL,
-  `testat_lessons` int NOT NULL,
-  `testat_classes` int NOT NULL,
+  `testat_reviewes` int(11) NOT NULL,
+  `testat_students` int(11) NOT NULL,
+  `testat_lessons` int(11) NOT NULL,
+  `testat_classes` int(11) NOT NULL,
   `testat_minprice` decimal(10,2) NOT NULL,
   `testat_maxprice` decimal(10,2) NOT NULL,
-  `testat_preference` int NOT NULL,
-  `testat_qualification` int NOT NULL,
-  `testat_teachlang` int NOT NULL,
-  `testat_speaklang` int NOT NULL,
-  `testat_availability` int NOT NULL
+  `testat_preference` int(11) NOT NULL,
+  `testat_qualification` int(11) NOT NULL,
+  `testat_teachlang` int(11) NOT NULL,
+  `testat_speaklang` int(11) NOT NULL,
+  `testat_availability` int(11) NOT NULL,
+  PRIMARY KEY (`testat_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8319,13 +8523,16 @@ CREATE TABLE `tbl_teacher_stats` (
 -- Table structure for table `tbl_teach_languages`
 --
 
-CREATE TABLE `tbl_teach_languages` (
-  `tlang_id` int NOT NULL,
-  `tlang_order` int DEFAULT NULL,
+DROP TABLE IF EXISTS `tbl_teach_languages`;
+CREATE TABLE IF NOT EXISTS `tbl_teach_languages` (
+  `tlang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `tlang_order` int(11) DEFAULT NULL,
   `tlang_active` tinyint(1) NOT NULL,
-  `tlang_identifier` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tlang_slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `tlang_identifier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tlang_slug` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`tlang_id`),
+  UNIQUE KEY `tlang_slug` (`tlang_slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_teach_languages`
@@ -8353,10 +8560,12 @@ INSERT INTO `tbl_teach_languages` (`tlang_id`, `tlang_order`, `tlang_active`, `t
 -- Table structure for table `tbl_teach_languages_lang`
 --
 
-CREATE TABLE `tbl_teach_languages_lang` (
-  `tlanglang_tlang_id` int NOT NULL,
-  `tlanglang_lang_id` int NOT NULL,
-  `tlang_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_teach_languages_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_teach_languages_lang` (
+  `tlanglang_tlang_id` int(11) NOT NULL,
+  `tlanglang_lang_id` int(11) NOT NULL,
+  `tlang_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`tlanglang_tlang_id`,`tlanglang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -8397,14 +8606,16 @@ INSERT INTO `tbl_teach_languages_lang` (`tlanglang_tlang_id`, `tlanglang_lang_id
 -- Table structure for table `tbl_testimonials`
 --
 
-CREATE TABLE `tbl_testimonials` (
-  `testimonial_id` int NOT NULL,
-  `testimonial_identifier` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_testimonials`;
+CREATE TABLE IF NOT EXISTS `tbl_testimonials` (
+  `testimonial_id` int(11) NOT NULL AUTO_INCREMENT,
+  `testimonial_identifier` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `testimonial_active` tinyint(1) NOT NULL,
   `testimonial_deleted` tinyint(1) NOT NULL,
   `testimonial_added_on` datetime NOT NULL,
-  `testimonial_user_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `testimonial_user_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`testimonial_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_testimonials`
@@ -8419,10 +8630,12 @@ INSERT INTO `tbl_testimonials` (`testimonial_id`, `testimonial_identifier`, `tes
 -- Table structure for table `tbl_testimonials_lang`
 --
 
-CREATE TABLE `tbl_testimonials_lang` (
-  `testimoniallang_testimonial_id` int NOT NULL,
-  `testimoniallang_lang_id` int NOT NULL,
-  `testimonial_text` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_testimonials_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_testimonials_lang` (
+  `testimoniallang_testimonial_id` int(11) NOT NULL,
+  `testimoniallang_lang_id` int(11) NOT NULL,
+  `testimonial_text` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`testimoniallang_testimonial_id`,`testimoniallang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -8439,18 +8652,20 @@ INSERT INTO `tbl_testimonials_lang` (`testimoniallang_testimonial_id`, `testimon
 -- Table structure for table `tbl_themes`
 --
 
-CREATE TABLE `tbl_themes` (
-  `theme_id` int NOT NULL,
-  `theme_title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_primary_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_primary_inverse_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_secondary_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_secondary_inverse_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_footer_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_footer_inverse_color` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `theme_is_default` tinyint NOT NULL,
-  `theme_created` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP TABLE IF EXISTS `tbl_themes`;
+CREATE TABLE IF NOT EXISTS `tbl_themes` (
+  `theme_id` int(11) NOT NULL AUTO_INCREMENT,
+  `theme_title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_primary_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_primary_inverse_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_secondary_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_secondary_inverse_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_footer_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_footer_inverse_color` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `theme_is_default` tinyint(4) NOT NULL,
+  `theme_created` datetime NOT NULL,
+  PRIMARY KEY (`theme_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tbl_themes`
@@ -8468,9 +8683,11 @@ INSERT INTO `tbl_themes` (`theme_id`, `theme_title`, `theme_primary_color`, `the
 -- Table structure for table `tbl_threads`
 --
 
-CREATE TABLE `tbl_threads` (
-  `thread_id` bigint NOT NULL,
-  `thread_start_date` date NOT NULL
+DROP TABLE IF EXISTS `tbl_threads`;
+CREATE TABLE IF NOT EXISTS `tbl_threads` (
+  `thread_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `thread_start_date` date NOT NULL,
+  PRIMARY KEY (`thread_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8479,16 +8696,18 @@ CREATE TABLE `tbl_threads` (
 -- Table structure for table `tbl_thread_messages`
 --
 
-CREATE TABLE `tbl_thread_messages` (
-  `message_id` bigint NOT NULL,
-  `message_thread_id` int NOT NULL,
-  `message_from` int NOT NULL COMMENT 'user_id',
-  `message_to` int NOT NULL COMMENT 'user_id',
-  `message_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_thread_messages`;
+CREATE TABLE IF NOT EXISTS `tbl_thread_messages` (
+  `message_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `message_thread_id` int(11) NOT NULL,
+  `message_from` int(11) NOT NULL COMMENT 'user_id',
+  `message_to` int(11) NOT NULL COMMENT 'user_id',
+  `message_text` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `message_date` datetime NOT NULL,
   `message_is_unread` tinyint(1) NOT NULL DEFAULT '1',
   `message_deleted` tinyint(1) NOT NULL,
-  `message_email_sent` tinyint NOT NULL
+  `message_email_sent` tinyint(4) NOT NULL,
+  PRIMARY KEY (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8497,9 +8716,11 @@ CREATE TABLE `tbl_thread_messages` (
 -- Table structure for table `tbl_thread_users`
 --
 
-CREATE TABLE `tbl_thread_users` (
-  `threaduser_id` bigint NOT NULL,
-  `threaduser_thread_id` bigint NOT NULL
+DROP TABLE IF EXISTS `tbl_thread_users`;
+CREATE TABLE IF NOT EXISTS `tbl_thread_users` (
+  `threaduser_id` bigint(20) NOT NULL,
+  `threaduser_thread_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`threaduser_id`,`threaduser_thread_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8508,21 +8729,25 @@ CREATE TABLE `tbl_thread_users` (
 -- Table structure for table `tbl_users`
 --
 
-CREATE TABLE `tbl_users` (
-  `user_id` int NOT NULL,
-  `user_first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_last_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_timezone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_lang_id` int NOT NULL,
-  `user_country_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_users`;
+CREATE TABLE IF NOT EXISTS `tbl_users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_first_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_last_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_username` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_password` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_timezone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_lang_id` int(11) NOT NULL,
+  `user_country_id` int(11) NOT NULL,
   `user_is_teacher` tinyint(1) DEFAULT NULL,
   `user_active` tinyint(1) NOT NULL,
   `user_verified` datetime DEFAULT NULL,
   `user_created` datetime NOT NULL,
-  `user_deleted` datetime DEFAULT NULL
+  `user_deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_email` (`user_email`),
+  UNIQUE KEY `user_username` (`user_username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8531,10 +8756,12 @@ CREATE TABLE `tbl_users` (
 -- Table structure for table `tbl_users_lang`
 --
 
-CREATE TABLE `tbl_users_lang` (
-  `userlang_user_id` int NOT NULL,
-  `userlang_lang_id` int NOT NULL,
-  `user_biography` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_users_lang`;
+CREATE TABLE IF NOT EXISTS `tbl_users_lang` (
+  `userlang_user_id` int(11) NOT NULL,
+  `userlang_lang_id` int(11) NOT NULL,
+  `user_biography` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`userlang_user_id`,`userlang_lang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8543,14 +8770,17 @@ CREATE TABLE `tbl_users_lang` (
 -- Table structure for table `tbl_user_auth_token`
 --
 
-CREATE TABLE `tbl_user_auth_token` (
-  `usrtok_id` int NOT NULL,
-  `usrtok_user_id` int NOT NULL,
-  `usrtok_token` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_auth_token`;
+CREATE TABLE IF NOT EXISTS `tbl_user_auth_token` (
+  `usrtok_id` int(11) NOT NULL AUTO_INCREMENT,
+  `usrtok_user_id` int(11) NOT NULL,
+  `usrtok_token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `usrtok_expiry` datetime NOT NULL,
-  `usrtok_browser` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usrtok_last_ip` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usrtok_last_access` datetime NOT NULL
+  `usrtok_browser` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usrtok_last_ip` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usrtok_last_access` datetime NOT NULL,
+  PRIMARY KEY (`usrtok_id`),
+  KEY `usrtok_user_id` (`usrtok_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8559,14 +8789,16 @@ CREATE TABLE `tbl_user_auth_token` (
 -- Table structure for table `tbl_user_bank_details`
 --
 
-CREATE TABLE `tbl_user_bank_details` (
-  `ub_user_id` int NOT NULL,
-  `ub_bank_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ub_account_holder_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ub_account_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ub_ifsc_swift_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ub_bank_address` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ub_paypal_email_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+DROP TABLE IF EXISTS `tbl_user_bank_details`;
+CREATE TABLE IF NOT EXISTS `tbl_user_bank_details` (
+  `ub_user_id` int(11) NOT NULL,
+  `ub_bank_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ub_account_holder_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ub_account_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ub_ifsc_swift_code` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ub_bank_address` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ub_paypal_email_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`ub_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8575,11 +8807,13 @@ CREATE TABLE `tbl_user_bank_details` (
 -- Table structure for table `tbl_user_cart`
 --
 
-CREATE TABLE `tbl_user_cart` (
-  `cart_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_cart`;
+CREATE TABLE IF NOT EXISTS `tbl_user_cart` (
+  `cart_user_id` int(11) NOT NULL,
   `cart_items` json DEFAULT NULL,
   `cart_coupon` json DEFAULT NULL,
-  `cart_updated` datetime NOT NULL
+  `cart_updated` datetime NOT NULL,
+  PRIMARY KEY (`cart_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8588,10 +8822,12 @@ CREATE TABLE `tbl_user_cart` (
 -- Table structure for table `tbl_user_cookie_consent`
 --
 
-CREATE TABLE `tbl_user_cookie_consent` (
-  `usercc_user_id` int NOT NULL,
-  `usercc_settings` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usercc_added_on` datetime NOT NULL
+DROP TABLE IF EXISTS `tbl_user_cookie_consent`;
+CREATE TABLE IF NOT EXISTS `tbl_user_cookie_consent` (
+  `usercc_user_id` int(11) NOT NULL,
+  `usercc_settings` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usercc_added_on` datetime NOT NULL,
+  PRIMARY KEY (`usercc_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8600,15 +8836,17 @@ CREATE TABLE `tbl_user_cookie_consent` (
 -- Table structure for table `tbl_user_email_change_request`
 --
 
-CREATE TABLE `tbl_user_email_change_request` (
-  `uecreq_id` int NOT NULL,
-  `uecreq_user_id` int NOT NULL,
-  `uecreq_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uecreq_status` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_email_change_request`;
+CREATE TABLE IF NOT EXISTS `tbl_user_email_change_request` (
+  `uecreq_id` int(11) NOT NULL AUTO_INCREMENT,
+  `uecreq_user_id` int(11) NOT NULL,
+  `uecreq_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uecreq_status` int(11) NOT NULL,
   `uecreq_created` datetime NOT NULL,
   `uecreq_updated` datetime NOT NULL,
   `uecreq_expire` datetime NOT NULL,
-  `uecreq_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `uecreq_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`uecreq_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8617,10 +8855,13 @@ CREATE TABLE `tbl_user_email_change_request` (
 -- Table structure for table `tbl_user_favourite_teachers`
 --
 
-CREATE TABLE `tbl_user_favourite_teachers` (
-  `uft_id` int NOT NULL,
-  `uft_user_id` int NOT NULL,
-  `uft_teacher_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_user_favourite_teachers`;
+CREATE TABLE IF NOT EXISTS `tbl_user_favourite_teachers` (
+  `uft_id` int(11) NOT NULL AUTO_INCREMENT,
+  `uft_user_id` int(11) NOT NULL,
+  `uft_teacher_id` int(11) NOT NULL,
+  PRIMARY KEY (`uft_id`),
+  UNIQUE KEY `uft_user_id` (`uft_user_id`,`uft_teacher_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8629,9 +8870,10 @@ CREATE TABLE `tbl_user_favourite_teachers` (
 -- Table structure for table `tbl_user_password_reset_requests`
 --
 
-CREATE TABLE `tbl_user_password_reset_requests` (
-  `uprr_user_id` int NOT NULL,
-  `uprr_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_password_reset_requests`;
+CREATE TABLE IF NOT EXISTS `tbl_user_password_reset_requests` (
+  `uprr_user_id` int(11) NOT NULL,
+  `uprr_token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `uprr_expiry` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -8641,9 +8883,11 @@ CREATE TABLE `tbl_user_password_reset_requests` (
 -- Table structure for table `tbl_user_preferences`
 --
 
-CREATE TABLE `tbl_user_preferences` (
-  `uprefer_user_id` int NOT NULL,
-  `uprefer_prefer_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_user_preferences`;
+CREATE TABLE IF NOT EXISTS `tbl_user_preferences` (
+  `uprefer_user_id` int(11) NOT NULL,
+  `uprefer_prefer_id` int(11) NOT NULL,
+  PRIMARY KEY (`uprefer_user_id`,`uprefer_prefer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8652,17 +8896,20 @@ CREATE TABLE `tbl_user_preferences` (
 -- Table structure for table `tbl_user_qualifications`
 --
 
-CREATE TABLE `tbl_user_qualifications` (
-  `uqualification_id` int NOT NULL,
-  `uqualification_user_id` int NOT NULL,
-  `uqualification_experience_type` int NOT NULL COMMENT 'defined in model',
-  `uqualification_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uqualification_institute_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uqualification_institute_address` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uqualification_description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uqualification_start_year` int NOT NULL,
-  `uqualification_end_year` int NOT NULL,
-  `uqualification_active` tinyint(1) NOT NULL
+DROP TABLE IF EXISTS `tbl_user_qualifications`;
+CREATE TABLE IF NOT EXISTS `tbl_user_qualifications` (
+  `uqualification_id` int(11) NOT NULL AUTO_INCREMENT,
+  `uqualification_user_id` int(11) NOT NULL,
+  `uqualification_experience_type` int(11) NOT NULL COMMENT 'defined in model',
+  `uqualification_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uqualification_institute_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uqualification_institute_address` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uqualification_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uqualification_start_year` int(11) NOT NULL,
+  `uqualification_end_year` int(11) NOT NULL,
+  `uqualification_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`uqualification_id`),
+  KEY `uqualification_user_id` (`uqualification_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8671,21 +8918,23 @@ CREATE TABLE `tbl_user_qualifications` (
 -- Table structure for table `tbl_user_settings`
 --
 
-CREATE TABLE `tbl_user_settings` (
-  `user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_settings`;
+CREATE TABLE IF NOT EXISTS `tbl_user_settings` (
+  `user_id` int(11) NOT NULL,
   `user_dashboard` tinyint(1) NOT NULL,
   `user_registered_as` tinyint(1) NOT NULL,
   `user_trial_enabled` tinyint(1) DEFAULT NULL,
   `user_availability_date` datetime DEFAULT NULL,
   `user_book_before` tinyint(1) DEFAULT NULL,
-  `user_phone_code` int DEFAULT NULL,
-  `user_phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_phone_code` int(11) DEFAULT NULL,
+  `user_phone_number` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_wallet_balance` decimal(10,2) NOT NULL,
-  `user_video_link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_google_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_facebook_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_video_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_google_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_facebook_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_google_token` json DEFAULT NULL,
-  `user_facebook_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `user_facebook_token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8694,10 +8943,12 @@ CREATE TABLE `tbl_user_settings` (
 -- Table structure for table `tbl_user_speak_languages`
 --
 
-CREATE TABLE `tbl_user_speak_languages` (
-  `uslang_user_id` int NOT NULL,
-  `uslang_slang_id` int NOT NULL,
-  `uslang_proficiency` int NOT NULL
+DROP TABLE IF EXISTS `tbl_user_speak_languages`;
+CREATE TABLE IF NOT EXISTS `tbl_user_speak_languages` (
+  `uslang_user_id` int(11) NOT NULL,
+  `uslang_slang_id` int(11) NOT NULL,
+  `uslang_proficiency` int(11) NOT NULL,
+  PRIMARY KEY (`uslang_user_id`,`uslang_slang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8706,10 +8957,13 @@ CREATE TABLE `tbl_user_speak_languages` (
 -- Table structure for table `tbl_user_teach_languages`
 --
 
-CREATE TABLE `tbl_user_teach_languages` (
-  `utlang_id` int NOT NULL,
-  `utlang_user_id` int NOT NULL,
-  `utlang_tlang_id` int NOT NULL
+DROP TABLE IF EXISTS `tbl_user_teach_languages`;
+CREATE TABLE IF NOT EXISTS `tbl_user_teach_languages` (
+  `utlang_id` int(11) NOT NULL AUTO_INCREMENT,
+  `utlang_user_id` int(11) NOT NULL,
+  `utlang_tlang_id` int(11) NOT NULL,
+  PRIMARY KEY (`utlang_id`),
+  UNIQUE KEY `utlang_user_id` (`utlang_user_id`,`utlang_tlang_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8718,12 +8972,14 @@ CREATE TABLE `tbl_user_teach_languages` (
 -- Table structure for table `tbl_user_teach_lang_prices`
 --
 
-CREATE TABLE `tbl_user_teach_lang_prices` (
-  `ustelgpr_utlang_id` int NOT NULL,
-  `ustelgpr_slot` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_teach_lang_prices`;
+CREATE TABLE IF NOT EXISTS `tbl_user_teach_lang_prices` (
+  `ustelgpr_utlang_id` int(11) NOT NULL,
+  `ustelgpr_slot` int(11) NOT NULL,
   `ustelgpr_price` decimal(10,2) NOT NULL,
-  `ustelgpr_min_slab` int NOT NULL,
-  `ustelgpr_max_slab` int NOT NULL
+  `ustelgpr_min_slab` int(11) NOT NULL,
+  `ustelgpr_max_slab` int(11) NOT NULL,
+  UNIQUE KEY `ustelgpr_utl_id` (`ustelgpr_utlang_id`,`ustelgpr_slot`,`ustelgpr_min_slab`,`ustelgpr_max_slab`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8732,13 +8988,15 @@ CREATE TABLE `tbl_user_teach_lang_prices` (
 -- Table structure for table `tbl_user_transactions`
 --
 
-CREATE TABLE `tbl_user_transactions` (
-  `usrtxn_id` bigint NOT NULL,
-  `usrtxn_type` int NOT NULL,
-  `usrtxn_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_transactions`;
+CREATE TABLE IF NOT EXISTS `tbl_user_transactions` (
+  `usrtxn_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `usrtxn_type` int(11) NOT NULL,
+  `usrtxn_user_id` int(11) NOT NULL,
   `usrtxn_amount` decimal(10,2) NOT NULL,
   `usrtxn_datetime` datetime NOT NULL,
-  `usrtxn_comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `usrtxn_comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`usrtxn_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8747,13 +9005,15 @@ CREATE TABLE `tbl_user_transactions` (
 -- Table structure for table `tbl_user_verifications`
 --
 
-CREATE TABLE `tbl_user_verifications` (
-  `usrver_token` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usrver_user_id` int NOT NULL,
-  `usrver_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `usrver_type` tinyint NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_verifications`;
+CREATE TABLE IF NOT EXISTS `tbl_user_verifications` (
+  `usrver_token` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usrver_user_id` int(11) NOT NULL,
+  `usrver_email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `usrver_type` tinyint(4) NOT NULL,
   `usrver_expire` datetime NOT NULL,
-  `usrver_created` datetime NOT NULL
+  `usrver_created` datetime NOT NULL,
+  PRIMARY KEY (`usrver_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8762,22 +9022,24 @@ CREATE TABLE `tbl_user_verifications` (
 -- Table structure for table `tbl_user_withdrawal_requests`
 --
 
-CREATE TABLE `tbl_user_withdrawal_requests` (
-  `withdrawal_id` bigint NOT NULL,
-  `withdrawal_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_user_withdrawal_requests`;
+CREATE TABLE IF NOT EXISTS `tbl_user_withdrawal_requests` (
+  `withdrawal_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `withdrawal_user_id` int(11) NOT NULL,
   `withdrawal_amount` decimal(10,2) NOT NULL,
   `withdrawal_transaction_fee` decimal(10,4) NOT NULL,
-  `withdrawal_payment_method_id` int NOT NULL,
-  `withdrawal_bank` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_account_holder_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_account_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_ifc_swift_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_bank_address` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_comments` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_payment_method_id` int(11) NOT NULL,
+  `withdrawal_bank` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_account_holder_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_account_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_ifc_swift_code` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_bank_address` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_comments` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `withdrawal_request_date` datetime NOT NULL,
   `withdrawal_status` tinyint(1) NOT NULL,
-  `withdrawal_paypal_email_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `withdrawal_response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `withdrawal_paypal_email_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `withdrawal_response` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`withdrawal_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8786,12 +9048,15 @@ CREATE TABLE `tbl_user_withdrawal_requests` (
 -- Table structure for table `tbl_weekly_availability`
 --
 
-CREATE TABLE `tbl_weekly_availability` (
-  `wavail_id` int NOT NULL,
-  `wavail_user_id` int NOT NULL,
+DROP TABLE IF EXISTS `tbl_weekly_availability`;
+CREATE TABLE IF NOT EXISTS `tbl_weekly_availability` (
+  `wavail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `wavail_user_id` int(11) NOT NULL,
   `wavail_startdate` datetime NOT NULL,
   `wavail_enddate` datetime NOT NULL,
-  `wavail_availability` json DEFAULT NULL
+  `wavail_availability` json DEFAULT NULL,
+  PRIMARY KEY (`wavail_id`),
+  UNIQUE KEY `wavail_user_id` (`wavail_user_id`,`wavail_startdate`,`wavail_enddate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -8800,1258 +9065,12 @@ CREATE TABLE `tbl_weekly_availability` (
 -- Table structure for table `tbl_zoom_users`
 --
 
-CREATE TABLE `tbl_zoom_users` (
-  `zmusr_user_id` int NOT NULL,
-  `zmusr_zoom_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `zmusr_details` json NOT NULL
+DROP TABLE IF EXISTS `tbl_zoom_users`;
+CREATE TABLE IF NOT EXISTS `tbl_zoom_users` (
+  `zmusr_user_id` int(11) NOT NULL,
+  `zmusr_zoom_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `zmusr_zoom_type` int(11) NOT NULL,
+  `zmusr_details` json NOT NULL,
+  PRIMARY KEY (`zmusr_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `tbl_abusive_words`
---
-ALTER TABLE `tbl_abusive_words`
-  ADD PRIMARY KEY (`abusive_id`),
-  ADD UNIQUE KEY `abusive_word` (`abusive_keyword`,`abusive_lang_id`);
-
---
--- Indexes for table `tbl_admin`
---
-ALTER TABLE `tbl_admin`
-  ADD PRIMARY KEY (`admin_id`);
-
---
--- Indexes for table `tbl_admin_auth_token`
---
-ALTER TABLE `tbl_admin_auth_token`
-  ADD PRIMARY KEY (`admauth_token`),
-  ADD KEY `admrm_admin_id` (`admauth_admin_id`);
-
---
--- Indexes for table `tbl_admin_commissions`
---
-ALTER TABLE `tbl_admin_commissions`
-  ADD PRIMARY KEY (`comm_id`),
-  ADD UNIQUE KEY `comm_user_id` (`comm_user_id`);
-
---
--- Indexes for table `tbl_admin_permissions`
---
-ALTER TABLE `tbl_admin_permissions`
-  ADD PRIMARY KEY (`admperm_admin_id`,`admperm_section_id`);
-
---
--- Indexes for table `tbl_attached_files`
---
-ALTER TABLE `tbl_attached_files`
-  ADD PRIMARY KEY (`file_id`),
-  ADD KEY `afile_type` (`file_type`,`file_record_id`,`file_lang_id`) USING BTREE;
-
---
--- Indexes for table `tbl_availability`
---
-ALTER TABLE `tbl_availability`
-  ADD PRIMARY KEY (`avail_id`);
-
---
--- Indexes for table `tbl_bank_transfers`
---
-ALTER TABLE `tbl_bank_transfers`
-  ADD PRIMARY KEY (`bnktras_id`),
-  ADD KEY `ordpay_order_id` (`bnktras_order_id`);
-
---
--- Indexes for table `tbl_bible_content`
---
-ALTER TABLE `tbl_bible_content`
-  ADD PRIMARY KEY (`biblecontent_id`);
-
---
--- Indexes for table `tbl_bible_content_lang`
---
-ALTER TABLE `tbl_bible_content_lang`
-  ADD PRIMARY KEY (`biblecontentlang_biblecontent_id`,`biblecontentlang_lang_id`);
-
---
--- Indexes for table `tbl_blog_contributions`
---
-ALTER TABLE `tbl_blog_contributions`
-  ADD PRIMARY KEY (`bcontributions_id`);
-
---
--- Indexes for table `tbl_blog_post`
---
-ALTER TABLE `tbl_blog_post`
-  ADD PRIMARY KEY (`post_id`);
-
---
--- Indexes for table `tbl_blog_post_categories`
---
-ALTER TABLE `tbl_blog_post_categories`
-  ADD PRIMARY KEY (`bpcategory_id`);
-
---
--- Indexes for table `tbl_blog_post_categories_lang`
---
-ALTER TABLE `tbl_blog_post_categories_lang`
-  ADD PRIMARY KEY (`bpcategorylang_bpcategory_id`,`bpcategorylang_lang_id`);
-
---
--- Indexes for table `tbl_blog_post_comments`
---
-ALTER TABLE `tbl_blog_post_comments`
-  ADD PRIMARY KEY (`bpcomment_id`);
-
---
--- Indexes for table `tbl_blog_post_lang`
---
-ALTER TABLE `tbl_blog_post_lang`
-  ADD PRIMARY KEY (`postlang_post_id`,`postlang_lang_id`);
-
---
--- Indexes for table `tbl_blog_post_to_category`
---
-ALTER TABLE `tbl_blog_post_to_category`
-  ADD PRIMARY KEY (`ptc_bpcategory_id`,`ptc_post_id`);
-
---
--- Indexes for table `tbl_commission_history`
---
-ALTER TABLE `tbl_commission_history`
-  ADD PRIMARY KEY (`comhis_id`);
-
---
--- Indexes for table `tbl_configurations`
---
-ALTER TABLE `tbl_configurations`
-  ADD PRIMARY KEY (`conf_name`);
-
---
--- Indexes for table `tbl_content_pages`
---
-ALTER TABLE `tbl_content_pages`
-  ADD PRIMARY KEY (`cpage_id`);
-
---
--- Indexes for table `tbl_content_pages_block_lang`
---
-ALTER TABLE `tbl_content_pages_block_lang`
-  ADD PRIMARY KEY (`cpblocklang_id`),
-  ADD UNIQUE KEY `cpblocklang_lang_id` (`cpblocklang_lang_id`,`cpblocklang_cpage_id`,`cpblocklang_block_id`);
-
---
--- Indexes for table `tbl_content_pages_lang`
---
-ALTER TABLE `tbl_content_pages_lang`
-  ADD PRIMARY KEY (`cpagelang_cpage_id`,`cpagelang_lang_id`);
-
---
--- Indexes for table `tbl_countries`
---
-ALTER TABLE `tbl_countries`
-  ADD PRIMARY KEY (`country_id`),
-  ADD UNIQUE KEY `country_code` (`country_code`);
-
---
--- Indexes for table `tbl_countries_lang`
---
-ALTER TABLE `tbl_countries_lang`
-  ADD PRIMARY KEY (`countrylang_country_id`,`countrylang_lang_id`),
-  ADD UNIQUE KEY `countrylang_lang_id` (`countrylang_lang_id`,`country_name`);
-
---
--- Indexes for table `tbl_coupons`
---
-ALTER TABLE `tbl_coupons`
-  ADD PRIMARY KEY (`coupon_id`),
-  ADD UNIQUE KEY `coupon_code` (`coupon_code`);
-
---
--- Indexes for table `tbl_coupons_history`
---
-ALTER TABLE `tbl_coupons_history`
-  ADD PRIMARY KEY (`couhis_id`),
-  ADD UNIQUE KEY `couhis_order_id` (`couhis_order_id`,`couhis_coupon_id`);
-
---
--- Indexes for table `tbl_coupons_lang`
---
-ALTER TABLE `tbl_coupons_lang`
-  ADD PRIMARY KEY (`couponlang_coupon_id`,`couponlang_lang_id`);
-
---
--- Indexes for table `tbl_cron_log`
---
-ALTER TABLE `tbl_cron_log`
-  ADD PRIMARY KEY (`cronlog_id`),
-  ADD KEY `cronlog_cron_id` (`cronlog_cron_id`);
-
---
--- Indexes for table `tbl_cron_schedules`
---
-ALTER TABLE `tbl_cron_schedules`
-  ADD PRIMARY KEY (`cron_id`);
-
---
--- Indexes for table `tbl_currencies`
---
-ALTER TABLE `tbl_currencies`
-  ADD PRIMARY KEY (`currency_id`),
-  ADD UNIQUE KEY `currency_code` (`currency_code`);
-
---
--- Indexes for table `tbl_currencies_lang`
---
-ALTER TABLE `tbl_currencies_lang`
-  ADD PRIMARY KEY (`currencylang_currency_id`,`currencylang_lang_id`);
-
---
--- Indexes for table `tbl_email_archives`
---
-ALTER TABLE `tbl_email_archives`
-  ADD PRIMARY KEY (`earch_id`),
-  ADD KEY `emailarchive_tpl_name` (`earch_tpl_name`);
-
---
--- Indexes for table `tbl_email_templates`
---
-ALTER TABLE `tbl_email_templates`
-  ADD PRIMARY KEY (`etpl_code`,`etpl_lang_id`);
-
---
--- Indexes for table `tbl_extra_pages`
---
-ALTER TABLE `tbl_extra_pages`
-  ADD PRIMARY KEY (`epage_id`);
-
---
--- Indexes for table `tbl_extra_pages_lang`
---
-ALTER TABLE `tbl_extra_pages_lang`
-  ADD UNIQUE KEY `epagelang_epage_id` (`epagelang_epage_id`,`epagelang_lang_id`);
-
---
--- Indexes for table `tbl_faq`
---
-ALTER TABLE `tbl_faq`
-  ADD PRIMARY KEY (`faq_id`);
-
---
--- Indexes for table `tbl_faq_categories`
---
-ALTER TABLE `tbl_faq_categories`
-  ADD PRIMARY KEY (`faqcat_id`);
-
---
--- Indexes for table `tbl_faq_categories_lang`
---
-ALTER TABLE `tbl_faq_categories_lang`
-  ADD PRIMARY KEY (`faqcatlang_faqcat_id`,`faqcatlang_lang_id`);
-
---
--- Indexes for table `tbl_faq_lang`
---
-ALTER TABLE `tbl_faq_lang`
-  ADD PRIMARY KEY (`faqlang_faq_id`,`faqlang_lang_id`);
-
---
--- Indexes for table `tbl_flashcards`
---
-ALTER TABLE `tbl_flashcards`
-  ADD PRIMARY KEY (`flashcard_id`);
-
---
--- Indexes for table `tbl_gdpr_requests`
---
-ALTER TABLE `tbl_gdpr_requests`
-  ADD PRIMARY KEY (`gdpreq_id`);
-
---
--- Indexes for table `tbl_general_availability`
---
-ALTER TABLE `tbl_general_availability`
-  ADD PRIMARY KEY (`gavail_id`);
-
---
--- Indexes for table `tbl_google_calendar_events`
---
-ALTER TABLE `tbl_google_calendar_events`
-  ADD PRIMARY KEY (`gocaev_id`);
-
---
--- Indexes for table `tbl_group_classes`
---
-ALTER TABLE `tbl_group_classes`
-  ADD PRIMARY KEY (`grpcls_id`);
-
---
--- Indexes for table `tbl_group_classes_lang`
---
-ALTER TABLE `tbl_group_classes_lang`
-  ADD PRIMARY KEY (`gclang_grpcls_id`,`gclang_lang_id`);
-
---
--- Indexes for table `tbl_issue_report_options`
---
-ALTER TABLE `tbl_issue_report_options`
-  ADD PRIMARY KEY (`tissueopt_id`);
-
---
--- Indexes for table `tbl_issue_report_options_lang`
---
-ALTER TABLE `tbl_issue_report_options_lang`
-  ADD PRIMARY KEY (`tissueoptlang_tissueopt_id`,`tissueoptlang_lang_id`);
-
---
--- Indexes for table `tbl_languages`
---
-ALTER TABLE `tbl_languages`
-  ADD PRIMARY KEY (`language_id`);
-
---
--- Indexes for table `tbl_language_labels`
---
-ALTER TABLE `tbl_language_labels`
-  ADD PRIMARY KEY (`label_id`),
-  ADD UNIQUE KEY `label_key` (`label_key`,`label_lang_id`);
-
---
--- Indexes for table `tbl_meetings`
---
-ALTER TABLE `tbl_meetings`
-  ADD PRIMARY KEY (`meet_id`);
-
---
--- Indexes for table `tbl_meeting_tools`
---
-ALTER TABLE `tbl_meeting_tools`
-  ADD PRIMARY KEY (`metool_id`);
-
---
--- Indexes for table `tbl_meta_tags`
---
-ALTER TABLE `tbl_meta_tags`
-  ADD PRIMARY KEY (`meta_id`),
-  ADD UNIQUE KEY `meta_identifier` (`meta_identifier`),
-  ADD UNIQUE KEY `meta_controller` (`meta_controller`,`meta_action`,`meta_record_id`) USING BTREE;
-
---
--- Indexes for table `tbl_meta_tags_lang`
---
-ALTER TABLE `tbl_meta_tags_lang`
-  ADD PRIMARY KEY (`metalang_meta_id`,`metalang_lang_id`);
-
---
--- Indexes for table `tbl_navigations`
---
-ALTER TABLE `tbl_navigations`
-  ADD PRIMARY KEY (`nav_id`);
-
---
--- Indexes for table `tbl_navigations_lang`
---
-ALTER TABLE `tbl_navigations_lang`
-  ADD PRIMARY KEY (`navlang_nav_id`,`navlang_lang_id`);
-
---
--- Indexes for table `tbl_navigation_links`
---
-ALTER TABLE `tbl_navigation_links`
-  ADD PRIMARY KEY (`nlink_id`);
-
---
--- Indexes for table `tbl_navigation_links_lang`
---
-ALTER TABLE `tbl_navigation_links_lang`
-  ADD PRIMARY KEY (`nlinklang_nlink_id`,`nlinklang_lang_id`);
-
---
--- Indexes for table `tbl_notifications`
---
-ALTER TABLE `tbl_notifications`
-  ADD PRIMARY KEY (`notifi_id`);
-
---
--- Indexes for table `tbl_offer_prices`
---
-ALTER TABLE `tbl_offer_prices`
-  ADD PRIMARY KEY (`offpri_id`),
-  ADD UNIQUE KEY `offpri_teacher_id` (`offpri_teacher_id`,`offpri_learner_id`);
-
---
--- Indexes for table `tbl_orders`
---
-ALTER TABLE `tbl_orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `order_user_id` (`order_user_id`);
-
---
--- Indexes for table `tbl_order_classes`
---
-ALTER TABLE `tbl_order_classes`
-  ADD PRIMARY KEY (`ordcls_id`),
-  ADD KEY `ordcls_order_id` (`ordcls_order_id`);
-
---
--- Indexes for table `tbl_order_giftcards`
---
-ALTER TABLE `tbl_order_giftcards`
-  ADD PRIMARY KEY (`ordgift_id`);
-
---
--- Indexes for table `tbl_order_lessons`
---
-ALTER TABLE `tbl_order_lessons`
-  ADD PRIMARY KEY (`ordles_id`),
-  ADD KEY `ordles_order_id` (`ordles_order_id`);
-
---
--- Indexes for table `tbl_order_packages`
---
-ALTER TABLE `tbl_order_packages`
-  ADD PRIMARY KEY (`ordpkg_id`),
-  ADD KEY `ordcls_order_id` (`ordpkg_order_id`);
-
---
--- Indexes for table `tbl_order_payments`
---
-ALTER TABLE `tbl_order_payments`
-  ADD PRIMARY KEY (`ordpay_id`),
-  ADD KEY `ordpay_order_id` (`ordpay_order_id`);
-
---
--- Indexes for table `tbl_order_subscriptions`
---
-ALTER TABLE `tbl_order_subscriptions`
-  ADD PRIMARY KEY (`ordsub_id`);
-
---
--- Indexes for table `tbl_payment_gateway_response`
---
-ALTER TABLE `tbl_payment_gateway_response`
-  ADD PRIMARY KEY (`pgres_id`);
-
---
--- Indexes for table `tbl_payment_methods`
---
-ALTER TABLE `tbl_payment_methods`
-  ADD PRIMARY KEY (`pmethod_id`),
-  ADD UNIQUE KEY `pmethod_code` (`pmethod_code`);
-
---
--- Indexes for table `tbl_plans`
---
-ALTER TABLE `tbl_plans`
-  ADD PRIMARY KEY (`plan_id`);
-
---
--- Indexes for table `tbl_plan_classes`
---
-ALTER TABLE `tbl_plan_classes`
-  ADD PRIMARY KEY (`plancls_plan_id`,`plancls_grpcls_id`);
-
---
--- Indexes for table `tbl_plan_lessons`
---
-ALTER TABLE `tbl_plan_lessons`
-  ADD PRIMARY KEY (`planles_plan_id`,`planles_ordles_id`);
-
---
--- Indexes for table `tbl_preferences`
---
-ALTER TABLE `tbl_preferences`
-  ADD PRIMARY KEY (`prefer_id`);
-
---
--- Indexes for table `tbl_preferences_lang`
---
-ALTER TABLE `tbl_preferences_lang`
-  ADD PRIMARY KEY (`preferlang_prefer_id`,`preferlang_lang_id`);
-
---
--- Indexes for table `tbl_pricing_slabs`
---
-ALTER TABLE `tbl_pricing_slabs`
-  ADD PRIMARY KEY (`prislab_id`);
-
---
--- Indexes for table `tbl_rating_reviews`
---
-ALTER TABLE `tbl_rating_reviews`
-  ADD PRIMARY KEY (`ratrev_id`);
-
---
--- Indexes for table `tbl_reminders`
---
-ALTER TABLE `tbl_reminders`
-  ADD PRIMARY KEY (`rem_id`),
-  ADD UNIQUE KEY `rem_minutes` (`rem_minutes`,`rem_user_id`,`rem_record_id`,`rem_record_type`);
-
---
--- Indexes for table `tbl_reported_issues`
---
-ALTER TABLE `tbl_reported_issues`
-  ADD PRIMARY KEY (`repiss_id`);
-
---
--- Indexes for table `tbl_reported_issues_log`
---
-ALTER TABLE `tbl_reported_issues_log`
-  ADD PRIMARY KEY (`reislo_id`),
-  ADD KEY `reislo_repiss_id` (`reislo_repiss_id`);
-
---
--- Indexes for table `tbl_sales_stats`
---
-ALTER TABLE `tbl_sales_stats`
-  ADD PRIMARY KEY (`slstat_id`),
-  ADD UNIQUE KEY `slstat_date` (`slstat_date`) USING BTREE;
-
---
--- Indexes for table `tbl_seo_urls`
---
-ALTER TABLE `tbl_seo_urls`
-  ADD PRIMARY KEY (`seourl_id`),
-  ADD UNIQUE KEY `original` (`seourl_lang_id`,`seourl_original`) USING BTREE,
-  ADD UNIQUE KEY `custom` (`seourl_lang_id`,`seourl_custom`) USING BTREE;
-
---
--- Indexes for table `tbl_session_logs`
---
-ALTER TABLE `tbl_session_logs`
-  ADD PRIMARY KEY (`sesslog_id`);
-
---
--- Indexes for table `tbl_slides`
---
-ALTER TABLE `tbl_slides`
-  ADD PRIMARY KEY (`slide_id`);
-
---
--- Indexes for table `tbl_social_platforms`
---
-ALTER TABLE `tbl_social_platforms`
-  ADD PRIMARY KEY (`splatform_id`);
-
---
--- Indexes for table `tbl_speak_languages`
---
-ALTER TABLE `tbl_speak_languages`
-  ADD PRIMARY KEY (`slang_id`);
-
---
--- Indexes for table `tbl_speak_languages_lang`
---
-ALTER TABLE `tbl_speak_languages_lang`
-  ADD PRIMARY KEY (`slanglang_slang_id`,`slanglang_lang_id`);
-
---
--- Indexes for table `tbl_teacher_requests`
---
-ALTER TABLE `tbl_teacher_requests`
-  ADD PRIMARY KEY (`tereq_id`);
-
---
--- Indexes for table `tbl_teacher_stats`
---
-ALTER TABLE `tbl_teacher_stats`
-  ADD PRIMARY KEY (`testat_user_id`);
-
---
--- Indexes for table `tbl_teach_languages`
---
-ALTER TABLE `tbl_teach_languages`
-  ADD PRIMARY KEY (`tlang_id`),
-  ADD UNIQUE KEY `tlang_slug` (`tlang_slug`);
-
---
--- Indexes for table `tbl_teach_languages_lang`
---
-ALTER TABLE `tbl_teach_languages_lang`
-  ADD PRIMARY KEY (`tlanglang_tlang_id`,`tlanglang_lang_id`);
-
---
--- Indexes for table `tbl_testimonials`
---
-ALTER TABLE `tbl_testimonials`
-  ADD PRIMARY KEY (`testimonial_id`);
-
---
--- Indexes for table `tbl_testimonials_lang`
---
-ALTER TABLE `tbl_testimonials_lang`
-  ADD PRIMARY KEY (`testimoniallang_testimonial_id`,`testimoniallang_lang_id`);
-
---
--- Indexes for table `tbl_themes`
---
-ALTER TABLE `tbl_themes`
-  ADD PRIMARY KEY (`theme_id`);
-
---
--- Indexes for table `tbl_threads`
---
-ALTER TABLE `tbl_threads`
-  ADD PRIMARY KEY (`thread_id`);
-
---
--- Indexes for table `tbl_thread_messages`
---
-ALTER TABLE `tbl_thread_messages`
-  ADD PRIMARY KEY (`message_id`);
-
---
--- Indexes for table `tbl_thread_users`
---
-ALTER TABLE `tbl_thread_users`
-  ADD PRIMARY KEY (`threaduser_id`,`threaduser_thread_id`);
-
---
--- Indexes for table `tbl_users`
---
-ALTER TABLE `tbl_users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `user_email` (`user_email`),
-  ADD UNIQUE KEY `user_username` (`user_username`);
-
---
--- Indexes for table `tbl_users_lang`
---
-ALTER TABLE `tbl_users_lang`
-  ADD PRIMARY KEY (`userlang_user_id`,`userlang_lang_id`);
-
---
--- Indexes for table `tbl_user_auth_token`
---
-ALTER TABLE `tbl_user_auth_token`
-  ADD PRIMARY KEY (`usrtok_id`),
-  ADD KEY `usrtok_user_id` (`usrtok_user_id`);
-
---
--- Indexes for table `tbl_user_bank_details`
---
-ALTER TABLE `tbl_user_bank_details`
-  ADD PRIMARY KEY (`ub_user_id`);
-
---
--- Indexes for table `tbl_user_cart`
---
-ALTER TABLE `tbl_user_cart`
-  ADD PRIMARY KEY (`cart_user_id`);
-
---
--- Indexes for table `tbl_user_cookie_consent`
---
-ALTER TABLE `tbl_user_cookie_consent`
-  ADD PRIMARY KEY (`usercc_user_id`);
-
---
--- Indexes for table `tbl_user_email_change_request`
---
-ALTER TABLE `tbl_user_email_change_request`
-  ADD PRIMARY KEY (`uecreq_id`);
-
---
--- Indexes for table `tbl_user_favourite_teachers`
---
-ALTER TABLE `tbl_user_favourite_teachers`
-  ADD PRIMARY KEY (`uft_id`),
-  ADD UNIQUE KEY `uft_user_id` (`uft_user_id`,`uft_teacher_id`);
-
---
--- Indexes for table `tbl_user_preferences`
---
-ALTER TABLE `tbl_user_preferences`
-  ADD PRIMARY KEY (`uprefer_user_id`,`uprefer_prefer_id`);
-
---
--- Indexes for table `tbl_user_qualifications`
---
-ALTER TABLE `tbl_user_qualifications`
-  ADD PRIMARY KEY (`uqualification_id`),
-  ADD KEY `uqualification_user_id` (`uqualification_user_id`);
-
---
--- Indexes for table `tbl_user_settings`
---
-ALTER TABLE `tbl_user_settings`
-  ADD PRIMARY KEY (`user_id`);
-
---
--- Indexes for table `tbl_user_speak_languages`
---
-ALTER TABLE `tbl_user_speak_languages`
-  ADD PRIMARY KEY (`uslang_user_id`,`uslang_slang_id`);
-
---
--- Indexes for table `tbl_user_teach_languages`
---
-ALTER TABLE `tbl_user_teach_languages`
-  ADD PRIMARY KEY (`utlang_id`),
-  ADD UNIQUE KEY `utlang_user_id` (`utlang_user_id`,`utlang_tlang_id`);
-
---
--- Indexes for table `tbl_user_teach_lang_prices`
---
-ALTER TABLE `tbl_user_teach_lang_prices`
-  ADD UNIQUE KEY `ustelgpr_utl_id` (`ustelgpr_utlang_id`,`ustelgpr_slot`,`ustelgpr_min_slab`,`ustelgpr_max_slab`);
-
---
--- Indexes for table `tbl_user_transactions`
---
-ALTER TABLE `tbl_user_transactions`
-  ADD PRIMARY KEY (`usrtxn_id`);
-
---
--- Indexes for table `tbl_user_verifications`
---
-ALTER TABLE `tbl_user_verifications`
-  ADD PRIMARY KEY (`usrver_token`);
-
---
--- Indexes for table `tbl_user_withdrawal_requests`
---
-ALTER TABLE `tbl_user_withdrawal_requests`
-  ADD PRIMARY KEY (`withdrawal_id`);
-
---
--- Indexes for table `tbl_weekly_availability`
---
-ALTER TABLE `tbl_weekly_availability`
-  ADD PRIMARY KEY (`wavail_id`),
-  ADD UNIQUE KEY `wavail_user_id` (`wavail_user_id`,`wavail_startdate`,`wavail_enddate`);
-
---
--- Indexes for table `tbl_zoom_users`
---
-ALTER TABLE `tbl_zoom_users`
-  ADD PRIMARY KEY (`zmusr_user_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `tbl_abusive_words`
---
-ALTER TABLE `tbl_abusive_words`
-  MODIFY `abusive_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_admin`
---
-ALTER TABLE `tbl_admin`
-  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tbl_admin_commissions`
---
-ALTER TABLE `tbl_admin_commissions`
-  MODIFY `comm_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tbl_attached_files`
---
-ALTER TABLE `tbl_attached_files`
-  MODIFY `file_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1768;
-
---
--- AUTO_INCREMENT for table `tbl_availability`
---
-ALTER TABLE `tbl_availability`
-  MODIFY `avail_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_bank_transfers`
---
-ALTER TABLE `tbl_bank_transfers`
-  MODIFY `bnktras_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_bible_content`
---
-ALTER TABLE `tbl_bible_content`
-  MODIFY `biblecontent_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT for table `tbl_blog_contributions`
---
-ALTER TABLE `tbl_blog_contributions`
-  MODIFY `bcontributions_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_blog_post`
---
-ALTER TABLE `tbl_blog_post`
-  MODIFY `post_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `tbl_blog_post_categories`
---
-ALTER TABLE `tbl_blog_post_categories`
-  MODIFY `bpcategory_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `tbl_blog_post_comments`
---
-ALTER TABLE `tbl_blog_post_comments`
-  MODIFY `bpcomment_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_commission_history`
---
-ALTER TABLE `tbl_commission_history`
-  MODIFY `comhis_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tbl_content_pages`
---
-ALTER TABLE `tbl_content_pages`
-  MODIFY `cpage_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `tbl_content_pages_block_lang`
---
-ALTER TABLE `tbl_content_pages_block_lang`
-  MODIFY `cpblocklang_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `tbl_countries`
---
-ALTER TABLE `tbl_countries`
-  MODIFY `country_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
-
---
--- AUTO_INCREMENT for table `tbl_coupons`
---
-ALTER TABLE `tbl_coupons`
-  MODIFY `coupon_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_coupons_history`
---
-ALTER TABLE `tbl_coupons_history`
-  MODIFY `couhis_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_cron_log`
---
-ALTER TABLE `tbl_cron_log`
-  MODIFY `cronlog_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_cron_schedules`
---
-ALTER TABLE `tbl_cron_schedules`
-  MODIFY `cron_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT for table `tbl_currencies`
---
-ALTER TABLE `tbl_currencies`
-  MODIFY `currency_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `tbl_email_archives`
---
-ALTER TABLE `tbl_email_archives`
-  MODIFY `earch_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_extra_pages`
---
-ALTER TABLE `tbl_extra_pages`
-  MODIFY `epage_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `tbl_faq`
---
-ALTER TABLE `tbl_faq`
-  MODIFY `faq_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `tbl_faq_categories`
---
-ALTER TABLE `tbl_faq_categories`
-  MODIFY `faqcat_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `tbl_flashcards`
---
-ALTER TABLE `tbl_flashcards`
-  MODIFY `flashcard_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_gdpr_requests`
---
-ALTER TABLE `tbl_gdpr_requests`
-  MODIFY `gdpreq_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_general_availability`
---
-ALTER TABLE `tbl_general_availability`
-  MODIFY `gavail_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_google_calendar_events`
---
-ALTER TABLE `tbl_google_calendar_events`
-  MODIFY `gocaev_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_group_classes`
---
-ALTER TABLE `tbl_group_classes`
-  MODIFY `grpcls_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_issue_report_options`
---
-ALTER TABLE `tbl_issue_report_options`
-  MODIFY `tissueopt_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
-
---
--- AUTO_INCREMENT for table `tbl_issue_report_options_lang`
---
-ALTER TABLE `tbl_issue_report_options_lang`
-  MODIFY `tissueoptlang_tissueopt_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
-
---
--- AUTO_INCREMENT for table `tbl_languages`
---
-ALTER TABLE `tbl_languages`
-  MODIFY `language_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `tbl_language_labels`
---
-ALTER TABLE `tbl_language_labels`
-  MODIFY `label_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12658;
-
---
--- AUTO_INCREMENT for table `tbl_meetings`
---
-ALTER TABLE `tbl_meetings`
-  MODIFY `meet_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_meeting_tools`
---
-ALTER TABLE `tbl_meeting_tools`
-  MODIFY `metool_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `tbl_meta_tags`
---
-ALTER TABLE `tbl_meta_tags`
-  MODIFY `meta_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tbl_navigations`
---
-ALTER TABLE `tbl_navigations`
-  MODIFY `nav_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `tbl_navigation_links`
---
-ALTER TABLE `tbl_navigation_links`
-  MODIFY `nlink_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
-
---
--- AUTO_INCREMENT for table `tbl_notifications`
---
-ALTER TABLE `tbl_notifications`
-  MODIFY `notifi_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_offer_prices`
---
-ALTER TABLE `tbl_offer_prices`
-  MODIFY `offpri_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_orders`
---
-ALTER TABLE `tbl_orders`
-  MODIFY `order_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_classes`
---
-ALTER TABLE `tbl_order_classes`
-  MODIFY `ordcls_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_giftcards`
---
-ALTER TABLE `tbl_order_giftcards`
-  MODIFY `ordgift_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_lessons`
---
-ALTER TABLE `tbl_order_lessons`
-  MODIFY `ordles_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_packages`
---
-ALTER TABLE `tbl_order_packages`
-  MODIFY `ordpkg_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_payments`
---
-ALTER TABLE `tbl_order_payments`
-  MODIFY `ordpay_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_order_subscriptions`
---
-ALTER TABLE `tbl_order_subscriptions`
-  MODIFY `ordsub_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_payment_gateway_response`
---
-ALTER TABLE `tbl_payment_gateway_response`
-  MODIFY `pgres_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_payment_methods`
---
-ALTER TABLE `tbl_payment_methods`
-  MODIFY `pmethod_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `tbl_plans`
---
-ALTER TABLE `tbl_plans`
-  MODIFY `plan_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_preferences`
---
-ALTER TABLE `tbl_preferences`
-  MODIFY `prefer_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
-
---
--- AUTO_INCREMENT for table `tbl_pricing_slabs`
---
-ALTER TABLE `tbl_pricing_slabs`
-  MODIFY `prislab_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `tbl_rating_reviews`
---
-ALTER TABLE `tbl_rating_reviews`
-  MODIFY `ratrev_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_reminders`
---
-ALTER TABLE `tbl_reminders`
-  MODIFY `rem_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_reported_issues`
---
-ALTER TABLE `tbl_reported_issues`
-  MODIFY `repiss_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_reported_issues_log`
---
-ALTER TABLE `tbl_reported_issues_log`
-  MODIFY `reislo_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_sales_stats`
---
-ALTER TABLE `tbl_sales_stats`
-  MODIFY `slstat_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_seo_urls`
---
-ALTER TABLE `tbl_seo_urls`
-  MODIFY `seourl_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `tbl_session_logs`
---
-ALTER TABLE `tbl_session_logs`
-  MODIFY `sesslog_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_slides`
---
-ALTER TABLE `tbl_slides`
-  MODIFY `slide_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `tbl_social_platforms`
---
-ALTER TABLE `tbl_social_platforms`
-  MODIFY `splatform_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `tbl_speak_languages`
---
-ALTER TABLE `tbl_speak_languages`
-  MODIFY `slang_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
-
---
--- AUTO_INCREMENT for table `tbl_teacher_requests`
---
-ALTER TABLE `tbl_teacher_requests`
-  MODIFY `tereq_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_teach_languages`
---
-ALTER TABLE `tbl_teach_languages`
-  MODIFY `tlang_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
-
---
--- AUTO_INCREMENT for table `tbl_testimonials`
---
-ALTER TABLE `tbl_testimonials`
-  MODIFY `testimonial_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tbl_themes`
---
-ALTER TABLE `tbl_themes`
-  MODIFY `theme_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `tbl_threads`
---
-ALTER TABLE `tbl_threads`
-  MODIFY `thread_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_thread_messages`
---
-ALTER TABLE `tbl_thread_messages`
-  MODIFY `message_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_users`
---
-ALTER TABLE `tbl_users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_auth_token`
---
-ALTER TABLE `tbl_user_auth_token`
-  MODIFY `usrtok_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_email_change_request`
---
-ALTER TABLE `tbl_user_email_change_request`
-  MODIFY `uecreq_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_favourite_teachers`
---
-ALTER TABLE `tbl_user_favourite_teachers`
-  MODIFY `uft_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_qualifications`
---
-ALTER TABLE `tbl_user_qualifications`
-  MODIFY `uqualification_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_teach_languages`
---
-ALTER TABLE `tbl_user_teach_languages`
-  MODIFY `utlang_id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_transactions`
---
-ALTER TABLE `tbl_user_transactions`
-  MODIFY `usrtxn_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_user_withdrawal_requests`
---
-ALTER TABLE `tbl_user_withdrawal_requests`
-  MODIFY `withdrawal_id` bigint NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_weekly_availability`
---
-ALTER TABLE `tbl_weekly_availability`
-  MODIFY `wavail_id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- ------------------
--- BR_RV-3.0.0_HOT_FIX
--- ------------------
-
-ALTER TABLE `tbl_zoom_users` ADD `zmusr_zoom_type` INT NOT NULL AFTER `zmusr_zoom_id`;
-UPDATE `tbl_zoom_users` SET `zmusr_zoom_type` = '1';
-INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `etpl_subject`, `etpl_body`, `etpl_vars`, `etpl_status`, `etpl_quick_send`) VALUES 
-('license_alert', '1', '{meeting_tool} License Alert', '{meeting_tool} license alert {website_name}', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">License Alert</span></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \r\n								<p style=\"line-height: 20px;\"><span style=\"color: rgb(103, 103, 103); font-size: 14px;\">This is an update regarding sessions on the platform. Meeting tool licenses available on the platform are less than the classes scheduled simultaneously. Please find details of the classes below:</span></p>\r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n									<tbody>\r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Sessions&nbsp;</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{session_count}</td>\r\n										</tr>  \r\n									</tbody>\r\n								</table></td>\r\n						</tr>\r\n					</tbody>\r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{start_time} class Start Time <br>{end_time} class End Time <br>{session_count} Total Scheduled Sessions count', '1', '0'),
-('license_alert', '2', '{meeting_tool} License Alert', '{meeting_tool} license alert {website_name}', '<table width=\"600\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">    \r\n	<tbody>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee;\"><span style=\"font-size: 30px; font-weight: bold;\">License Alert</span></td>        \r\n		</tr>        \r\n		<tr>            \r\n			<td style=\"background:#fff;padding:0 40px; text-align:center; color:#999;vertical-align:top; border-bottom:1px solid #eee; \">                \r\n				<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" align=\"center\">                    \r\n					<tbody>                        \r\n						<tr>                            \r\n							<td style=\"padding:40px 0 60px;\">                                \r\n								<h3 style=\"margin: 0 0 10px;font-size: 24px; font-weight: 500; padding: 0;color: #333;text-align:center;\">Dear Admin</h3>                                \r\n								<p style=\"line-height: 20px;\"><span style=\"color: rgb(103, 103, 103); font-size: 14px;\">This is an update regarding sessions on the platform. Meeting tool licenses available on the platform are less than the classes scheduled simultaneously. Please find details of the classes below:</span></p>\r\n								<table style=\"border:1px solid #ddd; border-collapse:collapse; width:100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n									<tbody>\r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Start Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{start_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">End Time</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{end_time}</td>\r\n										</tr>                                      \r\n										<tr>\r\n											<td style=\"padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;\" width=\"40%\">Scheduled Sessions&nbsp;</td>\r\n											<td style=\"padding:10px;font-size:13px; color:#333;border:1px solid #ddd;\" width=\"60%\">{session_count}</td>\r\n										</tr>  \r\n									</tbody>\r\n								</table></td>\r\n						</tr>\r\n					</tbody>\r\n				</table>            </td>        \r\n		</tr>    \r\n	</tbody>\r\n</table>', '{start_time} class Start Time <br>{end_time} class End Time <br>{session_count} Total Scheduled Sessions count', '1', '0');
-INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES ('CONF_ZOOM_FREE_MEETING_DURATION', '45', '');
-INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'shuffle/revoke Zoom License', 'shuffleZoomLicense', '1', '1');
-
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_1.png", "images/55x55_1.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_2.png", "images/55x55_2.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_3.png", "images/55x55_3.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_4.png", "images/55x55_4.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_5.png", "images/55x55_5.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/55x55_6.png", "images/55x55_6.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/120x120_3.png", "images/120x120_3.png");
-UPDATE tbl_extra_pages_lang SET epage_content = REPLACE(epage_content, "https://teach.yo-coach.com/images/120x120_4.png", "images/120x120_4.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025272-mission.png", "image/editor-image/1650025272-mission.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650025364-vision.png", "image/editor-image/1650025364-vision.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349417-ceo364x364.png", "image/editor-image/1650349417-ceo364x364.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349567-marketinghead364x3641.png", "image/editor-image/1650349567-marketinghead364x3641.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349739-creativedirector364x3642.png", "image/editor-image/1650349739-creativedirector364x3642.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349751-techlead364x3643.png", "image/editor-image/1650349751-techlead364x3643.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349756-saleshead364x3644.png", "image/editor-image/1650349756-saleshead364x3644.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650349761-creativedirector2364x3645.png", "image/editor-image/1650349761-creativedirector2364x3645.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021362-search.png", "image/editor-image/1650021362-search.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021522-Book.png", "image/editor-image/1650021522-Book.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650021648-learn.png", "image/editor-image/1650021648-learn.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351210-translater.png", "image/editor-image/1650351210-translater.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351215-teacher.png", "image/editor-image/1650351215-teacher.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/image/editor-image/1650351220-learner.png", "image/editor-image/1650351220-learner.png");
-UPDATE tbl_content_pages_block_lang SET cpblocklang_text = REPLACE(cpblocklang_text, "https://yocoach3.bestech.4qcteam.com/admin/content-pages", "/teachers");
-
-ALTER TABLE `tbl_coupons`  DROP `coupon_deleted`;
-
-INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES
-(null, 'Send Wallet Balance maintain Reminder for subscription before one day ', 'sendWalletBalanceReminder/2', 1, 1),
-(null, 'Send Wallet Balance maintain Reminder for subscription before 3 day', 'sendWalletBalanceReminder/3', 1, 1),
-(null, 'Send Wallet Balance maintain Reminder for subscription before 7 day', 'sendWalletBalanceReminder/4', 1, 1);
-ALTER TABLE `tbl_email_archives` ADD `earch_attempted` DATETIME NULL AFTER `earch_attachemnts`;
-
-DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD';
-INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
-(1, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'Receiver have redeemed gift card.'),
-(2, 'NOTIFI_DESC_TYPE_REDEEM_GIFTCARD', 'قام المستلم باسترداد بطاقة الهدايا.');
-
--- -----------------------
--- After 15 September 2022
--- -----------------------
-UPDATE `tbl_navigation_links` SET `nlink_url` = '{siteroot}blog/contribution-form' WHERE `tbl_navigation_links`.`nlink_id` = 76;
-DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}';
