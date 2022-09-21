@@ -744,17 +744,22 @@ class Course extends MyAppModel
             $course = $this->get();
             $intendedLearner = new IntendedLearner();
             $intendedLearnerData = $intendedLearner->get($this->getMainTableRecordId());
+            $price = CourseUtility::convertToSystemCurrency($course['course_price'], $course['course_currency_id']);
             $data = [
                 'coapre_course_id' => $this->getMainTableRecordId(),
                 'coapre_cate_id' => $course['course_cate_id'],
                 'coapre_subcate_id' => $course['course_subcate_id'],
+                'coapre_clang_id' => $course['course_clang_id'],
+                'coapre_level' => $course['course_level'],
+                'coapre_certificate' => $course['course_certificate'],
                 'coapre_status' => static::REQUEST_PENDING,
                 'coapre_created' => date('Y-m-d H:i:s'),
                 'coapre_title' => $course['course_title'],
                 'coapre_subtitle' => $course['course_subtitle'],
                 'coapre_details' => $course['course_details'],
-                'coapre_price' => CourseUtility::formatMoney($course['course_price'], $course['course_currency_id']),
+                'coapre_price' => $price,
                 'coapre_duration' => $course['course_duration'],
+                'coapre_srchtags' => $course['course_srchtags'],
                 'coapre_learners' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNERS]),
                 'coapre_learnings' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNING]),
                 'coapre_requirements' => json_encode($intendedLearnerData[IntendedLearner::TYPE_REQUIREMENTS]),
@@ -874,6 +879,9 @@ class Course extends MyAppModel
             'course.course_id',
             'course.course_cate_id',
             'course.course_subcate_id',
+            'course.course_level',
+            'course.course_certificate',
+            'course.course_clang_id',
             'course.course_lectures',
             'course.course_user_id',
             'course.course_reviews',
@@ -881,7 +889,8 @@ class Course extends MyAppModel
             'course.course_certificate',
             'course.course_currency_id',
             'course.course_price',
-            'course_duration'
+            'course_duration',
+            'course_srchtags'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();

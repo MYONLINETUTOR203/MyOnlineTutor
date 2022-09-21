@@ -109,6 +109,9 @@ class CourseRequestsController extends AdminBaseController
         $data['coapre_learners'] = json_decode($data['coapre_learners'], true); 
         $data['coapre_learnings'] = json_decode($data['coapre_learnings'], true); 
         $data['coapre_requirements'] = json_decode($data['coapre_requirements'], true); 
+        $data['coapre_srchtags'] = json_decode($data['coapre_srchtags'], true); 
+        $crsLang = (new CourseLanguage($data['coapre_clang_id'], $this->siteLangId))->getById();
+        $data['coapre_clang_name'] = $crsLang['clang_name'] ?? Label::getLabel('LBL_NA');
         $this->sets([
             'requestData' => $data
         ]);

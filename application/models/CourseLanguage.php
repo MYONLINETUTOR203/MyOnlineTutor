@@ -13,14 +13,17 @@ class CourseLanguage extends MyAppModel
     const DB_TBL_LANG = 'tbl_course_languages_lang';
     const DB_TBL_PREFIX = 'clang_';
 
+    private $langId;
+
     /**
      * Initialize Lang
      * 
      * @param int $id
      */
-    public function __construct(int $id = 0)
+    public function __construct(int $id = 0, $langId = 0)
     {
         parent::__construct(static::DB_TBL, 'clang_id', $id);
+        $this->langId = $langId;
     }
 
     /**
@@ -47,5 +50,22 @@ class CourseLanguage extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addOrder('clang_order');
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+    }
+
+    public function getById()
+    {
+        $srch = new SearchBase(static::DB_TBL, 'clang');
+        $srch->joinTable(
+            static::DB_TBL_LANG,
+            'LEFT JOIN',
+            'clanglang.clanglang_clang_id = clang.clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
+            'clanglang'
+        );
+        $srch->addCondition('clang.clang_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('clang.clang_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->doNotCalculateRecords();
+        $srch->addFld('IFNULL(clang_name, clang_identifier) as clang_name');
+        $srch->setPageSize(1);
+        return FatApp::getDb()->fetch($srch->getResultSet());
     }
 }

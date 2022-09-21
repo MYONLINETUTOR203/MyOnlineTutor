@@ -51,11 +51,11 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_CATEGORY'); ?></dt>
-                                <dd><?php echo empty($courseData['coapre_cate_name']) ? Label::getLabel('LBL_NA') : $courseData['coapre_cate_name']; ?></dd>
+                                <dd><?php echo empty($requestData['coapre_cate_name']) ? Label::getLabel('LBL_NA') : $requestData['coapre_cate_name']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_SUBCATEGORY'); ?></dt>
-                                <dd><?php echo empty($courseData['coapre_subcate_name']) ? Label::getLabel('LBL_NA') : $courseData['coapre_subcate_name']; ?></dd>
+                                <dd><?php echo empty($requestData['coapre_subcate_name']) ? Label::getLabel('LBL_NA') : $requestData['coapre_subcate_name']; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
@@ -63,11 +63,27 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_PRICE'); ?></dt>
-                                <dd><?php echo $requestData['coapre_price']; ?></dd>
+                                <dd><?php echo MyUtility::formatMoney($requestData['coapre_price']); ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DURATION'); ?></dt>
                                 <dd><?php echo YouTube::convertDuration($requestData['coapre_duration']); ?></dd>
+                            </dl>
+                            <dl class="list">
+                                <dt><?php echo Label::getLabel('LBL_COURSE_LEVEL'); ?></dt>
+                                <dd><?php echo Course::getCourseLevels($requestData['coapre_level']); ?></dd>
+                            </dl>
+                            <dl class="list">
+                                <dt><?php echo Label::getLabel('LBL_COURSE_LANGUAGE'); ?></dt>
+                                <dd><?php echo $requestData['coapre_clang_name']; ?></dd>
+                            </dl>
+                            <dl class="list">
+                                <dt><?php echo Label::getLabel('LBL_COURSE_CERTIFICATE'); ?></dt>
+                                <dd><?php echo AppConstant::getYesNoArr($requestData['coapre_certificate']); ?></dd>
+                            </dl>
+                            <dl class="list">
+                                <dt><?php echo Label::getLabel('LBL_COURSE_TAGS'); ?></dt>
+                                <dd><?php echo implode(', ', $requestData['coapre_srchtags']); ?></dd>
                             </dl>
                             <?php if(!empty($requestData['coapre_learnings'])) { ?>           
                             <dl class="list">

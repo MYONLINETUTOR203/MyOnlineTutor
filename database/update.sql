@@ -1291,7 +1291,6 @@ ALTER TABLE `tbl_course_refund_requests` ADD `corere_comment` TEXT NOT NULL COMM
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_cate_id` INT(11) NOT NULL AFTER `coapre_id`, ADD `coapre_subcate_id` INT(11) NOT NULL AFTER `coapre_cate_id`;
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_learners` JSON NOT NULL AFTER `coapre_duration`, ADD `coapre_requirements` JSON NOT NULL AFTER `coapre_learners`, ADD `coapre_learnings` JSON NOT NULL AFTER `coapre_requirements`;
 
-
 -- -----------------------
 -- After 15 September 2022
 -- -----------------------
@@ -1300,3 +1299,9 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LEARNER_FAILURE_OR
 INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
 (1, 'LBL_TEACHER_PRICING', 'Pricing'),(2, 'LBL_TEACHER_PRICING', 'التسعير');
 
+
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_clang_id` INT NOT NULL AFTER `coapre_course_id`;
+ALTER TABLE `tbl_course_approval_requests` CHANGE `coapre_course_id` `coapre_course_id` INT(11) NOT NULL AFTER `coapre_id`, CHANGE `coapre_title` `coapre_title` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL AFTER `coapre_course_id`, CHANGE `coapre_subtitle` `coapre_subtitle` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL AFTER `coapre_title`, CHANGE `coapre_details` `coapre_details` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL AFTER `coapre_subtitle`;
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_level` INT NOT NULL AFTER `coapre_clang_id`;
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_certificate` TINYINT(1) NOT NULL AFTER `coapre_duration`, ADD `coapre_srchtags` JSON NOT NULL AFTER `coapre_certificate`; 
+ALTER TABLE `tbl_course_approval_requests` CHANGE `coapre_price` `coapre_price` DECIMAL(15,8) NOT NULL; 
