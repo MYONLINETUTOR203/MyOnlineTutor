@@ -81,3 +81,5 @@ UPDATE `tbl_navigation_links` SET `nlink_url` = '{siteroot}blog/contribution-for
 DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}';
 INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
 (1, 'LBL_TEACHER_PRICING', 'Pricing'),(2, 'LBL_TEACHER_PRICING', 'التسعير');
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.0.0.20220921(YoCoach RV-3.0)' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
