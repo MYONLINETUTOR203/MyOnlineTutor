@@ -3334,7 +3334,7 @@ div.tagsinput div {
 
 .window {
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 90px);
   padding: var(--padding-10);
   display: -webkit-box;
   display: -ms-flexbox;

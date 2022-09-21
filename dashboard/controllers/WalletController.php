@@ -224,8 +224,11 @@ class WalletController extends DashboardController
             $payoutMethodId = array_key_first($paymentMethod);
         }
         $txnFee = json_decode($txnFeeArr[$payoutMethodId], true);
-        $pmethodCode = $paymentMethod[$payoutMethodId];
-        $form = $pmethodCode::getWithdrawalForm($paymentMethod);
+        $pmethodModel = $paymentMethod[$payoutMethodId];
+        foreach ($paymentMethod as $key => $value) {
+            $paymentMethod[$key] = Label::getLabel('LBL_' . $value);
+        }
+        $form = $pmethodModel::getWithdrawalForm($paymentMethod);
         $form->getField('withdrawal_payment_method_id')->value = $payoutMethodId;
         $withdrawalAmountFld = $form->getField('withdrawal_amount');
         $withdrawalAmountAfterHTML = "<small>" . Label::getLabel('LBL_CURRENT_WALLET_BALANCE') . ' ' . MyUtility::formatMoney($balance) . "</small>";

@@ -84,7 +84,7 @@ if ($siteUserId == $teacher['user_id']) {
                                     <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_SESSIONS'); ?></div>
                                 </div>
                             </div>
-                            <div class="har-rate"><?php echo Label::getLabel('LBL_RATE'); ?><b> <?php echo MyUtility::formatMoney($teacher['testat_minprice']); ?> - <?php echo MyUtility::formatMoney($teacher['testat_maxprice']); ?></b></div>
+                            <div class="har-rate"><?php echo Label::getLabel('LBL_TEACHER_PRICING'); ?><b> <?php echo MyUtility::formatMoney($teacher['testat_minprice']); ?> - <?php echo MyUtility::formatMoney($teacher['testat_maxprice']); ?></b></div>
                             <div class="tutor-lang"><b><?php echo Label::getLabel('LBL_TEACHES:'); ?></b> <?php echo $teacher['teacherTeachLanguageName']; ?></div>
                         </div>
                     </div>

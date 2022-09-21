@@ -204,9 +204,9 @@
         top: 50% !important;
         transform: translateY(-50%);
         
-        background-color:transparent!important; margin-top: 0;
-        &.slick-next{#{theme('direction.right','value')}: 1rem!important;}
-        &.slick-prev{#{theme('direction.left','value')}: 1rem!important;}
+        background-color:transparent!important; margin-top: 0; box-shadow:none;
+        &.slick-next{right: 1rem!important;}
+        &.slick-prev{left: 1rem!important;}
         &::before{
             border-color: theme('color.dark');
             width: 18px;

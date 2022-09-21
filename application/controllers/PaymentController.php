@@ -129,8 +129,8 @@ class PaymentController extends MyAppController
         if (empty($order) || $order['order_user_id'] != $this->siteUserId) {
             FatUtility::exitWithErrorCode(404);
         }
-        $message = Label::getLabel('MSG_LEARNER_CANCEL_ORDER_{contacturl}');
-        $this->set('textMessage', str_replace('{contacturl}', MyUtility::makeUrl('Contact'), $message));
+        $message = Label::getLabel('MSG_LEARNER_CANCEL_ORDER_{CONTACTURL}');
+        $this->set('textMessage', str_replace('{CONTACTURL}', MyUtility::makeUrl('Contact'), $message));
         $this->set('order', $order);
         $this->_template->render(true, false);
     }
@@ -147,8 +147,6 @@ class PaymentController extends MyAppController
         if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
-        $message = Label::getLabel('MSG_LEARNER_FAILURE_ORDER_{contacturl}');
-        $this->set('textMessage', str_replace('{contacturl}', MyUtility::makeUrl('Contact'), $message));
         $this->set('order', $order);
         $pay = new $order['pmethod_code']($order);
         $this->set('data', $pay->getFailedData());
@@ -172,17 +170,11 @@ class PaymentController extends MyAppController
         if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
-        $message = stripslashes(Label::getLabel('LBL_LEARNER_SUCCESS_ORDER_{dashboardurl}_{contacturl}'));
-        $variables = [
-            '{dashboardurl}' => MyUtility::makeUrl('Learner', '', [], CONF_WEBROOT_DASHBOARD),
-            '{contacturl}' => MyUtility::makeUrl('Contact', '', [], CONF_WEBROOT_FRONTEND),
-        ];
-        $this->set('order', $order);
         if (!empty($order['pmethod_code'])) {
             $pay = new $order['pmethod_code']($order);
             $this->set('data', $pay->getSuccessData());
         }
-        $this->sets(['order' => $order, 'textMessage' => str_replace(array_keys($variables), $variables, $message)]);
+        $this->set('order', $order);
         if ($this->siteUserId > 0 && ($order['order_type'] == Order::TYPE_LESSON || $order['order_type'] == Order::TYPE_SUBSCR)) {
             $this->set('lessons', $this->getOrderLessons($orderId));
             $this->set('setMonthAndWeekNames', true);

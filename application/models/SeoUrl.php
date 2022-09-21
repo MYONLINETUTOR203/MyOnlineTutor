@@ -73,7 +73,7 @@ class SeoUrl extends MyAppModel
         }
         unset($langCodes[$langId]);
         $langIds = array_keys($langCodes);
-        $langIds = $langId . ',' . implode(",", $langIds);
+        $langIds = (count($langIds) > 0) ? ($langId . ',' . implode(",", $langIds)) : $langId;
         $rs = FatApp::getDb()->query($srch->getQuery() . ' ORDER BY FIELD(`seourl_lang_id`, ' . $langIds . ') ASC');
         return FatApp::getDb()->fetch($rs);
     }
@@ -100,7 +100,7 @@ class SeoUrl extends MyAppModel
         }
         unset($langCodes[$langId]);
         $langIds = array_keys($langCodes);
-        $langIds = $langId . ',' . implode(",", $langIds);
+        $langIds = (count($langIds) > 0) ? ($langId . ',' . implode(",", $langIds)) : $langId;
         $rs = FatApp::getDb()->query($srch->getQuery() . ' ORDER BY FIELD(`seourl_lang_id`, ' . $langIds . ')');
         return FatApp::getDb()->fetch($rs);
     }

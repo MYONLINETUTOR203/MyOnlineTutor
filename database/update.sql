@@ -1291,3 +1291,12 @@ ALTER TABLE `tbl_course_refund_requests` ADD `corere_comment` TEXT NOT NULL COMM
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_cate_id` INT(11) NOT NULL AFTER `coapre_id`, ADD `coapre_subcate_id` INT(11) NOT NULL AFTER `coapre_cate_id`;
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_learners` JSON NOT NULL AFTER `coapre_duration`, ADD `coapre_requirements` JSON NOT NULL AFTER `coapre_learners`, ADD `coapre_learnings` JSON NOT NULL AFTER `coapre_requirements`;
 
+
+-- -----------------------
+-- After 15 September 2022
+-- -----------------------
+UPDATE `tbl_navigation_links` SET `nlink_url` = '{siteroot}blog/contribution-form' WHERE `tbl_navigation_links`.`nlink_id` = 76;
+DELETE FROM `tbl_language_labels` WHERE `label_key` LIKE 'MSG_LEARNER_FAILURE_ORDER_{CONTACTURL}';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_TEACHER_PRICING', 'Pricing'),(2, 'LBL_TEACHER_PRICING', 'التسعير');
+
