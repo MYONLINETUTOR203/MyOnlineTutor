@@ -302,7 +302,8 @@ class OrderCourse extends MyAppModel
         $srch->addMultipleFields([
             'ordcrs.ordcrs_id',
             'ordcrs.ordcrs_course_id',
-            'ordcrs.ordcrs_certificate_number'
+            'ordcrs.ordcrs_certificate_number',
+            'orders.order_user_id'
         ]);
         return FatApp::getDb()->fetch($srch->getResultSet());
     }

@@ -61,6 +61,11 @@ class CertificatesController extends DashboardController
                 $db->rollbackTransaction();
                 FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
             }
+
+            if (!$cert->setupMetaTags($ordcrsData)) {
+                $db->rollbackTransaction();
+                FatUtility::dieWithError($cert->getError());
+            }
             
             $db->commitTransaction();
         }

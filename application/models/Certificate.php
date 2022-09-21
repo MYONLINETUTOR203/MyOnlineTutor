@@ -62,6 +62,49 @@ class Certificate extends MyAppModel
         }
         return true;
     }
+
+    public function setupMetaTags(array $data)
+    {
+        /* get course details */
+        $srch = new SearchBase(Course::DB_TBL_LANG);
+        $srch->addCondition('course_id', '=', $data['ordcrs_course_id']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('course_title');
+        $course = FatApp::getDb()->fetch($srch->getResultSet());
+
+        /* get user name */
+        $username = User::getAttributesById($data['order_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+        $content = $course['course_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+
+        $meta = new MetaTag();
+        $meta->assignValues([
+            'meta_controller' => 'Certificates',
+            'meta_action' => 'view',
+            'meta_type' => MetaTag::META_GROUP_COURSE_CERTIFICATE,
+            'meta_record_id' => $data['ordcrs_id'],
+            'meta_identifier' => $content
+        ]);
+        if (!$meta->save()) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        if (
+            !FatApp::getDb()->insertFromArray(
+                MetaTag::DB_LANG_TBL, [
+                    'metalang_meta_id' => $meta->getMainTableRecordId(),
+                    'metalang_lang_id' => $this->langId,
+                    'meta_title' => $content,
+                    'meta_og_url' => MyUtility::makeFullUrl('Certificates', 'view', [$data['ordcrs_id']], CONF_WEBROOT_FRONTEND),
+                    'meta_og_title' => $content
+                ]
+            )
+        ) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        return true;
+    }
     
     /**
      * Get Course & User details for certificate
