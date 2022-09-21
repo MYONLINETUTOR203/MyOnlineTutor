@@ -65,7 +65,7 @@ class GuestUserController extends MyAppController
         if ($treacherRequest && $treacherRequest['tereq_status'] != TeacherRequest::STATUS_APPROVED) {
             $redirectUrl = MyUtility::makeUrl('TeacherRequest', 'form', [], CONF_WEBROOT_FRONTEND);
         } else {
-            $redirectUrl = $_SESSION[UserAuth::REFERRAL_PAGE_URL] ?? MyUtility::makeUrl('Account', '', [], CONF_WEBROOT_DASHBOARD);
+            $redirectUrl = MyUtility::makeUrl('Account', '', [], CONF_WEBROOT_DASHBOARD);
         }
         $_SESSION[AppConstant::SEARCH_SESSION] = FatApp::getPostedData();
         FatUtility::dieJsonSuccess([
