@@ -102,7 +102,7 @@ $bannerSize = MyUtility::convertBitesToMb(Afile::getAllowedUploadSize(Afile::TYP
                         <label class="field_label">
                             <?php echo $bannerFld->getCaption(); ?>
                             <?php if ($bannerFld->requirement->isRequired()) { ?><span class="spn_must_field">*</span><?php } ?>
-                            <?php if (!empty($banner)) { ?><a href="<?php echo MyUtility::makeUrl('Image', 'download', [Afile::TYPE_GROUP_CLASS_BANNER, $classId], CONF_WEBROOT_FRONT_URL); ?>" class="color-primary"><?php echo Label::getLabel('LBL_DOWNLOAD') . '?t=' . time(); ?></a><?php } ?>
+                            <?php if (!empty($banner)) { ?><a href="<?php echo MyUtility::makeUrl('Image', 'download', [Afile::TYPE_GROUP_CLASS_BANNER, $classId], CONF_WEBROOT_FRONT_URL) . '?t=' . time(); ?>" class="color-primary"><?php echo Label::getLabel('LBL_DOWNLOAD'); ?></a><?php } ?>
                         </label>
                     </div>
                     <div class="field-wraper">
