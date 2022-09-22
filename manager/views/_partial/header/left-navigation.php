@@ -59,25 +59,29 @@
                 <li class="haschild">
                     <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_QUIZZES'); ?></a>
                     <ul>
-        
+
                         <?php if ($objPrivilege->canViewCategories(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CATEGORIES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_CATEGORIES'); ?></a>
                             </li>
                         <?php } ?>
-                    
+
                         <?php if ($objPrivilege->canViewCertificates(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_MANAGE_CERTIFICATES'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_CERTIFICATES'); ?></a>
                             </li>
                         <?php } ?>
 
                         <?php if ($objPrivilege->canViewQuestions(true)) { ?>
                             <li>
-                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_MANAGE_QUESTIONS'); ?></a>
+                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_QUESTIONS'); ?></a>
                             </li>
                         <?php } ?>
-    
+                        <?php if ($objPrivilege->canViewQuizzes(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Quizzes'); ?>"><?php echo Label::getLabel('LBL_QUIZZES'); ?></a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </li>
             <?php } ?>

@@ -56,6 +56,7 @@ class QuestionsController extends AdminBaseController
                 'ques.ques_subcate_id',
                 'ques.ques_title',
                 'ques.ques_status',
+                'ques.ques_created'
             ]
         );
         $srch->setPageSize($post['pagesize']);

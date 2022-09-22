@@ -26,7 +26,7 @@ class QuizzesController extends DashboardController
      */
     public function index()
     {
-        $frm = $this->getSearchForm();
+        $frm = QuizSearch::getSearchForm();
         $this->set('frm', $frm);
         $this->_template->render();
     }
@@ -36,12 +36,13 @@ class QuizzesController extends DashboardController
      */
     public function search()
     {
-        $frm = $this->getSearchForm();
+        $frm = QuizSearch::getSearchForm();
         $post = $frm->getFormDataFromArray(FatApp::getPostedData());
 
         $srch = new QuizSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
+        $srch->addSearchListingFields();
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('quiz_active', 'DESC');
@@ -143,7 +144,7 @@ class QuizzesController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
         $type = Quiz::getAttributesById($id, 'quiz_type');
-        $quiz = new QuizSearch(0, $this->siteUserId, 0);
+        $quiz = new QuizSearch(0, $this->siteUserId, User::TEACHER);
         $questions = $quiz->getQuestions($id, $type);
         $this->sets([
             'questions' => $questions,
@@ -281,26 +282,6 @@ class QuizzesController extends DashboardController
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
-        return $frm;
-    }
-
-    /**
-     * Get Search Form
-     *
-     * @return Form
-     */
-    private function getSearchForm()
-    {
-        $frm = new Form('frmSearch');
-        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '', ['autocomplete' => 'off']);
-        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type', Quiz::getTypes());
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'quiz_status', Quiz::getStatuses());
-        $frm->addSelectBox(Label::getLabel('LBL_ACTIVE'), 'quiz_active', AppConstant::getActiveArr());
-        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
-        ->requirements()->setInt();
-        $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
         return $frm;
     }
 

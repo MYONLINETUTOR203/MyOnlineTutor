@@ -14,6 +14,7 @@ $types = Question::getTypes();
             <th><?php echo $cateLabel = Label::getLabel('LBL_CATEGORY'); ?></th>
             <th><?php echo $subcateLabel = Label::getLabel('LBL_SUBCATEGORY'); ?></th>
             <th><?php echo $statusLabel = Label::getLabel('LBL_STATUS'); ?></th>
+            <th><?php echo $addedLabel = Label::getLabel('LBL_ADDED_ON'); ?></th>
             <th><?php echo $actionLabel = Label::getLabel('LBL_ACTIONS'); ?></th>
         </tr>
         <?php
@@ -60,7 +61,13 @@ $types = Question::getTypes();
                         </div>
                     </div>
                 </td>
-
+                <td>
+                    <div class="flex-cell">
+                        <div class="flex-cell__label"><?php echo $addedLabel; ?></div>
+                        <div class="flex-cell__content">
+                            <?php echo MyDate::formatDate($question['ques_created']); ?>
+                        </div>
+                </td>
                 <td>
                     <div class="flex-cell">
                         <div class="flex-cell__label"><?php echo $actionLabel; ?></div>

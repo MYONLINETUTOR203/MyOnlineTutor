@@ -53,6 +53,7 @@ class QuestionsController extends DashboardController
                 'ques.ques_title',
                 'ques.ques_status',
                 'ques.ques_type',
+                'ques.ques_created',
             ]
         );
         $srch->setPageSize($post['pagesize']);

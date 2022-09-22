@@ -7,6 +7,7 @@ $arrFlds = [
     'ques_cate_name' => Label::getLabel('LBL_CATEGORY'),
     'ques_subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'full_name' => Label::getLabel('LBL_TEACHER'),
+    'ques_created' => Label::getLabel('LBL_ADDED_ON'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
 
@@ -36,7 +37,10 @@ foreach ($arrListing as $sn => $row) {
                 break; 
             case 'full_name':
                 $td->appendElement('plaintext', [], $row['full_name']);
-                break;        
+                break;
+            case 'ques_created':
+                $td->appendElement('plaintext', [], MyDate::formatDate($row['ques_created']));
+                break;    
             case 'action':
                 $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
                 $li = $ul->appendElement("li", ['class' => 'droplink']);

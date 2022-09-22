@@ -57,6 +57,9 @@ class QuizSearch extends YocoachSearch
         if (isset($post['quiz_active']) && $post['quiz_active'] != '') {
             $this->addCondition('quiz.quiz_active', '=', $post['quiz_active']);
         }
+        if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
+            $this->addCondition('teacher.user_id', '=', $post['teacher_id']);
+        }
     }
 
     /**
@@ -98,12 +101,15 @@ class QuizSearch extends YocoachSearch
             'quiz.quiz_detail' => 'quiz_detail',
             'quiz.quiz_user_id' => 'quiz_user_id',
             'quiz.quiz_duration' => 'quiz_duration',
-            'quiz.quiz_user_id' => 'quiz_user_id',
+            'quiz.quiz_attempts' => 'quiz_attempts',
+            'quiz.quiz_passmark' => 'quiz_passmark',
+            'quiz.quiz_validity' => 'quiz_validity',
+            'quiz.quiz_certificate' => 'quiz_certificate',
+            'quiz.quiz_questions' => 'quiz_questions',
+            'quiz.quiz_passmsg' => 'quiz_passmsg',
+            'quiz.quiz_failmsg' => 'quiz_failmsg',
+            'quiz.quiz_active' => 'quiz_active',
             'quiz.quiz_status' => 'quiz_status',
-            'quiz.quiz_created' => 'quiz_created',
-            'quiz.quiz_hint' => 'quiz_hint',
-            'quiz.quiz_status' => 'quiz_status',
-            'quiz.quiz_marks' => 'quiz_marks',
             'quiz.quiz_created' => 'quiz_created',
             'teacher.user_first_name' => 'teacher_first_name',
             'teacher.user_last_name' => 'teacher_last_name',
@@ -129,7 +135,9 @@ class QuizSearch extends YocoachSearch
         $srch->joinTable(Category::DB_TBL, 'INNER JOIN', 'ques_cate_id = cate.cate_id', 'cate');
         
         $srch->addCondition('quique_quiz_id', '=', $quizId);
-        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        if ($this->userType == User::TEACHER) {
+            $srch->addCondition('quiz_user_id', '=', $this->userId);
+        }
         $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
@@ -142,7 +150,7 @@ class QuizSearch extends YocoachSearch
         }
         $srch->addMultipleFields([
             'quique_quiz_id', 'quique_ques_id', 'quiz_id', 'ques_id', 'ques_title', 'ques_type',
-            'ques_cate_id', 'ques_subcate_id'
+            'ques_cate_id', 'ques_subcate_id', 'ques_created', 'ques_status'
         ]);
         $srch->doNotCalculateRecords();
         $srch->addOrder('quique_order', 'ASC');
@@ -169,5 +177,27 @@ class QuizSearch extends YocoachSearch
             $questions[$key] = $question;
         }
         return $questions;
+    }
+
+    /**
+     * Get Search Form
+     *
+     * @return Form
+     */
+    public static function getSearchForm()
+    {
+        $frm = new Form('frmSearch');
+        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '');
+        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['autocomplete' => 'off']);
+        $frm->addHiddenField('', 'teacher_id');
+        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type', Quiz::getTypes());
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'quiz_status', Quiz::getStatuses());
+        $frm->addSelectBox(Label::getLabel('LBL_ACTIVE'), 'quiz_active', AppConstant::getActiveArr());
+        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
+        ->requirements()->setInt();
+        $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
+        $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
+        return $frm;
     }
 }

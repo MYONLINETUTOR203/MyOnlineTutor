@@ -346,7 +346,7 @@ class Quiz extends MyAppModel
         }
 
         /* get questions count */
-        $quiz = new QuizSearch(0, $this->userId, 0);
+        $quiz = new QuizSearch(0, $this->userId, User::TEACHER);
         $questions = $quiz->getQuestions($this->getMainTableRecordId(), $data['quiz_type']);
         if (count($questions) > 0) {
             $criteria['questions'] = 1;
