@@ -3,10 +3,10 @@ $(function () {
     form = function (id) {
         fcom.ajax(fcom.makeUrl('Quizzes', 'basic'), {id}, function (resp) {
             $('#pageContentJs').html(resp);
-            var id = $('textarea[name="quiz_detail"]').attr('id');
-            window["oEdit_" + id].disableFocusOnLoad = true;
+            var eid = $('textarea[name="quiz_detail"]').attr('id');
+            window["oEdit_" + eid].disableFocusOnLoad = true;
+            getCompletedStatus(id);
         });
-        getCompletedStatus(id);
     };
     setType = function (value) {
         $('#quizTypeJs').val(value);
@@ -27,8 +27,8 @@ $(function () {
     questions = function (id) {
         fcom.ajax(fcom.makeUrl('Quizzes', 'questions'), { id }, function (resp) {
             $('#pageContentJs').html(resp);
+            getCompletedStatus(id);
         });
-        getCompletedStatus(id);
     };
     addQuestions = function (id) {
         fcom.ajax(fcom.makeUrl('QuizQuestions', 'index'), { id }, function (resp) {
@@ -80,8 +80,8 @@ $(function () {
         }
         fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'delete'), { quizId, quesId }, function (res) {
             questions(quizId);
+            getCompletedStatus(quizId);
         });
-        getCompletedStatus(quizId);
     };
     updateOrder = function (id) {
         var order = [''];
@@ -101,8 +101,8 @@ $(function () {
     settings = function (id) {
         fcom.ajax(fcom.makeUrl('Quizzes', 'settings'), { id }, function (resp) {
             $('#pageContentJs').html(resp);
+            getCompletedStatus(id);
         });
-        getCompletedStatus(id);
     };
     settingsForm = function (count, id) {
         if (count < 1) {
@@ -122,15 +122,15 @@ $(function () {
     /* ] */
     getCompletedStatus = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('Quizzes', 'getCompletedStatus', [id]), '', function (res) {
-            $('.generalTabJs, .questionsTabJs, .settingsTabJs').removeClass('is-completed').addClass('is-error');
+            $('.generalTabJs, .questionsTabJs, .settingsTabJs').removeClass('is-completed').addClass('is-progress');
             if (res.general == 1) {
-                $('.generalTabJs').removeClass('is-error').addClass('is-completed');
+                $('.generalTabJs').removeClass('is-progress').addClass('is-completed');
             }
             if (res.questions == 1) {
-                $('.questionsTabJs').removeClass('is-error').addClass('is-completed');
+                $('.questionsTabJs').removeClass('is-progress').addClass('is-completed');
             }
             if (res.settings == 1) {
-                $('.settingsTabJs').removeClass('is-error').addClass('is-completed');
+                $('.settingsTabJs').removeClass('is-progress').addClass('is-completed');
             }
         });
     };

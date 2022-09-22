@@ -2,9 +2,9 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 
 ?>
-<div class="container container--narrow">
+<div class="container container--fixed">
     <div class="page__head">
-        <a href="<?php echo MyUtility::makeUrl('Courses') ?>" class="page-back">
+        <a href="<?php echo MyUtility::makeUrl('Quizzes') ?>" class="page-back">
             <svg class="icon icon--back margin-right-3">
                 <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#arrow-back"></use>
             </svg>
@@ -20,21 +20,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
             <div class="col-sm-auto"></div>
         </div>
     </div>
-    <div class="page__body">
-        <div class="page-layout">
-            <div class="box-panel">
-                <div class="box-panel__head">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h4><?php echo Label::getLabel('LBL_ADD_QUIZ'); ?></h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-panel__body" id="pageContentJs">
-
-                </div>
-            </div>
-        </div>
+    <div class="page__body" id="pageContentJs">
     </div>
     <script>
         $(document).ready(function() {

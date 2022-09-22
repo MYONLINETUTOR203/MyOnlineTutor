@@ -346,12 +346,9 @@ class Quiz extends MyAppModel
         }
 
         /* get questions count */
-        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
-        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addFld('quique_ques_id');
-        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+        $quiz = new QuizSearch(0, $this->userId, 0);
+        $questions = $quiz->getQuestions($this->getMainTableRecordId(), $data['quiz_type']);
+        if (count($questions) > 0) {
             $criteria['questions'] = 1;
         }
 
