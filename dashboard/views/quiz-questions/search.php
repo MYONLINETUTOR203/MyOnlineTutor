@@ -3,7 +3,7 @@ $titleLbl = Label::getLabel('LBL_TITLE');
 $typeLbl = Label::getLabel('LBL_TYPE');
 $cateLbl = Label::getLabel('LBL_CATEGORY');
 $subcateLbl = Label::getLabel('LBL_SUB_CATEGORY');
-$types = Question::getQuesTypes();
+$types = Question::getTypes();
 if (count($questions) < 1) { ?>
     <tr>
         <td colspan="5">

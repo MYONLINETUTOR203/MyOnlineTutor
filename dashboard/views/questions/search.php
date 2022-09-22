@@ -4,7 +4,7 @@ if (count($questions) == 0) {
     $this->includeTemplate('_partial/no-record-found.php');
     return;
 }
-$types = Question::getQuesTypes();
+$types = Question::getTypes();
 ?>
 <div class="table-scroll">
     <table class="table table--styled table--responsive table--aligned-middle">

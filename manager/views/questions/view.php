@@ -42,7 +42,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_TYPE'); ?>
                                     </label>
-                                    : <strong><?php echo Question::getQuesTypes($questionData['ques_type']); ?></strong>
+                                    : <strong><?php echo Question::getTypes($questionData['ques_type']); ?></strong>
                                 </div>
                             </div>
                         </div>

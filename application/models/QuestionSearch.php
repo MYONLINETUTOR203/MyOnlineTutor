@@ -185,10 +185,7 @@ class QuestionSearch extends YocoachSearch
         $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '', ['id' => 'keyword', 'autocomplete' => 'off']);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
-        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'quesTeacher', '', [
-            'id' => 'quesTeacher',
-            'autocomplete' => 'off'
-        ]);
+        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getTypes());
         $fld = $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE);
         $fld->requirements()->setInt();
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();

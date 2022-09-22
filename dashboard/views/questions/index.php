@@ -6,6 +6,7 @@ $keywordFld = $frm->getField('keyword');
 $catFld = $frm->getField('ques_cate_id');
 $subCatFld = $frm->getField('ques_subcate_id');
 $subCatFld->setFieldTagAttribute('id', 'subCategories');
+$typeFld = $frm->getField('ques_type');
 $submitBtn = $frm->getField('btn_submit');
 $catFld->addFieldTagAttribute('onchange', 'getSubcategories(this.value, "#subCategories")');
 $btnReset = $frm->getField('btn_clear');
@@ -42,7 +43,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
         <div class="search-filter slide-target-js">
             <?php echo $frm->getFormTag(); ?>
             <div class="row">
-                <div class="col-lg-3 col-sm-12">
+                <div class="col-lg-2 col-sm-12">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -60,7 +61,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-sm-12">
+                <div class="col-lg-2 col-sm-12">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -77,8 +78,7 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-3 col-sm-12">
+                <div class="col-lg-2 col-sm-12">
                     <div class="field-set">
                         <div class="caption-wraper">
                             <label class="field_label">
@@ -95,8 +95,24 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-3 col-sm-4  form-buttons-group">
+                <div class="col-lg-2 col-sm-12">
+                    <div class="field-set">
+                        <div class="caption-wraper">
+                            <label class="field_label">
+                                <?php echo $typeFld->getCaption(); ?>
+                                <?php if ($typeFld->requirement->isRequired()) { ?>
+                                    <span class="spn_must_field">*</span>
+                                <?php } ?>
+                            </label>
+                        </div>
+                        <div class="field-wraper">
+                            <div class="field_cover">
+                                <?php echo $typeFld->getHtml(); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-4  form-buttons-group">
                     <div class="field-set">
                         <div class="caption-wraper"><label class="field_label"></label></div>
                         <div class="field-wraper">

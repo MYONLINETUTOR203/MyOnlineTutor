@@ -211,7 +211,7 @@ class QuestionsController extends DashboardController
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm = new Form('frmQuestion');
         $frm->addHiddenField('', 'ques_id')->requirements()->setInt();
-        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getQuesTypes());
+        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getTypes());
         $typeFld->requirements()->setRequired();
         $fld = $frm->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
         $fld->requirements()->setLength(10, 100);

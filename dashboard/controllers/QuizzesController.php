@@ -148,7 +148,7 @@ class QuizzesController extends DashboardController
         $this->sets([
             'questions' => $questions,
             'quizId' => $id,
-            'types' => Question::getQuesTypes(),
+            'types' => Question::getTypes(),
         ]);
         $this->_template->render(false, false);
     }

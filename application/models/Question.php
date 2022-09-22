@@ -30,7 +30,7 @@ class Question extends MyAppModel
      * @param int $key
      * @return string|array
      */
-    public static function getQuesTypes(int $key = null)
+    public static function getTypes(int $key = null)
     {
         $arr = [
             static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
