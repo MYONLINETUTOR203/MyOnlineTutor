@@ -70,7 +70,7 @@ foreach ($arrListing as $sn => $row) {
                 if ($row['cate_status'] == AppConstant::NO) {
                     $active = 'inactive';
                 }
-                $str = '<label class="statustab ' . $active . '" '. (($canEdit) && ($canDelete) ? 'onclick="updateStatus(\'' . $row['cate_id'] . '\', \''.$row['cate_status'].'\')"':""). '>
+                $str = '<label class="statustab ' . $active . '" '. (($canEdit) ? 'onclick="updateStatus(\'' . $row['cate_id'] . '\', \''.$row['cate_status'].'\')"':""). '>
 				  <span data-off="' . Label::getLabel('LBL_Active') . '" data-on="' . Label::getLabel('LBL_Inactive') . '" class="switch-labels "></span>
 				  <span class="switch-handles"></span>
 				</label>';
@@ -88,10 +88,8 @@ foreach ($arrListing as $sn => $row) {
                     $langId = !empty($row['catelang_lang_id']) ? $row['catelang_lang_id'] : 0;
                     $actionLi = $innerUl->appendElement("li");
                     $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_EDIT'), "onclick" => "categoryForm(" . $row['cate_id'] . ", '".$langId."')"], Label::getLabel('LBL_EDIT'), true);
-                    if ($canDelete) {
-                        $actionLi = $innerUl->appendElement("li");
-                        $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_DELETE'), "onclick" => "remove('" . $row['cate_id'] . "')"], Label::getLabel('LBL_DELETE'), true); 
-                    } 
+                    $actionLi = $innerUl->appendElement("li");
+                    $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_DELETE'), "onclick" => "remove('" . $row['cate_id'] . "')"], Label::getLabel('LBL_DELETE'), true); 
                 }
                 break;
             default:

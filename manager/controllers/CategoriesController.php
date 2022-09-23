@@ -183,6 +183,18 @@ class CategoriesController extends AdminBaseController
         $cateId = FatUtility::int($cateId);
 
         $category = new Category($cateId);
+        if (!$data = $category->getDataById($this->siteLangId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        if ($data['cate_type'] == Category::TYPE_COURSE && $data['cate_courses'] > 0) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.'));
+        }
+
+        if ($data['cate_subcategories'] > 0) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_SUBCATEGORIES_CANNOT_BE_DELETED.'));
+        }
+
         if (!$category->delete()) {
             FatUtility::dieJsonError($category->getError());
         }
@@ -270,6 +282,17 @@ class CategoriesController extends AdminBaseController
         $status = ($status == AppConstant::YES) ? AppConstant::NO : AppConstant::YES;
 
         $category = new Category($cateId);
+        if (!$data = $category->getDataById($this->siteLangId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        if ($data['cate_type'] == Category::TYPE_COURSE && $data['cate_courses'] > 0) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.'));
+        }
+
+        if ($data['cate_subcategories'] > 0) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_SUBCATEGORIES_CANNOT_BE_DELETED.'));
+        }
         $category->setFldValue('cate_status', $status);
         if (!$category->save()) {
             FatUtility::dieJsonError($category->getError());

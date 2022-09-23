@@ -206,6 +206,7 @@ class Category extends MyAppModel
             [
                 'catg.cate_id',
                 'catg.cate_type',
+                'catg.cate_courses',
                 'catg.cate_parent',
                 'catg.cate_order',
                 'catg.cate_status',
