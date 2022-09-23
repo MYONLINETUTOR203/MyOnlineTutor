@@ -47,7 +47,6 @@ class QuizzesController extends DashboardController
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('quiz_active', 'DESC');
         $srch->addOrder('quiz_id', 'DESC');
-
         $this->sets([
             'quizzes' => $srch->fetchAndFormat(),
             'types' => Quiz::getTypes(),
@@ -55,7 +54,6 @@ class QuizzesController extends DashboardController
             'post' => $post,
             'recordCount' => $srch->recordCount()
         ]);
-        
         $this->_template->render(false, false);
     }
 
@@ -186,8 +184,8 @@ class QuizzesController extends DashboardController
             'quiz_duration', 'quiz_attempts', 'quiz_passmark', 'quiz_failmsg', 'quiz_passmsg',
             'quiz_validity', 'quiz_certificate'
         ]);
-        $data['quiz_duration'] = ($data['quiz_duration']) / 60;
-        $data['quiz_validity'] = ($data['quiz_validity']) / 3600;
+        $data['quiz_duration'] = ($data['quiz_duration'] > 0) ? ($data['quiz_duration']) / 60 : 0;
+        $data['quiz_validity'] = ($data['quiz_validity'] > 0) ? ($data['quiz_validity']) / 3600 : 0;
         $data['quiz_certificate'] = ($offerCertificate == false) ? AppConstant::NO : $data['quiz_certificate'];
         $frm->fill($data);
 

@@ -104,7 +104,7 @@ if (count($quizzes) == 0) {
                                 <svg class="icon icon--issue icon--small">
                                     <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#trash'; ?>"></use>
                                 </svg>
-                                <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Remove'); ?></div>
+                                <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_REMOVE'); ?></div>
                             </a>
                         </div>
                     </div>

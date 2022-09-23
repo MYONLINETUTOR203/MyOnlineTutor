@@ -7,7 +7,7 @@ $(function () {
     };
     search = function (frm) {
         fcom.ajax(fcom.makeUrl('Quizzes', 'search'), fcom.frmData(frm), function (res) {
-            $("#listing").html(res);
+            $("#quiz-listing").html(res);
         });
     };
     updateStatus = function (id, obj) {
