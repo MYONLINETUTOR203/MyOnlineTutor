@@ -6,7 +6,8 @@
         "facebook/graph-sdk": "^5.7",
         "phpmailer/phpmailer": "^6.5",
         "google/recaptcha": "^1.2",
-        "stripe/stripe-php": "^7.87"
+        "stripe/stripe-php": "^7.87",
+        "mpdf/mpdf": "^8.1"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"

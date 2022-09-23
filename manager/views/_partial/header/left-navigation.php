@@ -52,6 +52,41 @@
             <?php } ?>
             <?php
             if (
+                $objPrivilege->canViewCategories(true) ||
+                $objPrivilege->canViewCertificates(true) ||
+                $objPrivilege->canViewQuestions(true)
+            ) { ?>
+                <li class="haschild">
+                    <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_QUIZZES'); ?></a>
+                    <ul>
+
+                        <?php if ($objPrivilege->canViewCategories(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Categories'); ?>"><?php echo Label::getLabel('LBL_CATEGORIES'); ?></a>
+                            </li>
+                        <?php } ?>
+
+                        <?php if ($objPrivilege->canViewCertificates(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Certificates'); ?>"><?php echo Label::getLabel('LBL_CERTIFICATES'); ?></a>
+                            </li>
+                        <?php } ?>
+
+                        <?php if ($objPrivilege->canViewQuestions(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_QUESTIONS'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewQuizzes(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Quizzes'); ?>"><?php echo Label::getLabel('LBL_QUIZZES'); ?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </li>
+            <?php } ?>
+            <?php
+            if (
                 $objPrivilege->canViewOrders(true) || $objPrivilege->canViewLessonsOrders(true) || $objPrivilege->canViewPackagesOrders(true) ||
                 $objPrivilege->canViewClassesOrders(true) || $objPrivilege->canViewWalletOrders(true) || $objPrivilege->canViewGiftcardOrders(true) ||
                 $objPrivilege->canViewSubscriptionOrders(true)

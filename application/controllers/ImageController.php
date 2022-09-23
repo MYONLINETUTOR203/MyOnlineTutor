@@ -81,4 +81,16 @@ class ImageController extends MyAppController
         Afile::displayOriginalImage('editor/' . $fileNamewithPath);
     }
 
+    /**
+     * Show Image
+     * 
+     * @param int $fileType
+     * @param int $recordId
+     */
+    public function showPdf($fileType, $recordId, $langId = 0)
+    {
+        $file = new Afile(FatUtility::int($fileType), $langId);
+        $file->showPdf(FatUtility::int($recordId));
+    }
+
 }

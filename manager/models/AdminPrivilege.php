@@ -69,6 +69,10 @@ class AdminPrivilege
     const SECTION_THEME_MANAGEMENT = 61;
     const SECTION_PACKAGE_CLASSES = 62;
     const SECTION_SETTLEMENTS_REPORT = 63;
+    const SECTION_MANAGE_CERTIFICATES = 64;
+    const SECTION_CATEGORIES = 65;
+    const SECTION_QUESTIONS = 66;
+    const SECTION_QUIZZES = 67;
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -182,6 +186,10 @@ class AdminPrivilege
             static::SECTION_LESSON_STATS => Label::getLabel('MSG_LESSON_STATS', $langId),
             static::SECTION_SALES_REPORT => Label::getLabel('MSG_SALE_REPORT', $langId),
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
+            static::SECTION_CATEGORIES => Label::getLabel('MSG_CATEGORIES', $langId),
+            static::SECTION_QUESTIONS => Label::getLabel('MSG_QUESTIONS', $langId),
+            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_CERTIFICATES', $langId),
+            static::SECTION_QUIZZES => Label::getLabel('MSG_QUIZZES', $langId),
         ];
         return $arr;
     }
@@ -1454,6 +1462,82 @@ class AdminPrivilege
     public function canEditPackageClasses(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
+    }    
+
+    /**
+     * Can View Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_READ, $returnResult);
     }
 
+    /**
+     * Can Edit Certificates
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCertificates(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_MANAGE_CERTIFICATES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCategories(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCategories(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewQuestions(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditQuestions(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewQuizzes(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUIZZES, static::PRIVILEGE_READ, $returnResult);
+    }
 }

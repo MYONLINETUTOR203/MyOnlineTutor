@@ -645,6 +645,7 @@ class ConfigurationsController extends AdminBaseController
                 $frm->addButton(Label::getLabel('LBL_Blog_Image'), 'blog_img', 'Upload file', ['class' => 'logoFiles-Js', 'id' => 'blog_img', 'data-file_type' => Afile::TYPE_BLOG_PAGE_IMAGE]);
                 $frm->addButton(Label::getLabel('LBL_Lesson_Image'), 'lesson_img', 'Upload file', ['class' => 'logoFiles-Js', 'id' => 'lesson_img', 'data-file_type' => Afile::TYPE_LESSON_PAGE_IMAGE]);
                 $frm->addButton(Label::getLabel('LBL_Apply_To_Teach_Banner'), 'apply_to_teach_banner', 'Upload file', ['class' => 'logoFiles-Js', 'id' => 'apply_to_teach_banner', 'data-file_type' => Afile::TYPE_APPLY_TO_TEACH_BANNER]);
+                $frm->addButton(Label::getLabel('LBL_CERTIFICATE_LOGO'), 'certificate_logo', 'Upload file', ['class' => 'logoFiles-Js', 'id' => 'certificate_logo', 'data-file_type' => Afile::TYPE_CERTIFICATE_LOGO]);
                 break;
             case Configurations::FORM_SERVER:
                 $fld = $frm->addHtmlEditor(Label::getLabel('LBL_Maintenance_Text'), 'CONF_MAINTENANCE_TEXT_' . $langId);
@@ -689,7 +690,8 @@ class ConfigurationsController extends AdminBaseController
             Afile::TYPE_APPLE_TOUCH_ICON,
             Afile::TYPE_BLOG_PAGE_IMAGE,
             Afile::TYPE_LESSON_PAGE_IMAGE,
-            Afile::TYPE_APPLY_TO_TEACH_BANNER
+            Afile::TYPE_APPLY_TO_TEACH_BANNER,
+            Afile::TYPE_CERTIFICATE_LOGO
         ];
     }
 
