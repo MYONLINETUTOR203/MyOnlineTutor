@@ -62,7 +62,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                             }
                         }
                         if ($count > 0) {
-                            ?>
+                        ?>
                             <span class="filters-count"><?php echo $count; ?></span>
                         <?php } ?>
                     </div>
@@ -122,7 +122,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating'; ?>"></use>
                                             </svg>
                                             <span class="value"><?php echo FatUtility::convertToType($teacher['testat_ratings'], FatUtility::VAR_FLOAT); ?></span>
-                                            <span class="count">(<?php echo$teacher['testat_reviewes']; ?>)</span>
+                                            <span class="count">(<?php echo $teacher['testat_reviewes']; ?>)</span>
                                         </div>
                                         <div class="info-tag list-count">
                                             <div class="total-count"><span class="value"><?php echo $teacher['testat_students']; ?></span><?php echo Label::getLabel('LBL_Students'); ?></div> -
@@ -162,6 +162,27 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                         <div class="list__action">
                             <div class="list__action-btn">
                                 <a href="javascript:void(0);" onclick="cart.langSlots('<?php echo $teacher['user_id']; ?>', '', '')" class="btn btn--primary btn--block"><?php echo Label::getLabel('LBL_Book_Now'); ?></a>
+                                <?php
+                                if ($teacher['free_trial_enabled']) {
+                                    $btnText = "LBL_FREE_TRIAL_AVAILED";
+                                    $onclick = "";
+                                    $btnClass = "btn-secondary";
+                                    $disabledText = "disabled";
+                                    if (!$teacher['free_trial_availed']) {
+                                        $disabledText = "";
+                                        $onclick = "onclick=\"cart.trailCalendar('" . $teacher['user_id'] . "')\"";
+                                        $btnClass = 'btn-primary';
+                                        $btnText = "LBL_BOOK_FREE_TRIAL";
+                                    }
+                                    if ($siteUserId == $teacher['user_id']) {
+                                        $onclick = "";
+                                        $disabledText = "disabled";
+                                    }
+                                ?>
+                                    <a href="javascript:void(0);" <?php echo $onclick; ?> class="btn btn--primary btn--trial btn--block color-white <?php echo $btnClass . ' ' . $disabledText; ?> " <?php echo $disabledText; ?>>
+                                        <span><?php echo Label::getLabel($btnText); ?></span>
+                                    </a>
+                                <?php } ?>
                                 <a href="javascript:void(0);" onclick="generateThread(<?php echo $teacher['user_id']; ?>);" class="btn btn--bordered color-primary btn--block">
                                     <svg class="icon icon--envelope">
                                         <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#envelope'; ?>"></use>
@@ -211,7 +232,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                                         </td>
                                                         <?php
                                                         foreach ($timeslots as $day => $hours) {
-                                                            ?>
+                                                        ?>
                                                             <?php
                                                             if (!empty($hours[$index])) {
                                                                 $hourString = MyDate::getHoursMinutes($hours[$index]);
