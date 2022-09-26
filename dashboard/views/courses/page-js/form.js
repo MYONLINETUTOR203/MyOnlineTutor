@@ -150,7 +150,7 @@ $(function () {
     getCourseEligibility = function () {
         fcom.updateWithAjax(fcom.makeUrl('Courses', 'getEligibilityStatus', [courseId]), '', function (res) {
             setCompletedStatus(res.criteria);
-        });
+        }, {'process' : false});
     };
     setCompletedStatus = function (criteria) {
         $('.general-info-js, .intended-learner-js, .course-price-js, .curriculum-js, .course-setting-js').removeClass('is-completed').addClass('is-progress');

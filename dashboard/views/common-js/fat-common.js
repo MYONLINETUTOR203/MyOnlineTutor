@@ -3,16 +3,19 @@ siteConstants.userWebRoot = (siteConstants.rewritingEnabled) ? siteConstants.web
 var pageReloading = false;
 var fcom = {
     process: function () {
-        $.appalert(langLbl.processing, 'process');
+        $.appalert.open(langLbl.processing, 'process');
     },
     success: function (msg) {
-        $.appalert(msg, 'success');
+        $.appalert.open(msg, 'success');
     },
     warning: function (msg) {
-        $.appalert(msg, 'warning');
+        $.appalert.open(msg, 'warning');
     },
     error: function (msg) {
-        $.appalert(msg, 'danger');
+        $.appalert.open(msg, 'danger');
+    },
+    close: function () {
+        $.appalert.close();
     },
     ajaxRequestLog: [],
     logAjaxRequest: function (url, data, res, ajaxLoopHandler) {
@@ -49,8 +52,10 @@ var fcom = {
         return repeatCount;
     },
     ajax: function (url, data, callback, options) {
-        var o = $.extend(true, {fOutMode: 'html', timeout: null,
-            ajaxLoopHandler: null, process: true, failed: false}, options);
+        var o = $.extend(true, {
+            fOutMode: 'html', timeout: null,
+            ajaxLoopHandler: null, process: true, failed: false
+        }, options);
         if ("string" == $.type(data)) {
             data += '&fOutMode=' + o.fOutMode + '&fIsAjax=1';
         }
@@ -71,29 +76,26 @@ var fcom = {
             dataType: o.fOutMode,
             async: (options && options.async === false) ? false : true,
             success: function (res) {
+                fcom.close();
                 if (o.fOutMode == "json" || isJson(res)) {
                     var response = (o.fOutMode == "json") ? res : JSON.parse(res);
                     if (response.status == 1) {
                         if (response.msg && response.msg != '') {
                             fcom.success(response.msg);
-                        } else {
-                            $.appalert.close();
                         }
                         return callback(res);
                     } else {
                         if (response.msg && response.msg != '') {
                             fcom.error(response.msg);
-                        } else {
-                            $.appalert.close();
                         }
                         return (options && options.failed) ? callback(res) : false;
                     }
                 } else {
-                    $.appalert.close();
                     return callback(res);
                 }
             },
             error: function (jqXHR, textStatus, error) {
+                fcom.close();
                 if (textStatus == "parsererror" && jqXHR.statusText == "OK") {
                     alert('Seems some json error.' + jqXHR.responseText);
                     return;
@@ -108,9 +110,11 @@ var fcom = {
         });
     },
     updateWithAjax: function (url, data, callback, options) {
-        var o = $.extend(true, {fOutMode: 'json'}, options);
+        var o = $.extend(true, { fOutMode: 'json' }, options);
         this.ajax(url, data, function (res) {
-            callback(res);
+            if (typeof callback !== 'undefined') {
+                callback(res);
+            }
         }, o);
     },
     camel2dashed: function (str) {
@@ -119,7 +123,7 @@ var fcom = {
     breakUrl: function (url) {
         url = url.substring(siteConstants.userWebRoot.length);
         var arr = url.split('/');
-        var obj = {controller: arr[0], action: '', others: []};
+        var obj = { controller: arr[0], action: '', others: [] };
         arr.shift();
         if (!arr.length)
             return obj;
@@ -190,7 +194,7 @@ var fcom = {
         return obj;
     },
     ajaxMultipart: function (url, data, callback, options) {
-        var o = $.extend(true, {fOutMode: 'html', timeout: 300000, maxRetry: 0, retryNumber: 0}, options);
+        var o = $.extend(true, { fOutMode: 'html', timeout: 300000, maxRetry: 0, retryNumber: 0 }, options);
         o.fOutMode = o.fOutMode.toLowerCase();
         data.append('fOutMode', o.fOutMode);
         data.append('timeout', o.timeout);
@@ -209,13 +213,13 @@ var fcom = {
             timeout: o.timeout,
             dataType: o.fOutMode,
             success: function (res) {
+                fcom.close();
                 var repeatCount = fcom.logAjaxRequest(url, data, res, o.ajaxLoopHandler);
                 if (repeatCount >= 2 && o.ajaxLoopHandler) {
                     setTimeout(function () {
                         callback(res);
                     }, 1000);
                 } else {
-                    $.appalert.close();
                     if (isJson(res) || o.fOutMode == "json") {
                         var response = (o.fOutMode == "json") ? res : JSON.parse(res);
                         if (response.msg && response.msg != '') {
@@ -229,6 +233,7 @@ var fcom = {
                 }
             },
             error: function (jqXHR, textStatus, error) {
+                fcom.close();
                 if (textStatus == "parsererror" && jqXHR.statusText == "OK") {
                     alert('Seems some json error.' + jqXHR.responseText);
                     return;
@@ -241,7 +246,7 @@ var fcom = {
                 }
             }
         });
-    },
+    }
 };
 $.fn.selectRange = function (start, end) {
     if (!end) {

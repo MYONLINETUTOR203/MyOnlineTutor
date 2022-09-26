@@ -593,7 +593,8 @@ class CoursesController extends DashboardController
         if (!$course->submitApprovalRequest()) {
             FatUtility::dieJsonError($course->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_APPROVAL_REQUEST_SUCCESSFULLY'));
+        Message::addMessage(Label::getLabel('LBL_APPROVAL_REQUESTED_SUCCESSFULLY'));
+        FatUtility::dieJsonSuccess('');
     }
 
     /**

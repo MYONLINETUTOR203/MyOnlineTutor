@@ -1,41 +1,46 @@
-/* global siteConstants */
+/* global siteConstants, ALERT_CLOSE_TIME */
 (function ($) {
-    $.appalert = function (data, type) {
-        if ($('#app-alert').hasClass('animated')) {
-            $('#app-alert').removeClass('animated fadeInDown');
-            setTimeout(function () {
-                $.appalert.fill(data, type);
-            }, 10);
-        } else {
-            $.appalert.fill(data, type);
-        }
-    };
+    $.appalert = function () { };
     $.extend($.appalert, {
-        fill: function (data, type) {
-            $('#app-alert .alert').removeClass('alert--process alert--success alert--warning alert--danger');
-            $('#app-alert .alert').addClass('alert--' + type);
-            $('#app-alert .alert__message > p').html(data);
-            $('#app-alert').addClass('animated fadeInDown');
-            if ($.appalert.timer) {
-                clearTimeout($.appalert.timer);
-            }
-            if (type == 'success') {
-                $.appalert.startTimer();
+        open: function (message, type) {
+            const alertId = (new Date()).getTime();
+            const alertEl = document.createElement("alert");
+            alertEl.setAttribute("id", alertId);
+            alertEl.setAttribute("role", 'alert');
+            alertEl.setAttribute("style", 'margin-bottom:10px;');
+            alertEl.setAttribute("class", 'alert alert--' + type);
+            const iconEl = document.createElement("alert-icon");
+            iconEl.setAttribute("class", 'alert__icon');
+            const closeEl = document.createElement("alert-close");
+            closeEl.setAttribute("class", 'alert__close');
+            closeEl.setAttribute("onclick", '$.appalert.close(\'' + alertId + '\')');
+            const messageEl = document.createElement("alert-message");
+            messageEl.setAttribute("class", 'alert__message');
+            const paraEl = document.createElement("p");
+            paraEl.innerText = message;
+            messageEl.appendChild(paraEl);
+            alertEl.appendChild(iconEl);
+            alertEl.appendChild(messageEl);
+            alertEl.appendChild(closeEl);
+            const appAlertEl = document.getElementById('app-alert');
+            appAlertEl.prepend(alertEl);
+            if (type !== 'process') {
+                alertEl.timer = setTimeout(function () {
+                    appAlertEl.removeChild(alertEl);
+                }, ALERT_CLOSE_TIME * 1000);
             }
         },
-        close: function () {
-            if ($.appalert.timer) {
-                clearTimeout($.appalert.timer);
+        close: function (alertId) {
+            if (alertId == undefined) {
+                $('.alert--process').remove();
+            } else {
+                $('#' + alertId).remove();
+                var appAlertEl = document.getElementById('app-alert');
+                if (appAlertEl.childNodes.length == 0) {
+                    appAlertEl.classList.remove('fadeInDown');
+                    appAlertEl.classList.remove('animated');
+                }
             }
-            $('#app-alert').removeClass('animated fadeInDown');
-        },
-        startTimer: function () {
-            if ($.appalert.timer) {
-                clearTimeout($.appalert.timer);
-            }
-            $.appalert.timer = setTimeout(function () {
-                $('#app-alert').removeClass('animated fadeInDown');
-            }, ALERT_CLOSE_TIME * 1000);
         }
     });
 })(jQuery);
