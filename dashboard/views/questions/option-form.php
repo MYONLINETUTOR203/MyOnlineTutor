@@ -8,7 +8,7 @@ if ($type == Question::TYPE_SINGLE) {
 }
 ?>
 <div class="sortableLearningJs">
-    <?php if ($options ?? false) { ?>
+    <?php if (count($options) > 0) { ?>
         <?php foreach ($options as $key => $option) { ?>
             <div class="row optionsRowJs">
                 <div class="col-md-1">

@@ -80,7 +80,7 @@ $submitButton = $frm->getField('submit');
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -180,7 +180,7 @@ $submitButton = $frm->getField('submit');
                     </div>
                     <div class="field-wraper">
                         <div class="field_cover">
-                        <?php echo $addOptionsFld->getHtml(); ?>
+                            <?php echo $addOptionsFld->getHtml(); ?>
                         </div>
                     </div>
                 </div>
@@ -188,17 +188,17 @@ $submitButton = $frm->getField('submit');
         </div>
         <div class="more-container-js">
             <?php
-                if(count($options) > 0) {
-                    $this->includeTemplate(
-                        'questions/option-form.php',
-                        array(
-                            'type'=> $typeFld->value, 'count'=> $optionCount->value, 'frm' => $optionsFrm,
-                            'options' => $options, 'answers' => $answers
-                        ),
-                        false
-                    );
-                }
-             ?>
+            if (count($options) > 0) {
+                $this->includeTemplate(
+                    'questions/option-form.php',
+                    array(
+                        'type' => $typeFld->value, 'count' => $optionCount->value, 'frm' => $optionsFrm,
+                        'options' => $options, 'answers' => $answers
+                    ),
+                    false
+                );
+            }
+            ?>
         </div>
         <div class="form-action-sticky">
             <div class="col-sm-12">
@@ -217,7 +217,8 @@ $submitButton = $frm->getField('submit');
 </div>
 
 <script>
- $(document).ready(function(){
+    $(document).ready(function() {
         getSubcategories('<?php echo $catFld->value ?? 0; ?>', '#subCateAddQues', '<?php echo $subCatFld->value ?? 0; ?>');
+        addOptions();
     });
 </script>
