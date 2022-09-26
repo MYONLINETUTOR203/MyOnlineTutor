@@ -206,6 +206,8 @@ class TeacherSearch extends YocoachSearch
         $videos = static::getYouTubeVideos($teacherIds);
         $userProfileImages = static::getUserProfileImages($teacherIds);
         $offers = OfferPrice::getOffers($this->userId, $teacherIds);
+        $freeTrialConf = FatApp::getConfig('CONF_ENABLE_FREE_TRIAL', FatUtility::VAR_INT, 0);
+        $trailsAvailed = Lesson::isTrailAvailed($this->userId, $teacherIds, false);
         foreach ($records as $key => $record) {
             $record['uft_id'] = $favorites[$record['user_id']] ?? 0;
             $record['user_photo'] = $photos[$record['user_id']] ?? '';
@@ -219,6 +221,12 @@ class TeacherSearch extends YocoachSearch
             $record['testat_timeslots'] = [];
             if (!$viewPage) {
                 $record['testat_timeslots'] = $timeslots[$record['user_id']] ?? AppConstant::getEmptyDaySlots();
+                $freeTrialEnabled = ($record['user_trial_enabled'] && $freeTrialConf);
+                $record['free_trial_availed'] = true;
+                if ($freeTrialEnabled) {
+                    $record['free_trial_availed'] = isset($trailsAvailed[$record['user_id']]) ? true : false;
+                }
+                $record['free_trial_enabled'] = $freeTrialEnabled;
             }
             $record['user_video_link'] = MyUtility::validateYoutubeUrl($videos[$record['user_id']]);
             $record['userProfileImageId'] = $userProfileImages[$record['user_id']]['file_id'] ?? 0;

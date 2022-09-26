@@ -75,8 +75,10 @@ class TeachersController extends MyAppController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         $srch = new TeacherSearch($langId, $userId, $userType);
+        $srch->joinTable(UserSetting::DB_TBL, 'INNER JOIN', 'us.user_id = teacher.user_id', 'us');
         $srch->addCondition('teacher.user_id', '!=', $userId);
         $srch->addSearchListingFields();
+        $srch->addFld('us.user_trial_enabled');
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
         $srch->applyOrderBy($post['sorting']);
@@ -124,7 +126,7 @@ class TeachersController extends MyAppController
         $freeTrialEnabled = ($teacher['user_trial_enabled'] && $freeTrialConf);
         $isFreeTrailAvailed = true;
         if ($freeTrialEnabled) {
-            $isFreeTrailAvailed = Lesson::isTrailAvailed($this->siteUserId, $teacher['user_id']);
+            $isFreeTrailAvailed = Lesson::isTrailAvailed($this->siteUserId, [$teacher['user_id']]);
         }
         $userPreferences = Preference::getUserPreferences($teacher['user_id'], $this->siteLangId);
         $preferencesData = [];

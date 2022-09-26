@@ -1074,26 +1074,29 @@ class Lesson extends MyAppModel
     /**
      * Free Trail Availed
      * 
-     * @param int $learnerId
-     * @param int $teacherId
-     * @return bool
+     * @param int   $learnerId
+     * @param array $teacherIds
+     * @return bool|array
      */
-    public static function isTrailAvailed(int $learnerId, int $teacherId): bool
+    public static function isTrailAvailed(int $learnerId, array $teacherIds, bool  $single = true)
     {
-
         $srch = new SearchBase(static::DB_TBL, 'ordles');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordles.ordles_order_id', 'orders');
         $srch->addCondition('orders.order_user_id', '=', $learnerId);
-        $srch->addCondition('ordles.ordles_teacher_id', '=', $teacherId);
+        $srch->addCondition('ordles.ordles_teacher_id', 'IN', $teacherIds);
         $srch->addCondition('ordles.ordles_type', '=', static::TYPE_FTRAIL);
         $srch->addCondition('ordles.ordles_status', '!=', static::CANCELLED);
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);
-        $srch->addFld('COUNT(*) AS totalCount');
         $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $row = FatApp::getDb()->fetch($srch->getResultSet());
-        return ($row['totalCount'] > 0);
+        if ($single == true) {
+            $srch->setPageSize(1);
+            $srch->addFld('COUNT(*) AS totalCount');
+            $row = FatApp::getDb()->fetch($srch->getResultSet());
+            return ($row['totalCount'] > 0);
+        }
+        $srch->addMultipleFields(['ordles_teacher_id', 'COUNT(*) AS totalCount']);
+        return $row = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }
 
     /**
