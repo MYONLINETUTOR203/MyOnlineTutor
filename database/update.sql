@@ -1305,3 +1305,6 @@ ALTER TABLE `tbl_course_approval_requests` CHANGE `coapre_course_id` `coapre_cou
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_level` INT NOT NULL AFTER `coapre_clang_id`;
 ALTER TABLE `tbl_course_approval_requests` ADD `coapre_certificate` TINYINT(1) NOT NULL AFTER `coapre_duration`, ADD `coapre_srchtags` JSON NOT NULL AFTER `coapre_certificate`; 
 ALTER TABLE `tbl_course_approval_requests` CHANGE `coapre_price` `coapre_price` DECIMAL(15,8) NOT NULL; 
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES
+('LBL_BROWSER_VIDEO_NOT_SUPPORTED_INFO', 1, 'Your browser does not support video player. Please click to download the video.');

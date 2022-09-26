@@ -744,7 +744,10 @@ class Course extends MyAppModel
             $course = $this->get();
             $intendedLearner = new IntendedLearner();
             $intendedLearnerData = $intendedLearner->get($this->getMainTableRecordId());
-            $price = CourseUtility::convertToSystemCurrency($course['course_price'], $course['course_currency_id']);
+            $price = 0;
+            if ($course['course_price'] > 0) {
+                $price = CourseUtility::convertToSystemCurrency($course['course_price'], $course['course_currency_id']);
+            }
             $data = [
                 'coapre_course_id' => $this->getMainTableRecordId(),
                 'coapre_cate_id' => $course['course_cate_id'],
