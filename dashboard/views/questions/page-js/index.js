@@ -46,9 +46,13 @@ $(function () {
     addOptions = function () {
         var type = document.frmQuestion.ques_type.value;
         var count = document.frmQuestion.ques_options_count.value;
+        var quesId = document.frmQuestion.ques_id.value;
+        if (count < 1) {
+            return;
+        }
         var opts = $('.sortableLearningJs .optionsRowJs').length;
         if (count != opts) {
-            fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), { type, count }, function (res) {
+            fcom.ajax(fcom.makeUrl('Questions', 'optionForm'), { type, count, quesId }, function (res) {
                 $(".more-container-js").html(res);
             });
         }

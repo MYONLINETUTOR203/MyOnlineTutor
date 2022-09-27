@@ -117,6 +117,7 @@ $(function () {
         }
         fcom.updateWithAjax(fcom.makeUrl('Quizzes', 'setupSettings'), fcom.frmData(frm), function (res) {
             getCompletedStatus(frm.quiz_id.value);
+            window.location = fcom.makeUrl('Quizzes');
         });
     }
     /* ] */
@@ -132,6 +133,6 @@ $(function () {
             if (res.settings == 1) {
                 $('.settingsTabJs').removeClass('is-progress').addClass('is-completed');
             }
-        });
+        }, {'process' : false});
     };
 });

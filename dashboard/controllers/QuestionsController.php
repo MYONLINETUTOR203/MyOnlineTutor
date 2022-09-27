@@ -167,13 +167,31 @@ class QuestionsController extends DashboardController
     public function optionForm()
     {
         $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
         $count = FatApp::getPostedData('count', FatUtility::VAR_INT, 0);
         if ($count < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ENTER_OPTIONS_COUNT'));
         }
-        $this->set('frm', $this->getOptionsForm($type));
-        $this->set('type', $type);
-        $this->set('count', $count);
+
+        $options = $answers = [];
+        if ($quesId > 0) {
+            $question = new Question($quesId, $this->siteUserId);
+            if (!$data = $question->getById()) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
+            }
+            if ($this->siteUserId != $data['ques_user_id']) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+            }
+            $options = $question->getQuesOptions();
+            $answers = json_decode($data['ques_answer'], true);
+        }
+        $this->sets([
+            'frm' => $this->getOptionsForm($type),
+            'type' => $type,
+            'count' => $count,
+            'options' => $options,
+            'answers' => $answers
+        ]);
         $this->_template->render(false, false);
     }
 
