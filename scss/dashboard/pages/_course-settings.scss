@@ -11,13 +11,13 @@ $page-back: "page-back";
 $page-steps: "page-steps";
 
 .#{$page-steps}{ 
-   &{background-color: theme('color.white'); position: relative; width: 100%;border-radius: theme('radius.0'); box-shadow: theme('boxShadow.all'); 
-    padding: theme('padding.4') theme('padding.8');
+   &{background-color: theme('color.white'); position: relative; width: 100%;border-radius: theme('radius.0'); box-shadow: theme('boxShadow.all'); padding: theme('padding.2');
+    
     
         ul{position: relative; 
             @media(min-width:theme('breakpoints.lg','value')){
                 
-                &:before{position: absolute; #{theme('direction.left','value')}:0; top: theme('padding.4'); bottom: theme('padding.4'); content: ""; background-color: theme('color.gray.300'); width: 1px; pointer-events: none;}
+                &:before{position: absolute; #{theme('direction.left','value')}:18px; top: theme('padding.4'); bottom: theme('padding.4'); content: ""; background-color: theme('color.gray.300'); width: 1px; pointer-events: none;}
             }
 
 
@@ -30,19 +30,19 @@ $page-steps: "page-steps";
           
 
             &:last-child{margin-bottom: 0;}
-                    & > a{display: block; padding: theme('padding.4'); padding-#{theme('direction.left','value')}: theme('padding.8'); position: relative; min-height: 18px; 
+                    & > a{display: block; padding: theme('padding.4')  theme('padding.10');position: relative; min-height: 18px; 
 
                         @media(min-width:theme('breakpoints.lg','value')){
-                            &{padding-#{theme('direction.left','value')}: theme('padding.8'); }
+                            &{padding-#{theme('direction.left','value')}: theme('padding.12');padding-#{theme('direction.right','value')}: theme('padding.10'); }
                         }  
 
                         @media(max-width:theme('breakpoints.lg','value')){
                             &{padding-#{theme('direction.right','value')}: theme('padding.8'); }
                         }  
 
-                        &:before{position: absolute; #{theme('direction.left','value')}:0; top:theme('padding.4'); content: ""; width: 16px; height: 16px; border: 1px solid currentColor; pointer-events: none; border-radius: theme('radius.round');background-color: theme('color.white');
+                        &:before{position: absolute; #{theme('direction.left','value')}:0.8rem; top:theme('padding.4'); content: ""; width: 16px; height: 16px; border: 1px solid currentColor; pointer-events: none; border-radius: theme('radius.round');background-color: theme('color.white');
                             @media(min-width:theme('breakpoints.lg','value')){
-                                &{#{theme('direction.left','value')}:-8px;}
+                                &{#{theme('direction.left','value')}:0.8rem;}
                             }
                         }
                     }
@@ -52,6 +52,13 @@ $page-steps: "page-steps";
                     &.is-active{color: theme('color.primary'); font-weight: theme('font.weight.medium');
                         > a{
                             &::before{border-width: 2px;}
+                        }
+                        
+                    }
+
+                    &.is-active.is-completed{
+                        > a{background-color: theme('color.gray.100'); border-radius: 10px;
+                           
                         }
                         
                     }
@@ -95,14 +102,14 @@ $page-steps: "page-steps";
                         width:16px;
                         height: 16px;
                         position: absolute;
-                        #{theme('direction.right','value')}: -1rem;
+                        #{theme('direction.right','value')}:0.8rem;
                         top: theme('padding.4');
                         border-radius:theme('radius.round');
                         padding-#{theme('direction.left','value')}: theme('padding.1');
                         padding-#{theme('direction.right','value')}: theme('padding.1');
 
                         @media(max-width:theme('breakpoints.lg','value')){
-                            &{ #{theme('direction.right','value')}: auto;  #{theme('direction.left','value')}:0;}
+                            &{ #{theme('direction.right','value')}: auto;  #{theme('direction.left','value')}:0.8rem;}
                         }
                        
                     }
@@ -305,7 +312,7 @@ $card-options: "card-options";
 .#{$card-options}{
         &{
             position: relative;
-            &--positioned{position: absolute; right: theme('margin.6');top: theme('margin.6');
+            &--positioned{position: absolute; #{theme('direction.right','value')}: theme('margin.6');top: theme('margin.6');
             
                 @media (max-width:theme('breakpoints.sm','value')){
                     &{right: theme('margin.3');top: theme('margin.3');}
@@ -502,7 +509,7 @@ $card-box: "card-box";
 
 
         .#{$card-options}{
-             &--positioned{position: absolute; right: theme('margin.3');top: theme('margin.3');
+             &--positioned{position: absolute; #{theme('direction.right','value')}: theme('margin.3');top: theme('margin.3');
                     @media(max-width:theme('breakpoints.sm','value')){
                         &{right: theme('margin.2');top: theme('margin.2');}
                     }
@@ -870,7 +877,7 @@ $card-course: "card-course";
         }
 
         &{display: flex; align-items: center; flex-wrap: wrap;
-            &__item{position: relative; margin-top:theme('margin.2');margin-bottom:theme('margin.2');
+            &__item{position: relative; margin-top:theme('margin.2');margin-bottom:theme('margin.2'); display:inline-flex;
                 &:not(:last-child):after{content:"|"; margin:0 theme('margin.3');}
             }
         }

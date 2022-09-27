@@ -899,7 +899,7 @@ $card: 'card';
     &::before{
         width: 25px;
         height: 25px;
-        border-color: theme('color.white');
+     
     }
 }
 
@@ -916,6 +916,12 @@ $card: 'card';
 
             }.slick-prev{
                 left: -10%;
+            }
+            .slick-arrow{
+                &::before{
+                   
+                    border-color: theme('color.white');
+                }
             }
         }
 

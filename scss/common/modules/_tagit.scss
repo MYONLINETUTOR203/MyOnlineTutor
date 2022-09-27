@@ -31,7 +31,7 @@ input.tagit-hidden-field {
 
 
 ul.tagit li.tagit-choice-editable {
-    padding: theme('padding.3'); padding-right: theme('padding.14'); background-color: theme('color.gray.200');
+    padding: theme('padding.3'); padding-#{theme('direction.right','value')}: theme('padding.14'); background-color: theme('color.gray.200');
 }
 
 ul.tagit li.tagit-choice {
@@ -41,7 +41,7 @@ ul.tagit li.tagit-choice {
 
 ul.tagit li {
     display: block;
-    float: left;
+    float: #{theme('direction.left','value')};
     margin: 2px 5px 2px 0;
 }
 

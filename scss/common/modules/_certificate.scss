@@ -20,7 +20,7 @@ $layout-flex: 'layout-flex';
     @media(min-width: theme('breakpoints.lg','value')){
         &{display: flex; flex-wrap: wrap;
             &__large{flex: 1;}
-            &__small{ width: 360px; padding-left: theme('padding.14');}
+            &__small{ width: 360px; padding-#{theme('direction.left','value')}: theme('padding.14');}
         }
     }
 
