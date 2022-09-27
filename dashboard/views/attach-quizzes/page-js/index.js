@@ -2,7 +2,7 @@
 $(function () {
     searchQuizzes = function (frm, page = 1) {
         document.frmSearch.pageno.value = page;
-        fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'search', [1]), fcom.frmData(frm), function (res) {
+        fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'search'), fcom.frmData(frm), function (res) {
             if (page > 1) {
                 $('#quiz-listing tbody').append(res.html);
             } else {
@@ -21,7 +21,13 @@ $(function () {
         searchQuizzes(document.frmSearch);
     };
     attachQuizzes = function () {
-
+        var frm = document.frmQuizLink;
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'setup'), fcom.frmData(frm), function (res) {
+            $.facebox.close();
+        });
     };
     goToQuizPage = function (_obj) {
         searchQuizzes(document.frmSearch, $(_obj).data('page'));

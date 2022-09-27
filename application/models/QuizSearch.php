@@ -196,6 +196,8 @@ class QuizSearch extends YocoachSearch
         $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
         ->requirements()->setInt();
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
+        $frm->addHiddenField('', 'record_id');
+        $frm->addHiddenField('', 'record_type');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
         $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
         return $frm;
@@ -206,11 +208,14 @@ class QuizSearch extends YocoachSearch
         $frm = new Form('frmQuizLink');
         $quesFld = $frm->addCheckBoxes('', 'quilin_quiz_id', []);
         $quesFld->requirements()->setRequired();
-        $quesFld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_SELECT_QUIZ'));
+        $quesFld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_SELECT_QUIZ(S)'));
         $fld = $frm->addHiddenField('', 'quilin_record_id');
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
         $fld = $frm->addHiddenField('', 'quilin_record_type');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setInt();
+        $fld = $frm->addHiddenField('', 'quilin_user_id');
         $fld->requirements()->setRequired();
         $fld->requirements()->setInt();
         return $frm;

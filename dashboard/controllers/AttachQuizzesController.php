@@ -20,24 +20,35 @@ class AttachQuizzesController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
     }
+
     /**
      * Render Search Form
      */
     public function index()
     {
-        $frm = QuizSearch::getSearchForm();
-
         $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, 0);
         $recordType = FatApp::getPostedData('recordType', FatUtility::VAR_INT, 0);
 
-        if (!in_array($recordType, [AppConstant::LESSON, AppConstant::GCLASS, AppConstant::COURSE])) {
+        /* validate record type */
+        if (!array_key_exists($recordType, AppConstant::getSessionTypes())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
+
+        /* validate record id */
+        $quizLinked = new QuizLinked(0, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$quizLinked->validateRecordId($recordId, $recordType)) {
+            FatUtility::dieJsonError($quizLinked->getError());
+        }
+
+        $frm = QuizSearch::getSearchForm();
+        $frm->fill(['record_id' => $recordId, 'record_type' => $recordType]);
 
         /* @TODO: validate record id */
 
         $quizFrm = QuizSearch::getQuizForm();
-        $quizFrm->fill(['quilin_record_id' => $recordId, 'quilin_record_type' => $recordType]);
+        $quizFrm->fill([
+            'quilin_record_id' => $recordId, 'quilin_record_type' => $recordType, 'quilin_user_id' => $this->siteUserId
+        ]);
 
         $this->sets([
             'quizFrm' => $quizFrm,
@@ -52,11 +63,27 @@ class AttachQuizzesController extends DashboardController
     public function search()
     {
         $frm = QuizSearch::getSearchForm();
-        $post = $frm->getFormDataFromArray(FatApp::getPostedData());
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
 
+        /* get already binded quizzes list */
+        $srch = new SearchBase(QuizLinked::DB_TBL);
+        $srch->addCondition('quilin_record_id', '=', $post['record_id']);
+        $srch->addCondition('quilin_record_type', '=', $post['record_type']);
+        $srch->addCondition('quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addFld('quilin_quiz_id');
+        $srch->doNotCalculateRecords();
+        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_quiz_id');
+        $quizzes = array_keys($quizzes);
+
+        /* get quizzes list */
         $srch = new QuizSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
+        if (count($quizzes) > 0) {
+            $srch->addCondition('quiz_id', 'NOT IN', $quizzes);
+        }
         $srch->addSearchListingFields();
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
@@ -86,5 +113,23 @@ class AttachQuizzesController extends DashboardController
             'loadMore' => $loadMore,
             'nextPage' => $nextPage
         ]);
+    }
+
+    /**
+     * Attach quizzes with Lesson, Class & Courses
+     *
+     * @return json
+     */
+    public function setup()
+    {
+        $frm = QuizSearch::getQuizForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['quilin_quiz_id'])) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $quiz = new QuizLinked(0, $post['quilin_user_id'], $this->siteUserType);
+        if (!$quiz->setup($post['quilin_record_id'], $post['quilin_record_type'], $post['quilin_quiz_id'])) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZZES_ATTACHED_SUCCESSFULLY'));
     }
 }

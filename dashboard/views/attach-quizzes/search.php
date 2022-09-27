@@ -1,8 +1,13 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (count($quizzes) == 0) {
-    $this->includeTemplate('_partial/no-record-found.php');
-    return;
+    ?>
+    <tr>
+        <td colspan="3">
+            <?php $this->includeTemplate('_partial/no-record-found.php'); ?>
+        </td>
+    </tr>    
+    <?php return;
 }
 $titleLbl = Label::getLabel('LBL_TITLE');
 $typeLbl = Label::getLabel('LBL_TYPE');
@@ -13,7 +18,10 @@ foreach ($quizzes as $quiz) {
 ?>
     <tr>
         <td>
-            <input type="checkbox">
+            <label class="checkbox">
+                <input type="checkbox" name="quilin_quiz_id[]" value="<?php echo $quiz['quiz_id']; ?>">
+                <i class="input-helper"></i>
+            </label>
         </td>
         <td>
             <div class="flex-cell">
@@ -33,4 +41,3 @@ foreach ($quizzes as $quiz) {
         </td>
     </tr>
 <?php } ?>
- 

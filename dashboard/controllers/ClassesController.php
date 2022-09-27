@@ -36,7 +36,8 @@ class ClassesController extends DashboardController
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
             'js/fullcalendar-luxon-global.min.js',
-            'js/fateventcalendar.js'
+            'js/fateventcalendar.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         $frm = ClassSearch::getSearchForm($this->siteUserType);
         $postData = FatApp::getQueryStringData();

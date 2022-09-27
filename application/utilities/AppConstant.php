@@ -406,4 +406,19 @@ class AppConstant
         return $arr;
     }
 
+    /**
+     * Get Session Types
+     * 
+     * @param int $key
+     * @return string|array
+     */
+    public static function getSessionTypes(int $key = null)
+    {
+        $arr = [
+            static::LESSON => Label::getLabel('LBL_LESSON'),
+            static::GCLASS => Label::getLabel('LBL_GROUP_CLASS'),
+            static::COURSE => Label::getLabel('LBL_COURSE'),
+        ];
+        return static::returArrValue($arr, $key);
+    }
 }

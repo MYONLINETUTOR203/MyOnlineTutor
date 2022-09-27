@@ -70,6 +70,8 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
                                 <div class="field_cover">
                                     <?php echo $frm->getFieldHtml('pageno'); ?>
                                     <?php echo $frm->getFieldHtml('pagesize'); ?>
+                                    <?php echo $frm->getFieldHtml('record_id'); ?>
+                                    <?php echo $frm->getFieldHtml('record_type'); ?>
                                     <?php echo $frm->getFieldHtml('btn_submit'); ?>
                                     <?php echo $frm->getFieldHtml('btn_clear'); ?>
                                 </div>
@@ -99,6 +101,7 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
             <?php
             echo $quizFrm->getFieldHtml('quilin_record_id');
             echo $quizFrm->getFieldHtml('quilin_record_type');
+            echo $quizFrm->getFieldHtml('quilin_user_id');
             ?>
             </form>
             <?php echo $quizFrm->getExternalJS(); ?>

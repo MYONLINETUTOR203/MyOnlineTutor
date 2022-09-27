@@ -367,30 +367,6 @@ class Quiz extends MyAppModel
     }
 
     /**
-     * Count & update no of questions in a quiz
-     *
-     * @return bool
-     */
-    private function updateCount(): bool
-    {
-        $srch = new SearchBase(static::DB_TBL_QUIZ_QUESTIONS, 'quique');
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id', 'quiz');
-        $srch->doNotCalculateRecords();
-        $srch->addCondition('quiz.quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addCondition('quiz.quiz_active', '=', AppConstant::ACTIVE);
-        $srch->addCondition('quiz_user_id', '=', $this->userId);
-        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
-        $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
-        $data = FatApp::getDb()->fetch($srch->getResultSet());
-        $this->assignValues($data);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Update quiz status
      *
      * @param int $status
@@ -423,6 +399,30 @@ class Quiz extends MyAppModel
         }
         if ($this->userId != $quiz['quiz_user_id']) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Count & update no of questions in a quiz
+     *
+     * @return bool
+     */
+    private function updateCount(): bool
+    {
+        $srch = new SearchBase(static::DB_TBL_QUIZ_QUESTIONS, 'quique');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id', 'quiz');
+        $srch->doNotCalculateRecords();
+        $srch->addCondition('quiz.quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('quiz.quiz_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $this->error = $this->getError();
             return false;
         }
         return true;

@@ -83,7 +83,12 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                                     }
                                 }
                                 ?>
-                                <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1"><?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?></a>
+
+                                <?php if ($siteUserType == User::TEACHER) { ?>
+                                    <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1">
+                                        <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                    </a>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
