@@ -265,3 +265,5 @@ INSERT INTO `tbl_certificate_templates` (`certpl_lang_id`, `certpl_code`, `certp
 
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION', 'This question is binded with the quizzes and will be removed from them. Do you still want to remove question?');
 
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.1.0.20220927' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
