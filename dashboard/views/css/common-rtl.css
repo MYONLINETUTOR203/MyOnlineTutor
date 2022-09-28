@@ -2621,8 +2621,15 @@ ul.tagit li.tagit-choice .tagit-close .text-icon {
   border-color: var(--color-gray-200) !important;
   padding-right: var(--padding-4) !important; }
 
-.filter-panel .select2-container {
-  padding-right: var(--padding-4) !important; }
+@media (min-width: 576px) {
+  .filter-panel .select2-container {
+    padding-right: var(--padding-4) !important; } }
+
+@media (max-width: 576px) {
+  .filter-panel .select2-container {
+    padding: 0 var(--padding-4) !important; }
+  .filter-panel .select2-container + .filter-item__search-action {
+    left: 1.5rem !important; } }
 
 .courses.courses-index .filters-layout__item-first .filter-item__trigger {
   padding-right: 0;

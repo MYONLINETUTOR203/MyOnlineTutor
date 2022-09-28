@@ -9694,7 +9694,7 @@ body.sort-active {
     padding: 0; } }
 
 .course-grid__head {
-  width: 160px; }
+  width: 260px; }
   @media (max-width: 1199px) {
     .course-grid__head {
       float: left;
@@ -9831,6 +9831,14 @@ body.sort-active {
       .course-tag .icon {
         width: 22px;
         height: 22px; } }
+
+.course-media .course-preview__action span {
+  width: 60px;
+  height: 45px; }
+  .course-media .course-preview__action span:before {
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left-width: 14px; }
 
 .section-view {
   padding: var(--padding-8) 0 var(--padding-20); }
