@@ -23,7 +23,7 @@ class QuizSearch extends YocoachSearch
         $this->joinTable(User::DB_TBL, 'LEFT JOIN', 'quiz.quiz_user_id = teacher.user_id', 'teacher');
     }
 
-    
+
     /**
      * Apply Primary Conditions
      *
@@ -118,68 +118,6 @@ class QuizSearch extends YocoachSearch
     }
 
     /**
-     * Get questions for quiz
-     *
-     * @param int $quizId
-     * @param int $type
-     * @return array
-     */
-    public function getQuestions(int $quizId, int $type): array
-    {
-        if ($quizId < 1) {
-            return [];
-        }
-        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
-        $srch->joinTable(Quiz::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id');
-        $srch->joinTable(Question::DB_TBL, 'INNER JOIN', 'ques_id = quique_ques_id');
-        $srch->joinTable(Category::DB_TBL, 'INNER JOIN', 'ques_cate_id = cate.cate_id', 'cate');
-        
-        $srch->addCondition('quique_quiz_id', '=', $quizId);
-        if ($this->userType == User::TEACHER) {
-            $srch->addCondition('quiz_user_id', '=', $this->userId);
-        }
-        $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
-        $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
-        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-
-        if ($type == Quiz::TYPE_AUTO_GRADED) {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
-        } else {
-            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
-        }
-        $srch->addMultipleFields([
-            'quique_quiz_id', 'quique_ques_id', 'quiz_id', 'ques_id', 'ques_title', 'ques_type',
-            'ques_cate_id', 'ques_subcate_id', 'ques_created', 'ques_status'
-        ]);
-        $srch->doNotCalculateRecords();
-        $srch->addOrder('quique_order', 'ASC');
-        $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
-        if (count($questions) < 1) {
-            return [];
-        }
-
-        /* get categories list */
-        $categoryIds = [];
-        array_map(function ($val) use (&$categoryIds) {
-            $categoryIds = array_merge($categoryIds, [$val['ques_cate_id'], $val['ques_subcate_id']]);
-        }, $questions);
-        $categoryIds = array_unique($categoryIds);
-        $categories = Category::getNames($categoryIds, $this->langId);
-
-        foreach ($questions as $key => $question) {
-            $cateId = $question['ques_cate_id'];
-            $subcateId = $question['ques_subcate_id'];
-
-            $question['cate_name'] = isset($categories[$cateId]) ? $categories[$cateId] : '-';
-            $question['subcate_name'] = isset($categories[$subcateId]) ? $categories[$subcateId] : '-';
-
-            $questions[$key] = $question;
-        }
-        return $questions;
-    }
-
-    /**
      * Get Search Form
      *
      * @return Form
@@ -194,7 +132,7 @@ class QuizSearch extends YocoachSearch
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'quiz_status', Quiz::getStatuses());
         $frm->addSelectBox(Label::getLabel('LBL_ACTIVE'), 'quiz_active', AppConstant::getActiveArr());
         $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
-        ->requirements()->setInt();
+            ->requirements()->setInt();
         $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
         $frm->addHiddenField('', 'record_id');
         $frm->addHiddenField('', 'record_type');

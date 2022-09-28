@@ -27,6 +27,11 @@ $(function () {
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'setup'), fcom.frmData(frm), function (res) {
             $.facebox.close();
+            if (document.frmSearchPaging) {
+                search(document.frmSearchPaging);
+                return;
+            }
+            window.location.reload();
         });
     };
     goToQuizPage = function (_obj) {
@@ -34,8 +39,25 @@ $(function () {
     }
     quizListing = function (recordId, recordType) {
         fcom.ajax(fcom.makeUrl('AttachQuizzes', 'index'), { recordId, recordType }, function (response) {
-            $.facebox(response, 'facebox-medium');
+            $.facebox(response, 'facebox-large');
             searchQuizzes(document.frmSearch);
+        });
+    };
+    viewQuizzes = function (recordId, recordType) {
+        fcom.ajax(fcom.makeUrl('AttachQuizzes', 'view'), { recordId, recordType }, function (response) {
+            $.facebox(response, 'facebox-large');
+        });
+    };
+    removeQuiz = function (id) {
+        if (!confirm(langLbl.confirmRemove)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
+            $('.quizRowJs' + id).remove();
+            if (document.frmSearchPaging) {
+                search(document.frmSearchPaging);
+                return;
+            }
         });
     };
 });

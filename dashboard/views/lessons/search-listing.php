@@ -84,10 +84,29 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                                 }
                                 ?>
 
-                                <?php if ($siteUserType == User::TEACHER) { ?>
-                                    <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1">
-                                        <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
-                                    </a>
+                                <?php if ($lesson['quiz_count'] > 0) { ?>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:void(0);" onclick="viewQuizzes('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>');" class="attachment-file">
+                                            <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                            </svg>
+                                            <?php
+                                            $lbl = Label::getLabel('LBL_{quiz-count}_QUIZZES_ATTACHED');
+                                            echo str_replace('{quiz-count}', $lesson['quiz_count'], $lbl);
+                                            ?>
+                                        </a>
+                                        <?php if ($siteUserType == User::TEACHER) { ?>
+                                            <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="underline color-black  btn btn--transparent btn--small mx-1">
+                                                <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                                            </a>
+                                        <?php } ?>
+                                    </div>
+                                <?php } else { ?>
+                                    <?php if ($siteUserType == User::TEACHER) { ?>
+                                        <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1">
+                                            <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                        </a>
+                                    <?php } ?>
                                 <?php } ?>
                             </div>
                         <?php } ?>

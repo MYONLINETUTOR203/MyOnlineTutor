@@ -346,8 +346,12 @@ class Quiz extends MyAppModel
         }
 
         /* get questions count */
-        $quiz = new QuizSearch(0, $this->userId, User::TEACHER);
-        $questions = $quiz->getQuestions($this->getMainTableRecordId(), $data['quiz_type']);
+        $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->applyPrimaryConditions();
+        $srch->addSearchListingFields();
+        $srch->setPageSize(1);
+        $questions = $srch->fetchAndFormat();
         if (count($questions) > 0) {
             $criteria['questions'] = 1;
         }

@@ -141,9 +141,14 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $type = Quiz::getAttributesById($id, 'quiz_type');
-        $quiz = new QuizSearch(0, $this->siteUserId, User::TEACHER);
-        $questions = $quiz->getQuestions($id, $type);
+        
+        $srch = new QuizQuestionSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
+        $srch->addCondition('quique_quiz_id', '=', $id);
+        $srch->applyPrimaryConditions();
+        $srch->addSearchListingFields();
+        $srch->joinCategory();
+        $srch->setOrder();
+        $questions = $srch->fetchAndFormat();
         $this->sets([
             'questions' => $questions,
             'quizId' => $id,

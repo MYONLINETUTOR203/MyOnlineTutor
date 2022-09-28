@@ -30,7 +30,7 @@ class AttachQuizzesController extends DashboardController
         $recordType = FatApp::getPostedData('recordType', FatUtility::VAR_INT, 0);
 
         /* validate record type */
-        if (!array_key_exists($recordType, AppConstant::getSessionTypes())) {
+        if ($recordId < 1 || !array_key_exists($recordType, AppConstant::getSessionTypes())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
 
@@ -42,8 +42,6 @@ class AttachQuizzesController extends DashboardController
 
         $frm = QuizSearch::getSearchForm();
         $frm->fill(['record_id' => $recordId, 'record_type' => $recordType]);
-
-        /* @TODO: validate record id */
 
         $quizFrm = QuizSearch::getQuizForm();
         $quizFrm->fill([
@@ -131,5 +129,40 @@ class AttachQuizzesController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZZES_ATTACHED_SUCCESSFULLY'));
+    }
+    
+    /**
+     * View quizzes list
+     */
+    public function view()
+    {
+        $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, 0);
+        $recordType = FatApp::getPostedData('recordType', FatUtility::VAR_INT, 0);
+
+        /* validate record type */
+        if ($recordId < 1 || !array_key_exists($recordType, AppConstant::getSessionTypes())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+
+        $this->set('quizzes', QuizLinked::getQuizzes([$recordId], $recordType, true));
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Deleted attached quizes
+     *
+     * @return json
+     */
+    public function delete()
+    {
+        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($id < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+        $quizLink = new QuizLinked($id, $this->siteUserId);
+        if (!$quizLink->delete()) {
+            FatUtility::dieJsonError($quizLink->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZZES_REMOVED_SUCCESSFULLY'));
     }
 }

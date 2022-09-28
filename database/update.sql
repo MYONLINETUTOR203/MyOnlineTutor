@@ -309,3 +309,4 @@ INSERT INTO `tbl_certificate_templates` (`certpl_lang_id`, `certpl_code`, `certp
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION', 'This question is binded with the quizzes and will be removed from them. Do you still want to remove question?');
 
 ALTER TABLE `tbl_quiz_linked` ADD `quilin_validity` INT NOT NULL AFTER `quilin_passmsg`, ADD `quilin_certificate` TINYINT(1) NOT NULL AFTER `quilin_validity`, ADD `quilin_questions` INT NOT NULL AFTER `quilin_certificate`; 
+ALTER TABLE `tbl_quiz_linked_questions` ADD `qulinqu_marks` INT NOT NULL AFTER `qulinqu_hint`; 
