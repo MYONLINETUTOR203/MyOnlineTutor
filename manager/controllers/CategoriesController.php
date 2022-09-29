@@ -71,6 +71,7 @@ class CategoriesController extends AdminBaseController
                 'catg.cate_status',
                 'catg.cate_created',
                 'IFNULL(catg_l.cate_name, catg.cate_identifier) AS cate_name',
+                'catg.cate_identifier',
                 'catg_l.catelang_lang_id',
             ]
         );

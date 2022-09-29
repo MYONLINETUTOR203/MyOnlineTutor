@@ -4,6 +4,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arrFlds = [
     'dragdrop' => '',
     'listserial' => Label::getLabel('LBL_Sr._No'),
+    'cate_identifier' => Label::getLabel('LBL_IDENTIFIER'),
     'cate_name' => Label::getLabel('LBL_NAME'),
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
     'cate_records' => Label::getLabel('LBL_QUESTIONS'),
