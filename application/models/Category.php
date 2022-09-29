@@ -47,9 +47,20 @@ class Category extends MyAppModel
      */
     public function setup($data): bool
     {
+        if ($this->mainTableRecordId > 0 && !$category = $this->getDataById()) {
+            $this->error = Label::getLabel('LBL_CATEGORY_NOT_FOUND');
+            return false;
+        }
         $parent = FatUtility::int($data['cate_parent']);
         if (!$this->checkUnique($data['cate_identifier'], $parent)) {
             $this->error = $this->getError();
+            return false;
+        }
+        $status = $data['cate_status'];
+        if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
+            if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+            }
             return false;
         }
         /* save category data */
@@ -98,7 +109,7 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_FOUND');
             return false;
         }
-        $status = $this->getFldValue('ques_status');
+        $status = $this->getFldValue('cate_status');
         if ($status == AppConstant::INACTIVE && $data['cate_records'] > 0) {
             if ($data['cate_type'] == Category::TYPE_QUESTION) {
                 $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
