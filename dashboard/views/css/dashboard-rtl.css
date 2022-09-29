@@ -186,6 +186,7 @@ p {
     display: -ms-flexbox;
     display: flex;
     height: 100%;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     bottom: 0;
@@ -214,7 +215,7 @@ p {
       top: 0;
       bottom: 0;
       right: 0;
-      z-index: 3; } }
+      z-index: 13; } }
   @media (max-width: 767px) {
     .sidebar__secondary {
       top: auto;
@@ -271,6 +272,9 @@ p {
         -ms-flex-pack: justify;
             justify-content: space-between;
     position: relative; } }
+
+.sidebar .profile .profile__details small {
+  margin-top: 0; }
 
 .toggle {
   position: relative;
@@ -1758,6 +1762,7 @@ iframe#st_gdpr_iframe {
   background-color: var(--color-white); }
 
 .table-sticky-scroll .first-child {
+  position: -webkit-sticky;
   position: sticky;
   left: 0;
   z-index: 2;
@@ -2138,6 +2143,7 @@ div.tagsinput div {
   @media (min-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 25.6rem;
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2148,6 +2154,7 @@ div.tagsinput div {
   @media (min-width: 1299px) and (max-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 22rem;
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2776,6 +2783,7 @@ div.tagsinput div {
   padding: var(--padding-5); }
   @media (min-width: 1199px) {
     .page-controls {
+      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
@@ -4645,13 +4653,13 @@ div.tagsinput div {
   border-radius: var(--radius-0);
   -webkit-box-shadow: var(--boxShadow-all);
           box-shadow: var(--boxShadow-all);
-  padding: var(--padding-4) var(--padding-8); }
+  padding: var(--padding-2); }
   .page-steps ul {
     position: relative; }
     @media (min-width: 991px) {
       .page-steps ul:before {
         position: absolute;
-        right: 0;
+        right: 18px;
         top: var(--padding-4);
         bottom: var(--padding-4);
         content: "";
@@ -4667,19 +4675,19 @@ div.tagsinput div {
         margin-bottom: 0; }
       .page-steps ul li > a {
         display: block;
-        padding: var(--padding-4);
-        padding-right: var(--padding-8);
+        padding: var(--padding-4) var(--padding-10);
         position: relative;
         min-height: 18px; }
         @media (min-width: 991px) {
           .page-steps ul li > a {
-            padding-right: var(--padding-8); } }
+            padding-right: var(--padding-12);
+            padding-left: var(--padding-10); } }
         @media (max-width: 991px) {
           .page-steps ul li > a {
             padding-left: var(--padding-8); } }
         .page-steps ul li > a:before {
           position: absolute;
-          right: 0;
+          right: 0.8rem;
           top: var(--padding-4);
           content: "";
           width: 16px;
@@ -4690,12 +4698,15 @@ div.tagsinput div {
           background-color: var(--color-white); }
           @media (min-width: 991px) {
             .page-steps ul li > a:before {
-              right: -8px; } }
+              right: 0.8rem; } }
       .page-steps ul li.is-active {
         color: var(--color-primary);
         font-weight: var(--font-weight-medium); }
         .page-steps ul li.is-active > a::before {
           border-width: 2px; }
+      .page-steps ul li.is-active.is-completed > a {
+        background-color: var(--color-gray-100);
+        border-radius: 10px; }
       .page-steps ul li.is-progress .step-sign {
         background-color: var(--color-yellow); }
         .page-steps ul li.is-progress .step-sign:before {
@@ -4732,7 +4743,7 @@ div.tagsinput div {
         width: 16px;
         height: 16px;
         position: absolute;
-        left: -1rem;
+        left: 0.8rem;
         top: var(--padding-4);
         border-radius: var(--radius-round);
         padding-right: var(--padding-1);
@@ -4740,7 +4751,7 @@ div.tagsinput div {
         @media (max-width: 991px) {
           .page-steps ul li .step-sign {
             left: auto;
-            right: 0; } }
+            right: 0.8rem; } }
   @media (max-width: 991px) {
     .page-steps {
       padding: var(--padding-3) var(--padding-4); }
@@ -4993,7 +5004,7 @@ div.tagsinput div {
   position: relative; }
   .card-options--positioned {
     position: absolute;
-    right: var(--margin-6);
+    left: var(--margin-6);
     top: var(--margin-6); }
     @media (max-width: 576px) {
       .card-options--positioned {
@@ -5228,7 +5239,7 @@ div.tagsinput div {
         padding: var(--padding-4); } }
     .card-box__head .card-options--positioned {
       position: absolute;
-      right: var(--margin-3);
+      left: var(--margin-3);
       top: var(--margin-3); }
       @media (max-width: 576px) {
         .card-box__head .card-options--positioned {
@@ -5745,7 +5756,10 @@ div.tagsinput div {
   .course-stats__item {
     position: relative;
     margin-top: var(--margin-2);
-    margin-bottom: var(--margin-2); }
+    margin-bottom: var(--margin-2);
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex; }
     .course-stats__item:not(:last-child):after {
       content: "|";
       margin: 0 var(--margin-3); }

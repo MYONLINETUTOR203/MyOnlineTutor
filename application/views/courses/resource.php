@@ -5,7 +5,9 @@
     </div>
     <div class="video-preview__body">
         <div class="video-preview__large">
-            <iframe width="100%" height="100%" src="<?php echo $resource['lecsrc_link'] ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+            <div class="preview-video ratio ratio--16by9">
+                <iframe width="100%" height="100%" src="<?php echo $resource['lecsrc_link'] ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+            </div>
         </div>
         <div class="video-preview__small">
             <h6 class="padding-6 padding-bottom-3 padding-top-4 bold-700">

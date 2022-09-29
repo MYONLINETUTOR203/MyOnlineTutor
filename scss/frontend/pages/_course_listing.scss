@@ -81,7 +81,7 @@ $course-grid: "course-grid";
             &{padding: 0;}
         }
 
-    &__head{width: 160px;
+    &__head{width: 260px;
         
         @media (max-width:theme('breakpoints.xl','value')){
             &{float: #{theme('direction.left','value')}; margin-#{theme('direction.right','value')}: theme('margin.6');}
@@ -215,4 +215,8 @@ $course-tag: "course-tag";
 }
 
 
-
+.course-media{
+    .course-preview__action span{width: 60px;height: 45px;
+    &:before{border-top: 8px solid transparent;border-bottom: 8px solid transparent; border-#{theme('direction.left','value')}-width: 14px;}
+    }
+}
