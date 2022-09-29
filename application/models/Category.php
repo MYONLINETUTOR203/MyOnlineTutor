@@ -228,9 +228,10 @@ class Category extends MyAppModel
      * @param int  $catgId
      * @param int  $type
      * @param bool $havingCourses
+     * @param bool $active
      * @return array
      */
-    public static function getCategoriesByParentId(int $langId, int $catgId = 0, int $type = Category::TYPE_COURSE, bool $havingCourses = false)
+    public static function getCategoriesByParentId(int $langId, int $catgId = 0, int $type = Category::TYPE_COURSE, bool $havingCourses = false, bool $active = true)
     {
         $srch = static::getSearchObject();
         $srch->joinTable(
@@ -245,7 +246,9 @@ class Category extends MyAppModel
         $srch->addOrder('cate_order');
         $srch->addCondition('cate_parent', '=', $catgId);
         $srch->addCondition('cate_type', '=', $type);
-        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
+        if ($active == true) {
+            $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
+        }
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         if ($havingCourses == true) {
             $srch->addCondition('cate_records', '>', 0);

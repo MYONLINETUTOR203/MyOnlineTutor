@@ -229,7 +229,9 @@ class CategoriesController extends AdminBaseController
         $fld = $frm->addTextBox(Label::getLabel('LBL_IDENTIFIER'), 'cate_identifier')->requirements()->setRequired();
         $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_QUESTION);
         $fld->requirements()->setIntPositive();
-        $parentCategories = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION);
+        $parentCategories = Category::getCategoriesByParentId(
+            $this->siteLangId, 0, Category::TYPE_QUESTION, false, false
+        );
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);
         }
