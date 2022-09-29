@@ -13,7 +13,7 @@ $mark-option: "mark-option";
 
 
 .btn--favorite {border-color:currentColor; color: theme('color.gray.900');
-    &.is-active{color: theme('color.primary'); border-color:theme('color.primary');}
+    &.is-active{background-color: theme('color.secondary'); border-color:theme('color.secondary'); color: theme('color.secondary-inverse');}
 }
 
 

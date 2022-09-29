@@ -757,8 +757,8 @@ $card-course: "card-course";
      }
 
         &__colum{position: relative;
-            &--first{max-width: 210px; flex: 0 0 210px;}
-            &--second{max-width: 55%; flex: 0 0 55%; padding-#{theme('direction.left','value')}: theme('padding.8');}
+            &--first{max-width: 230px; flex: 0 0 230px;}
+            &--second{max-width: 60%; flex: 0 0 60%; padding-#{theme('direction.left','value')}: theme('padding.8');}
             &--third{flex: 0 0 auto;margin-#{theme('direction.left','value')}: auto;}
 
             // @media(max-width:theme('breakpoints.xxxl','value')){
@@ -872,13 +872,15 @@ $card-course: "card-course";
 
     .#{$course-stats}{ 
 
-        @media(min-width:theme('breakpoints.xl','value')){
-            &{margin-bottom: theme('margin.2');}
-        }
+        // @media(min-width:theme('breakpoints.xl','value')){
+        //     &{margin-bottom: theme('margin.2');}
+        // }
 
         &{display: flex; align-items: center; flex-wrap: wrap;
             &__item{position: relative; margin-top:theme('margin.2');margin-bottom:theme('margin.2'); display:inline-flex;
                 &:not(:last-child):after{content:"|"; margin:0 theme('margin.3');}
+                & > strong{margin-#{theme('direction.left','value')}:0.4rem;}
+                &:first-child > strong{margin: 0;}
             }
         }
     }
@@ -967,8 +969,8 @@ $form-search: "form-search";
 $course-progress: "course-progress";
 
 .#{$course-progress}{
-    &{display: flex; align-items: center; max-width: 400px;
-    &__value{font-size: 80%;}
+    &{display: flex; align-items: center; max-width: 300px;
+    &__value{font-size: 90%;}
     &__content{flex: 1; padding: 0 theme('padding.2');}
     }
 }

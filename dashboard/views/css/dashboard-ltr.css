@@ -5557,15 +5557,15 @@ div.tagsinput div {
   .card-course__colum {
     position: relative; }
     .card-course__colum--first {
-      max-width: 210px;
+      max-width: 230px;
       -webkit-box-flex: 0;
-          -ms-flex: 0 0 210px;
-              flex: 0 0 210px; }
+          -ms-flex: 0 0 230px;
+              flex: 0 0 230px; }
     .card-course__colum--second {
-      max-width: 55%;
+      max-width: 60%;
       -webkit-box-flex: 0;
-          -ms-flex: 0 0 55%;
-              flex: 0 0 55%;
+          -ms-flex: 0 0 60%;
+              flex: 0 0 60%;
       padding-left: var(--padding-8); }
     .card-course__colum--third {
       -webkit-box-flex: 0;
@@ -5740,10 +5740,6 @@ div.tagsinput div {
     .card-course__actions .profile-meta {
       width: 50%; } }
 
-@media (min-width: 1199px) {
-  .course-stats {
-    margin-bottom: var(--margin-2); } }
-
 .course-stats {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5763,6 +5759,10 @@ div.tagsinput div {
     .course-stats__item:not(:last-child):after {
       content: "|";
       margin: 0 var(--margin-3); }
+    .course-stats__item > strong {
+      margin-left: 0.4rem; }
+    .course-stats__item:first-child > strong {
+      margin: 0; }
 
 .ratings {
   display: -webkit-box;
@@ -5879,9 +5879,9 @@ div.tagsinput div {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  max-width: 400px; }
+  max-width: 300px; }
   .course-progress__value {
-    font-size: 80%; }
+    font-size: 90%; }
   .course-progress__content {
     -webkit-box-flex: 1;
         -ms-flex: 1;
