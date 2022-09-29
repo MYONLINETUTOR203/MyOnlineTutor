@@ -20,19 +20,12 @@ $levels = Course::getCourseLevels();
                         <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_cate_id'] ?>"><?php echo $course['cate_name']; ?></a>
                         <?php
                         if (!empty($course['subcate_name'])) {
-                            echo ' / ' ; ?>
-                            <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_subcate_id'] ?>"><?php echo $course['subcate_name'];?></a>
+                            echo ' / '; ?>
+                            <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_subcate_id'] ?>"><?php echo $course['subcate_name']; ?></a>
                         <?php } ?>
                     </span>
                     <h1 class="page-heading"><?php echo $course['course_title']; ?></h1>
                     <h4 class="page-subheading"><?php echo $course['course_subtitle']; ?></h4>
-                    <a class="mark-option <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $course['is_favorite']; ?>" onclick="toggleCourseFavorite('<?php echo $course['course_id']; ?>', this)" href="javascript:void(0)">
-                        <svg class="fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
-                            <g>
-                                <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z" />
-                            </g>
-                        </svg>
-                    </a>
                 </hgroup>
                 <div class="course-counts margin-bottom-6">
                     <div class="course-counts__item">
@@ -246,6 +239,12 @@ $levels = Course::getCourseLevels();
                                             <?php } ?>
                                         </div>
                                     </div>
+                                    <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $course['course_id'] ?>', this)" class="btn btn--bordered btn--favorite btn--block <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $course['is_favorite']; ?>" tabindex="0">
+                                        <svg class="icon icon--heart icon--small margin-right-2">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND; ?>images/sprite.svg#icon-heart"></use>
+                                        </svg>
+                                        <?php echo Label::getLabel("LBL_FAVORITE"); ?>
+                                    </a>
                                     <div class="sharing-view align-center margin-top-12">
                                         <h6><?php echo Label::getLabel('LBL_SHARE_THIS_COURSE'); ?></h6>
                                         <ul class="social--share clearfix">
