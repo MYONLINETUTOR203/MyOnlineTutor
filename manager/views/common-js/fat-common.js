@@ -78,6 +78,7 @@ var fcom = {
             async: (options && options.async === false) ? false : true,
             success: function (res) {
                 fcom.close();
+                $("form").find("input[type='submit']").prop('disabled', false);
                 if (o.fOutMode == "json" || isJson(res)) {
                     var response = (o.fOutMode == "json") ? res : JSON.parse(res);
                     if (response.status == 1) {
