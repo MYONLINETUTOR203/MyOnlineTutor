@@ -165,7 +165,7 @@ class CategoriesController extends AdminBaseController
         $srch->setPageSize(1);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         /* fill form data */
-        $frm = $this->getLangForm();
+        $frm = $this->getLangForm($langId);
         $frm->fill($data);
         $frm->fill(['catelang_lang_id' => $langId, 'catelang_cate_id' => $categoryId]);
         $this->sets([
@@ -241,15 +241,20 @@ class CategoriesController extends AdminBaseController
         return $frm;
     }
 
-    private function getLangForm()
+    /**
+     * Get Language form
+     *
+     * @param int $langId
+     */
+    private function getLangForm(int $langId = 0)
     {
         $frm = new Form('frmLang');
         $frm->addHiddenField('', 'catelang_id');
         $frm->addHiddenField('', 'catelang_cate_id');
         $frm->addHiddenField('', 'catelang_lang_id');
-        $frm->addTextBox(Label::getLabel('LBL_NAME'), 'cate_name')->requirements()->setRequired();
-        $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
+        $frm->addTextBox(Label::getLabel('LBL_NAME', $langId), 'cate_name')->requirements()->setRequired();
+        $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION', $langId), 'cate_details')->requirements()->setRequired();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES', $langId));
         return $frm;
     }
 
