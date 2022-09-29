@@ -322,20 +322,14 @@ class CategoriesController extends AdminBaseController
         $nodes = [];
         $parameters = FatApp::getParameters();
         if (isset($parameters[0]) && $parameters[0] > 0) {
-            $srch = new SearchBase(Category::DB_LANG_TBL);
-            $srch->addCondition('catelang_cate_id', '=', $parameters[0]);
-            $srch->addCondition('catelang_lang_id', '=', $this->siteLangId);
-            $srch->doNotCalculateRecords();
-            $srch->setPageSize(1);
-            $srch->addFld('cate_name');
-            $row = FatApp::getDb()->fetch($srch->getResultSet());
+            $row = Category::getNames([$parameters[0]], $this->siteLangId);
             $nodes = [
                 [
                     'title' => Label::getLabel('LBL_ROOT_CATEGORIES'),
                     'href' => MyUtility::generateUrl('categories', 'index')
                 ],
                 [
-                    'title' => $row['cate_name'],
+                    'title' => $row[$parameters[0]],
                 ]
             ];
         } else {

@@ -317,7 +317,8 @@ class Category extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'cate');
         $srch->joinTable(
             static::DB_LANG_TBL,
-            'LEFT JOIN', 'catelang.catelang_cate_id = cate.cate_id and catelang.catelang_lang_id =' . $langId,
+            'LEFT JOIN',
+            'catelang.catelang_cate_id = cate.cate_id and catelang.catelang_lang_id =' . $langId,
             'catelang'
         );
         $srch->addMultipleFields(['cate.cate_id', 'IFNULL(cate_name, cate_identifier) as cate_name']);
