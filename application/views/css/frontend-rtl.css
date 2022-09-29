@@ -9606,8 +9606,9 @@ body.sort-active {
   border-color: currentColor;
   color: var(--color-gray-900); }
   .btn--favorite.is-active {
-    color: var(--color-primary);
-    border-color: var(--color-primary); }
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-secondary-inverse); }
 
 .course-card .mark-option {
   position: absolute;
@@ -10566,8 +10567,8 @@ body.sort-active {
   margin-left: 0.5rem; }
 
 .btn--favorite.is-active .fav-icon {
-  fill: var(--color-primary);
-  stroke: var(--color-primary); }
+  fill: var(--color-white);
+  stroke: var(--color-white); }
 
 .mark-option .fav-icon {
   fill: none;

@@ -40,16 +40,16 @@ $requestStatuses = Course::getRefundStatuses();
                         </span>
                         <span class="course-stats__item">
                             <?php echo Label::getLabel('LBL_LECTURES') ?>
-                            <strong><?php echo $course['course_lectures'] ?></strong>
+                            <strong> <?php echo $course['course_lectures'] ?></strong>
                         </span>
                         <?php if ($course['course_type'] > 0) { ?>
                             <span class="course-stats__item">
-                                <strong><?php echo $courseTypes[$course['course_type']] ?></strong>
+                                <strong> <?php echo $courseTypes[$course['course_type']] ?></strong>
                             </span>
                         <?php } ?>
                         <span class="course-stats__item">
                             <?php echo Label::getLabel('LBL_STUDENTS') ?>
-                            <strong><?php echo $course['course_students'] ?></strong>
+                            <strong> <?php echo $course['course_students'] ?></strong>
                         </span>
                         <div class="course-stats__item">
                             <div class="ratings">
@@ -63,8 +63,12 @@ $requestStatuses = Course::getRefundStatuses();
                                     (<?php echo $course['course_reviews']; ?>)
                                 </span>
                             </div>
-                        </div>                        
-                    </div>
+                        </div>      
+                        
+                        
+                        </div>
+
+                   
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <?php
                         $color = 'color-warning';
@@ -110,9 +114,11 @@ $requestStatuses = Course::getRefundStatuses();
                         <?php } ?>
                     <?php } ?>
 
+                   
+
                     <?php if ($siteUserType == User::LEARNER && $course['crspro_status'] != CourseProgress::COMPLETED &&
                                 (!isset($course['corere_status']) || $course['corere_status'] != Course::REFUND_APPROVED)) { ?>
-                    <div class="course-progress margin-top-6">
+                    <div class="course-progress margin-top-2">
                         <div class="course-progress__value"><?php echo Label::getLabel('LBL_COURSE_PROGRESS'); ?></div>
                         <div class="course-progress__content">
                             <div class="progress progress--xsmall progress--round">

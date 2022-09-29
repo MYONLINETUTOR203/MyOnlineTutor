@@ -652,7 +652,7 @@ $video-preview: "video-preview";
     .fav-icon{fill:none;stroke: theme('color.gray.800'); stroke-width: 2px; width:18px; height: 18px; position: relative;top:1px; display: block;margin-#{theme('direction.right','value')}:0.5rem;}
 
     &.is-active{
-        & .fav-icon{fill:theme('color.primary'); stroke:theme('color.primary');}
+        & .fav-icon{fill:theme('color.white'); stroke:theme('color.white');}
     }
 
 }
