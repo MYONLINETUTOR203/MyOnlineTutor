@@ -7,6 +7,7 @@ class QuizLinked extends MyAppModel
     public const DB_TBL_QUIZ_LINKED_QUESTIONS = 'tbl_quiz_linked_questions';
     public const DB_TBL_USER_QUIZZES = 'tbl_users_quizzes';
 
+    private $session = [];
     /**
      * Initialize Quiz
      *
@@ -36,10 +37,14 @@ class QuizLinked extends MyAppModel
             $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
             $srch->applyPrimaryConditions();
             $srch->addCondition('ordles_id', '=', $recordId);
-            $srch->addFld('ordles_id');
+            $srch->addMultipleFields([
+                'ordles_id', 'learner.user_first_name AS learner_first_name', 
+                'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
+                'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
+            ]);
             $srch->setPageSize(1);
             $srch->doNotCalculateRecords();
-            if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
                 $this->error = Label::getLabel('LBL_INVALID_LESSON');
                 return false;
             }
@@ -48,9 +53,13 @@ class QuizLinked extends MyAppModel
             $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
             $srch->applyPrimaryConditions();
             $srch->addCondition('grpcls_id', '=', $recordId);
-            $srch->addSearchListingFields();
+            $srch->addMultipleFields([
+                'ordcls_id', 'learner.user_first_name AS learner_first_name', 
+                'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
+                'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
+            ]);
             $srch->setPageSize(1);
-            if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
                 $this->error = Label::getLabel('LBL_INVALID_CLASS');
                 return false;
             }
@@ -58,6 +67,7 @@ class QuizLinked extends MyAppModel
         if ($recordType == AppConstant::COURSE) {
             return true;
         }
+        $this->session['session'] = $data;
         return true;
     }
 
@@ -105,6 +115,7 @@ class QuizLinked extends MyAppModel
             $this->error = Label::getLabel('LBL_SOME_QUIZZES_ARE_NOT_AVAILABLE._PLEASE_TRY_AGAIN');
             return false;
         }
+        $this->session['quizzes'] = $quizList;
 
         $db = FatApp::getDb();
         $db->startTransaction();
@@ -141,9 +152,36 @@ class QuizLinked extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
+        $this->sendQuizAttachedNotification();
         $db->commitTransaction();
 
         return true;
+    }
+
+    /**
+     * Send Cancel Class Notification
+     * 
+     * @param array $ordClses
+     * @param array $class
+     */
+    private function sendQuizAttachedNotification()
+    {
+        $user = $this->session['session'];
+        $quizzes = $this->session['quizzes'];
+
+
+        // $noti = new Notification($value['user_id'], Notification::TYPE_CLASS_CANCELLED);
+        // $noti->sendNotification(['{link}' => $url, '{class_name}' => $class['grpcls_title']], User::LEARNER);
+        $mail = new FatMailer($value['learner_lang_id'], 'quiz_attached_email');
+        $vars = [
+            '{class_name}' => $class['grpcls_title'],
+            '{teacher_comment}' => $class['comment'],
+            '{learner_name}' => $value['learner_first_name'] . ' ' . $value['learner_last_name'],
+            '{teacher_name}' => $value['teacher_first_name'] . ' ' . $value['teacher_last_name'],
+            '{class_url}' => $url,
+        ];
+        $mail->setVariables($vars);
+        $mail->sendMail([$value['learner_email']]);
     }
 
     /**
@@ -232,6 +270,7 @@ class QuizLinked extends MyAppModel
             $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count']);
             $srch->addGroupBy('quilin_record_id');
         }
+        // pr($srch->getQuery());
         return FatApp::getDb()->fetchAll($srch->getResultSet(), $key);
     }
 

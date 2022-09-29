@@ -16,9 +16,6 @@ class AttachQuizzesController extends DashboardController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        if ($this->siteUserType != User::TEACHER) {
-            FatUtility::exitWithErrorCode(404);
-        }
     }
 
     /**
@@ -26,6 +23,9 @@ class AttachQuizzesController extends DashboardController
      */
     public function index()
     {
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
         $recordId = FatApp::getPostedData('recordId', FatUtility::VAR_INT, 0);
         $recordType = FatApp::getPostedData('recordType', FatUtility::VAR_INT, 0);
 
@@ -60,6 +60,9 @@ class AttachQuizzesController extends DashboardController
      */
     public function search()
     {
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
         $frm = QuizSearch::getSearchForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
@@ -120,6 +123,9 @@ class AttachQuizzesController extends DashboardController
      */
     public function setup()
     {
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
         $frm = QuizSearch::getQuizForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['quilin_quiz_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
@@ -155,6 +161,9 @@ class AttachQuizzesController extends DashboardController
      */
     public function delete()
     {
+        if ($this->siteUserType != User::TEACHER) {
+            FatUtility::exitWithErrorCode(404);
+        }
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if ($id < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
