@@ -219,7 +219,8 @@ class QuizzesController extends DashboardController
         if (!$quiz->setupSettings($post, $this->siteLangId)) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+        Message::addMessage(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+        FatUtility::dieJsonSuccess('');
     }
 
     /**

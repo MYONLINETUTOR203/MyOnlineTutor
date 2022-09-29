@@ -17,10 +17,10 @@ $(document).ready(function () {
         document.categorySearch.reset();
         search(document.categorySearch);
     };
-    categoryForm = function (categoryId, langId) {
-        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId, langId]), '', function (response) {
+    categoryForm = function (categoryId) {
+        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId]), '', function (response) {
             $.facebox(response, 'faceboxWidth');
-            if (document.categorySearch.parent_id.value > 0) {
+            if (categoryId < 1 && document.categorySearch.parent_id.value > 0) {
                 document.frmCategory.cate_parent.value = document.categorySearch.parent_id.value;
             }
         });
@@ -77,6 +77,8 @@ $(document).ready(function () {
 
     updateOrder = function (onDrag = 1) {
         var order = $("#categoriesList").tableDnDSerialize();
-        fcom.updateWithAjax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) { });
+        fcom.updateWithAjax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) {
+            search(document.categorySearch);
+        });
     }
 })();	

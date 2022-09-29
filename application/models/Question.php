@@ -96,7 +96,7 @@ class Question extends MyAppModel
             $srch->addCondition('queopt_id', 'IN', $optionsIds);
         }
         $srch->addOrder('queopt_order', 'ASC');
-        return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+        return FatApp::getDb()->fetchAll($srch->getResultSet());
     }
 
     /**
