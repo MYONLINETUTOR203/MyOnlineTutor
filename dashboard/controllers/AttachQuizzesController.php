@@ -124,7 +124,7 @@ class AttachQuizzesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['quilin_quiz_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        $quiz = new QuizLinked(0, $post['quilin_user_id'], $this->siteUserType);
+        $quiz = new QuizLinked(0, $post['quilin_user_id'], $this->siteUserType, $this->siteLangId);
         if (!$quiz->setup($post['quilin_record_id'], $post['quilin_record_type'], $post['quilin_quiz_id'])) {
             FatUtility::dieJsonError($quiz->getError());
         }

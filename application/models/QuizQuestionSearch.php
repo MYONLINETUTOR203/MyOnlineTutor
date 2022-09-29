@@ -104,6 +104,10 @@ class QuizQuestionSearch extends YocoachSearch
             'quiz.quiz_id' => 'quiz_id',
             'ques.ques_id' => 'ques_id',
             'ques.ques_title' => 'ques_title',
+            'ques.ques_detail' => 'ques_detail',
+            'ques.ques_hint' => 'ques_hint',
+            'ques.ques_marks' => 'ques_marks',
+            'ques.ques_answer' => 'ques_answer',
             'ques.ques_type' => 'ques_type',
             'ques.ques_cate_id' => 'ques_cate_id',
             'ques.ques_subcate_id' => 'ques_subcate_id',
@@ -120,122 +124,13 @@ class QuizQuestionSearch extends YocoachSearch
         $this->addOrder('quique_order', 'ASC');
     }
 
+    /**
+     * Join category table
+     */
     public function joinCategory()
     {
         $this->joinTable(Category::DB_TBL, 'INNER JOIN', 'ques_cate_id = cate.cate_id', 'cate');
         $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
         $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-    }
-
-    /**
-     * Need to create a new Search Model
-     * class QuizQuestionSearch extends YocoachSearch
-     *
-     */
-
-    /**
-     * Get questions for quiz
-     *
-     * @param array $quizIds
-     * @param int   $type
-     * @return array
-     */
-    public function getQuestions(array $quizIds, int $type = 0): array
-    {
-        if (empty($quizIds)) {
-            return [];
-        }
-        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
-        $srch->joinTable(Quiz::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id');
-        $srch->joinTable(Question::DB_TBL, 'INNER JOIN', 'ques_id = quique_ques_id');
-        
-
-        $srch->addCondition('quique_quiz_id', 'IN', $quizIds);
-        if ($this->userType == User::TEACHER) {
-            $srch->addCondition('quiz_user_id', '=', $this->userId);
-        }
-        $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
-        $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-
-        
-
-        if ($type > 0) {
-            if ($type == Quiz::TYPE_AUTO_GRADED) {
-                $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
-            } else {
-                $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
-            }
-        }
-        $srch->addMultipleFields([
-            'quique_quiz_id', 'quique_ques_id', 'quiz_id', 'ques_id', 'ques_title', 'ques_type',
-            'ques_cate_id', 'ques_subcate_id', 'ques_created', 'ques_status'
-        ]);
-        $srch->doNotCalculateRecords();
-        $srch->addOrder('quique_order', 'ASC');
-        $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
-        if (count($questions) < 1) {
-            return [];
-        }
-
-        /* get categories list */
-        $categoryIds = [];
-        array_map(function ($val) use (&$categoryIds) {
-            $categoryIds = array_merge($categoryIds, [$val['ques_cate_id'], $val['ques_subcate_id']]);
-        }, $questions);
-        $categoryIds = array_unique($categoryIds);
-        $categories = Category::getNames($categoryIds, $this->langId);
-
-        foreach ($questions as $key => $question) {
-            $cateId = $question['ques_cate_id'];
-            $subcateId = $question['ques_subcate_id'];
-
-            $question['cate_name'] = isset($categories[$cateId]) ? $categories[$cateId] : '-';
-            $question['subcate_name'] = isset($categories[$subcateId]) ? $categories[$subcateId] : '-';
-
-            $questions[$key] = $question;
-        }
-        return $questions;
-    }
-
-    /**
-     * Get Search Form
-     *
-     * @return Form
-     */
-    public static function getSearchForm()
-    {
-        $frm = new Form('frmSearch');
-        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '');
-        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['autocomplete' => 'off']);
-        $frm->addHiddenField('', 'teacher_id');
-        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type', Quiz::getTypes());
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'quiz_status', Quiz::getStatuses());
-        $frm->addSelectBox(Label::getLabel('LBL_ACTIVE'), 'quiz_active', AppConstant::getActiveArr());
-        $frm->addHiddenField(Label::getLabel('LBL_PAGESIZE'), 'pagesize', AppConstant::PAGESIZE)
-            ->requirements()->setInt();
-        $frm->addHiddenField(Label::getLabel('LBL_PAGENO'), 'pageno', 1)->requirements()->setInt();
-        $frm->addHiddenField('', 'record_id');
-        $frm->addHiddenField('', 'record_type');
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $frm->addButton('', 'btn_clear', Label::getLabel('LBL_CLEAR'));
-        return $frm;
-    }
-
-    public static function getQuizForm()
-    {
-        $frm = new Form('frmQuizLink');
-        $quesFld = $frm->addCheckBoxes('', 'quilin_quiz_id', []);
-        $quesFld->requirements()->setRequired();
-        $quesFld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_SELECT_QUIZ(S)'));
-        $fld = $frm->addHiddenField('', 'quilin_record_id');
-        $fld->requirements()->setRequired();
-        $fld->requirements()->setInt();
-        $fld = $frm->addHiddenField('', 'quilin_record_type');
-        $fld->requirements()->setRequired();
-        $fld->requirements()->setInt();
-        $fld = $frm->addHiddenField('', 'quilin_user_id');
-        $fld->requirements()->setRequired();
-        $fld->requirements()->setInt();
-        return $frm;
     }
 }

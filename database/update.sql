@@ -310,3 +310,4 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 
 ALTER TABLE `tbl_quiz_linked` ADD `quilin_validity` INT NOT NULL AFTER `quilin_passmsg`, ADD `quilin_certificate` TINYINT(1) NOT NULL AFTER `quilin_validity`, ADD `quilin_questions` INT NOT NULL AFTER `quilin_certificate`; 
 ALTER TABLE `tbl_quiz_linked_questions` ADD `qulinqu_marks` INT NOT NULL AFTER `qulinqu_hint`; 
+ALTER TABLE `tbl_quiz_linked` CHANGE `quilin_validity` `quilin_validity` DATETIME NOT NULL; 

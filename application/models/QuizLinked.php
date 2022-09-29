@@ -108,6 +108,7 @@ class QuizLinked extends MyAppModel
 
         $db = FatApp::getDb();
         $db->startTransaction();
+        $quizLinkedIds = [];
         foreach ($quizList as $quiz) {
             $quizLink = new TableRecord(static::DB_TBL);
             $quizLink->assignValues([
@@ -123,7 +124,7 @@ class QuizLinked extends MyAppModel
                 'quilin_passmark' => $quiz['quiz_passmark'],
                 'quilin_failmsg' => $quiz['quiz_failmsg'],
                 'quilin_passmsg' => $quiz['quiz_passmsg'],
-                'quilin_validity' => $quiz['quiz_validity'],
+                'quilin_validity' => date("Y-m-d H:i:s", strtotime('+' . $quiz['quiz_validity'] . ' hours')),
                 'quilin_certificate' => $quiz['quiz_certificate'],
                 'quilin_questions' => $quiz['quiz_questions'], 
                 'quilin_created' => date('Y-m-d H:i:s')
@@ -133,36 +134,71 @@ class QuizLinked extends MyAppModel
                 $this->error = $quizLink->getError();
                 return false;
             }
-            /* attach questions */
-            $quizIds = array_keys($quizList);
-            if (!$this->setupQuestions($quizIds)) {
-                $db->rollbackTransaction();
-                return false;
-            }
+            $quizLinkedIds[$quiz['quiz_id']] = $quizLink->getId();
+        }
+        /* attach questions */
+        if (!$this->setupQuestions($quizLinkedIds)) {
+            $db->rollbackTransaction();
+            return false;
         }
         $db->commitTransaction();
 
         return true;
     }
 
-    private function setupQuestions()
+    /**
+     * Setup Questions data
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupQuestions(array $data)
     {
-        
-        $linkQues = new TableRecord(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
-        $linkQues->assignValues([
-            'qulinqu_type' => '',
-            'qulinqu_quilin_id' => '',
-            'qulinqu_ques_id' => '',
-            'qulinqu_title' => '',
-            'qulinqu_detail' => '',
-            'qulinqu_hint' => '',
-            'qulinqu_marks' => '',
-            'qulinqu_answer' => '',
-            'qulinqu_options' => '',
-        ]);
-        if (!$linkQues->addNew()) {
-            $this->error = $linkQues->getError();
+        $srch = new QuizQuestionSearch($this->langId, $this->userId, $this->userType);
+        $srch->addCondition('quique_quiz_id', 'IN', array_keys($data));
+        $srch->applyPrimaryConditions();
+        $srch->addSearchListingFields();
+        $srch->setOrder();
+        $srch->joinCategory();
+        $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if (count($questions) < 1) {
+            $this->error = Label::getLabel('LBL_QUESTIONS_NOT_FOUND');
             return false;
+        }
+        $questionIds = array_column($questions, 'ques_id');
+
+        $srch = new SearchBase(Question::DB_TBL_OPTIONS, 'queopt');
+        $srch->addMultipleFields(['queopt_id', 'queopt_title', 'queopt_ques_id']);
+        $srch->addCondition('queopt_ques_id', 'IN', $questionIds);
+        $srch->doNotCalculateRecords();
+        $srch->addOrder('queopt_order', 'ASC');
+        $options = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if (count($options) < 1) {
+            $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
+            return false;
+        }
+        $quesOptions = [];
+        foreach ($options as $option) {
+            $quesOptions[$option['queopt_ques_id']][] = $option;
+        }
+
+        foreach ($questions as $question) {
+            $linkQues = new TableRecord(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
+            $linkQues->assignValues([
+                'qulinqu_type' => $question['ques_type'],
+                'qulinqu_quilin_id' => $data[$question['quiz_id']],
+                'qulinqu_ques_id' => $question['ques_id'],
+                'qulinqu_title' => $question['ques_title'],
+                'qulinqu_detail' => $question['ques_detail'],
+                'qulinqu_hint' => $question['ques_hint'],
+                'qulinqu_marks' => $question['ques_marks'],
+                'qulinqu_answer' => $question['ques_answer'],
+                'qulinqu_options' => json_encode($quesOptions[$question['ques_id']]),
+            ]);
+            if (!$linkQues->addNew()) {
+                $this->error = $linkQues->getError();
+                return false;
+            }
         }
         return true;
     }

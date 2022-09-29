@@ -269,7 +269,6 @@ class Quiz extends MyAppModel
             return false;
         }
         $data['quiz_duration'] = $data['quiz_duration'] * 60;
-        $data['quiz_validity'] = $data['quiz_validity'] * 3600;
         $this->assignValues($data);
 
         /* check completion status */

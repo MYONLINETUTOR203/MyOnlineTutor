@@ -190,7 +190,6 @@ class QuizzesController extends DashboardController
             'quiz_validity', 'quiz_certificate'
         ]);
         $data['quiz_duration'] = ($data['quiz_duration'] > 0) ? ($data['quiz_duration']) / 60 : 0;
-        $data['quiz_validity'] = ($data['quiz_validity'] > 0) ? ($data['quiz_validity']) / 3600 : 0;
         $data['quiz_certificate'] = ($offerCertificate == false) ? AppConstant::NO : $data['quiz_certificate'];
         $frm->fill($data);
 
