@@ -55,9 +55,6 @@ class CategoriesController extends AdminBaseController
             'catg_l'
         );
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        if (!empty($post['keyword'])) {
-            $srch->addCondition('cate_name', 'LIKE', '%' . $post['keyword'] . '%');
-        }
         if (isset($post['parent_id'])) {
             $srch->addCondition('cate_parent', '=', $post['parent_id']);
         }
@@ -70,10 +67,11 @@ class CategoriesController extends AdminBaseController
                 'catg.cate_type',
                 'catg.cate_parent',
                 'catg.cate_subcategories',
+                'catg.cate_records',
                 'catg.cate_status',
                 'catg.cate_created',
-                'catg_l.cate_name',
-                'catg_l.cate_details',
+                'IFNULL(catg_l.cate_name, catg.cate_identifier) AS cate_name',
+                'catg.cate_identifier',
                 'catg_l.catelang_lang_id',
             ]
         );
@@ -81,28 +79,11 @@ class CategoriesController extends AdminBaseController
         $srch->addOrder('cate_status', 'DESC');
         $srch->addOrder('cate_order');
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
-        $categoryIds = array_keys($data);
-        $courses = [];
-        if (count($categoryIds) > 0) {
-            $srchCrs = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
-            $srchCrs->applyPrimaryConditions();
-            if (isset($post['parent_id']) && $post['parent_id'] > 0) {
-                $field = 'course_subcate_id';
-            } else {
-                $field = 'course_cate_id';
-            }
-            $srchCrs->addCondition('course.' . $field, 'IN', $categoryIds);
-            $srchCrs->addCondition('course.course_status', '=', Course::PUBLISHED);
-            $srchCrs->addMultipleFields(['COUNT(course.course_id) as course_count', $field]);
-            $srchCrs->addGroupBy('course.' . $field);
-            $courses = FatApp::getDb()->fetchAll($srchCrs->getResultSet(), $field);
-        }
         $this->sets([
             'arrListing' => $data,
-            'courses' => $courses,
             'postedData' => $post,
             'canEdit' => $this->objPrivilege->canEditCategories(true),
-            /* 'types' => Category::getCategoriesTypes() */
+            'canViewCourses' => $this->objPrivilege->canViewCourses(true)
         ]);
         $this->_template->render(false, false);
     }
@@ -113,32 +94,26 @@ class CategoriesController extends AdminBaseController
      * @param int $categoryId
      * @param int $langId
      */
-    public function form(int $categoryId, int $langId)
+    public function form(int $categoryId)
     {
         $this->objPrivilege->canEditCategories();
         $categoryId = FatUtility::int($categoryId);
-        $langId = FatUtility::int($langId);
-        $langId = ($langId < 1) ? $this->siteLangId : $langId;
-
         $data = [];
         if ($categoryId > 0) {
             $category = new Category($categoryId);
-            $data = $category->getDataById($langId);
-
+            $data = $category->getDataById();
             if (count($data) < 1) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
-            $data['catelang_lang_id'] = $langId;
         }
-        $frm = $this->getForm($langId, $categoryId);
+        $frm = $this->getForm($categoryId);
         $frm->fill($data);
-        
         $this->sets([
             'frm' => $frm,
             'data' => $data,
             'categoryId' => $categoryId,
+            'languages' => Language::getAllNames(),
         ]);
-
         $this->_template->render(false, false);
     }
 
@@ -149,27 +124,81 @@ class CategoriesController extends AdminBaseController
     {
         $this->objPrivilege->canEditCategories();
         $frm = $this->getForm($this->siteLangId);
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['cate_parent'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-
         $category = new Category($post['cate_id']);
-        $parent = FatUtility::int($post['cate_parent']);
-        if (!$category->checkUnique($post['cate_name'], $this->siteLangId, $parent)) {
-            FatUtility::dieJsonError($category->getError());
-        }
         if ($post['cate_id'] > 0) {
-            if (!$data = $category->getDataById($this->siteLangId)) {
+            if (!$data = $category->getDataById()) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORY_NOT_FOUND'));
             }
             if ($post['cate_parent'] > 0 && $data['cate_subcategories'] > 0) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_CANNOT_ASSIGN_PARENT_AS_THIS_CATEGORY_HAS_ITS_OWN_SUBCATEGORIES'));
             }
         }
-        if (!$category->addUpdateData($post)) {
+        if (!$category->setup($post)) {
             FatUtility::dieJsonError($category->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+        FatUtility::dieJsonSuccess([
+            'cateId' => $category->getMainTableRecordId(),
+            'msg' => Label::getLabel('MSG_SETUP_SUCCESSFUL')
+        ]);
+    }
+
+    /**
+     * Language Form
+     * 
+     * @param int $categoryId
+     * @param int $langId
+     */
+    public function langForm(int $categoryId = 0, int $langId = 0)
+    {
+        $this->objPrivilege->canEditCategories();
+        if (!Category::getAttributesById($categoryId, ['cate_id'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        /* get lang data */
+        $srch = new SearchBase(Category::DB_LANG_TBL);
+        $srch->addCondition('catelang_lang_id', '=', $langId);
+        $srch->addCondition('catelang_cate_id', '=', $categoryId);
+        $srch->addMultipleFields(['cate_name', 'cate_details', 'catelang_id']);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        /* fill form data */
+        $frm = $this->getLangForm($langId);
+        $frm->fill($data);
+        $frm->fill(['catelang_lang_id' => $langId, 'catelang_cate_id' => $categoryId]);
+        $this->sets([
+            'categoryId' => $categoryId,
+            'frm' => $frm,
+            'formLayout' => Language::getLayoutDirection($langId),
+            'languages' => Language::getAllNames(),
+        ]);
+        $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup Lang Data
+     */
+    public function langSetup()
+    {
+        $this->objPrivilege->canEditCategories();
+        $frm = $this->getLangForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        if (!Category::getAttributesById($post['catelang_cate_id'], 'cate_id')) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $category = new Category($post['catelang_cate_id']);
+        if (!$category->addUpdateLangData($post)) {
+            FatUtility::dieJsonError($category->getError());
+        }
+        FatUtility::dieJsonSuccess([
+            'cateId' => $post['catelang_cate_id'],
+            'msg' => Label::getLabel('LBL_SETUP_SUCCESSFUL')
+        ]);
     }
 
     /**
@@ -180,25 +209,10 @@ class CategoriesController extends AdminBaseController
     public function delete(int $cateId)
     {
         $this->objPrivilege->canEditCategories();
-        $cateId = FatUtility::int($cateId);
-
         $category = new Category($cateId);
-        if (!$data = $category->getDataById($this->siteLangId)) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-
-        if ($data['cate_type'] == Category::TYPE_COURSE && $data['cate_courses'] > 0) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.'));
-        }
-
-        if ($data['cate_subcategories'] > 0) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_SUBCATEGORIES_CANNOT_BE_DELETED.'));
-        }
-
         if (!$category->delete()) {
             FatUtility::dieJsonError($category->getError());
         }
-        
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORD_DELETED_SUCCESSFULLY'));
     }
 
@@ -207,48 +221,43 @@ class CategoriesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(int $langId, $catgId = 0): Form
+    private function getForm(int $catgId = 0): Form
     {
-
         $frm = new Form('frmCategory');
-
         $fld = $frm->addHiddenField('', 'cate_id');
         $fld->requirements()->setIntPositive();
-        $fld = $frm->addHiddenField('', 'catelang_id');
-        $fld->requirements()->setIntPositive();
-
-        $fld = $frm->addSelectBox(
-            Label::getLabel('LBL_LANGUAGE'),
-            'catelang_lang_id',
-            Language::getAllNames(),
-            '',
-            [],
-            ''
-        );
-        $fld->requirements()->setRequired();
-
+        $fld = $frm->addTextBox(Label::getLabel('LBL_IDENTIFIER'), 'cate_identifier')->requirements()->setRequired();
         $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_COURSE);
         $fld->requirements()->setIntPositive();
-        /* This will be used in future. */
-        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes(), '', [], '')
-        ->requirements()
-        ->setRequired(); */
-
-        $fld = $frm->addTextBox(Label::getLabel('LBL_NAME'), 'cate_name')->requirements()->setRequired();
-        $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION'), 'cate_details')->requirements()->setRequired();
-
-        $parentCategories = Category::getCategoriesByParentId($langId);
+        $parentCategories = Category::getCategoriesByParentId(
+            $this->siteLangId, 0, Category::TYPE_COURSE, false, false
+        );
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);
         }
         $fld = $frm->addSelectBox(Label::getLabel('LBL_PARENT'), 'cate_parent', $parentCategories, '', [], Label::getLabel('LBL_ROOT_CATEGORY'));
         $fld->requirements()->setInt();
-
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'cate_status', AppConstant::getActiveArr(), '', [], '')
         ->requirements()
         ->setRequired();
-
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
+        return $frm;
+    }
+
+    /**
+     * Get Language form
+     *
+     * @param int $langId
+     */
+    private function getLangForm(int $langId = 0)
+    {
+        $frm = new Form('frmLang');
+        $frm->addHiddenField('', 'catelang_id');
+        $frm->addHiddenField('', 'catelang_cate_id');
+        $frm->addHiddenField('', 'catelang_lang_id');
+        $frm->addTextBox(Label::getLabel('LBL_NAME', $langId), 'cate_name')->requirements()->setRequired();
+        $frm->addTextarea(Label::getLabel('LBL_DESCRIPTION', $langId), 'cate_details')->requirements()->setRequired();
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES', $langId));
         return $frm;
     }
 
@@ -261,7 +270,7 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
-        /* $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes()); */
+        $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_COURSE);
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         return $frm;
@@ -281,20 +290,12 @@ class CategoriesController extends AdminBaseController
         $status = FatUtility::int($status);
         $status = ($status == AppConstant::YES) ? AppConstant::NO : AppConstant::YES;
 
-        $category = new Category($cateId);
-        if (!$data = $category->getDataById($this->siteLangId)) {
+        if ($cateId < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-
-        if ($data['cate_type'] == Category::TYPE_COURSE && $data['cate_courses'] > 0) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.'));
-        }
-
-        if ($data['cate_subcategories'] > 0) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_SUBCATEGORIES_CANNOT_BE_DELETED.'));
-        }
+        $category = new Category($cateId);
         $category->setFldValue('cate_status', $status);
-        if (!$category->save()) {
+        if (!$category->updateStatus()) {
             FatUtility::dieJsonError($category->getError());
         }
         
@@ -329,20 +330,14 @@ class CategoriesController extends AdminBaseController
         $nodes = [];
         $parameters = FatApp::getParameters();
         if (isset($parameters[0]) && $parameters[0] > 0) {
-            $srch = new SearchBase(Category::DB_LANG_TBL);
-            $srch->addCondition('catelang_cate_id', '=', $parameters[0]);
-            $srch->addCondition('catelang_lang_id', '=', $this->siteLangId);
-            $srch->doNotCalculateRecords();
-            $srch->setPageSize(1);
-            $srch->addFld('cate_name');
-            $row = FatApp::getDb()->fetch($srch->getResultSet());
+            $row = Category::getNames([$parameters[0]], $this->siteLangId);
             $nodes = [
                 [
                     'title' => Label::getLabel('LBL_ROOT_CATEGORIES'),
                     'href' => MyUtility::generateUrl('categories', 'index')
                 ],
                 [
-                    'title' => $row['cate_name'],
+                    'title' => $row[$parameters[0]],
                 ]
             ];
         } else {

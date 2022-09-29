@@ -1308,3 +1308,7 @@ ALTER TABLE `tbl_course_approval_requests` CHANGE `coapre_price` `coapre_price` 
 
 INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES
 ('LBL_BROWSER_VIDEO_NOT_SUPPORTED_INFO', 1, 'Your browser does not support video player. Please click to download the video.');
+
+ALTER TABLE `tbl_categories` ADD `cate_identifier` VARCHAR(100) NOT NULL AFTER `cate_type`; 
+ALTER TABLE `tbl_categories` CHANGE `cate_courses` `cate_records` INT(11) NOT NULL COMMENT 'Courses count or Questions count '; 
+

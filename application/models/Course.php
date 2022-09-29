@@ -993,7 +993,7 @@ class Course extends MyAppModel
         if (count($rows) > 0) {
             foreach ($rows as $id => $count) {
                 $category = new Category($id);
-                $category->assignValues(['cate_courses' => $count]);
+                $category->assignValues(['cate_records' => $count]);
                 if (!$category->save()) {
                     $this->error = $category->getError();
                     return false;

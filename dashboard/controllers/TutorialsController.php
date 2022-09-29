@@ -238,7 +238,6 @@ class TutorialsController extends DashboardController
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        ;
         if (!$teacher = FatApp::getDb()->fetch($srch->getResultSet())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }

@@ -17,10 +17,10 @@ $(document).ready(function () {
         document.categorySearch.reset();
         search(document.categorySearch);
     };
-    categoryForm = function (categoryId, langId) {
-        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId, langId]), '', function (response) {
+    categoryForm = function (categoryId) {
+        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId]), '', function (response) {
             $.facebox(response, 'faceboxWidth');
-            if (document.categorySearch.parent_id.value > 0) {
+            if (categoryId < 1 && document.categorySearch.parent_id.value > 0) {
                 document.frmCategory.cate_parent.value = document.categorySearch.parent_id.value;
             }
         });
@@ -30,9 +30,34 @@ $(document).ready(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('Categories', 'setup'), fcom.frmData(frm), function (res) {
-            $(document).trigger('close.facebox');
             search(document.categorySearch);
-            updateOrder(0);
+            let element = $('.tabs_nav a.active').parent().next('li');
+            if (element.length > 0) {
+                let langId = element.find('a').attr('data-id');
+                langForm(res.cateId, langId);
+                return;
+            }
+            $(document).trigger('close.facebox');
+        });
+    };
+    langForm = function (cateId, langId) {
+        fcom.ajax(fcom.makeUrl('Categories', 'langForm', [cateId, langId]), '', function (response) {
+            $.facebox(response);
+        });
+    };
+    langSetup = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Categories', 'langSetup'), fcom.frmData(frm), function (res) {
+            search(document.categorySearch);
+            let element = $('.tabs_nav a.active').parent().next('li');
+            if (element.length > 0) {
+                let langId = element.find('a').attr('data-id');
+                langForm(res.cateId, langId);
+                return;
+            }
+            $(document).trigger('close.facebox');
         });
     };
     remove = function (cateId) {
@@ -52,6 +77,8 @@ $(document).ready(function () {
 
     updateOrder = function (onDrag = 1) {
         var order = $("#categoriesList").tableDnDSerialize();
-        fcom.updateWithAjax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) { });
+        fcom.updateWithAjax(fcom.makeUrl('Categories', 'updateOrder', [onDrag]), order, function (res) {
+            search(document.categorySearch);
+        });
     }
 })();	

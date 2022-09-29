@@ -4,10 +4,10 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arrFlds = [
     'dragdrop' => '',
     'listserial' => Label::getLabel('LBL_Sr._No'),
+    'cate_identifier' => Label::getLabel('LBL_IDENTIFIER'),
     'cate_name' => Label::getLabel('LBL_NAME'),
-    /* 'cate_type' => Label::getLabel('LBL_TYPE'), */
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
-    'courses' => Label::getLabel('LBL_COURSES'),
+    'cate_records' => Label::getLabel('LBL_COURSES'),
     'cate_created' => Label::getLabel('LBL_ADDED_ON'),
     'status' => Label::getLabel('LBL_STATUS'),
 ];
@@ -30,7 +30,6 @@ foreach ($arrListing as $sn => $row) {
     $tr = $tbl->appendElement('tr', ['id' => $row['cate_id']]);
     foreach ($arrFlds as $key => $val) {
         $td = $tr->appendElement('td');
-        $canDelete = isset($courses[$row['cate_id']]) ? false: true; 
         switch ($key) {
             case 'dragdrop':
                 if ($row['cate_status'] == AppConstant::YES) {
@@ -41,26 +40,29 @@ foreach ($arrListing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', [], $srNo);
                 break;
-            /* case 'cate_type':
-                $td->appendElement('plaintext', [], $types[$row['cate_type']]);
-                break; */
-            case 'courses':
-                if (isset($courses[$row['cate_id']])) {
-                    $qryString = '?course_cateid=' . $row['cate_id'];
-                    if ($postedData['parent_id'] > 0) {
-                        $qryString = '?course_cateid=' . $postedData['parent_id'] . '&course_subcateid=' . $row['cate_id'];
-                    }
-                    $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $courses[$row['cate_id']]['course_count'], true);
-                } else {
-                    $td->appendElement('plaintext', [], 0);
-                }
-                break;
             case 'cate_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['cate_created']));
                 break;
             case 'cate_sub_categories':
                 if ($row['cate_subcategories'] > 0) {
                     $td->appendElement('a', ['href' => MyUtility::makeUrl('Categories', 'index', [$row['cate_id']]), 'class' => 'button small green', 'title' => Label::getLabel('LBL_SUB_CATEGORIES')], $row['cate_subcategories'], true);
+                } else {
+                    $td->appendElement('plaintext', [], 0);
+                }
+                break;
+            case 'cate_records':
+                if ($row['cate_records'] > 0) {
+                    if ($row['cate_type'] == Category::TYPE_COURSE) {
+                        if ($canViewCourses) {
+                            $qryString = '?ques_cate_id=' . $row['cate_id'];
+                            if ($postedData['parent_id'] > 0) {
+                                $qryString = '?ques_cate_id=' . $postedData['parent_id'] . '&ques_subcate_id=' . $row['cate_id'];
+                            }
+                            $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $row['cate_records'], true);
+                        } else {
+                            $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_COURSES')], $row['cate_records']);
+                        }
+                    }
                 } else {
                     $td->appendElement('plaintext', [], 0);
                 }
@@ -88,8 +90,9 @@ foreach ($arrListing as $sn => $row) {
                     $langId = !empty($row['catelang_lang_id']) ? $row['catelang_lang_id'] : 0;
                     $actionLi = $innerUl->appendElement("li");
                     $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_EDIT'), "onclick" => "categoryForm(" . $row['cate_id'] . ", '".$langId."')"], Label::getLabel('LBL_EDIT'), true);
+
                     $actionLi = $innerUl->appendElement("li");
-                    $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_DELETE'), "onclick" => "remove('" . $row['cate_id'] . "')"], Label::getLabel('LBL_DELETE'), true); 
+                    $actionLi->appendElement('a', ['href' => 'javascript:void(0)', 'class' => 'button small green', 'title' => Label::getLabel('LBL_DELETE'), "onclick" => "remove('" . $row['cate_id'] . "')"], Label::getLabel('LBL_DELETE'), true);
                 }
                 break;
             default:
