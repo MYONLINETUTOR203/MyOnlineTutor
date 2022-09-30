@@ -168,7 +168,7 @@ class AttachQuizzesController extends DashboardController
         if ($id < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
-        $quizLink = new QuizLinked($id, $this->siteUserId);
+        $quizLink = new QuizLinked($id, $this->siteUserId, User::TEACHER, $this->siteLangId);
         if (!$quizLink->delete()) {
             FatUtility::dieJsonError($quizLink->getError());
         }

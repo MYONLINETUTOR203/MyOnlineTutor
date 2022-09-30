@@ -29,7 +29,7 @@ $types = Quiz::getTypes();
                                 </td>
                                 <td><?php echo $types[$quiz['quilin_type']] ?></td>
                                 <td>
-                                    <a href="javascript:void(0);" onclick="viewQuiz('<?php echo $quiz['quilin_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                    <a target="_blank" href="<?php echo MyUtility::makeFullUrl('LinkedQuiz', 'index', [$quiz['quilin_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--cancel icon--small">
                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
                                         </svg>

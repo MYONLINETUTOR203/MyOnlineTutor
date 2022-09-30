@@ -7,7 +7,6 @@ class QuizLinked extends MyAppModel
     public const DB_TBL_QUIZ_LINKED_QUESTIONS = 'tbl_quiz_linked_questions';
     public const DB_TBL_USER_QUIZZES = 'tbl_users_quizzes';
 
-    private $session = [];
     /**
      * Initialize Quiz
      *
@@ -67,7 +66,6 @@ class QuizLinked extends MyAppModel
         if ($recordType == AppConstant::COURSE) {
             return true;
         }
-        $this->session['session'] = $data;
         return true;
     }
 
@@ -110,19 +108,18 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quiz.quiz_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('quiz.quiz_status', '=', Quiz::STATUS_PUBLISHED);
         $srch->addCondition('quiz.quiz_id', 'IN', $quizzes);
+        $srch->addOrder('quiz_id', 'DESC');
         $quizList = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quiz_id');
         if (count($quizList) != count($quizzes)) {
             $this->error = Label::getLabel('LBL_SOME_QUIZZES_ARE_NOT_AVAILABLE._PLEASE_TRY_AGAIN');
             return false;
         }
-        $this->session['quizzes'] = $quizList;
 
         $db = FatApp::getDb();
         $db->startTransaction();
-        $quizLinkedIds = [];
         foreach ($quizList as $quiz) {
             $quizLink = new TableRecord(static::DB_TBL);
-            $quizLink->assignValues([
+            $data = [
                 'quilin_quiz_id' => $quiz['quiz_id'],
                 'quilin_type' => $quiz['quiz_type'],
                 'quilin_title' => $quiz['quiz_title'],
@@ -137,22 +134,24 @@ class QuizLinked extends MyAppModel
                 'quilin_passmsg' => $quiz['quiz_passmsg'],
                 'quilin_validity' => date("Y-m-d H:i:s", strtotime('+' . $quiz['quiz_validity'] . ' hours')),
                 'quilin_certificate' => $quiz['quiz_certificate'],
-                'quilin_questions' => $quiz['quiz_questions'], 
+                'quilin_questions' => $quiz['quiz_questions'],
                 'quilin_created' => date('Y-m-d H:i:s')
-            ]);
+            ]; 
+            $quizLink->assignValues($data);
             if (!$quizLink->addNew()) {
                 $db->rollbackTransaction();
                 $this->error = $quizLink->getError();
                 return false;
             }
-            $quizLinkedIds[$quiz['quiz_id']] = $quizLink->getId();
+            $quizzesData[$quiz['quiz_id']] = $data + ['quilin_id' => $quizLink->getId()];
         }
         /* attach questions */
-        if (!$this->setupQuestions($quizLinkedIds)) {
+        if (!$this->setupQuestions($quizzesData)) {
             $db->rollbackTransaction();
             return false;
         }
-        $this->sendQuizAttachedNotification();
+        $this->sendQuizAttachedNotification($quizzesData);
+
         $db->commitTransaction();
 
         return true;
@@ -164,24 +163,74 @@ class QuizLinked extends MyAppModel
      * @param array $ordClses
      * @param array $class
      */
-    private function sendQuizAttachedNotification()
+    private function sendQuizAttachedNotification($data)
     {
-        $user = $this->session['session'];
-        $quizzes = $this->session['quizzes'];
+        $record = current($data);
+        $recordId = $record['quilin_record_id'];
+        $recordType = $record['quilin_record_type'];
+        $sessionType = AppConstant::getSessionTypes($recordType);
 
+        if ($recordType == AppConstant::LESSON) {
+            $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
+            $srch->applyPrimaryConditions();
+            $srch->addCondition('ordles_id', '=', $recordId);
+            $srch->addMultipleFields([
+                'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
+                'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
+                'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            ]);
+            $sessionData = FatApp::getDb()->fetchAll($srch->getResultSet());
+        } elseif ($recordType == AppConstant::GCLASS) {
+            $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
+            $srch->applyPrimaryConditions();
+            $srch->addCondition('grpcls_id', '=', $recordId);
+            $srch->addMultipleFields([
+                'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
+                'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
+                'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            ]);
+            $srch->removGroupBy('grpcls.grpcls_id');
+            $sessionData = FatApp::getDb()->fetchAll($srch->getResultSet());
+        } elseif ($recordType == AppConstant::COURSE) {
+            $sessionData = [];
+        }
+        $quiztypes = Quiz::getTypes();
+        $html = '<table style="border:1px solid #ddd; border-collapse:collapse; width:100%" cellspacing="0" cellpadding="0" border="0"><thead><tr><td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;">{title}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{type}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{validity}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{action}</td></tr></thead><tbody>';
+        foreach ($data as $quiz) {
+            $html .= '<tr>' .
+                '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . MyDate::formatDate($quiz['quilin_validity']) . '</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="' . MyUtility::makeFullUrl('LinkedQuiz', 'index', [$quiz['quilin_id']], CONF_WEBROOT_DASHBOARD) . '">{view}</a></td>' .
+            '</tr>';
+        }
+        $html .= '</tbody></table>';
 
-        // $noti = new Notification($value['user_id'], Notification::TYPE_CLASS_CANCELLED);
-        // $noti->sendNotification(['{link}' => $url, '{class_name}' => $class['grpcls_title']], User::LEARNER);
-        $mail = new FatMailer($value['learner_lang_id'], 'quiz_attached_email');
-        $vars = [
-            '{class_name}' => $class['grpcls_title'],
-            '{teacher_comment}' => $class['comment'],
-            '{learner_name}' => $value['learner_first_name'] . ' ' . $value['learner_last_name'],
-            '{teacher_name}' => $value['teacher_first_name'] . ' ' . $value['teacher_last_name'],
-            '{class_url}' => $url,
-        ];
-        $mail->setVariables($vars);
-        $mail->sendMail([$value['learner_email']]);
+        foreach ($sessionData as $session) {
+            $list = str_replace(
+                ['{title}', '{type}', '{validity}', '{action}', '{view}'],
+                [
+                    Label::getLabel('LBL_TITLE', $session['user_lang_id']),
+                    Label::getLabel('LBL_TYPE', $session['user_lang_id']),
+                    Label::getLabel('LBL_VALIDITY', $session['user_lang_id']),
+                    Label::getLabel('LBL_ACTION', $session['user_lang_id']),
+                    Label::getLabel('LBL_VIEW', $session['user_lang_id']),
+                ],
+                $html
+            );
+            $mail = new FatMailer($session['user_lang_id'], 'quiz_attached_email');
+            $vars = [
+                '{learner_full_name}' => ucwords($session['learner_first_name'] . ' ' . $session['learner_last_name']),
+                '{teacher_full_name}' => ucwords($session['teacher_first_name'] . ' ' . $session['teacher_last_name']),
+                '{session_type}' => strtolower($sessionType),
+                '{quizzes_list}' => $list,
+            ];
+            $mail->setVariables($vars);
+            $mail->sendMail([$session['user_email']]);
+
+            $notifi = new Notification($session['user_id'], Notification::TYPE_QUIZ_ATTACHED);
+            $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
+        }
     }
 
     /**
@@ -224,7 +273,7 @@ class QuizLinked extends MyAppModel
             $linkQues = new TableRecord(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
             $linkQues->assignValues([
                 'qulinqu_type' => $question['ques_type'],
-                'qulinqu_quilin_id' => $data[$question['quiz_id']],
+                'qulinqu_quilin_id' => $data[$question['quiz_id']]['quilin_id'],
                 'qulinqu_ques_id' => $question['ques_id'],
                 'qulinqu_title' => $question['ques_title'],
                 'qulinqu_detail' => $question['ques_detail'],
@@ -270,7 +319,6 @@ class QuizLinked extends MyAppModel
             $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count']);
             $srch->addGroupBy('quilin_record_id');
         }
-        // pr($srch->getQuery());
         return FatApp::getDb()->fetchAll($srch->getResultSet(), $key);
     }
 
@@ -282,7 +330,9 @@ class QuizLinked extends MyAppModel
     public function delete()
     {
         $id = $this->getMainTableRecordId();
-        $data = QuizLinked::getAttributesById($id, ['quilin_deleted', 'quilin_user_id']);
+        $data = QuizLinked::getAttributesById($id, [
+            'quilin_deleted', 'quilin_user_id', 'quilin_record_id', 'quilin_record_type', 'quilin_title'
+        ]);
         if (!$data || !empty($data['quilin_deleted'])) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
             return false;
@@ -307,6 +357,50 @@ class QuizLinked extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+        $this->sendQuizRemovedNotification($data);
         return true;
+    }
+
+    private function sendQuizRemovedNotification($data)
+    {
+        $sessionTypes = AppConstant::getSessionTypes();
+        if ($data['quilin_record_type'] == AppConstant::LESSON) {
+            $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
+            $srch->applyPrimaryConditions();
+            $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
+            $srch->addMultipleFields([
+                'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
+                'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
+                'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            ]);
+            $sessionData = FatApp::getDb()->fetchAll($srch->getResultSet());
+        } elseif ($data['quilin_record_type'] == AppConstant::GCLASS) {
+            $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
+            $srch->applyPrimaryConditions();
+            $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
+            $srch->addMultipleFields([
+                'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
+                'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
+                'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            ]);
+            $srch->removGroupBy('grpcls.grpcls_id');
+            $sessionData = FatApp::getDb()->fetchAll($srch->getResultSet());
+        } elseif ($data['quilin_record_type'] == AppConstant::COURSE) {
+            $sessionData = [];
+        }
+        foreach ($sessionData as $session) {
+            $mail = new FatMailer($session['user_lang_id'], 'quiz_removed_email');
+            $vars = [
+                '{quiz_title}' => ucfirst($data['quilin_title']),
+                '{learner_full_name}' => ucwords($session['learner_first_name'] . ' ' . $session['learner_last_name']),
+                '{teacher_full_name}' => ucwords($session['teacher_first_name'] . ' ' . $session['teacher_last_name']),
+                '{session_type}' => strtolower($sessionTypes[$data['quilin_record_type']]),
+            ];
+            $mail->setVariables($vars);
+            $mail->sendMail([$session['user_email']]);
+
+            $notifi = new Notification($session['user_id'], Notification::TYPE_QUIZ_REMOVED);
+            $notifi->sendNotification(['{session}' => strtolower($sessionTypes[$data['quilin_record_type']])]);
+        }
     }
 }

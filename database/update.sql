@@ -311,3 +311,8 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 ALTER TABLE `tbl_quiz_linked` ADD `quilin_validity` INT NOT NULL AFTER `quilin_passmsg`, ADD `quilin_certificate` TINYINT(1) NOT NULL AFTER `quilin_validity`, ADD `quilin_questions` INT NOT NULL AFTER `quilin_certificate`; 
 ALTER TABLE `tbl_quiz_linked_questions` ADD `qulinqu_marks` INT NOT NULL AFTER `qulinqu_hint`; 
 ALTER TABLE `tbl_quiz_linked` CHANGE `quilin_validity` `quilin_validity` DATETIME NOT NULL; 
+
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'NOTIFI_TITLE_TYPE_QUIZ_ATTACHED', 'Quiz(s) Attached');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'NOTIFI_DESC_TYPE_QUIZ_ATTACHED', 'Quiz(s) attached with your booked {session}');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'NOTIFI_TITLE_TYPE_QUIZ_REMOVED', 'Quiz(s) Removed');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'NOTIFI_DESC_TYPE_QUIZ_REMOVED', 'Quiz(s) removed from your booked {session}');
