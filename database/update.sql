@@ -1,0 +1,1 @@
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_MOBILE_SELECT_SLOT_INFO', 'Please press & hold for a few seconds to select a slot.'); 

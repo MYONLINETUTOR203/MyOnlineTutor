@@ -64,6 +64,9 @@ $steps = Cart::getSteps();
                 <div id='booking-calendar' class="learner_subscription_calendar"></div>
             </div>
         </div>
+        <div>
+            <?php echo Label::getLabel('LBL_MOBILE_SELECT_SLOT_INFO') ?>
+        </div>
     </div>
     <div class="box-foot">
         <div class="box-foot__left">
