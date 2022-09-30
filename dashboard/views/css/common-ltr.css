@@ -678,7 +678,7 @@ ul {
         overflow-x: hidden; } }
     @media (max-width: 767px) {
       .box--checkout .box__body {
-        height: calc(100% - 150px);
+        height: calc(100% - 180px);
         overflow-y: auto;
         overflow-x: hidden; } }
   .box--checkout .box-foot {

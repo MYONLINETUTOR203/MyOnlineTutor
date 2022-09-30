@@ -64,9 +64,10 @@ $steps = Cart::getSteps();
                 <div id='booking-calendar' class="learner_subscription_calendar"></div>
             </div>
         </div>
-        <div>
-            <?php echo Label::getLabel('LBL_MOBILE_SELECT_SLOT_INFO') ?>
+        <div class="note note--secondary margin-top-4 d-flex d-xl-none align-left justify-content-start"> 
+            <p><b class="margin-right-1">Note: </b><?php echo Label::getLabel('LBL_MOBILE_SELECT_SLOT_INFO') ?></p>
         </div>
+        
     </div>
     <div class="box-foot">
         <div class="box-foot__left">

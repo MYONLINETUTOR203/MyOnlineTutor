@@ -1761,3 +1761,9 @@ $offers-ui: "offers-ui";
     }
 }
 
+
+@media(max-width: theme('breakpoints.xl','value')){
+    .calendar-view.scheduled-lesson-popup{height: 91%;}
+}
+
+
