@@ -31,6 +31,13 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
+
+        if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
+        } elseif ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'complete', [$id]));
+        }
+
         $this->set('data', $data);
         $this->_template->render();
     }
@@ -64,6 +71,33 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         $this->set('data', $data);
+        $this->set('id', $id);
+        $this->_template->render();
+    }
+
+    /**
+     * Quiz questions forms
+     *
+     * @param int $id
+     */
+    public function getQuestion()
+    {
+        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($id < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        $html = $this->_template->render(false, false);
+        FatUtility::dieJsonSuccess([
+            'html' => $html
+        ]);
+    }
+
+    /**
+     * Quiz completion page
+     */
+    public function complete($id)
+    {
         $this->_template->render();
     }
 }

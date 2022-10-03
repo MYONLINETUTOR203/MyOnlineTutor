@@ -57,6 +57,8 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
+
+        $db = FatApp::getDb();
         $this->assignValues([
             'quizat_status' => static::STATUS_IN_PROGRESS,
             'quizat_created' => date('Y-m-d H:i:s'),
@@ -65,6 +67,44 @@ class QuizAttempt extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+
+        if (!$this->setQuestion()) {
+            $db->rollbackTransaction();
+            $this->error = $this->getError();
+            return false;
+        }
+
+        $db->commitTransaction();
+        return true;
+    }
+
+    private function setQuestion()
+    {
+        $quiz = QuizAttempt::getAttributesById($this->getMainTableRecordId(), [
+            'quizat_qulinqu_id', 'quizat_quilin_id'
+        ]);
+        if (empty($quiz)) {
+            $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
+            return false;
+        }
+
+        /* get next question id */
+        $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
+        $srch->addCondition('qulinqu_quilin_id', '=', $quiz['quizat_quilin_id']);
+        $srch->addCondition('qulinqu_id', '>', $quiz['quizat_qulinqu_id']);
+        $srch->addOrder('qulinqu_id', 'ASC');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('qulinqu_id as quizat_qulinqu_id');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+
+        /* setup question id */
+        $this->assignValues($data);
+        if (!$this->save()) {
+            $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED._PLEASE_TRY_AGAIN');
+            return false;
+        }
+
         return true;
     }
 

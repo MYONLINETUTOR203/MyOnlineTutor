@@ -359,3 +359,5 @@ CREATE TABLE IF NOT EXISTS `tbl_quiz_attempts_questions` (
   `quatqu_answer` json NOT NULL,
   PRIMARY KEY (`quatqu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `tbl_quiz_attempts` ADD `quizat_progress` DECIMAL(8,2) NOT NULL AFTER `quizat_scored`, ADD `quizat_qulinqu_id` INT NOT NULL AFTER `quizat_progress`; 
