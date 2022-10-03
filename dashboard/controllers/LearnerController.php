@@ -45,7 +45,8 @@ class LearnerController extends DashboardController
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
             'js/fullcalendar-luxon-global.min.js',
-            'js/fateventcalendar.js'
+            'js/fateventcalendar.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         $this->_template->render();
     }

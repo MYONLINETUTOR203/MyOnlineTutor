@@ -1,4 +1,3 @@
-/* global weekDayNames, monthNames, langLbl, layoutDirection, fcom */
 $(function () {
     searchQuizzes = function (frm, page = 1) {
         document.frmSearch.pageno.value = page;
@@ -59,5 +58,14 @@ $(function () {
                 return;
             }
         });
+    };
+    view = function (id) {
+        if ($('.userListJs' + id).hasClass('is-active')) {
+            $('.userListJs' + id).hide().removeClass('is-active').removeClass('is-expanded');
+            return;
+        } else {
+            $('.userListJs').removeClass('is-active').removeClass('is-expanded').hide();
+            $('.userListJs' + id).addClass('is-active').addClass('is-expanded').show();
+        }
     };
 });
