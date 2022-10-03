@@ -40,7 +40,12 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-    return (common, frontend, dashboard);
+
+    var quiz = src('scss/quiz*.scss')
+            .pipe(sass())
+            .pipe(autoprefixer())
+            .pipe(dest('application/views/css'));
+    return (common, frontend, dashboard, quiz);
 }
 
 function svg() {
@@ -50,6 +55,7 @@ function svg() {
     var dashboard = src('dashboard/views/images/sprite/*.svg')
             .pipe(svgSprite(config))
             .pipe(dest('dashboard/views/images'));
+
     return merge(frontend, dashboard);
 }
 

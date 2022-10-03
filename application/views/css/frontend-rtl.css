@@ -2,6 +2,7 @@
 .header {
   right: 0;
   left: 0;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   -webkit-transition: all 0.5s;
@@ -14,6 +15,7 @@
       width: 100%; } }
   @media (max-width: 1199px) {
     .header {
+      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
   @media (min-width: 1199px) {
@@ -1608,6 +1610,7 @@ p {
     .section-filters {
       background-color: rgba(0, 0, 0, 0.03);
       padding: 5rem 0 0;
+      position: -webkit-sticky;
       position: sticky;
       z-index: 1;
       margin-bottom: 3rem;
@@ -6092,6 +6095,7 @@ body.sort-active {
 .group-secondary {
   text-align: center;
   border: 1px solid var(--color-gray-300);
+  position: -webkit-sticky;
   position: sticky;
   top: 144px; }
   @media (min-width: 1299px) {
@@ -6450,6 +6454,7 @@ body.sort-active {
 
 @media (min-width: 767px) {
   .sticky-side-panel {
+    position: -webkit-sticky;
     position: sticky;
     top: 60px;
     z-index: 1; } }
@@ -7486,6 +7491,7 @@ body.sort-active {
 
 @media (mIN-width: 1199px) {
   .blog-sidebar {
+    position: -webkit-sticky;
     position: sticky;
     top: 115px; } }
 
@@ -8286,6 +8292,7 @@ body.sort-active {
     width: 100%; } }
 
 .profile-secondary .right-panel {
+  position: -webkit-sticky;
   position: sticky;
   top: 60px; }
 
@@ -8675,6 +8682,7 @@ body.sort-active {
 .section--mission {
   background: var(--color-gray-100); }
   .section--mission .primary-content {
+    position: -webkit-sticky;
     position: sticky;
     top: 140px; }
 
