@@ -632,7 +632,7 @@ $video-preview: "video-preview";
         &__small{
         
             @media (min-width:theme('breakpoints.xl','value')){
-                &{width: 380px;padding: theme('padding.3') 0; border-left: 1px solid theme('color.gray.200');}
+                &{width: 380px;padding: theme('padding.3') 0; border-#{theme('direction.left','value')}: 1px solid theme('color.gray.200');}
             }
         }
         &__body{ position: relative; width: 100%;

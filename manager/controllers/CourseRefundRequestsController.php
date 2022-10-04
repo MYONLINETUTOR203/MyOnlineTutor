@@ -63,7 +63,7 @@ class CourseRefundRequestsController extends AdminBaseController
         if (!$post = $form->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($form->getValidationErrors()));
         }
-
+        
         $srch = new CourseRefundRequestSearch($this->siteLangId, $this->siteAdminId, User::SUPPORT);
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'corere.corere_user_id = u.user_id', 'u');
         $srch->addSearchListingFields();

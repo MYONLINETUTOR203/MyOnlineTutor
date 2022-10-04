@@ -614,10 +614,7 @@ p {
       margin-top: 7px;
       margin-left: 2px; }
     .lecture__control .tooltip {
-      top: 5px;
-      -webkit-transform: translateX(100%);
-          -ms-transform: translateX(100%);
-              transform: translateX(100%); }
+      top: 15px; }
   .lecture__content {
     width: calc(100% - 40px); }
     .lecture__content p {

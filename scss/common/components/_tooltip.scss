@@ -156,25 +156,25 @@ $tooltip: "tooltip";
     }
   }
   &--left{
-    left: 0;
+    #{theme('direction.right','value')}: 100%;
     top: 50%;
-    transform: translateX(-90%) translateY(-50%);
+    transform: translateY(-50%);
     text-align: #{theme('direction.left','value')};
     &:before{
-      right: 0;
+      #{theme('direction.right','value')}: -3px;
       top: 50%;
-      transform: translateY(-50%) translateX(50%) rotate(45deg);
+      transform: translateY(-50%) rotate(45deg);
     }
   }
   &--right{
-    right: 0;
+    #{theme('direction.left','value')}: 100%;
     top: 50%;
-    transform: translateX(90%) translateY(-50%);
+    transform: translateY(-50%);
     text-align: #{theme('direction.left','value')};
     &:before{
-      left: 0;
+      #{theme('direction.left','value')}: -3px;
       top: 50%;
-      transform: translateY(-50%) translateX(-50%) rotate(45deg);
+      transform: translateY(-50%) rotate(45deg);
     }
   }
 
