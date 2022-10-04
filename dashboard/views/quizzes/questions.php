@@ -50,7 +50,7 @@ $count = count($questions);
                                     <tbody class="sortableJs">
                                         <?php if (count($questions) > 0) { ?>
                                             <?php foreach ($questions as $question) { ?>
-                                                <tr data-id="<?php echo $question['quique_quiz_id'] . '_' . $question['quique_ques_id'] ?>">
+                                                <tr data-id="<?php echo $question['quique_ques_id'] ?>">
                                                     <td>
                                                         <a href=" javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
                                                             <svg class="svg-icon" viewBox="0 0 16 12.632">

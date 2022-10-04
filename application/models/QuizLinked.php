@@ -5,7 +5,6 @@ class QuizLinked extends MyAppModel
     public const DB_TBL = 'tbl_quiz_linked';
     public const DB_TBL_PREFIX = 'quilin_';
     public const DB_TBL_QUIZ_LINKED_QUESTIONS = 'tbl_quiz_linked_questions';
-    public const DB_TBL_USER_QUIZZES = 'tbl_users_quizzes';
 
     /**
      * Initialize Quiz
@@ -130,6 +129,7 @@ class QuizLinked extends MyAppModel
                 'quilin_record_type' => $recordType,
                 'quilin_duration' => $quiz['quiz_duration'],
                 'quilin_attempts' => $quiz['quiz_attempts'],
+                'quilin_marks' => $quiz['quiz_marks'],
                 'quilin_passmark' => $quiz['quiz_passmark'],
                 'quilin_failmsg' => $quiz['quiz_failmsg'],
                 'quilin_passmsg' => $quiz['quiz_passmsg'],
@@ -245,7 +245,7 @@ class QuizLinked extends MyAppModel
     {
         $id = $this->getMainTableRecordId();
         $data = QuizLinked::getAttributesById($id, [
-            'quilin_deleted', 'quilin_user_id', 'quilin_record_id', 'quilin_record_type', 'quilin_title'
+            'quilin_deleted', 'quilin_user_id', 'quilin_record_id', 'quilin_record_type', 'quilin_title', 'quilin_id'
         ]);
         if (!$data || !empty($data['quilin_deleted'])) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
@@ -256,7 +256,7 @@ class QuizLinked extends MyAppModel
             return false;
         }
         /* check if quiz already attended by any user */
-        $srch = new SearchBase(static::DB_TBL_USER_QUIZZES);
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addFld('quizat_id');
@@ -303,6 +303,23 @@ class QuizLinked extends MyAppModel
             return [];
         }
         return $quiz;
+    }
+
+    public static function getQuestionById(int $id)
+    {
+        $srch = new SearchBase(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
+        $srch->addCondition('qulinqu_id', '=', $id);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields([
+            'qulinqu_id', 'qulinqu_type', 'qulinqu_ques_id', 'qulinqu_title', 'qulinqu_detail', 'qulinqu_hint',
+            'qulinqu_marks', 'qulinqu_options', 'qulinqu_order'
+        ]);
+        $question = FatApp::getDb()->fetch($srch->getResultSet());
+        if (empty($question)) {
+            return [];
+        }
+        return $question;
     }
 
     /**
@@ -479,16 +496,20 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addOrder('queopt_order', 'ASC');
         $options = FatApp::getDb()->fetchAll($srch->getResultSet());
-        if (count($options) < 1) {
-            $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
-            return false;
-        }
         $quesOptions = [];
-        foreach ($options as $option) {
-            $quesOptions[$option['queopt_ques_id']][] = $option;
+        if (count($options) > 0) {
+            foreach ($options as $option) {
+                $quesOptions[$option['queopt_ques_id']][] = $option;
+            }
         }
 
         foreach ($questions as $question) {
+            $opts = $quesOptions[$question['ques_id']] ?? [];
+            if ($question['ques_type'] != Question::TYPE_MANUAL && count($opts) < 1) {
+                $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
+                return false;
+            }
+
             $linkQues = new TableRecord(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
             $linkQues->assignValues([
                 'qulinqu_type' => $question['ques_type'],
@@ -499,13 +520,15 @@ class QuizLinked extends MyAppModel
                 'qulinqu_hint' => $question['ques_hint'],
                 'qulinqu_marks' => $question['ques_marks'],
                 'qulinqu_answer' => $question['ques_answer'],
-                'qulinqu_options' => json_encode($quesOptions[$question['ques_id']]),
+                'qulinqu_options' => json_encode($opts),
+                'qulinqu_order' => $question['quique_order']
             ]);
             if (!$linkQues->addNew()) {
                 $this->error = $linkQues->getError();
                 return false;
             }
         }
+        
         return true;
     }
 }

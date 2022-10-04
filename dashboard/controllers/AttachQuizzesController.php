@@ -155,6 +155,7 @@ class AttachQuizzesController extends DashboardController
         $this->set('quizzes', $quizzes);
         if ($this->siteUserType == User::TEACHER) {
             $this->set('recordType', $recordType);
+            $this->set('recordId', $recordId);
             $this->_template->render(false, false, 'attach-quizzes/view.php');
         } else {
             $this->_template->render(false, false, 'attach-quizzes/attempts.php');

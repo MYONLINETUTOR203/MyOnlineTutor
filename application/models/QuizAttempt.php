@@ -4,6 +4,7 @@ class QuizAttempt extends MyAppModel
 {
     public const DB_TBL = 'tbl_quiz_attempts';
     public const DB_TBL_PREFIX = 'quizat_';
+    public const DB_TBL_QUESTIONS = 'tbl_quiz_attempts_questions';
 
     const STATUS_PENDING = 0;
     const STATUS_IN_PROGRESS = 1;
@@ -57,8 +58,14 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
+        if ($quiz['quizat_status'] != QuizAttempt::STATUS_IN_PROGRESS) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_UNATTENDED_OR_COMPLETED_QUIZ');
+            return false;
+        }
 
         $db = FatApp::getDb();
+        $db->startTransaction();
+
         $this->assignValues([
             'quizat_status' => static::STATUS_IN_PROGRESS,
             'quizat_created' => date('Y-m-d H:i:s'),
@@ -76,6 +83,71 @@ class QuizAttempt extends MyAppModel
 
         $db->commitTransaction();
         return true;
+    }
+
+    public function setup($data)
+    {
+        if (!$this->validate($data)) {
+            return false;
+        }
+        
+        $db = FatApp::getDb();
+        $db->startTransaction();
+
+        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
+        $answer = $data['ques_answer'];
+        if ($data['ques_type'] == Question::TYPE_MANUAL) {
+            $answer = [$data['ques_answer']];
+        }
+        $quesAttempt->assignValues([
+            'quatqu_quizat_id' => $data['ques_attempt_id'],
+            'quatqu_qulinqu_id' => $data['ques_id'],
+            'quatqu_answer' => json_encode($answer),
+        ]);
+        if (!$quesAttempt->addNew()) {
+            $this->error = $quesAttempt->getError();
+            return false;
+        }
+        if (!$this->setQuestion()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    public function markComplete()
+    {
+        $this->assignValues([
+            'quizat_qulinqu_id' => 0,
+            'quizat_status' => QuizAttempt::STATUS_COMPLETED,
+            'quizat_updated' => date('Y-m-d H:i:s')
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get data by id
+     *
+     * @return array
+     */
+    public function getById()
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->addMultipleFields([
+            'quilin_title', 'quilin_detail', 'quilin_type', 'quilin_questions', 'quilin_duration', 'quilin_record_type',
+            'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
+            'quilin_user_id', 'quizat_status', 'quizat_id', 'quizat_user_id', 'quizat_qulinqu_id', 'quizat_progress'
+        ]);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
     private function setQuestion()
@@ -97,6 +169,9 @@ class QuizAttempt extends MyAppModel
         $srch->setPageSize(1);
         $srch->addFld('qulinqu_id as quizat_qulinqu_id');
         $data = FatApp::getDb()->fetch($srch->getResultSet());
+        if (empty($data)) {
+            $data = ['quizat_qulinqu_id' => 0];
+        }
 
         /* setup question id */
         $this->assignValues($data);
@@ -108,23 +183,31 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    /**
-     * Get data by id
-     *
-     * @return array
-     */
-    public function getById()
+    private function validate($data)
     {
-        $srch = new SearchBase(static::DB_TBL);
-        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
-        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
-        $srch->addMultipleFields([
-            'quilin_title', 'quilin_detail', 'quilin_type', 'quilin_questions', 'quilin_duration',
-            'quilin_attempts', 'quilin_passmark', 'quilin_validity', 'quilin_certificate', 'quilin_user_id',
-            'quizat_status', 'quizat_id', 'quizat_user_id'
-        ]);
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        return FatApp::getDb()->fetch($srch->getResultSet());
+        $quiz = $this->getById();
+        if (empty($quiz)) {
+            $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
+            return false;
+        }
+        /* validate logged in user */
+        if ($quiz['quizat_user_id'] != $this->userId) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+        if ($quiz['quizat_status'] != QuizAttempt::STATUS_IN_PROGRESS) {
+            $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_UNATTENDED_OR_COMPLETED_QUIZ');
+            return false;
+        }
+        $question = QuizLinked::getQuestionById($data['ques_id']);
+        if (empty($question) || $data['ques_id'] != $quiz['quizat_qulinqu_id']) {
+            $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
+            return false;
+        }
+        if ($question['qulinqu_type'] != $data['ques_type']) {
+            $this->error = Label::getLabel('LBL_INVALID_QUESTION_TYPE');
+            return false;
+        }
+        return true;
     }
 }

@@ -43,16 +43,17 @@ $(function () {
         });
     };
     viewQuizzes = function (recordId, recordType) {
+        $.facebox.close();
         fcom.ajax(fcom.makeUrl('AttachQuizzes', 'view'), { recordId, recordType }, function (response) {
             $.facebox(response, 'facebox-large');
         });
     };
-    removeQuiz = function (id) {
+    removeQuiz = function (id, obj) {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
-            $('.quizRowJs' + id).remove();
+            viewQuizzes($(obj).data('record-id'), $(obj).data('record-type'));
             if (document.frmSearchPaging) {
                 search(document.frmSearchPaging);
                 return;

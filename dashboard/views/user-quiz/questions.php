@@ -5,17 +5,21 @@
             <div class="d-sm-flex align-items-center justify-content-between">
                 <div>
                     <div class="page-meta">
-                        <span class="page-meta__item page-meta__item-first">Question <strong>1</strong> of <strong>30</strong></span>
-                        <span class="page-meta__item page-meta__item-second">Total Marks <strong>60</strong></span>
+                        <span class="page-meta__item page-meta__item-first questionInfoJs"></span>
+                        <span class="page-meta__item page-meta__item-second">
+                            <?php echo Label::getLabel('LBL_TOTAL_MARKS'); ?> <strong class="totalMarksJs"></strong>
+                        </span>
                         <div class="page-meta__item">
                             <div class="page-progress">
-                                <div class="page-progress__value">Quiz Progress</div>
+                                <div class="page-progress__value">
+                                    <?php echo Label::getLabel('LBL_QUIZ_PROGRESS'); ?>
+                                </div>
                                 <div class="page-progress__content">
                                     <div class="progress progress--xsmall progress--round">
-                                        <div class="progress__bar bg-green" role="progressbar" style="width:60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress__bar bg-green progressBarJs" role="progressbar" style="width:60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
-                                <div class="page-progress__value"> <strong>0%</strong></div>
+                                <div class="page-progress__value"> <strong class="progressJs">0%</strong></div>
                             </div>
                         </div>
                     </div>
@@ -28,7 +32,7 @@
                                     <svg class="icon icon--clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                         <path d="M9,16a7,7,0,1,1,7-7A7,7,0,0,1,9,16Zm0-1.4A5.6,5.6,0,1,0,3.4,9,5.6,5.6,0,0,0,9,14.6ZM9.7,9h2.8v1.4H8.3V5.5H9.7Z" transform="translate(3 3)" fill="#333" />
                                     </svg>
-                                    <span>Time Left: </span>
+                                    <span><?php echo Label::getLabel('LBL_TIME_LEFT:'); ?> </span>
                                 </div>
                                 <div class="timer__content">
                                     <div class="timer__controls countdowntimer timer-js" id="countdowntimer-97152" remainingtime="14015888">05:17:39</div>
@@ -45,6 +49,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        getQuestion('<?php echo $id; ?>');
+        getQuestion('<?php echo $attemptId; ?>');
     });
 </script>

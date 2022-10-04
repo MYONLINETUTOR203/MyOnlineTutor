@@ -53,7 +53,7 @@ $status = QuizAttempt::getStatuses();
                                             </a>
                                         <?php } ?>
                                     <?php } ?>
-                                    <a href="javascript:void(0);" onclick="removeQuiz('<?php echo $quiz['quilin_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                    <a href="javascript:void(0);" data-record-id="<?php echo $recordId; ?>" data-record-type="<?php echo $recordType; ?>" onclick="removeQuiz('<?php echo $quiz['quilin_id']; ?>', this);" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--cancel icon--small">
                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#cancel"></use>
                                         </svg>
@@ -105,7 +105,7 @@ $status = QuizAttempt::getStatuses();
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td colspan="3"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
+                            <td colspan="4"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>

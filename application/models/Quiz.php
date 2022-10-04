@@ -131,8 +131,15 @@ class Quiz extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-
+        if (!$this->updateMarks()) {
+            $db->rollbackTransaction();
+            return false;
+        }
         if (!$this->updateCount()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        if (!$this->setupOrder()) {
             $db->rollbackTransaction();
             return false;
         }
@@ -228,8 +235,18 @@ class Quiz extends MyAppModel
                 return false;
             }
         }
+
+        if (!$this->updateMarks()) {
+            $db->rollbackTransaction();
+            return false;
+        }
         
         if (!$this->updateCount()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
+        if (!$this->setupOrder()) {
             $db->rollbackTransaction();
             return false;
         }
@@ -287,6 +304,50 @@ class Quiz extends MyAppModel
     }
 
     /**
+     * Get & update quiz total marks
+     *
+     * @return bool
+     */
+    private function updateMarks()
+    {
+        $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->applyPrimaryConditions();
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('SUM(ques_marks) as quiz_marks');
+        $marks = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->assignValues($marks);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get and update questions order
+     *
+     * @return bool
+     */
+    private function setupOrder()
+    {
+        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
+        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->addFld('quique_ques_id');
+        $srch->addOrder('quique_order', 'ASC');
+        $quizQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quique_ques_id');
+        $quizQues = array_keys($quizQues);
+        array_unshift($quizQues, "");
+        unset($quizQues[0]);
+        if (!$this->updateOrder($quizQues)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Update display order
      *
      * @param array $order
@@ -294,23 +355,22 @@ class Quiz extends MyAppModel
      */
     public function updateOrder(array $order): bool
     {
-        $order = FatApp::getPostedData('order');
         if (empty($order)) {
             $this->error = Label::getLabel('LBL_INVALID_DATA_SENT');
             return false;
         }
         $db = FatApp::getDb();
         $db->startTransaction();
+        $quizId = $this->getMainTableRecordId();
         foreach ($order as $i => $id) {
             if (FatUtility::int($id) < 1) {
                 continue;
             }
-            $data = explode('_', $id);
             if (
                 !$db->updateFromArray(
                     Quiz::DB_TBL_QUIZ_QUESTIONS,
                     ['quique_order' => $i],
-                    ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$data[0], $data[1]]]
+                    ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$quizId, $id]]
                 )
             ) {
                 $db->rollbackTransaction();
@@ -414,14 +474,11 @@ class Quiz extends MyAppModel
      */
     private function updateCount(): bool
     {
-        $srch = new SearchBase(static::DB_TBL_QUIZ_QUESTIONS, 'quique');
-        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id', 'quiz');
-        $srch->doNotCalculateRecords();
-        $srch->addCondition('quiz.quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addCondition('quiz.quiz_active', '=', AppConstant::ACTIVE);
-        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
         $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
+        $srch->joinCategory();
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         $this->assignValues($data);
         if (!$this->save()) {

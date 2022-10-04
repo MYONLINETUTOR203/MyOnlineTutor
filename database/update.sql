@@ -361,3 +361,8 @@ CREATE TABLE IF NOT EXISTS `tbl_quiz_attempts_questions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE `tbl_quiz_attempts` ADD `quizat_progress` DECIMAL(8,2) NOT NULL AFTER `quizat_scored`, ADD `quizat_qulinqu_id` INT NOT NULL AFTER `quizat_progress`; 
+
+ALTER TABLE `tbl_quiz_linked_questions` ADD `qulinqu_order` INT NOT NULL AFTER `qulinqu_options`;
+ALTER TABLE `tbl_quizzes` ADD `quiz_marks` DECIMAL(8,2) NOT NULL AFTER `quiz_attempts`;
+ALTER TABLE `tbl_quiz_linked` ADD `quilin_marks` DECIMAL(8,2) NOT NULL AFTER `quilin_attempts`;
+ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_quizat_id` INT NOT NULL AFTER `quatqu_id`; 

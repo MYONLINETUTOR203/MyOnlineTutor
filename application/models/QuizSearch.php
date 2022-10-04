@@ -102,6 +102,7 @@ class QuizSearch extends YocoachSearch
             'quiz.quiz_user_id' => 'quiz_user_id',
             'quiz.quiz_duration' => 'quiz_duration',
             'quiz.quiz_attempts' => 'quiz_attempts',
+            'quiz.quiz_marks' => 'quiz_marks',
             'quiz.quiz_passmark' => 'quiz_passmark',
             'quiz.quiz_validity' => 'quiz_validity',
             'quiz.quiz_certificate' => 'quiz_certificate',
