@@ -1,6 +1,6 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
+$frm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = '12';
 if ($lang_id > 0) {
@@ -37,9 +37,9 @@ switch ($frmType) {
         $lessonImg = $frm->getField('lesson_img');
         $applyToTeachImage = $frm->getField('apply_to_teach_banner');
         if ($canEdit) {
-            $adminLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '142*45');
-            $desktopLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '168*37');
-            $emailLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '168*37');
+            $adminLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
+            $desktopLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
+            $emailLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
             $faviconFld->htmlAfterField = str_replace(['{dimensions}', '{ext}'], ['16*16', '.ico'], Label::getLabel('LBL_FAV_DIMENSIONS_{dimensions}_AND_EXTENSION_{ext}'));
             $blogImg->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '1600*480');
             $lessonImg->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '2000*900');

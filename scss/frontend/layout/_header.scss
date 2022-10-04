@@ -34,7 +34,7 @@ $header: 'header';
 $header-primary: 'header-primary';
 
 .#{$header-primary} {
-    padding: theme('padding.2') 0;
+    padding: theme('padding.1') 0;
     
     color: #111;
     background: theme('color.white');
@@ -44,11 +44,15 @@ $header-primary: 'header-primary';
     transition: 0.3s all ease-in-out;
     box-shadow:0px 3px 3px #0000000F;
 
-    @media(max-width: theme('breakpoints.md','value')) {
-        padding:theme('padding.4') 0;;
+    @media(min-width: theme('breakpoints.sm','value')) {
+        & .header-flex{min-height: 70px;}
     }
 
-    .header__logo{ max-width: 200px;
+    @media(max-width: theme('breakpoints.md','value')) {
+        padding:theme('padding.3') 0;;
+    }
+
+    .header__logo{ max-width: 180px; max-height: 90px;
         position: relative; display: flex; align-items: center;
 
 

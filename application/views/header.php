@@ -90,7 +90,7 @@ if (isset($setMonthAndWeekNames) && $setMonthAndWeekNames) {
             <header class="header">
                 <div class="header-primary">
                     <div class="container">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="header-flex d-flex justify-content-between align-items-center">
                             <div class="header__left">
                                 <a href="javascript:void(0)" class="toggle toggle--nav toggle--nav-js">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 515.555 515.555">

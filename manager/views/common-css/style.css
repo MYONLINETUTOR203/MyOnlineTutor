@@ -1800,7 +1800,7 @@ padding: 18px 38px;
 }
 
 .headerwrap .one_third_grid.logo img {
-    height: 40px;
+
     display: block;
 }
 
@@ -8692,7 +8692,7 @@ body.switchtoggled .color_pallete .pallete_control {
     border-radius: 5px;
     background: #f3f6f8;
     padding: 10px;
-    width: 180px;
+    width: 100%;
     padding: 0 0 30% 0;
     position: relative;
     margin: 10px 0 0;
@@ -10957,3 +10957,8 @@ background-repeat:no-repeat; background-position: calc(100% - 10px) 10px ; backg
 .padding-bottom-0{padding-bottom: 0!important;}
 
 .is-preview-on .leftside{padding-top: 120px;}
+
+
+#frm_fat_id_frmConfiguration .caption-wraper{margin-bottom: 0.6rem;}
+#frmBlock .tabs_panel_wrap{padding-left: 0; padding-right: 0;}
+.web_form.layout--rtl input[type="button"]{margin-right: auto; margin-left: 1rem;}
