@@ -1,22 +1,36 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<div class="group group--social">
-    <a class="facebook-login" href="<?php echo MyUtility::makeUrl('GuestUser', 'facebookLogin'); ?>">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 60.734 60.733" style="enable-background:new 0 0 60.734 60.733;" xml:space="preserve">
-            <g>
-                <path d="M57.378,0.001H3.352C1.502,0.001,0,1.5,0,3.353v54.026c0,1.853,1.502,3.354,3.352,3.354h29.086V37.214h-7.914v-9.167h7.914   v-6.76c0-7.843,4.789-12.116,11.787-12.116c3.355,0,6.232,0.251,7.071,0.36v8.198l-4.854,0.002c-3.805,0-4.539,1.809-4.539,4.462   v5.851h9.078l-1.187,9.166h-7.892v23.52h15.475c1.852,0,3.355-1.503,3.355-3.351V3.351C60.731,1.5,59.23,0.001,57.378,0.001z" />
+
+
+
+<div class="social-actions">
+    <a class="social-button social-button--fb social-button--block" href="<?php echo MyUtility::makeUrl('GuestUser', 'facebookLogin'); ?>">
+        <span class="social-button__media">
+            <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#1877F2" d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        </span>
+        <span class="social-button__label"><?php echo Label::getLabel("LBL_SIGN_IN_WITH_FACEBOOK") ?></span>
+    </a>
+    <a class="social-button social-button--google social-button--block" href="<?php echo MyUtility::makeUrl('GuestUser', 'googleLogin'); ?>">
+        <span class="social-button__media">
+        <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g transform="translate(-187 -241)">
+                <rect  width="24" height="24" transform="translate(187 241)" fill="none"/>
+                <g transform="translate(190 243)">
+                <path  d="M4.211,144.619l-.661,2.469-2.417.051a9.517,9.517,0,0,1-.07-8.871h0l2.152.395.943,2.139a5.67,5.67,0,0,0,.053,3.817Z" transform="translate(0 -133.137)" fill="#fbbb00"/>
+                <path d="M270.753,208.176a9.5,9.5,0,0,1-3.387,9.183h0l-2.711-.138-.384-2.395a5.662,5.662,0,0,0,2.436-2.891h-5.08v-3.758h9.125Z" transform="translate(-251.919 -200.451)" fill="#518ef8"/>
+                <path  d="M44.824,314.835h0a9.5,9.5,0,0,1-14.315-2.906l3.079-2.52a5.65,5.65,0,0,0,8.142,2.893Z" transform="translate(-29.377 -297.927)" fill="#28b446"/>
+                <path d="M43.126,2.187l-3.078,2.52a5.649,5.649,0,0,0-8.329,2.958L28.625,5.131h0a9.5,9.5,0,0,1,14.5-2.944Z" transform="translate(-27.562)" fill="#f14336"/>
+                </g>
             </g>
         </svg>
-        <span><?php echo Label::getLabel("LBL_SIGN_IN_WITH_FACEBOOK") ?></span>
+
+        </span>
+        <span class="social-button__label"><?php echo Label::getLabel("LBL_SIGN_IN_WITH_GOOGLE") ?></span>
     </a>
-    <a class="google-login" href="<?php echo MyUtility::makeUrl('GuestUser', 'googleLogin'); ?>">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-            <path style="fill:#FBBB00;" d="M113.47,309.408L95.648,375.94l-65.139,1.378C11.042,341.211,0,299.9,0,256  c0-42.451,10.324-82.483,28.624-117.732h0.014l57.992,10.632l25.404,57.644c-5.317,15.501-8.215,32.141-8.215,49.456  C103.821,274.792,107.225,292.797,113.47,309.408z" />
-            <path style="fill:#518EF8;" d="M507.527,208.176C510.467,223.662,512,239.655,512,256c0,18.328-1.927,36.206-5.598,53.451  c-12.462,58.683-45.025,109.925-90.134,146.187l-0.014-0.014l-73.044-3.727l-10.338-64.535  c29.932-17.554,53.324-45.025,65.646-77.911h-136.89V208.176h138.887L507.527,208.176L507.527,208.176z" />
-            <path style="fill:#28B446;" d="M416.253,455.624l0.014,0.014C372.396,490.901,316.666,512,256,512  c-97.491,0-182.252-54.491-225.491-134.681l82.961-67.91c21.619,57.698,77.278,98.771,142.53,98.771  c28.047,0,54.323-7.582,76.87-20.818L416.253,455.624z" />
-            <path style="fill:#F14336;" d="M419.404,58.936l-82.933,67.896c-23.335-14.586-50.919-23.012-80.471-23.012  c-66.729,0-123.429,42.957-143.965,102.724l-83.397-68.276h-0.014C71.23,56.123,157.06,0,256,0  C318.115,0,375.068,22.126,419.404,58.936z" />
-            <g>
-        </svg>
-        <span><?php echo Label::getLabel("LBL_SIGN_IN_WITH_GOOGLE") ?></span>
-    </a>
+    <!-- <a class="social-button social-button--ap social-button--block" href="<?php echo MyUtility::makeUrl('GuestUser', 'appleLogin'); ?>">
+        <span class="social-button__media">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.624 7.222c-.876 0-2.232-.996-3.66-.96-1.884.024-3.612 1.092-4.584 2.784-1.956 3.396-.504 8.412 1.404 11.172.936 1.344 2.04 2.856 3.504 2.808 1.404-.06 1.932-.912 3.636-.912 1.692 0 2.172.912 3.66.876 1.512-.024 2.472-1.368 3.396-2.724 1.068-1.56 1.512-3.072 1.536-3.156-.036-.012-2.94-1.128-2.976-4.488-.024-2.808 2.292-4.152 2.4-4.212-1.32-1.932-3.348-2.148-4.056-2.196-1.848-.144-3.396 1.008-4.26 1.008zm3.12-2.832c.78-.936 1.296-2.244 1.152-3.54-1.116.048-2.46.744-3.264 1.68-.72.828-1.344 2.16-1.176 3.432 1.236.096 2.508-.636 3.288-1.572z"/></svg>
+        </span>
+        <span class="social-button__label"></?php echo Label::getLabel("LBL_SIGN_IN_WITH_APPLE") ?></span>
+    </a> -->
 </div>
 <span class="-gap"></span>
