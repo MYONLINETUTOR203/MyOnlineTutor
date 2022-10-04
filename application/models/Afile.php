@@ -301,7 +301,7 @@ class Afile extends FatModel
         $sizes = $this->getImageSizes($size);
         if (empty($file) || !file_exists(CONF_UPLOADS_PATH . $file['file_path'])) {
             $img = new ImageResize(CONF_INSTALLATION_PATH . 'public/images/noimage.jpg');
-            $img->setResizeMethod(ImageResize::IMG_RESIZE_EXTRA_ADDSPACE);
+            $img->setResizeMethod(ImageResize::IMG_RESIZE_RESET_DIMENSIONS);
             $img->setMaxDimensions($sizes[0], $sizes[1]);
             $img->displayImage();
             exit;
@@ -318,7 +318,7 @@ class Afile extends FatModel
         header("Pragma: public");
 
         $img = new ImageResize($filePath);
-        $img->setResizeMethod(ImageResize::IMG_RESIZE_EXTRA_ADDSPACE);
+        $img->setResizeMethod(ImageResize::IMG_RESIZE_RESET_DIMENSIONS);
         $img->setMaxDimensions($sizes[0], $sizes[1]);
         if (CONF_USE_FAT_CACHE) {
             ob_start();
@@ -344,7 +344,7 @@ class Afile extends FatModel
         ini_set('memory_limit', -1);
         if (empty($file) || !file_exists(CONF_UPLOADS_PATH . $file['file_path'])) {
             $img = new ImageResize(CONF_INSTALLATION_PATH . 'public/images/noimage.jpg');
-            $img->setResizeMethod(ImageResize::IMG_RESIZE_EXTRA_ADDSPACE);
+            $img->setResizeMethod(ImageResize::IMG_RESIZE_RESET_DIMENSIONS);
             $img->displayImage(100);
             exit;
         }
