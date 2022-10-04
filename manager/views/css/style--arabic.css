@@ -125,3 +125,8 @@ select{background-position:10px center; padding-right:10px; padding-left: 30px;}
 .ion-ios-arrow-right:before { content: "\f3d2";  }
 
 .switch-labels + .switch-handles{margin-right: 0; margin-left: 20px;}
+
+.grid_1, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9, .grid_10, .grid_11, .grid_12, .footinfo .grid_1 .pagination,.breadcrumb li{float: right;}
+.footinfo .grid_2{text-align: left;}
+.breadcrumb li a:after{right: auto;left: -15px;}
+.breadcrumb li{padding-left: 0; padding-right: 15px;margin-left: 0; margin-right: 15px;}

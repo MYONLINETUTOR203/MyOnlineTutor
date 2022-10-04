@@ -140,6 +140,7 @@ $(document).ready(function () {
         var data = fcom.frmData(frmSearch);
         fcom.ajax(fcom.makeUrl('GroupClasses', 'search'), data, function (response) {
             $('#listing').html(response);
+            $(".gototop").trigger('click');
         });
     };
 

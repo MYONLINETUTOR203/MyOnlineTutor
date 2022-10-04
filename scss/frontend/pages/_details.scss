@@ -555,3 +555,18 @@
     }
 
 }
+
+@media (min-width:theme('breakpoints.xl','value')){
+.teachers.teachers-view {overflow-x: hidden;}
+}
+
+.teachers.teachers-view {
+    .slider.slider--onethird .slick-arrow{
+        &:before{width: 18px;
+            height: 18px;
+            top: 50% !important;
+            left: 50% !important;}
+    }
+    .slider--onethird .slick-arrow.slick-next{box-shadow: none; right: 1.6rem; background-color: transparent;}
+    .slider--onethird .slick-arrow.slick-prev{box-shadow: none; left: 1.6rem;background-color: transparent;}
+}

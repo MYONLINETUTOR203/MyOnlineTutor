@@ -342,9 +342,9 @@ class FatMailer extends FatModel
             $target = empty($link) ? '' : 'target="_blank"';
             $url = empty($link) ? 'javascript:void(0)' : $link;
             $title = Label::getLabel('LBL_' . $name, $this->langId);
-            $img = MyUtility::makeFullUrl('images', 'sprite.svg', [], CONF_WEBROOT_FRONTEND) . '#' . strtolower($name);
-            $socialIcons .= '<a style="display:inline-block;vertical-align:top; width:35px; height:35px; margin:0 0 0 5px; border-radius:100%;" href="' .
-                    $url . '" ' . $target . '><svg class="icon" style="width: 25px;height: 25px; margin:5px auto 0; display:block;"><use xlink:href="' . $img . '"></use></svg></a>';
+            $img = MyUtility::makeFullUrl('images', strtolower($name) . '.png', [], CONF_WEBROOT_FRONTEND);
+            $socialIcons .= '<a style="display:inline-block;vertical-align:top; width:35px; height:35px; margin:0 0 0 5px; border-radius:100%;" href="' . $url . '" ' . $target . '>'
+                    . '<img src="' . $img . '" style="width: 25px;height: 25px; margin:5px auto 0; display:block;" /></a>';
         }
         return $socialIcons;
     }
