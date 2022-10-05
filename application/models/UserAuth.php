@@ -54,11 +54,6 @@ class UserAuth extends FatModel
             $this->error = Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE');
             return false;
         }
-        if (empty($user['user_verified'])) {
-            $this->error = Label::getLabel('ERR_YOUR_VERIFICATION_PENDING_{link}');
-            $this->error = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Label::getLabel('LBL_CLICK_HERE') . '</a>', $this->error);
-            return false;
-        }
         if (!$this->setUserSession($username, $userip, $user)) {
             $this->error = Label::getLabel('ERR_SOMETHING_WENT_WRONT_TRY_AGAIN');
             return false;

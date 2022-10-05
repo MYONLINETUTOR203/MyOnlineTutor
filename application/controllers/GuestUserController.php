@@ -56,6 +56,13 @@ class GuestUserController extends MyAppController
         if (!$auth->login($post['username'], $post['password'], MyUtility::getUserIp())) {
             FatUtility::dieJsonError($auth->getError());
         }
+        $enabled2fa = UserSetting::getSettings(UserAuth::getLoggedUserId(), ['user_2fa_enabled']);
+        if($enabled2fa['user_2fa_enabled'] == AppConstant::YES) {
+            UserAuth::logout();
+            FatUtility::dieJsonSuccess([
+                'two_factor_enabled'  => $enabled2fa['user_2fa_enabled'],
+            ]);
+        }
         if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
             UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
         }
@@ -528,5 +535,8 @@ class GuestUserController extends MyAppController
         }
         return true;
     }
+
+
+   
 
 }
