@@ -42,7 +42,7 @@ class CourseRefundRequestsController extends AdminBaseController
         $frm = new Form('requestSearch');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
         $frm->addTextBox(Label::getLabel('LBL_LEARNER'), 'learner', '');
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', Course::getRefundStatuses());
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', Course::getRefundStatuses(), '', [], Label::getLabel('LBL_SELECT'));
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'start_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'end_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
         $frm->addHiddenField('', 'learner_id', '');
@@ -153,7 +153,7 @@ class CourseRefundRequestsController extends AdminBaseController
         $frm->addHiddenField('', 'corere_id', 0)->requirements()->setInt();
         $statusList = Course::getRefundStatuses();
         unset($statusList[Course::REFUND_PENDING]);
-        $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', $statusList, '');
+        $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'corere_status', $statusList, '', [], Label::getLabel('LBL_SELECT'));
         $status->requirements()->setRequired();
 
         $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'corere_comment', '');

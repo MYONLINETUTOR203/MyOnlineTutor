@@ -188,8 +188,8 @@ class CoursesController extends AdminBaseController
             ['id' => 'course_clang_id', 'autocomplete' => 'off']
         );
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_COURSE, true);
-        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList);
-        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', []);
+        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList, '', [], Label::getLabel('LBL_SELECT'));
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', [], '', [], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'course_clang_id', '', ['id' => 'course_clang_id', 'autocomplete' => 'off']);
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'course_addedon_from', '', ['readonly' => 'readonly']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'course_addedon_till', '', ['readonly' => 'readonly']);

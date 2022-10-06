@@ -704,14 +704,14 @@ class CoursesController extends DashboardController
         $frm = new Form('frmSearch');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword');
         if ($this->siteUserType == User::TEACHER) {
-            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses());
+            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'course_status', Course::getStatuses(), '', [], Label::getLabel('LBL_SELECT'));
         } else {
-            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'crspro_status', OrderCourse::getStatuses());
+            $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'crspro_status', OrderCourse::getStatuses(), '', [], Label::getLabel('LBL_SELECT'));
         }
-        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes());
+        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'course_type', Course::getTypes(), '', [], Label::getLabel('LBL_SELECT'));
         $categoryList = Category::getCategoriesByParentId($this->siteLangId);
-        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList);
-        $frm->addSelectBox(Label::getLabel('LBL_SUB_CATEGORY'), 'course_subcateid', []);
+        $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList, '', [], Label::getLabel('LBL_SELECT'));
+        $frm->addSelectBox(Label::getLabel('LBL_SUB_CATEGORY'), 'course_subcateid', [], '', [], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'pagesize', AppConstant::PAGESIZE)->requirements()->setInt();
         $frm->addHiddenField('', 'page', 1)->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
@@ -729,14 +729,14 @@ class CoursesController extends DashboardController
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TITLE'), 'course_title')->requirements()->setRequired();
         $frm->addTextBox(Label::getLabel('LBL_COURSE_SUBTITLE'), 'course_subtitle')->requirements()->setRequired();
         $categories = Category::getCategoriesByParentId($this->siteLangId);
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categories);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cate_id', $categories, '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired();
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', []);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcate_id', [], '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setInt();
         $langsList = (new CourseLanguage())->getAllLangs($this->siteLangId, true);
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_clang_id', $langsList);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TEACHING_LANGUAGE'), 'course_clang_id', $langsList, '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired();
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'course_level', Course::getCourseLevels());
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_LEVEL'), 'course_level', Course::getCourseLevels(), '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_DESCRIPTION'), 'course_details')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
@@ -788,7 +788,10 @@ class CoursesController extends DashboardController
         $frm->addSelectBox(
             Label::getLabel('LBL_CURRENCY'),
             'course_currency_id',
-            Currency::getCurrencyNameWithCode($this->siteLangId)
+            Currency::getCurrencyNameWithCode($this->siteLangId), 
+            '', 
+            [], 
+            Label::getLabel('LBL_SELECT')
         );
         $frm->addTextBox(Label::getLabel('LBL_PRICE'), 'course_price')->requirements()->setFloat();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();

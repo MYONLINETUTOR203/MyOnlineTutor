@@ -41,7 +41,7 @@ class CourseRequestsController extends AdminBaseController
         $frm = new Form('requestSearch');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '');
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '');
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', Course::getRequestStatuses());
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', Course::getRequestStatuses(), '', [], Label::getLabel('LBL_SELECT'));
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'start_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'end_date', '', ['readonly' => 'readonly', 'autocomplete' => 'off']);
         $frm->addHiddenField('', 'teacher_id', '');
@@ -151,7 +151,7 @@ class CourseRequestsController extends AdminBaseController
         $frm->addHiddenField('', 'coapre_id', 0)->requirements()->setInt();
         $statusList = Course::getRequestStatuses();
         unset($statusList[Course::REQUEST_PENDING]);
-        $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', $statusList, '');
+        $status = $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'coapre_status', $statusList, '', [], Label::getLabel('LBL_SELECT'));
         $status->requirements()->setRequired();
 
         $fld = $frm->addTextArea(Label::getLabel('LBL_COMMENT'), 'coapre_remark', '');
