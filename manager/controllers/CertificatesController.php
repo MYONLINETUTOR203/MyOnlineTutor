@@ -96,11 +96,11 @@ class CertificatesController extends AdminBaseController
         }
         $data['certpl_lang_id'] = $langId;
         /* get template form */
-        $frm = $this->getForm();
+        $frm = $this->getForm($langId);
         $frm->fill($data);
 
         /* get certficate image form */
-        $mediaFrm = $this->getMediaForm();
+        $mediaFrm = $this->getMediaForm($langId);
         $mediaFrm->fill(['certpl_id' => $certTplId]);
 
         /* get image dimensions */
@@ -258,7 +258,7 @@ class CertificatesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(): Form
+    private function getForm(int $langId = 0): Form
     {
         $frm = new Form('frmCertificate');
         $frm->addHiddenField('', 'certpl_code')->requirements()->setRequired();
@@ -268,7 +268,7 @@ class CertificatesController extends AdminBaseController
         $fld->requirements()->setIntPositive();
 
         $fld = $frm->addSelectBox(
-            Label::getLabel('LBL_LANGUAGE'),
+            Label::getLabel('LBL_LANGUAGE', $langId),
             'certpl_lang_id',
             Language::getAllNames(),
             '',
@@ -277,23 +277,23 @@ class CertificatesController extends AdminBaseController
         );
         $fld->requirements()->setRequired();
 
-        $frm->addTextBox(Label::getLabel('LBL_NAME'), 'certpl_name')->requirements()->setRequired();
-        $fld = $frm->addTextArea(Label::getLabel('LBL_Body'), 'certpl_body');
+        $frm->addTextBox(Label::getLabel('LBL_NAME', $langId), 'certpl_name')->requirements()->setRequired();
+        $fld = $frm->addTextArea(Label::getLabel('LBL_Body', $langId), 'certpl_body');
         $fld->requirements()->setRequired(true);
         $frm->addHtml(
-            Label::getLabel('LBL_Replacement_Caption'),
+            Label::getLabel('LBL_Replacement_Caption', $langId),
             'replacement_caption',
-            '<h3>' . Label::getLabel('LBL_Replacement_Vars') . '</h3>'
+            '<h3>' . Label::getLabel('LBL_Replacement_Vars', $langId) . '</h3>'
         );
-        $frm->addHtml(Label::getLabel('LBL_Replacement_Vars'), 'certpl_vars', '');
+        $frm->addHtml(Label::getLabel('LBL_Replacement_Vars', $langId), 'certpl_vars', '');
 
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'certpl_status', AppConstant::getActiveArr(), '', [], '')
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS', $langId), 'certpl_status', AppConstant::getActiveArr(), '', [], '')
         ->requirements()
         ->setRequired();
 
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
-        $fld_button = $frm->addButton('', 'btn_preview', Label::getLabel('LBL_Save_&_Preview'));
-        $fld_reset = $frm->addButton('', 'btn_reset', Label::getLabel('LBL_RESET_TO_DEFAULT'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES', $langId));
+        $fld_button = $frm->addButton('', 'btn_preview', Label::getLabel('LBL_Save_&_Preview', $langId));
+        $fld_reset = $frm->addButton('', 'btn_reset', Label::getLabel('LBL_RESET_TO_DEFAULT', $langId));
         $fld_submit->attachField($fld_button);
         $fld_submit->attachField($fld_reset);
         return $frm;
@@ -304,11 +304,11 @@ class CertificatesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getMediaForm(): Form
+    private function getMediaForm(int $langId = 0): Form
     {
         $frm = new Form('frmMedia');
         $frm->addHiddenField('', 'certpl_id');
-        $frm->addFileUpload(Label::getLabel('LBL_BACKGROUND_IMAGE'), 'certpl_image');
+        $frm->addFileUpload(Label::getLabel('LBL_BACKGROUND_IMAGE', $langId), 'certpl_image');
         return $frm;
     }
 }

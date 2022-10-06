@@ -1,6 +1,6 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form layout--ltr');
+$frm->setFormTagAttribute('class', 'web_form layout--'.$layoutDir);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'setup(); return false;');
@@ -8,12 +8,12 @@ $frm->setFormTagAttribute('onsubmit', 'setup(); return false;');
 $fld = $frm->getField('certpl_lang_id');
 $fld->setFieldTagAttribute('onchange', 'edit("' . $data['certpl_code'] . '", this.value); return false;');
 
-$mediaFrm->setFormTagAttribute('class', 'web_form layout--ltr');
+$mediaFrm->setFormTagAttribute('class', 'web_form layout--'.$layoutDir);
 $mediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $mediaFrm->developerTags['fld_default_col'] = 12;
 $fld = $mediaFrm->getField('certpl_image');
 $fld->setFieldTagAttribute('onchange', 'setupMedia();');
-$fld->htmlAfterField .= '<small>' . str_replace('{dimensions}', implode('x', $dimensions), Label::getLabel('LBL_PREFERRED_DIMENSIONS_{dimensions}')) .  ' & ' . str_replace('{ext}', $imageExts, Label::getLabel('LBL_ALLOWED_FILE_EXTS_{ext}')) . '</small>';
+$fld->htmlAfterField .= '<small>' . str_replace('{dimensions}', implode('x', $dimensions), Label::getLabel('LBL_PREFERRED_DIMENSIONS_{dimensions}', $data['certpl_lang_id'])) .  ' & ' . str_replace('{ext}', $imageExts, Label::getLabel('LBL_ALLOWED_FILE_EXTS_{ext}', $data['certpl_lang_id'])) . '</small>';
 $fld = $frm->getField('btn_preview');
 $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 $fld = $frm->getField('btn_reset');
@@ -34,7 +34,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                 </div>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Label::getLabel('LBL_CERTIFICATE_SETUP'); ?></h4>
+                        <h4><?php echo Label::getLabel('LBL_CERTIFICATE_SETUP', $data['certpl_lang_id']); ?></h4>
                     </div>
                     <div class="sectionbody space">
                         <div class="row">
@@ -45,7 +45,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_BACKGROUND_IMAGE'); ?>
+                                                    <?php echo Label::getLabel('LBL_BACKGROUND_IMAGE', $data['certpl_lang_id']); ?>
                                                 </label>
                                             </div>
                                             <div class="field-wraper">
@@ -65,7 +65,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_LANGUAGE'); ?>
+                                                    <?php echo Label::getLabel('LBL_LANGUAGE', $data['certpl_lang_id']); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -82,7 +82,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_NAME'); ?>
+                                                    <?php echo Label::getLabel('LBL_NAME', $data['certpl_lang_id']); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -99,7 +99,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_BODY'); ?>
+                                                    <?php echo Label::getLabel('LBL_BODY', $data['certpl_lang_id']); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -123,30 +123,24 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                             <div class="certificate-meta contentPart2Js" contenteditable="true">
                                                                 <?php echo $content['content_part_2'] ?>
                                                             </div>
-
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
                                                                     <div class="style-bold contentTrainerJs" contenteditable="true">
                                                                         <?php echo $content['trainer'] ?>
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="certificate-signs__middle">
                                                                     <div class="certificate-logo">
                                                                         <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $data['certpl_lang_id']]); ?>" alt="">
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="certificate-signs__right">
                                                                     <div class="style-bold contentCertNoJs" contenteditable="true">
                                                                         <?php echo $content['certificate_number'] ?>
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -168,7 +162,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_STATUS'); ?>
+                                                    <?php echo Label::getLabel('LBL_STATUS', $data['certpl_lang_id']); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
