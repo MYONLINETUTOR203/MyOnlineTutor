@@ -246,6 +246,11 @@ $(document).ready(function () {
     let options = [];
     $('select[name="keyword"]').select2({
         placeholder: langLbl.courseSrchPlaceholder,
+        language: {
+            searching: function() {
+                return langLbl.searching;
+            }
+        },
         ajax: {
             url: fcom.makeUrl('Courses', 'autoComplete'),
             type: 'post',
