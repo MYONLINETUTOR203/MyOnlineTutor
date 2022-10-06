@@ -17,7 +17,7 @@
             const messageEl = document.createElement("alert-message");
             messageEl.setAttribute("class", 'alert__message');
             const paraEl = document.createElement("p");
-            paraEl.innerText = message;
+            paraEl.innerHTML = message;
             messageEl.appendChild(paraEl);
             alertEl.appendChild(iconEl);
             alertEl.appendChild(messageEl);
