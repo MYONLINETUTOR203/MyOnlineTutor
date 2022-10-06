@@ -10,7 +10,7 @@
                         </h4>
                     </hgroup>
                     <div class="check-list margin-bottom-10">
-                        <?php echo $data['quilin_detail'] ?>
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
                         <div class="-gap-10"></div>
                         <ul class="quiz-detail">
                             <li>

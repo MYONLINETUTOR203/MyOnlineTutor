@@ -1,6 +1,6 @@
 $(function () {
-    getQuestion = function (id) {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'getQuestion'), { id }, function (response) {
+    view = function (id) {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'view'), { id }, function (response) {
             $('.quizPanelJs').html(response.html);
             $('.questionInfoJs').html(response.questionsInfo);
             $('.totalMarksJs').html(response.totalMarks);
@@ -12,20 +12,39 @@ $(function () {
             }
         });
     };
-    setup = function (frm) {
+    save = function (frm) {
+        saveAndNext(frm, 0);
+    };
+    saveAndNext = function (frm, next = 1) {
         if (!$(frm).validate()) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setup'), fcom.frmData(frm), function (res) {
-            getQuestion(res.id);
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndNext', [next]), fcom.frmData(frm), function (res) {
+            view(res.id);
         });
     };
-    markComplete = function (id) {
+    skipAndNext = function (id) {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
+            view(id);
+        });
+    };
+    previous = function (id) {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
+            view(id);
+        });
+    };
+    getByQuesId = function (id, quesId) {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0, 'ques_id': quesId }, function (res) {
+            view(id);
+        });
+    };
+    saveAndFinish = function () {
         if (!confirm(langLbl.confirmQuizComplete)) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'markComplete'), { id }, function (res) {
-            window.location = fcom.makeUrl('UserQuiz', 'completed', [id]);
+        var frm = document.frmQuiz;
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), fcom.frmData(frm), function (res) {
+            window.location = fcom.makeUrl('UserQuiz', 'completed', [res.id]);
         });
     };
 });

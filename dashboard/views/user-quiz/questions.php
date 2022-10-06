@@ -49,6 +49,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        getQuestion('<?php echo $attemptId; ?>');
+        view('<?php echo $attemptId; ?>');
     });
 </script>

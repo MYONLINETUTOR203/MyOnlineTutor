@@ -1,11 +1,17 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <?php
-$frm->addFormTagAttribute('onsubmit', 'setup(this); return false;');
-$fld = $frm->getField('ques_answer');
 $btnSubmit = $frm->getField('btn_submit');
 $btnSubmit->setFieldTagAttribute('class', 'btn btn--primary');
 $btnSkip = $frm->getField('btn_skip');
-$btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic');
+if (count($attemptedQues) == $question['qulinqu_order']) {
+    $frm->addFormTagAttribute('onsubmit', 'save(this); return false;');
+    $btnSubmit->value = Label::getLabel('LBL_SAVE'); 
+} else {
+    $frm->addFormTagAttribute('onsubmit', 'saveAndNext(this); return false;');
+    $btnSkip->setFieldTagAttribute('onclick', 'skipAndNext(' . $data['quizat_id'] . ');');
+    $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic');
+}
+$fld = $frm->getField('ques_answer');
 ?>
 <div class="flex-layout__large">
     <?php echo $frm->getFormTag(); ?>
@@ -24,7 +30,7 @@ $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-bla
                     foreach ($options as $option) {
                 ?>
                         <label class="option">
-                            <input type="<?php echo $type; ?>" name="ques_answer[]" class="option__input" value="<?php echo $option['queopt_id']; ?>">
+                            <input type="<?php echo $type; ?>" name="ques_answer[]" class="option__input" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $fld->value)) ? 'checked="checked"' : ''; ?>>
                             <span class="option__item">
                                 <span class="option__icon">
                                     <svg class="icon-correct" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -47,15 +53,19 @@ $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-bla
             <div class="box-actions form">
                 <?php if ($question['qulinqu_order'] > 1) { ?>
                     <div class="box-actions__cell box-actions__cell-left">
-                        <input type="button" name="back" value="Back" class="btn btn--bordered-primary">
+                        <input type="button" name="back" value="Back" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
                     </div>
                 <?php } ?>
                 <div class="box-actions__cell box-actions__cell-right">
                     <?php
-                    echo $btnSkip->getHtml();
+                    if ($question['qulinqu_order'] < count($attemptedQues)) {
+                        echo $btnSkip->getHtml();
+                    }
+                    
                     echo $frm->getFieldHtml('ques_type');
                     echo $frm->getFieldHtml('ques_id');
                     echo $frm->getFieldHtml('ques_attempt_id');
+                    echo $frm->getFieldHtml('quatqu_id');
                     echo $btnSubmit->getHtml();
                     ?>
                 </div>
@@ -73,36 +83,22 @@ $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-bla
         <div class="box-view__body">
             <nav class="attempt-list">
                 <ul>
-                    <li class="is-visited"><a href="#" class="attempt-action" title="Answered">1</a></li>
-                    <li class="is-visited"><a href="#" class="attempt-action" title="Answered">2</a></li>
-                    <li class="is-visited"><a href="#" class="attempt-action" title="Answered">3</a></li>
-                    <li class="is-skip"><a href="#" class="attempt-action" title="Skip">4</a></li>
-                    <li class="is-skip"><a href="#" class="attempt-action" title="Skip">5</a></li>
-                    <li class="is-current"><a href="#" class="attempt-action" title="Current">6</a></li>
-                    <li><a href="#" class="attempt-action">7</a></li>
-                    <li><a href="#" class="attempt-action">8</a></li>
-                    <li><a href="#" class="attempt-action">9</a></li>
-                    <li><a href="#" class="attempt-action">10</a></li>
-                    <li><a href="#" class="attempt-action">11</a></li>
-                    <li><a href="#" class="attempt-action">12</a></li>
-                    <li><a href="#" class="attempt-action">13</a></li>
-                    <li><a href="#" class="attempt-action">14</a></li>
-                    <li><a href="#" class="attempt-action">15</a></li>
-                    <li><a href="#" class="attempt-action">16</a></li>
-                    <li><a href="#" class="attempt-action">17</a></li>
-                    <li><a href="#" class="attempt-action">18</a></li>
-                    <li><a href="#" class="attempt-action">19</a></li>
-                    <li><a href="#" class="attempt-action">20</a></li>
-                    <li><a href="#" class="attempt-action">21</a></li>
-                    <li><a href="#" class="attempt-action">22</a></li>
-                    <li><a href="#" class="attempt-action">23</a></li>
-                    <li><a href="#" class="attempt-action">24</a></li>
-                    <li><a href="#" class="attempt-action">25</a></li>
-                    <li><a href="#" class="attempt-action">26</a></li>
-                    <li><a href="#" class="attempt-action">27</a></li>
-                    <li><a href="#" class="attempt-action">28</a></li>
-                    <li><a href="#" class="attempt-action">29</a></li>
-                    <li><a href="#" class="attempt-action">30</a></li>
+                    <?php foreach ($attemptedQues as $quest) {
+                        $class = "";
+                        $action = "onclick=\"getByQuesId('" . $data['quizat_id'] . "', '" . $quest['qulinqu_id'] . "')\";";
+                        if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
+                            $class = "is-current";
+                            $action = "";
+                        } elseif (!empty($quest['quatqu_id'])) {
+                            $class = "is-visited";
+                        }
+                    ?>
+                        <li class="<?php echo $class; ?>">
+                            <a href="javascript:void(0);" class="attempt-action" <?php echo $action; ?>>
+                                <?php echo $quest['qulinqu_order'] ?>
+                            </a>
+                        </li>
+                    <?php } ?>
                 </ul>
             </nav>
         </div>
@@ -124,7 +120,7 @@ $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-bla
                 </div>
             </div>
             <div class="box-actions form">
-                <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="markComplete('<?php echo $data['quizat_id'] ?>');">
+                <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="saveAndFinish();">
             </div>
         </div>
     </div>

@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Psr7\Query;
+
 /**
  * This Controller is used for user quiz solving
  *
@@ -90,7 +92,7 @@ class UserQuizController extends DashboardController
      *
      * @param int $id
      */
-    public function getQuestion()
+    public function view()
     {
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         if ($id < 1) {
@@ -114,18 +116,40 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
         }
 
-        $this->sets([
-            'data' => $data,
-            'question' => $question,
-            'options' => json_decode($question['qulinqu_options'], true)
-        ]);
+        /* get question attempt data */
+        $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
+        $srch->joinTable(QuizAttempt::DB_TBL_QUESTIONS, 'LEFT JOIN', 'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $id);
+        $srch->addCondition('qulinqu_quilin_id', '=', $data['quilin_id']);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(['quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order']);
+        $srch->addOrder('qulinqu_order', 'ASC');
+        $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
+
+        $answer = [];
+        $attemtQuesId = '';
+        $currentQuesId = $data['quizat_qulinqu_id'];
+        $attemtQuesId = $attemptedQues[$currentQuesId]['quatqu_id'];
+        if (!empty($attemptedQues[$currentQuesId]['quatqu_answer'])) {
+            $answer = json_decode($attemptedQues[$currentQuesId]['quatqu_answer'], 0);
+        }
+        if ($question['qulinqu_type'] == Question::TYPE_MANUAL) {
+            $answer = $answer[0] ?? '';
+        }
 
         /* get question form */
         $frm = $this->getForm($question['qulinqu_type']);
         $frm->fill([
-            'ques_id' => $data['quizat_qulinqu_id'], 'ques_attempt_id' => $id, 'ques_type' => $question['qulinqu_type']
+            'ques_id' => $data['quizat_qulinqu_id'], 'ques_attempt_id' => $id, 'quatqu_id' => $attemtQuesId,
+            'ques_type' => $question['qulinqu_type'], 'ques_answer' => $answer
         ]);
-        $this->set('frm', $frm);
+
+        $this->sets([
+            'frm' => $frm,
+            'data' => $data,
+            'attemptedQues' => $attemptedQues,
+            'question' => $question,
+            'options' => json_decode($question['qulinqu_options'], true)
+        ]);
 
         /* Set quiz stats data */
         $quesInfoLabel = Label::getLabel('LBL_QUESTION_{current-question}_OF_{total-questions}');
@@ -138,7 +162,7 @@ class UserQuizController extends DashboardController
             $quesInfoLabel
         );
         FatUtility::dieJsonSuccess([
-            'html' => $this->_template->render(false, false, 'user-quiz/get-question.php', true),
+            'html' => $this->_template->render(false, false, 'user-quiz/view.php', true),
             'questionsInfo' => $quesInfoLabel,
             'totalMarks' => $data['quilin_marks'],
             'progressPercent' => MyUtility::formatPercent($data['quizat_progress']),
@@ -146,7 +170,41 @@ class UserQuizController extends DashboardController
         ]);
     }
 
-    public function setup()
+    public function setQuestion()
+    {
+        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $next = FatApp::getPostedData('next', FatUtility::VAR_INT, AppConstant::YES);
+        $quesId = FatApp::getPostedData('ques_id', FatUtility::VAR_INT, 0);
+        if ($id < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+
+        /* get quiz details */
+        $quiz = new QuizAttempt($id, $this->siteUserId);
+        $data = $quiz->getById();
+        if (empty($data)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
+        }
+
+        /* validate logged in user */
+        if ($data['quizat_user_id'] != $this->siteUserId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        
+        if ($quesId > 0) {
+            $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
+            if (!$quiz->save()) {
+                FatUtility::dieJsonError($quiz->getError());
+            }
+        } else {
+            if (!$quiz->setQuestion($next)) {
+                FatUtility::dieJsonError($quiz->getError());
+            }
+        }
+        FatUtility::dieJsonSuccess('');
+    }
+
+    public function saveAndNext($next = AppConstant::YES)
     {
         $post = FatApp::getPostedData();
         $frm = $this->getForm($post['ques_type']);
@@ -154,33 +212,33 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         $quiz = new QuizAttempt($post['ques_attempt_id'], $this->siteUserId);
-        if (!$quiz->setup($post)) {
+        if (!$quiz->setup($post, $next)) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        FatUtility::dieJsonSuccess(['id' => $post['ques_attempt_id']]);
+        $msg = ($next == AppConstant::NO) ? Label::getLabel('LBL_QUIZ_SAVED_SUCCESSFULLY') : '';
+        FatUtility::dieJsonSuccess([
+            'id' => $post['ques_attempt_id'],
+            'msg' => $msg
+        ]);
     }
 
-    public function markComplete()
+    public function saveAndFinish()
     {
-        $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        if ($id < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-        $quiz = new QuizAttempt($id);
-        $data = $quiz->getById();
-        if (empty($data)) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
-        }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
-        }
-        if ($data['quizat_status'] != QuizAttempt::STATUS_IN_PROGRESS) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CANNOT_MARK_COMPLETE_TO_A_PENDING_OR_COMPLETED_QUIZ'));
+        $attemptId = FatApp::getPostedData('ques_attempt_id');
+        $answer = FatApp::getPostedData('ques_answer', FatUtility::VAR_STRING, '');
+        $quiz = new QuizAttempt($attemptId, $this->siteUserId);
+        if (!empty($answer)) {
+            if (!$quiz->setup(FatApp::getPostedData(), AppConstant::NO)) {
+                FatUtility::dieJsonError($quiz->getError());
+            }
         }
         if (!$quiz->markComplete()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZ_COMPLETED_SUCCESSFULLY'));
+        FatUtility::dieJsonSuccess([
+            'msg' => Label::getLabel('LBL_QUIZ_COMPLETED_SUCCESSFULLY'),
+            'id' => $attemptId
+        ]);
     }
 
     /**
@@ -231,6 +289,9 @@ class UserQuizController extends DashboardController
 
         $fld = $frm->addHiddenField('', 'ques_id');
         $fld->requirements()->setRequired();
+        $fld->requirements()->setInt();
+
+        $fld = $frm->addHiddenField('', 'quatqu_id');
         $fld->requirements()->setInt();
 
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));

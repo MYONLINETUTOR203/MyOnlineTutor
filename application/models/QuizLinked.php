@@ -313,7 +313,7 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields([
             'qulinqu_id', 'qulinqu_type', 'qulinqu_ques_id', 'qulinqu_title', 'qulinqu_detail', 'qulinqu_hint',
-            'qulinqu_marks', 'qulinqu_options', 'qulinqu_order'
+            'qulinqu_marks', 'qulinqu_options', 'qulinqu_order', 'qulinqu_answer'
         ]);
         $question = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($question)) {

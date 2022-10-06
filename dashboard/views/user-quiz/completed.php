@@ -8,8 +8,18 @@
             <h3 class="margin-bottom-2">Congratulations <strong class="bold-700">Stephen</strong> </h3>
             <p class="margin-bottom-2">You have completed your quiz successfully. You can be proud of yourself!</p>
             <div class="inline-meta margin-top-5 margin-bottom-5">
-                <span class="inline-meta__item">Score: <strong>28 of 30</strong></span>
-                <span class="inline-meta__item">Progress: <strong>95%</strong></span>
+                <span class="inline-meta__item">Score: 
+                <strong>
+                    <?php
+                    $label = Label::getLabel('LBL_{attempted-ques}_OF_{total}');
+                    echo str_replace(['{attempted-ques}', '{total}'], [0, $data['quilin_questions']], $label);
+                    ?>
+                </strong>
+                </span>
+                <span class="inline-meta__item">
+                    <?php echo Label::getLabel('LBL_PROGRESS:') ;?> 
+                    <strong><?php echo MyUtility::formatPercent($data['quizat_progress']); ?></strong>
+                </span>
                 <span class="inline-meta__item">Time Spent: <strong>05:36</strong></span>
             </div>
             <div class="d-sm-flex justify-content-center margin-top-4">

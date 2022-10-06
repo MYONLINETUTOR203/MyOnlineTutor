@@ -366,3 +366,6 @@ ALTER TABLE `tbl_quiz_linked_questions` ADD `qulinqu_order` INT NOT NULL AFTER `
 ALTER TABLE `tbl_quizzes` ADD `quiz_marks` DECIMAL(8,2) NOT NULL AFTER `quiz_attempts`;
 ALTER TABLE `tbl_quiz_linked` ADD `quilin_marks` DECIMAL(8,2) NOT NULL AFTER `quilin_attempts`;
 ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_quizat_id` INT NOT NULL AFTER `quatqu_id`; 
+
+ALTER TABLE `tbl_quizzes` CHANGE `quiz_detail` `quiz_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
+ALTER TABLE `tbl_quiz_linked` CHANGE `quilin_detail` `quilin_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
