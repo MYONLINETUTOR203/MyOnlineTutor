@@ -178,7 +178,7 @@ class RatingReviewsController extends AdminBaseController
         $frm->addHiddenField('', 'pageno', 1);
         $frm->addHiddenField('', 'ratrev_type');
         $submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $submit->attachField($frm->addButton("", "btn_clear", "Clear", ['onclick' => 'clearSearch();']));
+        $submit->attachField($frm->addButton("", "btn_clear", Label::getLabel('LBL_CLEAR'), ['onclick' => 'clearSearch();']));
         return $frm;
     }
 
