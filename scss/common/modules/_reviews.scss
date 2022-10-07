@@ -91,8 +91,8 @@ $review: 'review';
     }
     }
   &__author{font-size: theme('font.size.h6'); font-weight: theme('font.weight.bold'); margin-bottom: theme('margin.2'); display: block;}
-  &__date{color: theme('color.black');font-size: theme('font.size.small'); line-height: 1; padding-left: theme('margin.3'); margin-left: theme('margin.3'); position: relative; top: 1px;
-    &:before{position: absolute; left: 0;top: 0; bottom: 0; content: ""; width: 1px;background-color: currentColor;}
+  &__date{color: theme('color.black');font-size: theme('font.size.small'); line-height: 1; padding-#{theme('direction.left','value')}: theme('margin.3'); margin-#{theme('direction.left','value')}: theme('margin.3'); position: relative; top: 1px;
+    &:before{position: absolute; #{theme('direction.left','value')}: 0;top: 0; bottom: 0; content: ""; width: 1px;background-color: currentColor;}
 }
   &__meta{display: flex; align-items: center;}
   &__message{margin-top: theme('margin.4');}

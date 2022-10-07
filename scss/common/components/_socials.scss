@@ -149,7 +149,7 @@ $social-button: "social-button";
     padding: 5px;
     overflow: hidden;
     position: relative;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center;
 }
 
 .social--share li a img,

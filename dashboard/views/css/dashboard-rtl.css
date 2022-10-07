@@ -4963,7 +4963,7 @@ div.tagsinput div {
     fill: var(--color-gray-300); }
   .media-placeholder__preview .close {
     position: absolute;
-    right: 1rem;
+    left: 1rem;
     top: 1rem;
     z-index: 1;
     background-color: var(--color-white);

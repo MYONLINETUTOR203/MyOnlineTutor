@@ -10538,7 +10538,7 @@ body.sort-active {
   .video-preview__small {
     width: 380px;
     padding: var(--padding-3) 0;
-    border-left: 1px solid var(--color-gray-200); } }
+    border-right: 1px solid var(--color-gray-200); } }
 
 .video-preview__body {
   position: relative;
