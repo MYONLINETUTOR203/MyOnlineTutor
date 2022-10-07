@@ -1316,3 +1316,6 @@ ALTER TABLE `tbl_categories` CHANGE `cate_courses` `cate_records` INT(11) NOT NU
 -- 30 September 2022
 -- -----------------------
 UPDATE tbl_email_templates SET etpl_vars = "{user_full_name} Full Name of the email receiver" WHERE etpl_code = "forgot_password";
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.6.20221007' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+

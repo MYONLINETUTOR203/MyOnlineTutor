@@ -1,5 +1,68 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.6.20221007
+
+Enhancements:
+
+	Task-102286 - Notifications and Alerts Module Merging
+	Task-102425 - Categories Code Update
+
+Fixes:
+
+	Bug-067324 - Search button in all search filter forms are not working.
+	Bug-067186 - Background image help text is not coming properly in Arabic language
+	Bug-067185 - Delete buttons should come on the left side in Arabic language
+	Bug-067184 - The "Select" text is not coming in the Arabic language
+	Bug-067182 - “Searching” label is not available to change text for Arabic language
+	Bug-067159 - The note is not coming as RTL when changing status of course refund request
+	Bug-067157 - Course request details are not coming as per RTL mode in Manage course approval requests
+	Bug-067156 - "Manage course approval request" search form is not coming as per RTL mode
+	Bug-067154 - Course review details are not coming as per the RTL mode
+	Bug-067149 - Notice is coming when open subcategory page in RTL mode
+	Bug-067148 - Clear button text is not coming in the Arabic language
+	Bug-067143 - Fatal error is coming when submitting course for approval in Arabic language
+	Bug-067137 - Social media icons are not aligned properly on the certificate view page
+	Bug-067134 - Separator line is not coming in the arabic language on video preview popup
+	Bug-067133 - The label is hiding behind the other section on course learning and preview pages
+	Bug-067130 - The separator is not coming in the correct place in Arabic language
+	Bug-067129 - More courses from tutor slider is not working correctly in Arabic language
+	Bug-067019 - Tag search is case sensitive in the frontend course listing
+	Bug-067018 - Manage courses and meta tag courses are not matching
+	Bug-067016 - Same detail page is opening for both courses if course name is same
+	Bug-067014 - The same label is used for “course refund request detail” and “course request detail”
+	Bug-067011 - Course completed value not coming properly on learner course listing page
+	Bug-066931 - Course, class and teacher listing filters are fluctuating
+	Bug-066930 - Fatal error is coming when updating lecture notes
+	Bug-066829 - The main menu "Manage courses" label should be different
+	Bug-066827 - Title and description should be dynamic when share certificate on social sites
+	Bug-066825 - My messages page heading is coming incorrect
+	Bug-066794 - The error message is not relevant if uploading course resources above 50MB
+	Bug-066792 - Lecture complete progress is not coming on the course preview page after completing the lecture video
+	Bug-066784 - Unable to proceed to 2nd step on course setup for a course on Firefox 
+	Bug-066774 - Lectures are not adding in the correct order
+	Bug-066770 - Added note is not coming when course is completed
+	Bug-066724 - In RTL mode, Cross icon Overlap the Test in Setting while adding course tags
+	Bug-066723 - In RTL Mode, icons to add Lecture and dropdown icon is not appearing on the Left side
+	Bug-066684 - In RTL mode, course certificate page is not rendering properly
+	Bug-066637 - Show course all the details in course approval request detail
+	Bug-066620 - Show course completion percentage on the learner course listing
+	Bug-066616 - Show teacher courses on the teacher profile page
+	Bug-066608 - Some of the certificate logo are coming stretched on certificate pdf
+	Bug-066571 - Course attached category, subcategory and language should not be deleted and deactivated
+	Bug-066556 - Show the decline comment on refund request detail
+	Bug-066542 - While Editing the user is not able to know on which page he is currently
+	Bug-066536 - When left panel is open then user is able to access Profile Switch option
+	Bug-066486 - All the free preview videos are coming preview video popup
+	Bug-066320 - Show video icon in the course listing as its coming on the course detail page
+	Bug-066309 - Text should be different when the course is marked as favorite
+	Bug-066221 - If content is long then its hiding behind the letter counter
+	Bug-066135 - View Course Details Video is not able to play in Safari browser
+	Bug-066133 - Lecture Youtube Video does not display on Safari Browser
+	Bug-065956 - Courses section should be available in the homepage 
+	Bug-065539 - Warnings are coming when adding course without profile completion
+	Bug-065478 - Fatal error is coming when searching with alphabetic value in price range
+
+
 ## TV-4.1.5.20220916
 
 Fixes:
