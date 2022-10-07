@@ -39,7 +39,7 @@ switch ($frmType) {
         $applyToTeachImage = $frm->getField('apply_to_teach_banner');
         if ($canEdit) {
             $adminLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
-            $desktopLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
+            $desktopLogoFld->htmlAfterField = str_replace(['{width}', '{height}'], ['200', '67'], Label::getLabel('LBL_For_best_view_width_{width}px_and_height_{height}px'));
             $emailLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '200*100');
             $certLogoFld->htmlAfterField = sprintf(Label::getLabel('LBL_Dimensions_%s'), '140*47');
             $faviconFld->htmlAfterField = str_replace(['{dimensions}', '{ext}'], ['16*16', '.ico'], Label::getLabel('LBL_FAV_DIMENSIONS_{dimensions}_AND_EXTENSION_{ext}'));
