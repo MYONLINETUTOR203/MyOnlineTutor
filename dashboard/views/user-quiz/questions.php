@@ -19,7 +19,7 @@
                                         <div class="progress__bar bg-green progressBarJs" role="progressbar" style="width:60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
-                                <div class="page-progress__value"> <strong class="progressJs">0%</strong></div>
+                                <div class="page-progress__value"> <strong class="progressJs"></strong></div>
                             </div>
                         </div>
                     </div>
@@ -28,15 +28,21 @@
                     <div class="page-meta">
                         <div class="page-meta__item">
                             <div class="timer">
-                                <div class="timer__media">
-                                    <svg class="icon icon--clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                        <path d="M9,16a7,7,0,1,1,7-7A7,7,0,0,1,9,16Zm0-1.4A5.6,5.6,0,1,0,3.4,9,5.6,5.6,0,0,0,9,14.6ZM9.7,9h2.8v1.4H8.3V5.5H9.7Z" transform="translate(3 3)" fill="#333" />
-                                    </svg>
-                                    <span><?php echo Label::getLabel('LBL_TIME_LEFT:'); ?> </span>
-                                </div>
-                                <div class="timer__content">
-                                    <div class="timer__controls countdowntimer timer-js" id="countdowntimer-97152" remainingtime="14015888">05:17:39</div>
-                                </div>
+                                <?php if ($data['quilin_duration'] > 0) { ?>
+                                    <div class="timer__media">
+                                        <svg class="icon icon--clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                            <path d="M9,16a7,7,0,1,1,7-7A7,7,0,0,1,9,16Zm0-1.4A5.6,5.6,0,1,0,3.4,9,5.6,5.6,0,0,0,9,14.6ZM9.7,9h2.8v1.4H8.3V5.5H9.7Z" transform="translate(3 3)" fill="#333" />
+                                        </svg>
+                                        <span><?php echo Label::getLabel('LBL_TIME_LEFT:'); ?> </span>
+                                    </div>
+                                    <div class="timer__content">
+                                        <?php
+                                        $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
+                                        $timer = $endtime - strtotime(date('Y-m-d H:i:s'));
+                                        ?>
+                                        <div class="timer__controls countdowntimer timer-js" id="countdowntimerJs" remainingtime="<?php echo $timer; ?>">00:00:00:00</div>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -50,5 +56,9 @@
 <script>
     $(document).ready(function() {
         view('<?php echo $attemptId; ?>');
+    });
+    
+    $('#countdowntimerJs').appTimer(function() {
+        window.location.reload();
     });
 </script>

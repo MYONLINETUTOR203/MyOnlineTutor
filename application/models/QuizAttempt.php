@@ -10,6 +10,9 @@ class QuizAttempt extends MyAppModel
     const STATUS_IN_PROGRESS = 1;
     const STATUS_COMPLETED = 2;
 
+    const EVALUATION_PASSED = 1;
+    const EVALUATION_FAILED = 2;
+
     private $quiz;
 
     /**
@@ -61,7 +64,7 @@ class QuizAttempt extends MyAppModel
 
         $this->assignValues([
             'quizat_status' => static::STATUS_IN_PROGRESS,
-            'quizat_created' => date('Y-m-d H:i:s'),
+            'quizat_started' => date('Y-m-d H:i:s'),
         ]);
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -117,12 +120,14 @@ class QuizAttempt extends MyAppModel
         if ($question['qulinqu_type'] != Question::TYPE_MANUAL) {
             $assignValues['quatqu_id'] = empty($data['quatqu_id']) ? $quesAttempt->getId() : $data['quatqu_id'];
             if (!$this->setupQuesScore($assignValues)) {
+                $db->rollbackTransaction();
                 return false;
             }
         }
 
         /* calculations */
         if (!$this->setupQuizProgress()) {
+            $db->rollbackTransaction();
             return false;
         }
 
@@ -136,7 +141,7 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    public function setupQuesScore($data)
+    private function setupQuesScore($data)
     {
         /* get answers */
         $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
@@ -164,7 +169,7 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    public function setupQuizProgress()
+    private function setupQuizProgress()
     {
         $progress = $score = 0;
         $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
@@ -179,7 +184,7 @@ class QuizAttempt extends MyAppModel
 
         $this->assignValues([
             'quizat_progress' => $progress,
-            'quizat_scored' => $score,
+            'quizat_marks' => $score,
         ]);
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -188,15 +193,53 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    public function markComplete()
+    public function markComplete(string $endTime = '')
     {
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
             return false;
         }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+
+        if (empty($endTime)) {
+            $endTime = date('Y-m-d H:i:s');
+        }
         $this->assignValues([
             'quizat_qulinqu_id' => 0,
             'quizat_status' => QuizAttempt::STATUS_COMPLETED,
-            'quizat_updated' => date('Y-m-d H:i:s')
+            'quizat_updated' => $endTime
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+
+        /* calculations */
+        if (!$this->setupEvaluation()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    private function setupEvaluation()
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('quizat_marks');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+
+        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
+        $evaluation = static::EVALUATION_PASSED;
+        if ($percent < $this->quiz['quilin_passmark']) {
+            $evaluation = static::EVALUATION_FAILED;
+        }
+        $this->assignValues([
+            'quizat_scored' => $percent,
+            'quizat_evaluation' => $evaluation,
         ]);
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -219,7 +262,8 @@ class QuizAttempt extends MyAppModel
             'quilin_title', 'quilin_detail', 'quilin_type', 'quilin_questions', 'quilin_duration', 'quilin_record_type',
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
             'quilin_user_id', 'quizat_status', 'quizat_id', 'quizat_user_id', 'quizat_qulinqu_id', 'quizat_progress',
-            'quilin_id', 'quizat_quilin_id'
+            'quilin_id', 'quizat_quilin_id', 'quizat_evaluation', 'quilin_passmsg', 'quilin_failmsg', 'quizat_marks',
+            'quizat_scored', 'quizat_started', 'quizat_updated'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);

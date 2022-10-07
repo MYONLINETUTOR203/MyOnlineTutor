@@ -459,6 +459,7 @@ class QuizLinked extends MyAppModel
                     'quizat_quilin_id' => $id,
                     'quizat_user_id' => $user['user_id'],
                     'quizat_status' => QuizAttempt::STATUS_PENDING,
+                    'quizat_created' => date('Y-m-d H:i:s'),
                 ]);
                 if (!$attempt->save()) {
                     $this->error = $attempt->getError();

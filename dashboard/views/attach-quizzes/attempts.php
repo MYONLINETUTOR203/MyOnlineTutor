@@ -25,7 +25,7 @@ $types = Quiz::getTypes();
                         <?php foreach ($quizzes as $quiz) {
                             $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['users']['quizat_id']]);
                             if ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
-                                $url = MyUtility::makeFullUrl('UserQuiz', 'complete', [$quiz['users']['quizat_id']]);
+                                $url = MyUtility::makeFullUrl('UserQuiz', 'completed', [$quiz['users']['quizat_id']]);
                             } elseif ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
                                 $url = MyUtility::makeFullUrl('UserQuiz', 'questions', [$quiz['users']['quizat_id']]);
                             }

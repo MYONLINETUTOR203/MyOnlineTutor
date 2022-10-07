@@ -1,14 +1,20 @@
 $(function () {
     view = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'view'), { id }, function (response) {
-            $('.quizPanelJs').html(response.html);
-            $('.questionInfoJs').html(response.questionsInfo);
-            $('.totalMarksJs').html(response.totalMarks);
-            $('.progressJs').html(response.progressPercent);
-            $('.progressBarJs').css({ 'width': response.progressPercent });
-            $('.progressBarJs').hide();
-            if (response.progress > 0) {
-                $('.progressBarJs').show();
+            if (response.expired == 1) {
+                setTimeout(function () {
+                    window.location = fcom.makeUrl('UserQuiz', 'completed', [id]);
+                }, 2000);
+            } else {
+                $('.quizPanelJs').html(response.html);
+                $('.questionInfoJs').html(response.questionsInfo);
+                $('.totalMarksJs').html(response.totalMarks);
+                $('.progressJs').html(response.progressPercent);
+                $('.progressBarJs').css({ 'width': response.progressPercent });
+                $('.progressBarJs').hide();
+                if (response.progress > 0) {
+                    $('.progressBarJs').show();
+                }
             }
         });
     };

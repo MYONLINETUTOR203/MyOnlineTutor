@@ -40,7 +40,7 @@ class UserQuizController extends DashboardController
         if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
         } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
-            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'complete', [$id]));
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
         $this->set('data', $data);
@@ -70,7 +70,7 @@ class UserQuizController extends DashboardController
      */
     public function questions(int $id)
     {
-        $quiz = new QuizAttempt($id);
+        $quiz = new QuizAttempt($id, $this->siteUserId);
         $data = $quiz->getById();
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
@@ -82,8 +82,19 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
 
+        $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
+        if (strtotime(date('Y-m-d H:i:s')) > $endtime) {
+            if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
+                FatUtility::dieJsonError($quiz->getError());
+            }
+            Message::addErrorMessage(Label::getLabel('LBL_QUIZ_DURATION_IS_OVER'));
+            FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
+        }
+
         $this->set('data', $data);
         $this->set('attemptId', $id);
+
+        $this->_template->addJs('js/app.timer.js');
         $this->_template->render();
     }
 
@@ -100,11 +111,12 @@ class UserQuizController extends DashboardController
         }
 
         /* get quiz details */
-        $quiz = new QuizAttempt($id);
+        $quiz = new QuizAttempt($id, $this->siteUserId);
         $data = $quiz->getById();
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
+        
         /* validate logged in user */
         if ($data['quizat_user_id'] != $this->siteUserId) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
@@ -148,7 +160,8 @@ class UserQuizController extends DashboardController
             'data' => $data,
             'attemptedQues' => $attemptedQues,
             'question' => $question,
-            'options' => json_decode($question['qulinqu_options'], true)
+            'options' => json_decode($question['qulinqu_options'], true),
+            'expired' => 0
         ]);
 
         /* Set quiz stats data */
@@ -258,8 +271,12 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
 
-        $this->set('data', $data);
-        $this->set('attemptId', $id);
+        /* get user name */
+        $this->sets([
+            'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
+            'data' => $data,
+            'attemptId' => $id
+        ]);
         $this->_template->render();
     }
 
