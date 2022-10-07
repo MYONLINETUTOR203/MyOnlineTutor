@@ -634,7 +634,6 @@ ul {
         -ms-flex-pack: justify;
             justify-content: space-between;
     background-color: #fff;
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -697,7 +696,6 @@ ul {
             justify-content: space-between;
     position: relative;
     background-color: #fff;
-    position: -webkit-sticky;
     position: sticky; }
     .box--checkout .box-foot .btn {
       width: 120px;
@@ -5468,8 +5466,8 @@ img {
 
 .box--narrow {
   padding: 30px;
-  min-width: 500px;
-  max-width: 500px; }
+  min-width: 460px;
+  max-width: 460px; }
 
 .box--narrow h2 {
   margin-bottom: 25px; }
@@ -8029,25 +8027,28 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
     left: 1%; } }
 
 .social-button {
-  border: 1px solid var(--color-white);
+  border: 1px solid transparent;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 0;
+  padding: var(--padding-1) var(--padding-2);
   background-color: var(--color-white);
-  color: var(--color-black); }
-  @media (max-width: 767px) {
-    .social-button {
-      border-color: var(--color-gray-200); } }
+  border-radius: 3px;
+  color: var(--color-black);
+  font-weight: var(--font-weight-medium);
+  -webkit-box-shadow: 0 1px 2px 1px #d4d4d4;
+          box-shadow: 0 1px 2px 1px #d4d4d4; }
   .social-button__label {
     padding: 0 var(--padding-6);
     width: 100%;
-    text-align: center; }
+    text-align: center;
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 0%;
+            flex: 1 1 0%; }
   .social-button__media {
-    padding: var(--padding-3);
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -8057,20 +8058,19 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
-    background-color: var(--color-white);
-    width: 50px;
-    height: 2.6rem; }
-    .social-button__media img {
-      width: 18px;
-      height: 18px; }
+    width: 36px;
+    height: 36px; }
+    .social-button__media svg {
+      width: 30px;
+      height: 30px; }
+  .social-button--block {
+    width: 100%; }
   .social-button--google {
-    background-color: #4285F4;
-    border-color: #4285F4;
-    color: var(--color-white); }
+    color: var(--color-black); }
+  .social-button--ap {
+    color: var(--color-black); }
   .social-button--fb {
-    background-color: #28589c;
-    border-color: #28589c;
-    color: var(--color-white); }
+    color: var(--color-black); }
   .social-button--google-white {
     background-color: var(--color-white);
     border-color: var(--color-white);
@@ -8107,6 +8107,22 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
       margin-right: var(--margin-2); }
     .social-button--center .social-button__label {
       width: auto; }
+  .social-button:focus {
+    -webkit-box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.1);
+    outline: none; }
+  .social-button:active {
+    -webkit-box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 0.3rem rgba(0, 0, 0, 0.1);
+    outline: none;
+    background-color: #eeeeee; }
+  @media (min-width: 1199px) {
+    .social-button:hover {
+      -webkit-box-shadow: 0 2px 2px 2px #ddd;
+              box-shadow: 0 2px 2px 2px #ddd; } }
+
+.social-actions .social-button {
+  margin-bottom: var(--margin-5); }
 
 .group--social a span,
 .group--social a {
@@ -8419,6 +8435,9 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
       visibility: visible;
       top: 100%; } }
 
+#signinFrmPopUp .field_label:empty, #frm_fat_id_signupFrm .field_label:empty {
+  display: none; }
+
 .table th, .table td {
   padding: var(--padding-4) var(--padding-6);
   vertical-align: top;
@@ -8454,7 +8473,6 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
       border-top-right-radius: var(--radius-0);
       border-bottom-right-radius: var(--radius-0); }
   .table--styled th {
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1; }
@@ -8494,7 +8512,6 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
           box-shadow: 0 1px 0 0 var(--color-gray-200); }
 
 .table--sticky th {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background-color: var(--colors-white);
@@ -11988,7 +12005,6 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 .fc .fc-scrollgrid-section-sticky > * {
   background: var(--fc-page-bg-color, #fff);
-  position: -webkit-sticky;
   position: sticky;
   z-index: 2; }
 
@@ -12003,7 +12019,6 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
   margin-bottom: -1px; }
 
 .fc-sticky {
-  position: -webkit-sticky;
   position: sticky; }
 
 .fc .fc-view-harness {
@@ -12730,7 +12745,6 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
   border-right: 0; }
 
 .fc .fc-list-sticky .fc-list-day > * {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background: var(--fc-page-bg-color, #fff); }
@@ -13447,13 +13461,11 @@ body[class*="jconfirm-no-scroll-"] {
   user-select: none;
   border-radius: 4px;
   min-height: 1em;
-  -webkit-transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
-  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
   -webkit-transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
   transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
-  -o-transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
-  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
+  -o-transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, -webkit-box-shadow 0.1s ease;
   -webkit-tap-highlight-color: transparent;
   border: 0;
   background-image: none; }

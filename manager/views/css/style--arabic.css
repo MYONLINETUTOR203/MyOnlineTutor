@@ -104,7 +104,8 @@ select{background-position:10px center; padding-right:10px; padding-left: 30px;}
    
  }
  .tabs_nav_container.vertical > .tabs_nav li a{text-align: right;}
- .tabs_nav > li:first-child{margin-right: 0;}
+ .tabs_nav > li:first-child{margin-right: 0;margin-left: 1rem;}
+ .tabs_nav > li:last-child{margin-left: 0;margin-right: 1rem;}
  .web_form .list-inline label > .radio, .web_form .list-inline label > .checkbox{margin-right: 0; margin-left: 8px;}
  .web_form .list-inline label{padding-right: 10px; padding-left: 20px;}
  .checkbox .input-helper::before, .radio .input-helper::before{left: auto; right: 0;}
@@ -126,8 +127,14 @@ select{background-position:10px center; padding-right:10px; padding-left: 30px;}
 
 .switch-labels + .switch-handles{margin-right: 0; margin-left: 20px;}
 
-#facebox{text-align:right;}
+.grid_1, .grid_2, .grid_3, .grid_4, .grid_5, .grid_6, .grid_7, .grid_8, .grid_9, .grid_10, .grid_11, .grid_12, .footinfo .grid_1 .pagination,.breadcrumb li, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12{float: right;}
+.footinfo .grid_2{text-align: left;}
+.breadcrumb li a:after{right: auto;left: -15px;}
+.breadcrumb li{padding-left: 0; padding-right: 15px;margin-left: 0; margin-right: 15px;}
+#facebox{text-align: right;}
 .web_form input[type="submit"], .btn-primary, .repeatedrow h3 .icon{margin-right: 0; margin-left: 10px;}
-
 .listview .list dt{text-align: right;clear: right;float: right;}
-
+.listview .list dd{margin-left: auto; margin-right: 180px;}
+.web_form input[type="button"]{margin-right: auto; margin-left: 1rem;}
+.ui-datepicker-header .ui-datepicker-next .ui-icon::before{left:auto; right: 5px; border-left:7px solid transparent; border-right:7px solid #999;}
+.ui-datepicker-header .ui-datepicker-prev .ui-icon::before{left:auto; right: 5px; border-right:4px solid transparent; border-left:7px solid #999;}

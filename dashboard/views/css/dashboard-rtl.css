@@ -186,7 +186,6 @@ p {
     display: -ms-flexbox;
     display: flex;
     height: 100%;
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     bottom: 0;
@@ -1112,7 +1111,6 @@ p {
 
 .action-bar {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.02);
   padding: var(--padding-6);
   border-bottom: 1px solid var(--color-gray-200);
   border-top: 1px solid var(--color-gray-200); }
@@ -1124,14 +1122,16 @@ p {
       -webkit-box-pack: justify;
           -ms-flex-pack: justify;
               justify-content: space-between; } }
+  .action-bar.selection-disabled {
+    opacity: 1; }
 
 .g-circle {
   position: relative;
   width: 4rem;
   height: 4rem;
   background-color: var(--color-white);
-  -webkit-box-shadow: var(--boxShadow-all);
-          box-shadow: var(--boxShadow-all);
+  -webkit-box-shadow: 0 1px 2px 1px #d4d4d4;
+          box-shadow: 0 1px 2px 1px #d4d4d4;
   border-radius: var(--radius-round);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1762,7 +1762,6 @@ iframe#st_gdpr_iframe {
   background-color: var(--color-white); }
 
 .table-sticky-scroll .first-child {
-  position: -webkit-sticky;
   position: sticky;
   left: 0;
   z-index: 2;
@@ -2143,7 +2142,6 @@ div.tagsinput div {
   @media (min-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 25.6rem;
-      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2154,7 +2152,6 @@ div.tagsinput div {
   @media (min-width: 1299px) and (max-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 22rem;
-      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2783,7 +2780,6 @@ div.tagsinput div {
   padding: var(--padding-5); }
   @media (min-width: 1199px) {
     .page-controls {
-      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
@@ -4793,7 +4789,6 @@ div.tagsinput div {
                 flex: 1; } }
   @media (min-width: 991px) {
     .page-layout__sticky {
-      position: -webkit-sticky;
       position: sticky;
       top: 1.6rem; } }
   @media (max-width: 991px) {
