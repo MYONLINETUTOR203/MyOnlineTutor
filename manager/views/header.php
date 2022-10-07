@@ -20,7 +20,7 @@ if (!empty($favIconFile)) {
 $this->includeTemplate('_partial/header/common-head.php', $commonHeadData, false);
 echo $this->writeMetaTags();
 echo $this->getJsCssIncludeHtml(false);
-$commonHeadHtmlData = ['bodyClass' => $bodyClass, 'includeEditor' => $includeEditor];
+$commonHeadHtmlData = ['bodyClass' => $bodyClass, 'includeEditor' => $includeEditor, 'siteLanguage' => $siteLanguage];
 $this->includeTemplate('_partial/header/common-header-html.php', $commonHeadHtmlData, false);
 if (AdminAuth::isAdminLogged()) {
     $name = Admin::getAttributesById(AdminAuth::getLoggedAdminId(), 'admin_name');

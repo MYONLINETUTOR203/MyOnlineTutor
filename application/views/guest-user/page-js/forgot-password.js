@@ -10,6 +10,7 @@
         if (!$(frm).validate()) {
             return;
         }
+        fcom.process();
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'forgotPasswordSetup'), fcom.frmData(frm), function () {
             if (typeof grecaptcha !== 'undefined') {
                 grecaptcha.reset();
