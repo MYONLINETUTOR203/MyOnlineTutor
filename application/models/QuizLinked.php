@@ -454,17 +454,36 @@ class QuizLinked extends MyAppModel
 
         foreach ($users as $user) {
             foreach ($data as $id) {
-                $attempt = new QuizAttempt();
-                $attempt->assignValues([
-                    'quizat_quilin_id' => $id,
-                    'quizat_user_id' => $user['user_id'],
-                    'quizat_status' => QuizAttempt::STATUS_PENDING,
-                    'quizat_created' => date('Y-m-d H:i:s'),
-                ]);
-                if (!$attempt->save()) {
-                    $this->error = $attempt->getError();
+                $attempt = new QuizAttempt(0, $user['user_id']);
+                if (!$attempt->setupUserQuiz($id)) {
+                    $this->error = $this->getError();
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public function bindUserQuiz(int $recordId, int $type)
+    {
+        /* get linked quizzes list */
+        $srch = new SearchBase(static::DB_TBL, 'quilin');
+        $srch->addCondition('quilin.quilin_record_id', '=', $recordId);
+        $srch->addCondition('quilin.quilin_record_type', '=', $type);
+        $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addMultipleFields([
+            'quilin_id',
+        ]);
+        $srch->doNotCalculateRecords();
+        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if (empty($quizzes)) {
+            return true;
+        }
+        foreach ($quizzes as $quiz) {
+            $attempt = new QuizAttempt(0, $this->userId);
+            if (!$attempt->setupUserQuiz($quiz['quilin_id'])) {
+                $this->error = $attempt->getError();
+                return false;
             }
         }
         return true;

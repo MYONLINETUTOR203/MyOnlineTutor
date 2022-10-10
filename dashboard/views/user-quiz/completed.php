@@ -54,12 +54,14 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                 <?php } ?>
             </div>
             <div class="d-sm-flex justify-content-center margin-top-4">
-                <a href="#" class="btn btn--primary-bordered margin-1 btn--sm-block">
-                    <svg class="icon icon--png icon--small margin-right-2">
-                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#retake"></use>
-                    </svg>
-                    <?php echo Label::getLabel('LBL_RETAKE_QUIZ'); ?>
-                </a>
+                <?php if ($attempts < $data['quilin_attempts']) { ?>
+                    <a href="javascript:void(0);" class="btn btn--primary-bordered margin-1 btn--sm-block" onclick="retakeQuiz('<?php echo $data['quizat_id'] ?>');">
+                        <svg class="icon icon--png icon--small margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#retake"></use>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_RETAKE_QUIZ'); ?>
+                    </a>
+                <?php } ?>
                 <a href="#" class="btn btn--primary margin-1 btn--sm-block">
                     <?php echo Label::getLabel('LBL_CHECK_ANSWERS'); ?>
                 </a>

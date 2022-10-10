@@ -378,3 +378,4 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 ALTER TABLE `tbl_quiz_attempts` ADD `quizat_started` DATETIME NOT NULL AFTER `quizat_status`; 
 
 ALTER TABLE `tbl_questions` CHANGE `ques_detail` `ques_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
+ALTER TABLE `tbl_quiz_attempts` ADD `quizat_active` TINYINT(1) NOT NULL AFTER `quizat_status`; 

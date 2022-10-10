@@ -259,7 +259,7 @@ class UserQuizController extends DashboardController
      */
     public function completed(int $id)
     {
-        $quiz = new QuizAttempt($id);
+        $quiz = new QuizAttempt($id, $this->siteUserId);
         $data = $quiz->getById();
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
@@ -270,14 +270,30 @@ class UserQuizController extends DashboardController
         if ($data['quizat_status'] != QuizAttempt::STATUS_COMPLETED) {
             FatUtility::exitWithErrorCode(404);
         }
-
+        if ($data['quizat_active'] == AppConstant::NO) {
+            FatUtility::exitWithErrorCode(404);
+        }
         /* get user name */
         $this->sets([
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
             'data' => $data,
-            'attemptId' => $id
+            'attemptId' => $id,
+            'attempts' => $quiz->getAttemptCount($data['quizat_quilin_id'])
         ]);
         $this->_template->render();
+    }
+
+    public function retake()
+    {
+        $id = FatApp::getPostedData('id');
+        $quiz = new QuizAttempt($id, $this->siteUserId);
+        if (!$quiz->retake()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+        Message::addMessage(Label::getLabel('LBL_QUIZ_PROGRESS_RESET_SUCCESSFULLY'));
+        FatUtility::dieJsonSuccess([
+            'id' => $quiz->getMainTableRecordId()
+        ]);
     }
 
     private function getForm(int $type)

@@ -81,7 +81,14 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    public function setup($data, $next = AppConstant::NO)
+    /**
+     * Setup answers submitted by the user
+     *
+     * @param array $data
+     * @param int   $next
+     * @return bool
+     */
+    public function setup(array $data, int $next = AppConstant::NO)
     {
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
             return false;
@@ -141,7 +148,13 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    private function setupQuesScore($data)
+    /**
+     * Setup question scores on the basis of correct answers
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupQuesScore(array $data)
     {
         /* get answers */
         $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
@@ -169,6 +182,11 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Setup quiz progress and scores
+     *
+     * @return bool
+     */
     private function setupQuizProgress()
     {
         $progress = $score = 0;
@@ -193,6 +211,12 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Mark quiz complete
+     *
+     * @param string $endTime
+     * @return bool
+     */
     public function markComplete(string $endTime = '')
     {
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
@@ -223,6 +247,45 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    public function setupUserQuiz($id)
+    {
+        $db = FatApp::getDb();
+        $where = ['smt' => 'quizat_quilin_id = ? AND quizat_user_id = ?', 'vals' => [$id, $this->userId]];
+        if (!$db->updateFromArray(static::DB_TBL, ['quizat_active' => AppConstant::NO], $where)) {
+            $this->error = $db->getError();
+            return false;
+        }
+        $this->assignValues([
+            'quizat_quilin_id' => $id,
+            'quizat_user_id' => $this->userId,
+            'quizat_status' => static::STATUS_PENDING,
+            'quizat_active' => AppConstant::YES,
+            'quizat_created' => date('Y-m-d H:i:s'),
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function getAttemptCount(int $quizLinkId)
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->addCondition('quizat_user_id', '=', $this->userId);
+        $srch->addCondition('quizat_quilin_id', '=', $quizLinkId);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('IFNULL(COUNT(quizat_id), 0) as attempts');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+        return $data['attempts'];
+    }
+
+    /**
+     * Setup final evaluated results
+     *
+     * @return bool
+     */
     private function setupEvaluation()
     {
         $srch = new SearchBase(QuizAttempt::DB_TBL);
@@ -263,14 +326,20 @@ class QuizAttempt extends MyAppModel
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
             'quilin_user_id', 'quizat_status', 'quizat_id', 'quizat_user_id', 'quizat_qulinqu_id', 'quizat_progress',
             'quilin_id', 'quizat_quilin_id', 'quizat_evaluation', 'quilin_passmsg', 'quilin_failmsg', 'quizat_marks',
-            'quizat_scored', 'quizat_started', 'quizat_updated'
+            'quizat_scored', 'quizat_started', 'quizat_updated', 'quizat_active'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
-    public function setQuestion($next = AppConstant::YES)
+    /**
+     * Get next & previous question
+     *
+     * @param int $next
+     * @return bool
+     */
+    public function setQuestion(int $next = AppConstant::YES)
     {
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
             return false;
@@ -304,7 +373,13 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    private function validate(int $status)
+    /**
+     * Validate quiz details
+     *
+     * @param int $status
+     * @return bool
+     */
+    public function validate(int $status)
     {
         $quiz = $this->getById();
         if (empty($quiz)) {
@@ -317,14 +392,39 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         if ($quiz['quizat_status'] != $status) {
-            if ($status == QuizAttempt::STATUS_IN_PROGRESS) {
+            if ($status == static::STATUS_IN_PROGRESS) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_UNATTENDED_OR_COMPLETED_QUIZ');
-            } elseif ($status == QuizAttempt::STATUS_PENDING) {
+            } elseif ($status == static::STATUS_PENDING) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_COMPLETED_QUIZ');
+            } elseif ($status == static::STATUS_COMPLETED) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_PENDING_QUIZ');
             }
             return false;
         }
         $this->quiz = $quiz;
+        return true;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function retake()
+    {
+        if (!$this->validate(QuizAttempt::STATUS_COMPLETED)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if ($this->quiz['quilin_attempts'] == $this->getAttemptCount($this->quiz['quizat_quilin_id'])) {
+            $this->error = Label::getLabel('LBL_REATTEMPT_LIMIT_HAS_BEEN_EXCEEDED');
+            return false;
+        }
+        $this->mainTableRecordId = 0;
+        if (!$this->setupUserQuiz($this->quiz['quizat_quilin_id'])) {
+            $this->error = $this->getError();
+            return false;
+        }
         return true;
     }
 }

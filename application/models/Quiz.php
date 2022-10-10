@@ -189,7 +189,10 @@ class Quiz extends MyAppModel
             $this->setFldValue('quiz_created', date('Y-m-d H:i:s'));
         }
         /* check completion status */
-        $quizStatus = $this->getCompletedStatus();
+        if (!$quizStatus = $this->getCompletedStatus()) {
+            $this->error = $this->getError();
+            return false;
+        }
         if ($quizStatus['is_complete'] == AppConstant::YES) {
             $this->setFldValue('quiz_status', static::STATUS_PUBLISHED);
         } else {
@@ -401,15 +404,14 @@ class Quiz extends MyAppModel
      */
     public function getCompletedStatus()
     {
+        $criteria = ['general' => 0, 'settings' => 0, 'questions' => 0, 'is_complete' => AppConstant::NO];
         if (!$data = $this->getById()) {
-            $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
-            return false;
+            return $criteria;
         }
         if ($this->userId != $data['quiz_user_id']) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
-        $criteria = ['general' => 0, 'settings' => 0, 'questions' => 0, 'is_complete' => AppConstant::NO];
 
         /* get basic data */
         if (!empty($data['quiz_type'])) {
