@@ -278,7 +278,9 @@ class QuizzesController extends DashboardController
     private function getForm()
     {
         $frm = new Form('frmQuiz');
-        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '')->requirements()->setRequired();
+        $fld = $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setLength(10, 120);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type_id', Quiz::getTypes());
         $fld->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
@@ -323,8 +325,10 @@ class QuizzesController extends DashboardController
 
         $failFld = $frm->addTextArea(Label::getLabel('LBL_FAIL_MESSAGE'), 'quiz_failmsg', '');
         $failFld->requirements()->setRequired();
+        $failFld->requirements()->setLength(10, 255);
         $passFld = $frm->addTextArea(Label::getLabel('LBL_PASS_MESSAGE'), 'quiz_passmsg', '');
         $passFld->requirements()->setRequired();
+        $passFld->requirements()->setLength(10, 255);
         $frm->addHiddenField('', 'quiz_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;
