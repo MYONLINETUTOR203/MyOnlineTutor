@@ -286,7 +286,7 @@ class QuizzesController extends DashboardController
         $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
 
