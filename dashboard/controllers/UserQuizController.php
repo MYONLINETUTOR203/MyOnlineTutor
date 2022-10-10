@@ -307,6 +307,12 @@ class UserQuizController extends DashboardController
         ]);
     }
 
+    public function downloadCertificate(int $id)
+    {
+        $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ;
+        FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
+    }
+
     private function getForm(int $type)
     {
         $frm = new Form('frmQuiz');

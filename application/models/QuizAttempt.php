@@ -329,7 +329,7 @@ class QuizAttempt extends MyAppModel
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
             'quilin_user_id', 'quizat_status', 'quizat_id', 'quizat_user_id', 'quizat_qulinqu_id', 'quizat_progress',
             'quilin_id', 'quizat_quilin_id', 'quizat_evaluation', 'quilin_passmsg', 'quilin_failmsg', 'quizat_marks',
-            'quizat_scored', 'quizat_started', 'quizat_updated', 'quizat_active'
+            'quizat_scored', 'quizat_started', 'quizat_updated', 'quizat_active', 'quizat_certificate_number'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);

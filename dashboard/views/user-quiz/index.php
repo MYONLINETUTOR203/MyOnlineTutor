@@ -23,7 +23,13 @@
                             </li>
                             <li>
                                 <b><?php echo Label::getLabel('LBL_DURATION'); ?> : </b>
-                                <?php echo MyUtility::convertDuration($data['quilin_duration']) ?>
+                                <?php
+                                if ($data['quilin_duration'] > 0) {
+                                    echo MyUtility::convertDuration($data['quilin_duration']);
+                                } else {
+                                    echo Label::getLabel('LBL_NO_LIMIT');
+                                }
+                                ?>
                             </li>
                             <li>
                                 <b><?php echo Label::getLabel('LBL_ALLOWED_ATTEMPTS'); ?> : </b>

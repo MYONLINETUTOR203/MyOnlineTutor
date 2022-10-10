@@ -219,7 +219,7 @@ class CertificatesController extends AdminBaseController
         $content = $this->_template->render(false, false, 'certificates/generate.php', true);
         $filename = 'certificate.pdf';
         /* generate certificate */
-        if (!$cert->generateCertificate($content, $filename, true)) {
+        if (!$cert->create($content, $filename, true)) {
             FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
         }
     }

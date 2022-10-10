@@ -10,32 +10,150 @@ use JonnyW\PhantomJs\Client;
  */
 class Certificate extends MyAppModel
 {
-    const DB_TBL = 'tbl_order_courses';
-    const DB_TBL_PREFIX = 'ordcrs_';
     const CERTIFICATE_NO_PREFIX = 'YC_';
+
+    const TYPE_COURSE = 1;
+    const TYPE_QUIZ = 2;
     
     private $userId;
     private $langId;
+    private $id;
+    private $type;
 
     /**
      * Initialize certificate
      *
      * @param int $id
      */
-    public function __construct(int $id = 0, int $userId = 0, int $langId = 0)
+    public function __construct(int $id = 0, int $type = self::TYPE_QUIZ, int $userId = 0, int $langId = 0)
     {
         $this->userId = $userId;
         $this->langId = $langId;
+        $this->id = $id;
+        $this->type = $type;
+    }
+
+    public function generateCertificate($content)
+    {
+        if (!$content = $this->setupTemplate($content)) {
+            return false;
+        }
+        if (!$this->setupId()) {
+            return false;
+        }
+        if (!$data = $this->getData()) {
+            return false;
+        }
+        if (!$content = $this->formatContent($content, $data)) {
+            return false;
+        }
+        if (!$this->create($content)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function setupId()
+    {
+        /* generate certificate */
+        $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
+        if ($this->type == static::TYPE_QUIZ) {
+            $quiz = new QuizAttempt($this->id);
+            $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
+            if (!$quiz->save()) {
+                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
+                return false;
+            }
+        } elseif ($this->type == static::TYPE_COURSE) {
+            $course = new Course($this->id);
+            $course->setFldValue('ordcrs_certificate_number', $certificateNumber);
+            if (!$course->save()) {
+                $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
+                return false;
+            }
+        } else {
+            $this->error = Label::getLabel('LBL_INVALID_CERTIFICATE_TYPE');
+            return false;
+        }
+        return true;
+    }
+
+    private function setupTemplate($content)
+    {
+        $code = 'course_completion_certificate';
+        if ($this->type == static::TYPE_QUIZ) {
+            $code = 'evaluation_certificate';
+        }
+        $srch = CertificateTemplate::getSearchObject($this->langId);
+        $srch->addCondition('certpl_code', '=', $code);
+        if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND');
+            return false;
+        }
+        $template = json_decode($template['certpl_body'], true);
+        $content = str_replace(
+            ['{heading}', '{content-1}', '{learner}', '{content-2}', '{trainer}', '{certificate-number}'],
+            [
+                $template['heading'],
+                $template['content_part_1'],
+                $template['learner'],
+                $template['content_part_2'],
+                $template['trainer'],
+                $template['certificate_number'],
+            ],
+            $content
+        );
+        return $content;
     }
 
     /**
-     * Generate Certificate Image & PDF
+     * Get Course & User details for certificate
+     *
+     * @param int     $ordcrsId
+     * @return array
+     */
+    private function getData()
+    {
+        switch ($this->type) {
+            case static::TYPE_COURSE:
+                $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
+                $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
+                $srch->joinTable(
+                    CourseLanguage::DB_TBL_LANG,
+                    'LEFT JOIN',
+                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
+                    'clanglang'
+                );
+                $srch->applyPrimaryConditions();
+                $srch->addSearchListingFields();
+                $srch->addMultipleFields([
+                    'crspro_completed',
+                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
+                    'learner.user_lang_id',
+                    'ordcrs_certificate_number',
+                    'course_duration'
+                ]);
+                $srch->addCondition('ordcrs_id', '=', $this->id);
+                $data = FatApp::getDb()->fetch($srch->getResultSet());
+                break;
+            case static::TYPE_QUIZ:
+                $quiz = new QuizAttempt($this->id);
+                $data = $quiz->getById();
+                break;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generate Certificate PDF
      *
      * @param string $token
      * @return bool
      */
-    public function generateCertificate($content, $filename, $preview = false)
+    public function create($content, $preview = false)
     {
+        $filename = 'certificate' . $this->id . '.pdf';
         $mpdf = new \Mpdf\Mpdf([
             'orientation' => 'L',
             'margin_left' => 0,
@@ -68,38 +186,37 @@ class Certificate extends MyAppModel
      * @param array $data
      * @return array
      */
-    public function getFormattedContent(array $data)
+    public function formatContent(string $content, array $data)
     {
-        $srch = CertificateTemplate::getSearchObject($data['lang_id']);
-        $srch->addCondition('certpl_code', '=', 'evaluation_certificate');
-        if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
-            return false;
-        }
-        $content = $template['certpl_body'];
+        $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
         $content = str_replace(
             [
                 '{learner-name}',
                 '{teacher-name}',
                 '{quiz-name}',
-                '{quiz-language}',
                 '{quiz-completed-date}',
                 '{certificate-number}',
-                '{quiz-duration}'
+                '{quiz-duration}',
+                '{course-name}',
+                '{course-language}',
+                '{course-completed-date}',
+                '{course-duration}'
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
                 '<span class=\"courseNameJs\">' . $data['quiz_title'] . '</span>',
-                $data['quiz_clang_name'],
                 MyDate::formatDate($data['quiz_completed']),
                 $data['cert_number'],
-                MyUtility::convertDuration($data['quiz_duration'])
-
+                MyUtility::convertDuration($data['quiz_duration']),
+                '<span class=\"courseNameJs\">' . $title . '</span>',
+                $data['course_clang_name'],
+                MyDate::formatDate($data['crspro_completed']),
+                MyUtility::convertDuration($data['course_duration'])
             ],
             $content
         );
-        return json_decode($content, true);
+        return $content;
     }
 
     /**

@@ -209,6 +209,7 @@ class QuizLinked extends MyAppModel
             'quilin_record_id', 'quilin_id', 'quilin_title', 'quilin_type', 'quilin_validity'
         ]);
         $srch->doNotCalculateRecords();
+        $srch->addOrder('quilin_id', 'DESC');
         $attachedQuizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_id');
         if (empty($attachedQuizzes)) {
             return [];

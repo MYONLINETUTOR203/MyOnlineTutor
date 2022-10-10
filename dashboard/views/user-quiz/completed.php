@@ -75,7 +75,7 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                     <?php echo Label::getLabel('LBL_GO_TO_QUIZZES'); ?>
                 </a>
                 <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
-                    <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$data['quizat_id']], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1 btn--sm-block">
+                    <a href="<?php echo MyUtility::makeUrl('UserQuiz', 'downloadCertificate', [$data['quizat_id']], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1 btn--sm-block">
                         <svg class="icon icon--png icon--small margin-right-2">
                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
                         </svg>
