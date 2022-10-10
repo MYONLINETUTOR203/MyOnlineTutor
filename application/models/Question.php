@@ -96,7 +96,7 @@ class Question extends MyAppModel
             $srch->addCondition('queopt_id', 'IN', $optionsIds);
         }
         $srch->addOrder('queopt_order', 'ASC');
-        return FatApp::getDb()->fetchAll($srch->getResultSet());
+        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'queopt_id');
     }
 
     /**
@@ -270,27 +270,28 @@ class Question extends MyAppModel
             !$db->query(
                 "UPDATE " . Category::DB_TBL . "
                 LEFT JOIN(
-                    SELECT cat.ques_cate_id AS catId,
+                    SELECT ques.ques_cate_id AS catId,
                         COUNT(*) AS totalRecord
                     FROM
-                        " . self::DB_TBL . " AS cat
+                        " . self::DB_TBL . " AS ques
                     WHERE 
-                        cat.ques_cate_id IN (" . implode(',', $cateIds) . ")
+                        ques.ques_cate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques.ques_deleted IS NULL
                     GROUP BY
-                        cat.ques_cate_id 
+                        ques.ques_cate_id 
                 ) mainCat
                 ON
                     mainCat.catId = " . Category::DB_TBL . ".cate_id
                 LEFT JOIN(
                     SELECT
-                        subCat.ques_subcate_id AS catId,
+                        ques1.ques_subcate_id AS catId,
                         COUNT(*) AS totalRecord
                     FROM
-                        " . self::DB_TBL . " AS subCat
-                    WHERE 
-                        subCat.ques_subcate_id IN (" . implode(',', $cateIds) . ")
+                        " . self::DB_TBL . " AS ques1
+                    WHERE ques1.ques_subcate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques1.ques_deleted IS NULL
                     GROUP BY
-                        subCat.ques_subcate_id
+                        ques1.ques_subcate_id
                 ) catChild
                 ON
                     catChild.catId = cate_id
