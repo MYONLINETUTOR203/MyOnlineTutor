@@ -376,3 +376,5 @@ ALTER TABLE `tbl_quiz_attempts` ADD `quizat_evaluation` TINYINT(1) NOT NULL AFTE
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_QUIZ_PASS_MSG_HEADING', 'Congratulations {username}');
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_QUIZ_FAIL_MSG_HEADING', 'Dear {username}');
 ALTER TABLE `tbl_quiz_attempts` ADD `quizat_started` DATETIME NOT NULL AFTER `quizat_status`; 
+
+ALTER TABLE `tbl_questions` CHANGE `ques_detail` `ques_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
