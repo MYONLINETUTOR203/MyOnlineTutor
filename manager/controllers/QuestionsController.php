@@ -62,7 +62,7 @@ class QuestionsController extends AdminBaseController
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['page']);
         $srch->addOrder('ques_status', 'DESC');
-        $srch->addOrder('ques_id');
+        $srch->addOrder('ques_id', 'DESC');
         $data = $srch->fetchAndFormat(); 
         $categoryIds = array_keys($data);
         $this->sets([
