@@ -54,7 +54,8 @@
             if (
                 $objPrivilege->canViewCategories(true) ||
                 $objPrivilege->canViewCertificates(true) ||
-                $objPrivilege->canViewQuestions(true)
+                $objPrivilege->canViewQuestions(true) || 
+                $objPrivilege->canViewQuizzes(true)
             ) { ?>
                 <li class="haschild">
                     <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_QUIZZES'); ?></a>
