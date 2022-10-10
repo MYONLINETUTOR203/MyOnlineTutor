@@ -118,12 +118,10 @@ class Quiz extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
-
         /* validate quiz */
         if (!$this->validate()) {
             return false;
         }
-        
         $db->startTransaction();
         /* delete question */
         $where = ['smt' => 'quique_quiz_id = ? AND quique_ques_id = ?', 'vals' => [$quizId, $quesId]];
@@ -189,6 +187,13 @@ class Quiz extends MyAppModel
         ]);
         if (empty($quizId)) {
             $this->setFldValue('quiz_created', date('Y-m-d H:i:s'));
+        }
+        /* check completion status */
+        $quizStatus = $this->getCompletedStatus();
+        if ($quizStatus['is_complete'] == AppConstant::YES) {
+            $this->setFldValue('quiz_status', static::STATUS_PUBLISHED);
+        } else {
+            $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
         if (!$this->save()) {
             $this->error = $this->getError();
@@ -287,6 +292,11 @@ class Quiz extends MyAppModel
         }
         $data['quiz_duration'] = $data['quiz_duration'] * 60;
         $this->assignValues($data);
+        $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
 
         /* check completion status */
         $quizStatus = $this->getCompletedStatus();
@@ -295,7 +305,6 @@ class Quiz extends MyAppModel
         } else {
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
-        $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
@@ -315,7 +324,7 @@ class Quiz extends MyAppModel
         $srch->applyPrimaryConditions();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('SUM(ques_marks) as quiz_marks');
+        $srch->addFld('IFNULL(SUM(ques_marks), 0) as quiz_marks');
         $marks = FatApp::getDb()->fetch($srch->getResultSet());
         $this->assignValues($marks);
         if (!$this->save()) {
@@ -341,6 +350,9 @@ class Quiz extends MyAppModel
         $quizQues = array_keys($quizQues);
         array_unshift($quizQues, "");
         unset($quizQues[0]);
+        if (empty($quizQues)) {
+            return true;
+        }
         if (!$this->updateOrder($quizQues)) {
             return false;
         }
