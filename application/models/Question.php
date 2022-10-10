@@ -315,7 +315,7 @@ class Question extends MyAppModel
         $categories = [$data['ques_cate_id'], $data['ques_subcate_id']];
         $srch = Category::getSearchObject();
         $srch->doNotCalculateRecords();
-        $srch->addFld('cate_id');
+        $srch->addMultipleFields(['cate_id', 'cate_parent']);
         $srch->addCondition('cate_id', 'IN', $categories);
         $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -324,9 +324,15 @@ class Question extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
             return false;
         }
-        if ($data['ques_subcate_id'] > 0 && !array_key_exists($data['ques_subcate_id'], $categories)) {
-            $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
-            return false;
+        if ($data['ques_subcate_id'] > 0) {
+            if (!array_key_exists($data['ques_subcate_id'], $categories)) {
+                $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
+                return false;
+            }
+            if ($categories[$data['ques_subcate_id']]['cate_parent'] != $data['ques_cate_id']) {
+                $this->error = Label::getLabel('LBL_INVALID_SUBCATEGORY');
+                return false;
+            }
         }
         return true;
     }
