@@ -53,7 +53,6 @@
         <!-- ] -->
     </div>
     <script>
-        generalAvailability();
         $(document).ready(function() {
             generalAvailability();
         });
