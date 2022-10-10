@@ -20,7 +20,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_TITLE'); ?>
                                     </label>
-                                    : <strong><?php echo $questionData['ques_title']; ?></strong>
+                                    : <strong><?php echo CommonHelper::renderHtml($questionData['ques_title']); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -30,7 +30,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong><?php echo CommonHelper::renderHtml($questionData['ques_detail']); ?></strong>
+                                    : <strong><?php echo ($questionData['ques_detail']) ? CommonHelper::renderHtml($questionData['ques_detail']) : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_CATEGORY'); ?>
                                     </label>
-                                    : <strong><?php echo $questionData['ques_cate_name']; ?></strong>
+                                    : <strong><?php echo CommonHelper::renderHtml($questionData['ques_cate_name']); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +74,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_SUB_CATEGORY'); ?>
                                     </label>
-                                    : <strong><?php echo empty($questionData['ques_subcate_name']) ? Label::getLabel('LBL_NA') : $questionData['ques_subcate_name']; ?></strong>
+                                    : <strong><?php echo empty($questionData['ques_subcate_name']) ? Label::getLabel('LBL_NA') : CommonHelper::renderHtml($questionData['ques_subcate_name']); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_HINT'); ?>
                                     </label>
-                                    : <strong><?php echo $questionData['ques_hint']; ?></strong>
+                                    : <strong><?php echo ($questionData['ques_hint']) ? CommonHelper::renderHtml($questionData['ques_hint']) : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div> 
@@ -134,8 +134,8 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <ul>
-                                        <?php foreach($options as $key => $val): ?>
-                                            <li ><?php echo $val; ?></li>                                            
+                                        <?php foreach($options as $option): ?>
+                                            <li><?php echo $option['queopt_title']; ?></li>
                                         <?php endforeach; ?>
                                     </ul>
                                 </div>
@@ -149,8 +149,8 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     </label>
                                     <?php if(isset($answers) && count($answers) > 0):  ?>
                                     <ul>
-                                        <?php foreach($answers as $key => $answerId): ?>
-                                            <li ><?php echo $options[$answerId]; ?></li>                                            
+                                        <?php foreach($answers as $answerId): ?>
+                                            <li><?php echo $options[$answerId]['queopt_title']; ?></li>                                            
                                         <?php endforeach; ?>
                                     </ul>
                                     <?php endif; ?>
