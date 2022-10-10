@@ -206,7 +206,7 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quilin.quilin_record_type', '=', $type);
         $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultipleFields([
-            'quilin_record_id', 'quilin_id', 'quilin_title', 'quilin_type',
+            'quilin_record_id', 'quilin_id', 'quilin_title', 'quilin_type', 'quilin_validity'
         ]);
         $srch->doNotCalculateRecords();
         $attachedQuizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_id');
@@ -218,6 +218,7 @@ class QuizLinked extends MyAppModel
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
         $srch->addCondition('quizat_quilin_id', 'IN', $quizLinkedIds);
+        $srch->addCondition('quizat_active', '=', AppConstant::YES);
         if ($this->userType == User::LEARNER) {
             $srch->addCondition('quizat_user_id', '=', $this->userId);
         }

@@ -17,17 +17,26 @@ $types = Quiz::getTypes();
                     <tr class="title-row">
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
                         <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
+                        <th><?php echo Label::getLabel('LBL_VALID_TILL'); ?></th>
                         <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) {
+                            $expired = false;
+                            if (strtotime(date('Y-m-d H:i:s')) >= strtotime($quiz['quilin_validity'])) {
+                                $expired = true;
+                            }
                             $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['users']['quizat_id']]);
                             if ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
                                 $url = MyUtility::makeFullUrl('UserQuiz', 'completed', [$quiz['users']['quizat_id']]);
                             } elseif ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
                                 $url = MyUtility::makeFullUrl('UserQuiz', 'questions', [$quiz['users']['quizat_id']]);
+                            } else {
+                                if ($expired == true) {
+                                    $url = "javascript:void(0);";
+                                }
                             }
                             ?>
                             <tr>
@@ -36,7 +45,17 @@ $types = Quiz::getTypes();
                                 </td>
                                 <td><?php echo $types[$quiz['quilin_type']] ?></td>
                                 <td>
-                                    <a target="_blank" href="<?php echo $url; ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                    <?php
+                                    if ($expired == true) {
+                                        echo Label::getLabel('LBL_EXPIRED');
+                                    } else {
+                                        $diff = strtotime($quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s'));
+                                        echo MyUtility::convertDuration($diff, true, true, true);
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <a <?php ($expired == false) ? 'target="_blank"' : ''; ?> href="<?php echo $url; ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--cancel icon--small">
                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
                                         </svg>

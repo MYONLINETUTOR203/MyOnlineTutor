@@ -58,7 +58,10 @@ class QuizAttempt extends MyAppModel
         if (!$this->validate(QuizAttempt::STATUS_PENDING)) {
             return false;
         }
-
+        if (strtotime(date('Y-m-d H:i:s')) >= strtotime($this->quiz['quilin_validity'])) {
+            $this->error = Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED');
+            return false;
+        }
         $db = FatApp::getDb();
         $db->startTransaction();
 
@@ -414,6 +417,10 @@ class QuizAttempt extends MyAppModel
     {
         if (!$this->validate(QuizAttempt::STATUS_COMPLETED)) {
             $this->error = $this->getError();
+            return false;
+        }
+        if (strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
+            $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
         if ($this->quiz['quilin_attempts'] == $this->getAttemptCount($this->quiz['quizat_quilin_id'])) {

@@ -54,7 +54,9 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                 <?php } ?>
             </div>
             <div class="d-sm-flex justify-content-center margin-top-4">
-                <?php if ($attempts < $data['quilin_attempts']) { ?>
+                <?php
+                $diff = strtotime($data['quilin_validity']) - strtotime(date('Y-m-d H:i:s'));
+                if ($attempts < $data['quilin_attempts'] && $diff > 0) { ?>
                     <a href="javascript:void(0);" class="btn btn--primary-bordered margin-1 btn--sm-block" onclick="retakeQuiz('<?php echo $data['quizat_id'] ?>');">
                         <svg class="icon icon--png icon--small margin-right-2">
                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#retake"></use>
@@ -72,6 +74,14 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                     </svg>
                     <?php echo Label::getLabel('LBL_GO_TO_QUIZZES'); ?>
                 </a>
+                <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
+                    <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$data['quizat_id']], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1 btn--sm-block">
+                        <svg class="icon icon--png icon--small margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_DOWNLOAD_CERTIFICATE'); ?>
+                    </a>
+                <?php } ?>
             </div>
         </div>
     </div>

@@ -37,6 +37,17 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
 
+        if (strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
+            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
+            if ($data['quilin_record_type'] == AppConstant::LESSON) {
+                FatApp::redirectUser(MyUtility::makeUrl('Lessons'));
+            } elseif ($data['quilin_record_type'] == AppConstant::GCLASS) {
+                FatApp::redirectUser(MyUtility::makeUrl('Classes'));
+            } else {
+                FatApp::redirectUser(MyUtility::makeUrl('Learner'));
+            }
+        }
+
         if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
         } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
