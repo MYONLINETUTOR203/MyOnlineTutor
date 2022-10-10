@@ -174,6 +174,11 @@ class Question extends MyAppModel
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
         if ($data['ques_type'] == Question::TYPE_MANUAL) {
             $data['ques_options_count'] = 0;
+        } else {
+            if ($data['ques_options_count'] != count($data['queopt_title'])) {
+                $this->error = Label::getLabel('LBL_OPTION_COUNT_&_N0._OF_OPTIONS_SUBMITTED_DOES_NOT_MATCH');
+                return false;
+            }
         }
         $this->assignValues($data);
         if ($this->mainTableRecordId < 1) {
