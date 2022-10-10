@@ -182,8 +182,10 @@ class QuestionsController extends DashboardController
             if ($this->siteUserId != $data['ques_user_id']) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             }
-            $options = $question->getQuesOptions();
-            $answers = json_decode($data['ques_answer'], true);
+            if ($count == $data['ques_options_count']) {
+                $options = $question->getQuesOptions();
+                $answers = json_decode($data['ques_answer'], true);
+            }
         }
         $this->sets([
             'frm' => $this->getOptionsForm($type),
