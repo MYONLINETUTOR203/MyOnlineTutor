@@ -21,7 +21,6 @@ $langFld->setWrapperAttribute('class', 'hide');
                         <?php foreach ($languages as $langId => $langName) { ?>
                             <li><a class="<?php echo ($lang_id == $langId) ? 'active' : '' ?>" href="javascript:void(0);" data-id="<?php echo $langId; ?>" onclick="langForm(<?php echo $sLangId ?>, <?php echo $langId; ?>);"><?php echo $langName; ?></a></li>
                         <?php } ?>
-                        <li><a href="javascript:void(0);" class="media-js" onclick="mediaForm(<?php echo $sLangId ?>);"><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">

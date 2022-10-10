@@ -59,3 +59,7 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 -- 30 September 2022
 -- -----------------------
 UPDATE tbl_email_templates SET etpl_vars = "{user_full_name} Full Name of the email receiver" WHERE etpl_code = "forgot_password";
+-- -----------------------
+-- 10 October 2022
+-- -----------------------
+DELETE FROM `tbl_attached_files` WHERE `file_type` IN (39,40,41);
