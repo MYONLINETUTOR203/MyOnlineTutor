@@ -27,13 +27,13 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', [], $srNo);
                 break;
             case 'ques_title':
-                $td->appendElement('plaintext', [], $row['ques_title']);
+                $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_title']));
                 break;
             case 'ques_cate_name':
-                $td->appendElement('plaintext', [], $row['ques_cate_name']);
+                $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_cate_name']));
                 break; 
             case 'ques_subcate_name':
-                    $td->appendElement('plaintext', [], $row['ques_subcate_name']);
+                    $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_subcate_name']));
                 break; 
             case 'full_name':
                 $td->appendElement('plaintext', [], $row['full_name']);
