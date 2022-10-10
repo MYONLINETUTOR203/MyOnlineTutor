@@ -60,13 +60,13 @@ $table: "table";
   }
 
   &--bordered{ border-top: 1px solid theme('color.gray.200');
-    tbody{
+  
       tr{
         th, td{
           border-bottom: 1px solid theme('color.gray.200');
         }
       }
-    }
+   
   }
 
   &--striped{

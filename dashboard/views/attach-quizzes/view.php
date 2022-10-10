@@ -11,9 +11,9 @@ $status = QuizAttempt::getStatuses();
             </div>
         </div>
     </div>
-    <div class="facebox-panel__body">
+    <div class="facebox-panel__body padding-0">
         <div class="table-scroll">
-            <table class="table table--styled table--responsive table--aligned-middle" id="">
+            <table class="table table--responsive table--bordered" id="">
                 <thead>
                     <tr class="title-row">
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
@@ -28,11 +28,14 @@ $status = QuizAttempt::getStatuses();
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) { ?>
                             <tr>
-                                <td>
-                                    <?php echo $quiz['quilin_title'] ?>
-                                    <?php if ($recordType == AppConstant::GCLASS) { ?>
-                                        <span class="arrow-icon" onclick="view('<?php echo $quiz['quilin_id'] ?>');"></span>
-                                    <?php } ?>
+                                <td width="60%">
+                                    <div class="d-inline-flex">
+                                        <?php if ($recordType == AppConstant::GCLASS) { ?>
+                                            <span class="arrow-icon margin-left-0" onclick="view('<?php echo $quiz['quilin_id'] ?>');"></span>
+                                        <?php } ?>
+                                        <span><?php echo $quiz['quilin_title'] ?></span>
+                                        
+                                    </div>
                                 </td>
                                 <td><?php echo $types[$quiz['quilin_type']] ?></td>
                                 <?php if ($recordType == AppConstant::LESSON) { ?>

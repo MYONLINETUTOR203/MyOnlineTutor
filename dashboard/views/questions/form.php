@@ -22,7 +22,9 @@ $addOptionsFld->setFieldTagAttribute('onclick', 'addOptions();');
 $submitButton = $frm->getField('submit');
 ?>
 <div class="facebox-panel">
+<div class="facebox-panel__head">
     <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
+</div>
     <div class="facebox-panel__body">
         <?php echo $frm->getFormTag(); ?>
         <?php echo $frm->getFieldHTML('ques_id'); ?>

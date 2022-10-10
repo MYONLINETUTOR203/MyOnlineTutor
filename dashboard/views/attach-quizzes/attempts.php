@@ -10,7 +10,7 @@ $types = Quiz::getTypes();
             </div>
         </div>
     </div>
-    <div class="facebox-panel__body">
+    <div class="facebox-panel__body padding-bottom-6">
         <div class="table-scroll">
             <table class="table table--styled table--responsive table--aligned-middle" id="">
                 <thead>

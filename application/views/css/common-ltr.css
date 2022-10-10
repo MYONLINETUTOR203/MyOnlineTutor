@@ -4387,6 +4387,15 @@ img {
 .padding-bottom-5 {
   padding-bottom: var(--padding-5) !important; }
 
+.padding-bottom-6 {
+  padding-bottom: var(--padding-6) !important; }
+
+.padding-bottom-8 {
+  padding-bottom: var(--padding-8) !important; }
+
+.padding-bottom-10 {
+  padding-bottom: var(--padding-10) !important; }
+
 .margin-auto {
   margin: auto !important; }
 
@@ -7824,7 +7833,7 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 .table--bordered {
   border-top: 1px solid var(--color-gray-200); }
-  .table--bordered tbody tr th, .table--bordered tbody tr td {
+  .table--bordered tr th, .table--bordered tr td {
     border-bottom: 1px solid var(--color-gray-200); }
 
 .table--striped tbody tr:nth-child(odd) th, .table--striped tbody tr:nth-child(odd) td {
@@ -10800,35 +10809,36 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 #facebox .content {
   display: contents; }
 
-@media (min-width: 991px) {
+@media (min-width: 1199px) {
   #facebox .content.facebox-large {
-    min-width: 1000px;
-    padding: 20px;
-    display: block;
-    overflow: auto; } }
+    min-width: 1020px;
+    display: block; } }
 
-@media (min-width: 991px) {
+@media (min-width: 1199px) {
   #facebox .content.facebox-medium {
     min-width: 920px;
-    display: block;
-    padding: 20px;
-    overflow: auto; } }
+    display: block; } }
 
 @media (max-width: 991px) {
   #facebox .content.facebox-large {
     width: 100vw;
     height: 100vh;
-    padding: 20px;
+    padding: 30px 0;
     display: block;
-    overflow: auto; } }
+    overflow: auto; }
+    #facebox .content.facebox-large + .close {
+      top: 0; }
+      #facebox .content.facebox-large + .close:before {
+        color: #333; } }
 
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
   #facebox .content.facebox-medium {
     width: 100vw;
     height: 100vh;
     display: block;
-    padding: 20px;
-    overflow: auto; } }
+    padding: 20px 0;
+    overflow: auto;
+    max-height: 100% !important; } }
 
 #frmLoginPopUp .caption-wraper .field_label:empty, #frmLoginPopUp .caption-wraper:empty, #frmRegisterPopUp .caption-wraper .field_label:empty, #frmRegisterPopUp .caption-wraper:empty {
   display: none; }
