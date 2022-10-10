@@ -170,9 +170,12 @@ class Question extends MyAppModel
         }
         $db = FatApp::getDb();
         $db->startTransaction();
-        $this->assignValues($data);
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
+        if ($data['ques_type'] == Question::TYPE_MANUAL) {
+            $data['ques_options_count'] = 0;
+        }
+        $this->assignValues($data);
         if ($this->mainTableRecordId < 1) {
             $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
         }
