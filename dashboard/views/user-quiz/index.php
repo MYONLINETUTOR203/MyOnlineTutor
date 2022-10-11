@@ -4,25 +4,28 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="box-view box-view--space">
-                    <hgroup class="margin-bottom-4">
-                        <h4 class="margin-bottom-2">
-                            <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
-                        </h4>
-                    </hgroup>
-                    <div class="check-list margin-bottom-10">
-                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
-                        <div class="-gap-10"></div>
-                        <ul class="quiz-detail">
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_QUIZ_TYPE'); ?> : </b>
+                    <div class="repeat-items margin-bottom-10">
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_QUIZ_TYPE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php echo Quiz::getTypes($data['quilin_type']) ?>
-                            </li>
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_TOTAL_NO._OF_QUESTIONS') ?> : </b>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_TOTAL_NO._OF_QUESTIONS') ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php echo $data['quilin_questions'] ?>
-                            </li>
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_DURATION'); ?> : </b>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_DURATION'); ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php
                                 if ($data['quilin_duration'] > 0) {
                                     echo MyUtility::convertDuration($data['quilin_duration']);
@@ -30,26 +33,50 @@
                                     echo Label::getLabel('LBL_NO_LIMIT');
                                 }
                                 ?>
-                            </li>
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_ALLOWED_ATTEMPTS'); ?> : </b>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ATTEMPTS'); ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php echo $data['quilin_attempts'] ?>
-                            </li>
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_PASS_PERCENT'); ?> : </b>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_PASS_PERCENTAGE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php echo MyUtility::formatPercent($data['quilin_passmark']) ?>
-                            </li>
-                            <li>
-                                <b><?php echo Label::getLabel('LBL_VALID_TILL'); ?> : </b>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_VALID_TILL'); ?>
+                            </div>
+                            <div class="repeat-element__content">
                                 <?php echo MyDate::formatDate($data['quilin_validity'], 'Y-m-d H:i') ?>
-                            </li>
-                            <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
-                                <li>
-                                    <b><?php echo Label::getLabel('LBL_CERTIFICATE_AVAILABLE'); ?> : </b>
+                            </div>
+                        </div>
+                        <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_OFFER_CERTIFICATE'); ?>
+                                </div>
+                                <div class="repeat-element__content">
                                     <?php echo AppConstant::getYesNoArr($data['quilin_certificate']) ?>
-                                </li>
-                            <?php } ?>
-                        </ul>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <hgroup class="margin-bottom-4">
+                        <h4 class="margin-bottom-2">
+                            <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
+                        </h4>
+                    </hgroup>
+                    <div class="check-list margin-bottom-10">
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
                     </div>
                     <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">
                         <?php echo Label::getLabel('LBL_START_NOW'); ?>

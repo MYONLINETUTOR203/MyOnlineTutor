@@ -8,12 +8,12 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
 }
 ?>
 <script>
-<?php if ($flashcardEnabled) { ?>
+    <?php if ($flashcardEnabled) { ?>
         const FLASHCARD_VIEW = '<?php echo Flashcard::VIEW_SHORT; ?>';
         const FLASHCARD_TYPE = '<?php echo Flashcard::TYPE_LESSON; ?>';
         const FLASHCARD_TYPE_ID = '<?php echo $lesson['ordles_id']; ?>';
         const FLASHCARD_TLANG_ID = '<?php echo $lesson['ordles_tlang_id']; ?>';
-<?php } ?>
+    <?php } ?>
     const CONF_ACTIVE_MEETING_TOOL = '<?php echo $activeMettingTool['metool_code']; ?>';
     const ATOM_CHAT = '<?php echo MeetingTool::ATOM_CHAT; ?>';
     const SCHEDULED = <?php echo Lesson::SCHEDULED ?>;
@@ -44,7 +44,9 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                                     <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $lesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '" />'; ?>
                                 </span>
                             </div>
-                            <div class="profile-meta__details"><h4 class="bold-600"><?php echo $lesson['first_name'] . ' ' . $lesson['last_name']; ?></h4></div>
+                            <div class="profile-meta__details">
+                                <h4 class="bold-600"><?php echo $lesson['first_name'] . ' ' . $lesson['last_name']; ?></h4>
+                            </div>
                         </div>
                     </div>
                     <div class="session-infobar__bottom">
@@ -56,17 +58,32 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                                 </p>
                             </div>
                         <?php } ?>
-                        <?php if ($lesson['ordles_status'] != Lesson::CANCELLED && $lesson['plan_id'] > 0) { ?>
-                            <div class="session-resource">
-                                <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $lesson['plan_id']; ?>')" class="attachment-file padding-2">
-                                    <svg class="icon icon--issue icon--attachement icon--xsmall color-black"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use></svg>
-                                    <?php echo $lesson['plan_title'] ?>
+                        <?php if ($lesson['ordles_status'] != Lesson::CANCELLED && ($lesson['plan_id'] > 0 || $lesson['quiz_count'] > 0)) { ?>
+                            <?php if ($lesson['plan_id'] > 0) { ?>
+                                <div class="session-resource">
+                                    <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $lesson['plan_id']; ?>')" class="attachment-file padding-2">
+                                        <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                        </svg>
+                                        <?php echo $lesson['plan_title'] ?>
+                                    </a>
+                                    <?php if ($siteUserType == User::TEACHER && ($lesson['ordles_starttime_unix'] - $lesson['ordles_currenttime_unix']) > 0) { ?>
+                                        <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
+                                        <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
+                                    <?php } ?>
+                                </div>
+                            <?php } ?>
+                            <?php if ($lesson['quiz_count'] > 0) { ?>
+                                <a href="javascript:void(0);" onclick="viewQuizzes('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="attachment-file padding-2">
+                                    <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                    </svg>
+                                    <?php
+                                    $lbl = Label::getLabel('LBL_{quiz-count}_QUIZZES_ATTACHED');
+                                    echo str_replace('{quiz-count}', $lesson['quiz_count'], $lbl);
+                                    ?>
                                 </a>
-                                <?php if ($siteUserType == User::TEACHER && ($lesson['ordles_starttime_unix'] - $lesson['ordles_currenttime_unix']) > 0) { ?>
-                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
-                                    <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="underline attachment-file padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
-                                <?php } ?>
-                            </div>
+                            <?php } ?>
                         <?php } else if ($siteUserType == User::TEACHER && $lesson['ordles_status'] != Lesson::CANCELLED && ($lesson['ordles_starttime_unix'] - $lesson['ordles_currenttime_unix']) > 0) { ?>
                             <div class="session-resource">
                                 <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
@@ -78,7 +95,7 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                     <div class="session-infobar__action">
                         <?php if ($lesson['ordles_status'] == Lesson::SCHEDULED && $lesson['ordles_endtime_unix'] > $lesson['ordles_currenttime_unix'] && $lesson['ordles_starttime_unix'] < $lesson['ordles_currenttime_unix']) { ?>
                             <?php $endTimer = true; ?>
-                            <span class="btn btn--live" id="end_lesson_timer" remainingTime="<?php echo $lesson['ordles_endtime_remaining_unix'] ?>"  endTime="<?php echo $lesson['ordles_endtime_unix']; ?>"> 00:00:00:00 </span>
+                            <span class="btn btn--live" id="end_lesson_timer" remainingTime="<?php echo $lesson['ordles_endtime_remaining_unix'] ?>" endTime="<?php echo $lesson['ordles_endtime_unix']; ?>"> 00:00:00:00 </span>
                         <?php } ?>
                         <button class="btn bg-red end_lesson_now <?php echo (!$lesson['canEnd']) ? 'd-none' : ''; ?> " id="endL" onclick="endLesson(<?php echo $lesson['ordles_id']; ?>);"><?php echo Label::getLabel('LBL_End_Lesson'); ?></button>
                         <?php if ($lesson['canCancelLesson']) { ?>
@@ -92,7 +109,8 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                         <?php } ?>
                         <?php if ($lesson['repiss_id'] > 0) { ?>
                             <button onclick="viewIssue('<?php echo $lesson['repiss_id']; ?>');" class="btn btn--bordered color-third"> <?php echo Label::getLabel('LBL_Issue'); ?> </button>
-                        <?php } if ($lesson['canReportIssue']) { ?>
+                        <?php }
+                        if ($lesson['canReportIssue']) { ?>
                             <button onclick="issueForm('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>');" class="btn btn--third"> <?php echo Label::getLabel('LBL_REPORT'); ?> </button>
                         <?php } ?>
                         <?php if ($lesson['canRateLesson']) { ?>
@@ -114,7 +132,9 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                         <a class="btn btn--secondary" href="<?php echo $link; ?>"><?php echo Label::getLabel('LBL_CONTACT_US'); ?></a>
                     <?php } elseif ($lesson['ordles_status'] != Lesson::SCHEDULED || $lesson['ordles_endtime_unix'] < $lesson['ordles_currenttime_unix']) { ?>
                         <div class="status_media">
-                            <svg class="icon"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use></svg>
+                            <svg class="icon">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
+                            </svg>
                         </div>
                         <?php echo empty($lesson['statusInfoLabel']) ? '' : '<p>' . $lesson['statusInfoLabel'] . '</p>'; ?>
                         <a href="<?php echo MyUtility::makeUrl('Lessons'); ?>" class="btn btn--primary btn--large"><?php echo Label::getLabel('LBL_GO_TO_LESSONS'); ?></a>
@@ -142,15 +162,15 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
 </div>
 <!-- ] -->
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         var slowEndMsg = true;
-<?php if ($startTimer) { ?>
-            $("#start_lesson_timer").appTimer(function () {
+        <?php if ($startTimer) { ?>
+            $("#start_lesson_timer").appTimer(function() {
                 window.location.reload();
             });
-<?php } ?>
-<?php if ($endTimer) { ?>
-            $("#end_lesson_timer").appTimer(function () {
+        <?php } ?>
+        <?php if ($endTimer) { ?>
+            $("#end_lesson_timer").appTimer(function() {
                 $("#end_lesson_timer,.join-btns").addClass('d-none');
                 if (slowEndMsg) {
                     slowEndMsg = false;
@@ -159,6 +179,6 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                 }
             });
             checkLessonStatus(lessonId, lessonStatus);
-<?php } ?>
+        <?php } ?>
     });
 </script>

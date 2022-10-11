@@ -84,16 +84,31 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                     <div class="d-flex justify-content-between align-items-center">
                         <!-- [ USER ACCOUNT ========= -->
                         <div class="account">
-                            <a href="#accout-target" class="avtar avtar--small account__trigger trigger-js" data-title="S"><img src="images/emp_1.jpg" alt="">
+                            <a href="#accout-target" class="avtar avtar--small account__trigger trigger-js" data-title="<?php echo CommonHelper::getFirstChar($siteUser['user_first_name']); ?>">
+                                <img src="<?php echo MyUtility::makeUrl('Image', 'show', array(Afile::TYPE_USER_PROFILE_IMAGE, $siteUserId, Afile::SIZE_SMALL), CONF_WEBROOT_FRONTEND) . '?' . time() ?>" alt="">
                             </a>
                             <div id="accout-target" class="account__target">
                                 <nav class="menu-vertical">
                                     <ul>
-                                        <li class="menu__item"><a href="#">Dashboard</a></li>
-                                        <li class="menu__item"><a href="#">My Teachers</a></li>
-                                        <li class="menu__item "><a href="#">Lessons</a></li>
-                                        <li class="menu__item "><a href="#">Settings</a></li>
-                                        <li class="menu__item border-top margin-top-3"><a href="#">Logout</a></li>
+                                        <?php if ($siteUserType == User::TEACHER) { ?>
+                                            <li class="menu__item <?php echo ("Teacher" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Teacher', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Dashboard'); ?></a></li>
+                                            <li class="menu__item <?php echo ("Students" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Students', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_My_Students'); ?></a></li>
+                                            <li class="menu__item <?php echo ("Lessons" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Lessons', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Lessons'); ?></a></li>
+                                        <?php
+                                        }
+                                        if ($siteUserType == User::LEARNER) {
+                                        ?>
+                                            <li class="menu__item <?php echo ("Learner" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Learner', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Dashboard'); ?></a></li>
+                                            <li class="menu__item <?php echo ("Teachers" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Teachers', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_My_Teachers'); ?></a></li>
+                                            <li class="menu__item <?php echo ("Lessons" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Lessons', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Lessons'); ?></a></li>
+                                        <?php }
+                                        ?>
+                                        <li class="menu__item <?php echo ("Account" == $controllerName && "profileInfo" == $action) ? 'is-active' : ''; ?>">
+                                            <a href="<?php echo MyUtility::makeUrl('Account', 'ProfileInfo', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Settings'); ?></a>
+                                        </li>
+                                        <li class="menu__item border-top margin-top-3">
+                                            <a href="<?php echo MyUtility::makeUrl('Account', 'logout', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Logout'); ?></a>
+                                        </li>
                                     </ul>
                                 </nav>
                             </div>
@@ -112,7 +127,9 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                                 <?php } ?>
                             </a>
                         </figure>
-                        <h1 class="page-title"><?php echo $data['quilin_title'] ?></h1>
+                        <h1 class="page-title">
+                            <?php echo $data['quilin_title'] ?>
+                        </h1>
                     </div>
                 </div>
 

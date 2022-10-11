@@ -4,10 +4,10 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
 <div class="page-body">
     <div class="container container--narrow">
         <div class="message-display no-skin">
-            <div class="message-display__media">
-                <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/700x400.svg" alt="">
-            </div>
             <?php if ($data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
+                <div class="message-display__media">
+                    <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/700x400.svg" alt="">
+                </div>
                 <h3 class="margin-bottom-2">
                     <?php
                     $label = Label::getLabel('LBL_QUIZ_PASS_MSG_HEADING');
@@ -18,6 +18,9 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                     <?php echo $data['quilin_passmsg']; ?>
                 </p>
             <?php } else { ?>
+                <div class="message-display__media">
+                    <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/quiz-fail.svg" alt="">
+                </div>
                 <h3 class="margin-bottom-2">
                     <?php
                     $label = Label::getLabel('LBL_QUIZ_FAIL_MSG_HEADING');

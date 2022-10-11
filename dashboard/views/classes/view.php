@@ -1,11 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <script>
-<?php if ($flashcardEnabled) { ?>
+    <?php if ($flashcardEnabled) { ?>
         const FLASHCARD_VIEW = '<?php echo Flashcard::VIEW_SHORT; ?>';
         const FLASHCARD_TYPE = '<?php echo Flashcard::TYPE_GCLASS; ?>';
         const FLASHCARD_TYPE_ID = '<?php echo $class['ordcls_id']; ?>';
         const FLASHCARD_TLANG_ID = '<?php echo $class['grpcls_tlang_id']; ?>';
-<?php } ?>
+    <?php } ?>
     const ACTIVE_MEETING_TOOL = '<?php echo $mettingTool['metool_code']; ?>';
     const ATOM_CHAT = '<?php echo MeetingTool::ATOM_CHAT; ?>';
     const PUBLISHED = <?php echo GroupClass::SCHEDULED; ?>;
@@ -59,7 +59,7 @@
                                         if ($learner['user_id'] == $class['order_user_id']) {
                                             continue;
                                         }
-                                        ?>
+                                    ?>
                                         <li>
                                             <div class="profile-meta">
                                                 <div class="profile-meta__media">
@@ -86,27 +86,42 @@
                                 </p>
                             </div>
                         <?php } ?>
-                        <?php if (!$class['isClassCanceled'] && $class['plan_id'] > 0) { ?>
-                            <div class="session-resource">
-                                <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $class['plan_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>')" class="attachment-file padding-2">
-                                    <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
-                                    </svg>
-                                    <?php echo $class['plan_title']; ?>
-                                </a>
-                            </div>
-                            <?php if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
-                                <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
-                                <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
+                        <?php if (!$class['isClassCanceled'] && ($class['plan_id'] > 0 || $class['quiz_count'] > 0)) { ?>
+                            <?php if ($class['plan_id'] > 0) { ?>
+                                <div class="session-resource">
+                                    <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $class['plan_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>')" class="attachment-file padding-2">
+                                        <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                        </svg>
+                                        <?php echo $class['plan_title']; ?>
+                                    </a>
+                                </div>
+                                <?php if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
+                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
+                                    <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
+                                <?php } ?>
+                            <?php } ?>
+                            <?php if ($class['quiz_count'] > 0) { ?>
+                                <div class="session-resource">
+                                    <a href="javascript:void(0);" onclick="viewQuizzes('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>')" class="attachment-file padding-2">
+                                        <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                        </svg>
+                                        <?php
+                                        $lbl = Label::getLabel('LBL_{quiz-count}_QUIZZES_ATTACHED');
+                                        echo str_replace('{quiz-count}', $class['quiz_count'], $lbl);
+                                        ?>
+                                    </a>
+                                </div>
                             <?php } ?>
                             <?php
                         } else {
                             if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) {
-                                ?>
+                            ?>
                                 <div class="session-resource">
                                     <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
                                 </div>
-                                <?php
+                        <?php
                             }
                         }
                         ?>
@@ -128,11 +143,11 @@
                                 $issueReportBtn = '<a href="' . MyUtility::makeUrl('issues', 'index', [$class['grpcls_id']]) . '" target="_blank" class="btn btn--bordered color-third ">' . Label::getLabel('LBL_VIEW_ISSUE_DETAIL') . '</a>';
                             }
                             echo $issueReportBtn;
-                            ?>
-                            <?php
+                        ?>
+                        <?php
                         }
                         if ($class['canReportClass']) {
-                            ?>
+                        ?>
                             <button onclick="issueForm('<?php echo $classId; ?>', '<?php echo AppConstant::GCLASS; ?>');" class="btn btn--third"><?php echo Label::getLabel('LBL_REPORT_ISSUE'); ?></button>
                         <?php } ?>
                         <?php if ($class['canRateClass']) { ?>
@@ -153,10 +168,10 @@
                         <p><?php echo Label::getLabel('LBL_USER_NO_MORE_EXISTS'); ?></p>
                         <a class="btn btn--secondary" href="<?php echo $link; ?>"><?php echo Label::getLabel('LBL_CONTACT_US'); ?></a>
                     <?php } elseif ((($siteUserType == User::TEACHER && $class['grpcls_status'] != GroupClass::SCHEDULED) || ($siteUserType == User::LEARNER && $class['ordcls_status'] != OrderClass::SCHEDULED)) || $class['grpcls_endtime_unix'] < $class['grpcls_currenttime_unix']) {
-                        ?>
+                    ?>
                         <div class="status_media">
                             <svg class="icon">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
                             </svg>
                         </div>
                         <?php echo empty($class['statusInfoLabel']) ? '' : '<p>' . $class['statusInfoLabel'] . '</p>'; ?>
@@ -183,15 +198,15 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         var showEndTimeMsg = true;
-<?php if ($class['showTimer']) { ?>
-            $('#start_class_timer').appTimer(function () {
+        <?php if ($class['showTimer']) { ?>
+            $('#start_class_timer').appTimer(function() {
                 window.location.reload();
             });
-<?php } ?>
-<?php if ($class['showEndTimer']) { ?>
-            $("#end_class_timer").appTimer(function () {
+        <?php } ?>
+        <?php if ($class['showEndTimer']) { ?>
+            $("#end_class_timer").appTimer(function() {
                 $("#end_class_timer,.join-btns").addClass('d-none');
                 if (showEndTimeMsg) {
                     showEndTimeMsg = false;
@@ -199,9 +214,9 @@
                     reloadPage(15000);
                 }
             });
-    <?php if ($siteUserType == User::LEARNER) { ?>
+            <?php if ($siteUserType == User::LEARNER) { ?>
                 checkClassStatus(classId, ordClsStatus);
-    <?php } ?>
-<?php } ?>
+            <?php } ?>
+        <?php } ?>
     });
 </script>

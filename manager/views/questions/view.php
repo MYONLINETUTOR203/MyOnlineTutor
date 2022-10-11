@@ -56,7 +56,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                 </div>
                             </div>
                         </div>
-                    </div>                   
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="field-set">
@@ -89,7 +89,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     : <strong><?php echo Question::getStatuses($questionData['ques_status']); ?></strong>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="col-md-6">
                             <div class="field-set">
                                 <div class="caption-wraper">
@@ -99,7 +99,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     : <strong><?php echo $questionData['ques_marks']; ?></strong>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -111,7 +111,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     : <strong><?php echo ($questionData['ques_hint']) ? CommonHelper::renderHtml($questionData['ques_hint']) : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="col-md-6">
                             <div class="field-set">
                                 <div class="caption-wraper">
@@ -124,41 +124,45 @@ $yesNoArr = AppConstant::getYesNoArr();
                         </div>
                     </div>
                 </div>
-                <?php if($questionData['ques_type'] != Question::TYPE_MANUAL){ ?>
-                <div class="sectionhead">
-                    <h4><?php echo Label::getLabel('LBL_OPTIONS') ?></h4>
-                </div>
-                <div class="tabs_panel">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <ul>
-                                        <?php foreach($options as $option): ?>
-                                            <li><?php echo $option['queopt_title']; ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_ANSWER'); ?>
-                                    </label>
-                                    <?php if(isset($answers) && count($answers) > 0):  ?>
-                                    <ul>
-                                        <?php foreach($answers as $answerId): ?>
-                                            <li><?php echo $options[$answerId]['queopt_title']; ?></li>                                            
-                                        <?php endforeach; ?>
-                                    </ul>
-                                    <?php endif; ?>
+                <?php if ($questionData['ques_type'] != Question::TYPE_MANUAL) { ?>
+                    <div class="sectionhead">
+                        <h4><?php echo Label::getLabel('LBL_OPTIONS') ?></h4>
+                    </div>
+                    <div class="tabs_panel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <ul>
+                                            <?php foreach ($options as $option) : ?>
+                                                <li><?php echo $option['queopt_title']; ?></li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="sectionhead">
+                        <h4><?php echo Label::getLabel('LBL_ANSWERS') ?></h4>
+                    </div>
+                    <div class="tabs_panel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <?php if (isset($answers) && count($answers) > 0) :  ?>
+                                            <ul>
+                                                <?php foreach ($answers as $answerId) : ?>
+                                                    <li><?php echo $options[$answerId]['queopt_title']; ?></li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
