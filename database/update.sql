@@ -380,3 +380,6 @@ ALTER TABLE `tbl_quiz_attempts` ADD `quizat_started` DATETIME NOT NULL AFTER `qu
 ALTER TABLE `tbl_questions` CHANGE `ques_detail` `ques_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
 ALTER TABLE `tbl_quiz_attempts` ADD `quizat_active` TINYINT(1) NOT NULL AFTER `quizat_status`;
 ALTER TABLE `tbl_quiz_attempts` ADD `quizat_certificate_number` VARCHAR(25) NOT NULL AFTER `quizat_evaluation`;  
+
+UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"<span>Tutor: </span> <b>{teacher-name}</b>\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{quiz-name}\\\" online quiz on {quiz-completed-date} in {quiz-duration}.\", \"certificate_number\": \"<span>Certificate No.: </span> <b>{certificate-number}</b>\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'evaluation_certificate'; 
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire quiz was completed as validated by the student. The quiz duration represents the total time spent by the student for the quiz completion.');

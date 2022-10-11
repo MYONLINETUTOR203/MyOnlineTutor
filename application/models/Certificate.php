@@ -1,7 +1,4 @@
 <?php
-
-use JonnyW\PhantomJs\Client;
-
 /**
  * This class is used to handle certificates
  *
@@ -33,7 +30,7 @@ class Certificate extends MyAppModel
         $this->type = $type;
     }
 
-    public function generateCertificate($content)
+    public function generate($content)
     {
         if (!$content = $this->setupTemplate($content)) {
             return false;
@@ -48,6 +45,23 @@ class Certificate extends MyAppModel
             return false;
         }
         if (!$this->create($content)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function generatePreview($content, $type)
+    {
+        if (!$content = $this->setupTemplate($content)) {
+            return false;
+        }
+        if (!$data = $this->getPreviewData()) {
+            return false;
+        }
+        if (!$content = $this->formatContent($content, $data)) {
+            return false;
+        }
+        if (!$this->create($content, true)) {
             return false;
         }
         return true;
@@ -130,7 +144,7 @@ class Certificate extends MyAppModel
                     'crspro_completed',
                     'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
                     'learner.user_lang_id',
-                    'ordcrs_certificate_number',
+                    'ordcrs_certificate_number AS cert_number',
                     'course_duration'
                 ]);
                 $srch->addCondition('ordcrs_id', '=', $this->id);
@@ -139,10 +153,37 @@ class Certificate extends MyAppModel
             case static::TYPE_QUIZ:
                 $quiz = new QuizAttempt($this->id);
                 $data = $quiz->getById();
+                $learner = User::getAttributesById($data['quizat_user_id'], [
+                    'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+                ]);
+                $teacher = User::getAttributesById($data['quilin_user_id'], [
+                    'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name'
+                ]);
+                $data['quiz_duration'] = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+                $data = $data + $learner + $teacher;
                 break;
         }
 
         return $data;
+    }
+
+    private function getPreviewData()
+    {
+        return [
+            'learner_first_name' => 'Martha',
+            'learner_last_name' => 'Christopher',
+            'teacher_first_name' => 'John',
+            'teacher_last_name' => 'Doe',
+            'quilin_title' => 'English Language Learning - Beginners',
+            'course_title' => 'English Language Learning - Beginners',
+            'course_clang_name' => 'English',
+            'cert_number' => 'YC_h34uwh9e72w',
+            'quizat_certificate_number' => 'YC_h34uwh9e72w',
+            'quizat_updated' => date('Y-m-d H:i:s'),
+            'crspro_completed' => date('Y-m-d H:i:s'),
+            'quiz_duration' => 900,
+            'course_duration' => 900,
+        ];
     }
 
     /**
@@ -179,7 +220,6 @@ class Certificate extends MyAppModel
         return true;
     }
     
-   
     /**
      * Get formatted certificate content
      *
@@ -188,7 +228,11 @@ class Certificate extends MyAppModel
      */
     public function formatContent(string $content, array $data)
     {
-        $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
+        if ($this->type == static::TYPE_QUIZ) {
+            $title = htmlentities(stripslashes(utf8_encode($data['quilin_title'])), ENT_QUOTES);
+        } else {
+            $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
+        }
         $content = str_replace(
             [
                 '{learner-name}',
@@ -205,14 +249,14 @@ class Certificate extends MyAppModel
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
-                '<span class=\"courseNameJs\">' . $data['quiz_title'] . '</span>',
-                MyDate::formatDate($data['quiz_completed']),
-                $data['cert_number'],
-                MyUtility::convertDuration($data['quiz_duration']),
                 '<span class=\"courseNameJs\">' . $title . '</span>',
-                $data['course_clang_name'],
-                MyDate::formatDate($data['crspro_completed']),
-                MyUtility::convertDuration($data['course_duration'])
+                isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated']) : '',
+                ($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number'],
+                isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
+                '<span class=\"courseNameJs\">' . $title . '</span>',
+                isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
+                isset($data['crspro_completed']) ? MyDate::formatDate($data['crspro_completed']) : '',
+                isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : ''
             ],
             $content
         );
@@ -232,7 +276,7 @@ class Certificate extends MyAppModel
         $record = new TableRecord(Afile::DB_TBL);
         $record->assignValues([
             'file_type' => $type,
-            'file_record_id' => $this->getMainTableRecordId(),
+            'file_record_id' => $this->id,
             'file_name' => $filename,
             'file_path' => $path,
             'file_order' => 0,

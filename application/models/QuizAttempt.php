@@ -329,7 +329,8 @@ class QuizAttempt extends MyAppModel
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
             'quilin_user_id', 'quizat_status', 'quizat_id', 'quizat_user_id', 'quizat_qulinqu_id', 'quizat_progress',
             'quilin_id', 'quizat_quilin_id', 'quizat_evaluation', 'quilin_passmsg', 'quilin_failmsg', 'quizat_marks',
-            'quizat_scored', 'quizat_started', 'quizat_updated', 'quizat_active', 'quizat_certificate_number'
+            'quizat_scored', 'quizat_started', 'quizat_updated', 'quizat_active', 'quizat_certificate_number',
+            'quilin_record_id'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -419,12 +420,8 @@ class QuizAttempt extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
-        if (strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
-            $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
-            return false;
-        }
-        if ($this->quiz['quilin_attempts'] == $this->getAttemptCount($this->quiz['quizat_quilin_id'])) {
-            $this->error = Label::getLabel('LBL_REATTEMPT_LIMIT_HAS_BEEN_EXCEEDED');
+        if (!$this->canRetake()) {
+            $this->error = $this->getError();
             return false;
         }
         $this->mainTableRecordId = 0;
@@ -433,5 +430,40 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         return true;
+    }
+
+    public function canRetake()
+    {
+        if (!empty($this->quiz['quizat_certificate_number'])) {
+            $this->error = Label::getLabel('LBL_RETAKE_NOT_ALLOWED');
+            return false;
+        }
+        if (strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
+            $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
+            return false;
+        }
+        if ($this->quiz['quilin_attempts'] == $this->getAttemptCount($this->quiz['quizat_quilin_id'])) {
+            $this->error = Label::getLabel('LBL_REATTEMPT_LIMIT_HAS_BEEN_EXCEEDED');
+            return false;
+        }
+        return true;
+    }
+
+    public function canDownloadCertificate()
+    {
+        if ($this->quiz['quilin_certificate'] == AppConstant::NO) {
+            $this->error = Label::getLabel('LBL_CERTIFICATE_NOT_AVAILABLE');
+            return false;
+        }
+        if ($this->quiz['quizat_evaluation'] == static::EVALUATION_FAILED) {
+            $this->error = Label::getLabel('LBL_CERTIFICATE_CANNOT_BE_GENERATED_FOR_FAILED_QUIZ.');
+            return false;
+        }
+        return true;
+    }
+
+    public function get()
+    {
+        return $this->quiz;
     }
 }

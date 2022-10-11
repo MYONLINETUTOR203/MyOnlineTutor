@@ -13,7 +13,7 @@ $status = QuizAttempt::getStatuses();
     </div>
     <div class="facebox-panel__body padding-0">
         <div class="table-scroll">
-            <table class="table table--responsive table--bordered" id="">
+            <table class="table table--responsive table--bordered table--styled " id="">
                 <thead>
                     <tr class="title-row">
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
@@ -34,7 +34,7 @@ $status = QuizAttempt::getStatuses();
                                             <span class="arrow-icon margin-left-0" onclick="view('<?php echo $quiz['quilin_id'] ?>');"></span>
                                         <?php } ?>
                                         <span><?php echo $quiz['quilin_title'] ?></span>
-                                        
+
                                     </div>
                                 </td>
                                 <td><?php echo $types[$quiz['quilin_type']] ?></td>

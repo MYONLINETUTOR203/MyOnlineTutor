@@ -15,17 +15,13 @@
                 <table border="0" cellspacing="0" style="width:100%">
                     <tr>
                         <td width="33.3%" class="certificate-signs__left">
-                            <b>
                                 {trainer}
-                            </b>
                         </td>
                         <td width="33.3%" class="certificate-signs__middle">
                             <img width="140" height="47" src="<?php echo $logoImg ?>" alt="">
                         </td>
                         <td width="33.3%" class="certificate-signs__right">
-                            <b>
                                 {certificate-number}
-                            </b>
                         </td>
                     </tr>
                 </table>

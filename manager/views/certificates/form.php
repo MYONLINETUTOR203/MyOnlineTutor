@@ -128,9 +128,8 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
-                                                                    <span> <?php echo Label::getLabel('LBL_TUTOR:', $data['certpl_lang_id']); ?></span>
-                                                                    <div class="style-bold contentTrainerJs" contenteditable="true">
-                                                                        <?php echo $content['trainer'] ?>
+                                                                    <div class=" contentTrainerJs" contenteditable="true">
+                                                                        <?php echo CommonHelper::renderHtml($content['trainer']) ?>
                                                                     </div>
                                                                 </div>
                                                                 
@@ -142,10 +141,8 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                        
 
                                                                 <div class="certificate-signs__right">
-
-                                                                    <span> <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:', $data['certpl_lang_id']); ?></span>
-                                                                    <div class="style-bold contentCertNoJs" contenteditable="true">
-                                                                        <?php echo $content['certificate_number'] ?>
+                                                                    <div class=" contentCertNoJs" contenteditable="true">
+                                                                        <?php echo CommonHelper::renderHtml($content['certificate_number']) ?>
                                                                     </div>
                                                                 </div>
                                                             </div>

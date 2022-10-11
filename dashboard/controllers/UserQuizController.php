@@ -271,25 +271,20 @@ class UserQuizController extends DashboardController
     public function completed(int $id)
     {
         $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
-        if (empty($data)) {
+        if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
-            FatUtility::exitWithErrorCode(404);
-        }
-        if ($data['quizat_status'] != QuizAttempt::STATUS_COMPLETED) {
-            FatUtility::exitWithErrorCode(404);
-        }
+        $data = $quiz->get();
         if ($data['quizat_active'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }
-        /* get user name */
+        
         $this->sets([
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
             'data' => $data,
             'attemptId' => $id,
-            'attempts' => $quiz->getAttemptCount($data['quizat_quilin_id'])
+            'canRetake' => $quiz->canRetake(),
+            'canDownloadCertificate' => $quiz->canDownloadCertificate(),
         ]);
         $this->_template->render();
     }
@@ -309,6 +304,14 @@ class UserQuizController extends DashboardController
 
     public function downloadCertificate(int $id)
     {
+        $quiz = new QuizAttempt($id, $this->siteUserId);
+        if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        if (!$quiz->canDownloadCertificate()) {
+            Message::addErrorMessage($quiz->getError());
+            FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
+        }
         $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ;
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
     }

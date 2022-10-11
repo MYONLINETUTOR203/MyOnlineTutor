@@ -113,9 +113,6 @@ class CertificatesController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $langs = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
-        // echo "<pre>";
-        // print_r(json_decode($data['certpl_body'], true));
-        // exit;
         $this->sets([
             'frm' => $frm,
             'mediaFrm' => $mediaFrm,
@@ -186,42 +183,50 @@ class CertificatesController extends AdminBaseController
         ]);
     }
 
-    public function generate($langId)
+    public function generate($id)
     {
-        $langId = ($langId < 1) ? $this->siteLangId : $langId;
-        /* Create dummy data */
-        $data = [
-            'learner_first_name' => 'Martha',
-            'learner_last_name' => 'Christopher',
-            'teacher_first_name' => 'John',
-            'teacher_last_name' => 'Doe',
-            'quiz_title' => 'English Language Learning - Beginners',
-            'quiz_clang_name' => 'English',
-            'lang_id' => $langId,
-            'cert_number' => 'YC_h34uwh9e72w',
-            'quiz_completed' => date('Y-m-d H:i:s'),
-            'quiz_duration' => 900,
-        ];
-        $cert = new Certificate(0, 0, $langId);
-        $content = $cert->getFormattedContent($data);
+        $template = CertificateTemplate::getAttributesById($id, ['certpl_code', 'certpl_lang_id']);
+        if (empty($template)) {
+            FatUtility::dieWithError(Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND'));
+        }
+        $type = Certificate::TYPE_QUIZ;
+        if ($template['certpl_code'] == 'course_completion_certificate') {
+            $type = Certificate::TYPE_COURSE;
+        }
+        $langId = $template['certpl_lang_id'];
+        $cert = new Certificate(0, $type, 0, $langId);
+        $content = $this->getContent();
+
+        if (!$cert->generatePreview($content, $type)) {
+            FatUtility::dieWithError($cert->getError());
+        }
+        FatUtility::dieWithError(Label::getLabel('LBL_UNABLE_TO_GENERATE_CERTIFICATE'));
+    }
+
+    private function getContent()
+    {
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
         $backgroundImg = $afile->getFile(0, false);
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $langId);
-        $logoImg = $afile->getFile(0, false);
-        $this->sets([
-            'content' => $content,
-            'layoutDir' => Language::getAttributesById($langId, 'language_direction'),
-            'langId' => $langId,
-            'backgroundImg' => $backgroundImg,
-            'logoImg' => $logoImg,
-        ]);
-        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
-        $filename = 'certificate.pdf';
-        /* generate certificate */
-        if (!$cert->create($content, $filename, true)) {
-            FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
+        if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
+            $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $backgroundImg = CONF_UPLOADS_PATH . $backgroundImg['file_path'];
         }
+        $this->set('backgroundImg', $backgroundImg);
+
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
+        $logoImg = $afile->getFile(0, false);
+        if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
+            $logoImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
+        }
+        $this->set('logoImg', $logoImg);
+
+        $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
+        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
+        return $content;
     }
 
     /**
