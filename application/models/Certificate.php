@@ -250,10 +250,10 @@ class Certificate extends MyAppModel
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
-                ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
+                '<b>' . ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']) . '</b>',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated']) : '',
-                (($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number']),
+                '<b>' . (($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number']) . '</b>',
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',

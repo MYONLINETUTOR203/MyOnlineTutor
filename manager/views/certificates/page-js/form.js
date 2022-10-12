@@ -39,4 +39,17 @@
         preview = 1;
         setup();
     };
+    resetToDefault = function () {
+        var data = fcom.frmData(document.frmCertificate);
+        fcom.ajax(fcom.makeUrl('Certificates', 'getDefaultContent'), data, function (response) {
+            if (response.data) {
+                $('.contentHeadingJs').html(response.data.heading);
+                $('.contentPart1Js').html(response.data.content_part_1);
+                $('.contentLearnerJs').html(response.data.learner);
+                $('.contentPart2Js').html(response.data.content_part_2);
+                $('.contentTrainerJs').html(response.data.trainer);
+                $('.contentCertNoJs').html(response.data.certificate_number);
+            }
+        }, { fOutMode: 'json' });
+    };
 })();
