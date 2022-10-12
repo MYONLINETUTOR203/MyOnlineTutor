@@ -53,11 +53,17 @@ $(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
-            viewQuizzes($(obj).data('record-id'), $(obj).data('record-type'));
+            // viewQuizzes($(obj).data('record-id'), $(obj).data('record-type'));
+            $('.quizRow' + id).remove();
+            $('.noRecordJS').hide();
+            if ($('.quizRowJs').length == 0) {
+                $('.noRecordJS').show();
+            }
             if (document.frmSearchPaging) {
                 search(document.frmSearchPaging);
                 return;
             }
+            window.location.reload();
         });
     };
     view = function (id) {

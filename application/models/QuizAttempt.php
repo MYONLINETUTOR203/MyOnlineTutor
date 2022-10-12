@@ -10,6 +10,7 @@ class QuizAttempt extends MyAppModel
     const STATUS_IN_PROGRESS = 1;
     const STATUS_COMPLETED = 2;
 
+    const EVALUATION_PENDING = 0;
     const EVALUATION_PASSED = 1;
     const EVALUATION_FAILED = 2;
 
@@ -43,6 +44,22 @@ class QuizAttempt extends MyAppModel
             static::STATUS_PENDING => Label::getLabel('LBL_PENDING'),
             static::STATUS_IN_PROGRESS => Label::getLabel('LBL_IN_PROGRESS'),
             static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED')
+        ];
+        return AppConstant::returArrValue($arr, $key);
+    }
+
+    /**
+     * Get Quiz Status
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getEvaluationStatuses(int $key = null)
+    {
+        $arr = [
+            static::EVALUATION_PENDING => Label::getLabel('LBL_PENDING'),
+            static::EVALUATION_PASSED => Label::getLabel('LBL_PASS'),
+            static::EVALUATION_FAILED => Label::getLabel('LBL_FAIL')
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -225,6 +242,7 @@ class QuizAttempt extends MyAppModel
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
             return false;
         }
+
         $db = FatApp::getDb();
         $db->startTransaction();
 
@@ -242,11 +260,13 @@ class QuizAttempt extends MyAppModel
         }
 
         /* calculations */
-        if (!$this->setupEvaluation()) {
+        if ($this->quiz['quilin_type'] == Quiz::TYPE_AUTO_GRADED && !$this->setupEvaluation()) {
             $db->rollbackTransaction();
             return false;
         }
         $db->commitTransaction();
+
+        $this->sendQuizCompletionNotification();
         return true;
     }
 
@@ -465,5 +485,47 @@ class QuizAttempt extends MyAppModel
     public function get()
     {
         return $this->quiz;
+    }
+
+    private function sendQuizCompletionNotification()
+    {
+        $data = $this->getById();
+        $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
+        $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
+        $duration = Label::getLabel('LBL_NA');
+        if ($data['quilin_duration'] > 0) {
+            $diff = date_diff(date_create($data['quizat_updated']), date_create($data['quizat_started']));
+            $duration = $diff->format('%h:%i:%s');
+        }
+
+        $srch = new SearchBase(User::DB_TBL);
+        $srch->addCondition('user_id', 'IN', [$data['quilin_user_id'], $data['quizat_user_id']]);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(['user_first_name', 'user_last_name', 'user_email', 'user_lang_id', 'user_id']);
+        $users = FatApp::getDb()->fetchAll($srch->getResultSet(), 'user_id');
+        $learner = $users[$data['quizat_user_id']];
+        $teacher = $users[$data['quilin_user_id']];
+
+        $template = 'graded_quiz_completion_email';
+        if ($data['quilin_type'] == Quiz::TYPE_NON_GRADED) {
+            $template = 'nongraded_quiz_completion_email';
+        }
+        $mail = new FatMailer($teacher['user_lang_id'], $template);
+        $vars = [
+            '{learner_full_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
+            '{teacher_full_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
+            '{session_type}' => $sessionType,
+            '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('UserQuiz', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
+            '{progress_percentage}' => MyUtility::formatPercent($data['quizat_progress']),
+            '{pass_fail_status}' => static::getEvaluationStatuses($data['quizat_evaluation']),
+            '{marks_acheived}' => $data['quizat_marks'],
+            '{score_percentage}' => MyUtility::formatPercent($score),
+            '{completion_time}' => $duration,
+        ];
+        $mail->setVariables($vars);
+        $mail->sendMail([$teacher['user_email']]);
+
+        $notifi = new Notification($teacher['user_id'], Notification::TYPE_QUIZ_COMPLETED);
+        $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
     }
 }

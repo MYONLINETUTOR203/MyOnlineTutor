@@ -27,7 +27,7 @@ $status = QuizAttempt::getStatuses();
                 <tbody>
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) { ?>
-                            <tr>
+                            <tr class="quizRowJs quizRow<?php echo $quiz['quilin_id'] ?>">
                                 <td width="60%">
                                     <div class="d-inline-flex">
                                         <?php if ($recordType == AppConstant::GCLASS) { ?>
@@ -106,11 +106,10 @@ $status = QuizAttempt::getStatuses();
                                 </tr>
                             <?php } ?>
                         <?php } ?>
-                    <?php } else { ?>
-                        <tr>
-                            <td colspan="4"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
-                        </tr>
                     <?php } ?>
+                    <tr class="noRecordJS" style="display:none;">
+                        <td colspan="4"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

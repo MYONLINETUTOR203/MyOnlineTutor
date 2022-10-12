@@ -525,6 +525,7 @@ class QuizLinked extends MyAppModel
             }
         }
 
+        $i = 1;
         foreach ($questions as $question) {
             $opts = $quesOptions[$question['ques_id']] ?? [];
             if ($question['ques_type'] != Question::TYPE_MANUAL && count($opts) < 1) {
@@ -543,12 +544,13 @@ class QuizLinked extends MyAppModel
                 'qulinqu_marks' => $question['ques_marks'],
                 'qulinqu_answer' => $question['ques_answer'],
                 'qulinqu_options' => json_encode($opts),
-                'qulinqu_order' => $question['quique_order']
+                'qulinqu_order' => $i
             ]);
             if (!$linkQues->addNew()) {
                 $this->error = $linkQues->getError();
                 return false;
             }
+            $i++;
         }
         
         return true;

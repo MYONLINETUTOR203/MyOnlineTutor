@@ -86,7 +86,7 @@
                                 </p>
                             </div>
                         <?php } ?>
-                        <?php if (!$class['isClassCanceled'] && ($class['plan_id'] > 0 || $class['quiz_count'] > 0)) { ?>
+                        <?php if (!$class['isClassCanceled']) { ?>
                             <?php if ($class['plan_id'] > 0) { ?>
                                 <div class="session-resource">
                                     <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $class['plan_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>')" class="attachment-file padding-2">
@@ -95,11 +95,15 @@
                                         </svg>
                                         <?php echo $class['plan_title']; ?>
                                     </a>
+                                    <?php if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
+                                        <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline  attachment-file padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
+                                        <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline  attachment-file padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
+                                    <?php } ?>
                                 </div>
-                                <?php if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
-                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_CHANGE'); ?></a>
-                                    <a href="javascript:void(0);" onclick="removeAssignedPlan('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="underline color-black  padding-2"><?php echo Label::getLabel('LBL_REMOVE'); ?></a>
-                                <?php } ?>
+                            <?php } elseif ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
+                                <div class="session-resource">
+                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
+                                </div>
                             <?php } ?>
                             <?php if ($class['quiz_count'] > 0) { ?>
                                 <div class="session-resource">
@@ -112,19 +116,16 @@
                                         echo str_replace('{quiz-count}', $class['quiz_count'], $lbl);
                                         ?>
                                     </a>
+                                    <?php if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
+                                        <a href="javascript:void(0);" onclick="quizListing('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>')" class="underline  attachment-file padding-2"><?php echo Label::getLabel('LBL_ATTACH'); ?></a>
+                                    <?php } ?>
+                                </div>
+                            <?php } elseif ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) { ?>
+                                <div class="session-resource">
+                                    <a href="javascript:void(0);" onclick="quizListing('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>')" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?></a>
                                 </div>
                             <?php } ?>
-                            <?php
-                        } else {
-                            if ($siteUserType == User::TEACHER && ($class['grpcls_starttime_unix'] - $class['grpcls_currenttime_unix']) > 0) {
-                            ?>
-                                <div class="session-resource">
-                                    <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="btn btn--transparent btn--addition color-black padding-2"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
-                                </div>
-                        <?php
-                            }
-                        }
-                        ?>
+                        <?php } ?>
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-4 col-sm-12">
