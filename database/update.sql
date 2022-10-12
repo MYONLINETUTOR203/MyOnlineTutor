@@ -383,3 +383,11 @@ ALTER TABLE `tbl_quiz_attempts` ADD `quizat_certificate_number` VARCHAR(25) NOT 
 
 UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"<span>Tutor: </span> <b>{teacher-name}</b>\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{quiz-name}\\\" online quiz on {quiz-completed-date} in {quiz-duration}.\", \"certificate_number\": \"<span>Certificate No.: </span> <b>{certificate-number}</b>\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'evaluation_certificate'; 
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire quiz was completed as validated by the student. The quiz duration represents the total time spent by the student for the quiz completion.');
+-- -----------------------
+-- 30 September 2022
+-- -----------------------
+UPDATE tbl_email_templates SET etpl_vars = "{user_full_name} Full Name of the email receiver" WHERE etpl_code = "forgot_password";
+-- -----------------------
+-- 10 October 2022
+-- -----------------------
+DELETE FROM `tbl_attached_files` WHERE `file_type` IN (39,40,41);

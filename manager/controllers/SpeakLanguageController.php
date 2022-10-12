@@ -220,8 +220,6 @@ class SpeakLanguageController extends AdminBaseController
         }
         (new UserSpeakLanguage())->removeSpeakLang([$sLangId]);
         (new TeacherStat(0))->setSpeakLangBulk();
-        (new Afile(Afile::TYPE_SPOKEN_LANGUAGES))->removeFile($sLangId, true);
-        (new Afile(Afile::TYPE_FLAG_SPOKEN_LANGUAGES))->removeFile($sLangId, true);
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORD_DELETED_SUCCESSFULLY'));
     }
 
@@ -256,106 +254,6 @@ class SpeakLanguageController extends AdminBaseController
         $frm->addRequiredField(Label::getLabel('LBL_LANGUAGE_NAME', $langId), 'slang_name');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES', $langId));
         return $frm;
-    }
-
-    /**
-     * Media Form
-     * 
-     * @param int $sLangId
-     */
-    public function mediaForm($sLangId)
-    {
-        $sLangId = FatUtility::int($sLangId);
-        if (empty(SpeakLanguage::getAttributesById($sLangId))) {
-            FatUtility::dieJsonError(Label::getLabel('MSG_INVALID_REQUEST_OR_INACTIVE_RECORD'));
-        }
-        $flagImage = new Afile(Afile::TYPE_FLAG_SPOKEN_LANGUAGES);
-        $langImage = new Afile(Afile::TYPE_SPOKEN_LANGUAGES);
-        $this->sets([
-            "sLangId" => $sLangId,
-            "canEdit" => $this->objPrivilege->canEditSpeakLanguage($this->siteAdminId, true),
-            "mediaFrm" => $this->getMediaForm($sLangId),
-            "flagImage" => $flagImage->getFile($sLangId),
-            "languages" => Language::getAllNames(),
-            "spokenLangImage" => $langImage->getFile($sLangId),
-            "flagImageExts" => implode(',', Afile::getAllowedExts(Afile::TYPE_FLAG_SPOKEN_LANGUAGES)),
-            "spokenLangImageExts" => implode(', ', Afile::getAllowedExts(Afile::TYPE_SPOKEN_LANGUAGES)),
-            "langImgDimensions" => $langImage->getImageSizes(Afile::SIZE_LARGE),
-            "flagImageDimensions" => $flagImage->getImageSizes(Afile::SIZE_LARGE),
-        ]);
-        $this->_template->render(false, false);
-    }
-
-    /**
-     * Get Media Form
-     * 
-     * @param int $slang_id
-     * @return Form
-     */
-    private function getMediaForm($slang_id): Form
-    {
-        $frm = new Form('frmSpeakLanguageMedia');
-        $frm->addHiddenField('', 'slang_id', $slang_id);
-        $frm->addFileUpload('', 'slanguage_image_file');
-        $frm->addFileUpload('', 'slanguage_flag_file');
-        $frm->addButton(Label::getLabel('LBL_LANGUAGE_IMAGE'), 'slanguage_image', Label::getLabel('LBL_UPLOAD_FILE'), [
-            'class' => 'slanguageFile-Js', 'id' => 'slanguage_image', 'data-slang_id' => $slang_id
-        ]);
-        $frm->addButton(Label::getLabel('LBL_LANGUAGE_FLAG_IMAGE'), 'slanguage_flag_image', Label::getLabel('LBL_UPLOAD_FILE'), [
-            'class' => 'slanguageFlagFile-Js', 'id' => 'slanguage_flag_image', 'data-slang_id' => $slang_id
-        ]);
-        return $frm;
-    }
-
-    /**
-     * Upload File
-     * 
-     * @param int $slanguageId
-     */
-    public function uploadFile($slanguageId = 0)
-    {
-        $this->objPrivilege->canEditSpeakLanguage();
-        $slanguageId = FatUtility::int($slanguageId);
-        if (empty(SpeakLanguage::getAttributesById($slanguageId, 'slang_id'))) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-        $type = FatApp::getPostedData('imageType', FatUtility::VAR_INT, Afile::TYPE_SPOKEN_LANGUAGES);
-        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_A_FILE'));
-        }
-        $file = new Afile($type);
-        if (!$file->saveFile($_FILES['file'], $slanguageId, true)) {
-            FatUtility::dieJsonError($file->getError());
-        }
-        $data = [
-            'slanguageId' => $slanguageId,
-            'msg' => $_FILES['file']['name'] . Label::getLabel('LBL_FILE_UPLOADED_SUCCESSFULLY')
-        ];
-        FatUtility::dieJsonSuccess($data);
-    }
-
-    /**
-     * Remove File
-     * 
-     * @param int $slanguageId
-     * @param int $fileType
-     */
-    public function removeFile($slanguageId, $fileType)
-    {
-        $this->objPrivilege->canEditSpeakLanguage();
-        $slanguageId = FatUtility::int($slanguageId);
-        $fileType = FatUtility::int($fileType);
-        if (1 > $fileType) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-        if (empty(SpeakLanguage::getAttributesById($slanguageId, 'slang_id'))) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
-        $file = new Afile($fileType);
-        if (!$file->removeFile($slanguageId, true)) {
-            FatUtility::dieJsonError($file->getError());
-        }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY'));
     }
 
     /**

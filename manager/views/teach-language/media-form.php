@@ -6,14 +6,11 @@ $mediaFrm->developerTags['fld_default_col'] = 12;
 $imageFile = $mediaFrm->getField('tlang_image_file');
 $imageFile->addFieldTagAttribute('class', 'hide tlang_image_file');
 $imageFile->addFieldTagAttribute('onChange', 'uploadImage(this, ' . $tLangId . ', ' . Afile::TYPE_TEACHING_LANGUAGES . ')');
-$imageFlagFile = $mediaFrm->getField('tlang_flag_file');
-$imageFlagFile->addFieldTagAttribute('class', 'hide tlang_flag_file');
-$imageFlagFile->addFieldTagAttribute('onChange', 'uploadImage(this, ' . $tLangId . ', ' . Afile::TYPE_FLAG_TEACHING_LANGUAGES . ')');
 $fld1 = $mediaFrm->getField('tlang_image');
 $fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
 $extensionLabel = Label::getLabel('LBL_ALLOWED_FILE_EXTS_{extension}');
 $demensionLabel = Label::getLabel('LBL_PREFERRED_DIMENSIONS_ARE_WIDTH_{width}_&_HEIGHT_{height}');
-$preferredDimensionsStr = '<span class="uploadimage--info" >' . str_replace(['{width}', '{height}'], ['350px', '263px'], $demensionLabel) . '</span>';
+$preferredDimensionsStr = '<span class="uploadimage--info" >' . str_replace(['{width}', '{height}'], ['240px', '240px'], $demensionLabel) . '</span>';
 $preferredDimensionsStr .= '<span class="uploadimage--info" >' . str_replace('{extension}', $teachLangExt, $extensionLabel) . '</span>';
 $htmlAfterField = $preferredDimensionsStr;
 $htmlAfterField .= '<div id="flag-image-listing">';
@@ -22,22 +19,7 @@ if (!empty($image)) {
     if ($canEdit) {
         $htmlAfterField .= '<a class="deleteLink white" href="javascript:void(0);" onclick="removeFile(' . $tLangId . ', ' . Afile::TYPE_TEACHING_LANGUAGES . ');" class="delete"><i class="ion-close-round"></i></a>';
     }
-    $htmlAfterField .= '</div><small class=""><strong>' . Label::getLabel('LBL_LANGUAGE') . ':</strong>' . Label::getLabel('LBL_ALL') . '</small></div></li></ul>';
-}
-$htmlAfterField .= '</div>';
-$fld1->htmlAfterField = $htmlAfterField;
-$fld1 = $mediaFrm->getField('tlang_flag_image');
-$fld1->addFieldTagAttribute('class', 'btn btn--primary btn--sm');
-$preferredDimensionsStr = '<span class="uploadimage--info" >' . str_replace(['{width}', '{height}'], ['150px', '150px'], $demensionLabel) . '</span>';
-$preferredDimensionsStr .= '<span class="uploadimage--info" >' . str_replace('{extension}', $teachLangFlagExt, $extensionLabel) . '</span>';
-$htmlAfterField = $preferredDimensionsStr;
-$htmlAfterField .= '<div id="flag-image-listing">';
-if (!empty($flagImage)) {
-    $htmlAfterField .= '<ul class="grids--onethird"><li><div class="logoWrap"><div class="logothumb"> <img src="' . MyUtility::makeUrl('image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $flagImage['file_record_id'], Afile::SIZE_SMALL]) . '?' . time() . '" title="' . $flagImage['file_name'] . '" alt="' . $flagImage['file_name'] . '">';
-    if ($canEdit) {
-        $htmlAfterField .= '<a class="deleteLink white" href="javascript:void(0);" onclick="removeFile(' . $tLangId . ', ' . Afile::TYPE_FLAG_TEACHING_LANGUAGES . ');" class="delete"><i class="ion-close-round"></i></a>';
-    }
-    $htmlAfterField .= '</div><small class=""><strong>' . Label::getLabel('LBL_LANGUAGE') . ':</strong>' . Label::getLabel('LBL_ALL') . '</small></div></li></ul>';
+    $htmlAfterField .= '</div></div></li></ul>';
 }
 $htmlAfterField .= '</div>';
 $fld1->htmlAfterField = $htmlAfterField;
