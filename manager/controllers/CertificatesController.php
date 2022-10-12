@@ -258,7 +258,7 @@ class CertificatesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(int $langId): Form
+    private function getForm(int $langId = 0): Form
     {
         $frm = new Form('frmCertificate');
         $frm->addHiddenField('', 'certpl_code')->requirements()->setRequired();
