@@ -471,7 +471,10 @@ class QuizAttempt extends MyAppModel
 
     public function canDownloadCertificate()
     {
-        if ($this->quiz['quilin_certificate'] == AppConstant::NO) {
+        if (
+            $this->quiz['quilin_certificate'] == AppConstant::NO ||
+            $this->quiz['quizat_evaluation'] == static::EVALUATION_PENDING
+        ) {
             $this->error = Label::getLabel('LBL_CERTIFICATE_NOT_AVAILABLE');
             return false;
         }
