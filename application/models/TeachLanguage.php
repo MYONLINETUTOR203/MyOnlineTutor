@@ -105,7 +105,7 @@ class TeachLanguage extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'tlang');
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'tlanglang.tlanglang_tlang_id = tlang.tlang_id and tlanglang.tlanglang_lang_id =' . $langId, 'tlanglang');
         $srch->addMultipleFields(['tlang.tlang_id', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as tlang_name']);
-        $srch->addCondition('tlang.tlang_id', 'IN', $teachLangIds);
+        $srch->addDirectCondition('tlang.tlang_id IN (' . implode(',', FatUtility::int($teachLangIds)) . ')');
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }
@@ -149,4 +149,5 @@ class TeachLanguage extends MyAppModel
         $srch->setPageSize(6);
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'tlang_id');
     }
+
 }

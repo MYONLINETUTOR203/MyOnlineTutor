@@ -69,7 +69,12 @@ class HomeController extends MyAppController
                 FatUtility::dieJsonError(Label::getLabel('MSG_NEWSLETTER_SUBSCRIPTION_VALID_EMAIL'));
             }
         } catch (Exception $e) {
-            FatUtility::dieJsonError($e->getMessage());
+            $error = strtolower($e->getMessage());
+            if (strpos($error, 'member exists') > -1) {
+                FatUtility::dieJsonSuccess(Label::getLabel('MSG_YOU_ARE_ALREADY_SUBSCRIBER'));
+            } else {
+                FatUtility::dieJsonError($error);
+            }
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SUCCESSFULLY_SUBSCRIBED'));
     }

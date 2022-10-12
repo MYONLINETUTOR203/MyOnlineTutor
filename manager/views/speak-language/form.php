@@ -23,7 +23,6 @@ $frm->developerTags['fld_default_col'] = 12;
                             ?>
                             <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" data-id="<?php echo $langId; ?>" <?php echo $langForm; ?>><?php echo $langName; ?></a></li>
                         <?php } ?>
-                        <li class="<?php echo $inactive; ?>"><a href="javascript:void(0);" <?php echo $mediaForm; ?>><?php echo Label::getLabel('LBL_MEDIA'); ?></a></li>
                     </ul>
                     <div class="tabs_panel_wrap">
                         <div class="tabs_panel">

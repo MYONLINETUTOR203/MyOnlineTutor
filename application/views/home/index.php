@@ -53,7 +53,7 @@
                 <form method="POST" class="form" action="<?php echo MyUtility::makeFullUrl('Teachers', 'languages'); ?>" name="homeSearchForm" id="homeSearchForm">
                     <div class="slideshow-input">
                         <svg class="icon icon--search">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#search'; ?>"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#search'; ?>"></use>
                         </svg>
                         <input type="text" name="language" placeholder="<?php echo Label::getLabel('LBL_I_AM_LEARNING'); ?>" />
                         <input type="hidden" name="teachLangId" />
@@ -65,16 +65,16 @@
             <?php
             if (!empty($popularLanguages)) {
                 $lastkey = array_key_last($popularLanguages);
-            ?>
+                ?>
                 <div class="tags-inline">
                     <b><?php echo Label::getLabel("LBL_POPULAR:") ?></b>
                     <ul>
                         <?php
                         foreach ($popularLanguages as $language) {
                             $language['tlang_name'] = ($lastkey != $language['tlang_id']) ? $language['tlang_name'] . ', ' : $language['tlang_name'];
-                        ?>
+                            ?>
                             <li class="tags-inline__item"><a href="<?php echo MyUtility::makeUrl('teachers', 'languages', [$language['tlang_slug']]) ?>"><?php echo $language['tlang_name']; ?></a></li>
-                        <?php
+                            <?php
                         }
                         unset($lastkey);
                         ?>
@@ -83,7 +83,7 @@
             <?php } ?>
         </div>
     </section>
-<?php
+    <?php
 }
 /**
  * This if (!empty($whyUsBlock)) { condition can be removed
@@ -92,7 +92,7 @@ if (!empty($whyUsBlock)) {
     echo html_entity_decode($whyUsBlock);
 }
 if (!empty($popularLanguages)) {
-?>
+    ?>
     <section class="section section--language">
         <div class="container container--narrow">
             <div class="section__head">
@@ -103,7 +103,7 @@ if (!empty($popularLanguages)) {
                     <?php foreach ($popularLanguages as $language) { ?>
                         <div class="flag__box">
                             <div class="flag__media">
-                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_MEDIUM]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
+                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_SMALL]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
                             </div>
                             <div class="flag__name">
                                 <span><?php echo $language['tlang_name'] ?></span>
@@ -119,10 +119,10 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php
+    <?php
 }
 if ($topRatedTeachers) {
-?>
+    ?>
     <section class="section padding-bottom-5">
         <div class="container container--narrow">
             <div class="section__head">
@@ -146,13 +146,13 @@ if ($topRatedTeachers) {
                                         <div class="info-wrapper">
                                             <div class="info-tag location">
                                                 <svg class="icon icon--location">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#location'; ?>"></use>
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#location'; ?>"></use>
                                                 </svg>
                                                 <span class="lacation__name"><?php echo $teacher['country_name']['name'] ?? ''; ?></span>
                                             </div>
                                             <div class="info-tag ratings">
                                                 <svg class="icon icon--rating">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating' ?>"></use>
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating' ?>"></use>
                                                 </svg>
                                                 <span class="value"><?php echo $teacher['testat_ratings']; ?></span>
                                                 <span class="count">(<?php echo $teacher['testat_reviewes']; ?>)</span>
@@ -171,10 +171,12 @@ if ($topRatedTeachers) {
         </div>
     </section>
 <?php }
-if (!empty($browseTutorPage)) { ?>
+if (!empty($browseTutorPage)) {
+    ?>
     <?php echo html_entity_decode($browseTutorPage); ?>
 <?php }
-if (count($classes) > 0) { ?>
+if (count($classes) > 0) {
+    ?>
     <section class="section section--gray section--upcoming-class">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
@@ -194,12 +196,13 @@ if (count($classes) > 0) { ?>
         </div>
     </section>
 <?php }
-if ($testmonialList) { ?>
+if ($testmonialList) {
+    ?>
     <section class="section section--quote">
         <div class="container container--narrow">
             <div class="quote-slider">
                 <div class="slider slider--quote slider-quote-js">
-                    <?php foreach ($testmonialList as $testmonialDetail) { ?>
+    <?php foreach ($testmonialList as $testmonialDetail) { ?>
                         <div>
                             <div class="slider__item">
                                 <div class="quote">
@@ -207,10 +210,10 @@ if ($testmonialList) { ?>
                                         <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_TESTIMONIAL_IMAGE, $testmonialDetail['testimonial_id'], Afile::SIZE_LARGE]), CONF_DEF_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $testmonialDetail['testimonial_user_name']; ?>">
                                         <div class="quote__box">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="30.857" viewBox="0 0 36 30.857">
-                                                <g transform="translate(0 -29.235)">
-                                                    <path d="M233.882,29.235V44.664h10.286a10.3,10.3,0,0,1-10.286,10.286v5.143a15.445,15.445,0,0,0,15.429-15.429V29.235Z" transform="translate(-213.311)" />
-                                                    <path d="M0,44.664H10.286A10.3,10.3,0,0,1,0,54.949v5.143A15.445,15.445,0,0,0,15.429,44.664V29.235H0Z" transform="translate(0 0)" />
-                                                </g>
+                                            <g transform="translate(0 -29.235)">
+                                            <path d="M233.882,29.235V44.664h10.286a10.3,10.3,0,0,1-10.286,10.286v5.143a15.445,15.445,0,0,0,15.429-15.429V29.235Z" transform="translate(-213.311)" />
+                                            <path d="M0,44.664H10.286A10.3,10.3,0,0,1,0,54.949v5.143A15.445,15.445,0,0,0,15.429,44.664V29.235H0Z" transform="translate(0 0)" />
+                                            </g>
                                             </svg>
                                         </div>
                                     </div>
@@ -221,28 +224,28 @@ if ($testmonialList) { ?>
                                         </div>
                                         <div class="quote__icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="138" height="118.286" viewBox="0 0 138 118.286">
-                                                <g transform="translate(0 -29.235)">
-                                                    <path d="M233.882,29.235V88.378H273.31a39.474,39.474,0,0,1-39.429,39.429v19.714a59.208,59.208,0,0,0,59.143-59.143V29.235Z" transform="translate(-155.025 0)" />
-                                                    <path class="b" d="M0,88.378H39.429A39.474,39.474,0,0,1,0,127.806v19.714A59.208,59.208,0,0,0,59.143,88.378V29.235H0Z" transform="translate(0 0)" />
-                                                </g>
+                                            <g transform="translate(0 -29.235)">
+                                            <path d="M233.882,29.235V88.378H273.31a39.474,39.474,0,0,1-39.429,39.429v19.714a59.208,59.208,0,0,0,59.143-59.143V29.235Z" transform="translate(-155.025 0)" />
+                                            <path class="b" d="M0,88.378H39.429A39.474,39.474,0,0,1,0,127.806v19.714A59.208,59.208,0,0,0,59.143,88.378V29.235H0Z" transform="translate(0 0)" />
+                                            </g>
                                             </svg>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <?php } ?>
+    <?php } ?>
                 </div>
             </div>
         </div>
     </section>
-<?php
+    <?php
 }
 if (!empty($startLearning)) {
     echo html_entity_decode($startLearning);
 }
 if ($blogPostsList) {
-?>
+    ?>
     <section class="section">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
@@ -252,7 +255,7 @@ if ($blogPostsList) {
             <div class="section__body">
                 <div class="blog-wrapper">
                     <div class="slider slider--onehalf slider-onehalf-js">
-                        <?php foreach ($blogPostsList as $postDetail) { ?>
+    <?php foreach ($blogPostsList as $postDetail) { ?>
                             <div>
                                 <div class="slider__item">
                                     <div class="blog-card">
@@ -269,7 +272,7 @@ if ($blogPostsList) {
                                                 </div>
                                                 <div class="blog__date">
                                                     <svg class="icon icon--calendar">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#calendar' ?>"></use>
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#calendar' ?>"></use>
                                                     </svg>
                                                     <span><?php echo MyDate::formatDate($postDetail['post_published_on']); ?> </span>
                                                 </div>
@@ -280,7 +283,7 @@ if ($blogPostsList) {
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
+    <?php } ?>
                     </div>
                 </div>
             </div>

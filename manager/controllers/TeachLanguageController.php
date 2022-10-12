@@ -209,7 +209,6 @@ class TeachLanguageController extends AdminBaseController
         (new UserTeachLanguage())->removeTeachLang([$tLangId]);
         (new TeacherStat(0))->setTeachLangPricesBulk();
         (new Afile(Afile::TYPE_TEACHING_LANGUAGES))->removeFile($tLangId, true);
-        (new Afile(Afile::TYPE_FLAG_TEACHING_LANGUAGES))->removeFile($tLangId, true);
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORD_DELETED_SUCCESSFULLY'));
     }
 
@@ -270,8 +269,6 @@ class TeachLanguageController extends AdminBaseController
             "mediaFrm" => $this->getMediaForm($tLangId),
             "languages" => Language::getAllNames(),
             "image" => (new Afile(Afile::TYPE_TEACHING_LANGUAGES))->getFile($tLangId),
-            "flagImage" => (new Afile(Afile::TYPE_FLAG_TEACHING_LANGUAGES))->getFile($tLangId),
-            "teachLangFlagExt" => implode(',', Afile::getAllowedExts(Afile::TYPE_FLAG_TEACHING_LANGUAGES)),
             "teachLangExt" => implode(', ', Afile::getAllowedExts(Afile::TYPE_TEACHING_LANGUAGES)),
         ]);
         $this->_template->render(false, false);
@@ -288,19 +285,8 @@ class TeachLanguageController extends AdminBaseController
         $frm = new Form('frmTeachLanguageMedia');
         $frm->addHiddenField('', 'tlang_id', $tlang_id);
         $frm->addFileUpload('', 'tlang_image_file');
-        $frm->addFileUpload('', 'tlang_flag_file');
-        $frm->addButton(
-            Label::getLabel('LBL_LANGUAGE_IMAGE'),
-            'tlang_image',
-            Label::getLabel('LBL_UPLOAD_FILE'),
-            ['class' => 'tlanguageFile-Js', 'id' => 'tlang_image', 'data-tlang_id' => $tlang_id]
-        );
-        $frm->addButton(
-            Label::getLabel('LBL_LANGUAGE_FLAG_IMAGE'),
-            'tlang_flag_image',
-            Label::getLabel('LBL_UPLOAD_FILE'),
-            ['class' => 'tlanguageFlagFile-Js', 'id' => 'tlang_flag_image', 'data-tlang_id' => $tlang_id]
-        );
+        $frm->addButton(Label::getLabel('LBL_LANGUAGE_IMAGE'), 'tlang_image', Label::getLabel('LBL_UPLOAD_FILE'),
+                ['class' => 'tlanguageFile-Js', 'id' => 'tlang_image', 'data-tlang_id' => $tlang_id]);
         return $frm;
     }
 
@@ -407,4 +393,5 @@ class TeachLanguageController extends AdminBaseController
         $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'tlang_id');
         FatUtility::dieJsonSuccess(['data' => $data]);
     }
+
 }

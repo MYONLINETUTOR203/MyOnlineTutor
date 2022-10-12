@@ -89,20 +89,21 @@ $content-panel: "content-panel";
 $action-bar: "action-bar";
 $social-button: "social-button";
 .#{$action-bar}{
-    position: relative;background-color: rgba(0, 0, 0, 0.02); padding: theme('padding.6'); border-bottom: 1px solid theme('color.gray.200');border-top: 1px solid theme('color.gray.200');
+    position: relative;padding: theme('padding.6'); border-bottom: 1px solid theme('color.gray.200');border-top: 1px solid theme('color.gray.200'); background-color:rgba(0, 0, 0, 0.02);
     @media(max-width:theme('breakpoints.sm','value')){
         &{
             &__content{padding-bottom: theme('padding.6');}
             .#{$social-button}{width: 100%;justify-content: space-between; }
         }
     }
+    &.selection-disabled{opacity: 1;}
     
 }
 
 
 $g-circle: "g-circle";
 
-.#{$g-circle}{position: relative; width:4rem; height:4rem; background-color: theme('color.white'); box-shadow: theme('boxShadow.all'); border-radius: theme('radius.round'); display: flex; align-items: center; justify-content: center;
+.#{$g-circle}{position: relative; width:4rem; height:4rem; background-color: theme('color.white'); box-shadow:0 1px 2px 1px #d4d4d4; border-radius: theme('radius.round'); display: flex; align-items: center; justify-content: center;
     
 }
 
