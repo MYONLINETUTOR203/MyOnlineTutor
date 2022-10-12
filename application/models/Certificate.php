@@ -183,6 +183,7 @@ class Certificate extends MyAppModel
             'crspro_completed' => date('Y-m-d H:i:s'),
             'quiz_duration' => 900,
             'course_duration' => 900,
+            'quizat_scored' => 85,
         ];
     }
 
@@ -244,19 +245,21 @@ class Certificate extends MyAppModel
                 '{course-name}',
                 '{course-language}',
                 '{course-completed-date}',
-                '{course-duration}'
+                '{course-duration}',
+                '{quiz-score}'
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated']) : '',
-                ($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number'],
+                (($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number']),
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
                 isset($data['crspro_completed']) ? MyDate::formatDate($data['crspro_completed']) : '',
-                isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : ''
+                isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : '',
+                isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
             ],
             $content
         );

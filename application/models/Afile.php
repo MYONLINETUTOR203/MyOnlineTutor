@@ -959,10 +959,10 @@ class Afile extends FatModel
      * @param integer $subRecordId
      * @return video
      */
-    public function showPdf(int $recordId, int $subRecordId = 0)
+    public function showPdf(int $recordId)
     {
         ob_end_clean();
-        $file = $this->getFile($recordId, $subRecordId);
+        $file = $this->getFile($recordId);
         $filePath = CONF_UPLOADS_PATH . $file['file_path'];
         $fileExt = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
         header("Content-Type: " . static::getContentType($fileExt));
