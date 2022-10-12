@@ -50,8 +50,7 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                             <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
                             <strong>
                                 <?php
-                                $diff = date_diff(date_create($data['quizat_updated']), date_create($data['quizat_started']));
-                                echo $diff->format('%h:%i:%s');
+                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
                                 ?>
                             </strong>
                         </span>
@@ -80,8 +79,7 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                             <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
                             <strong>
                                 <?php
-                                $diff = date_diff(date_create($data['quizat_updated']), date_create($data['quizat_started']));
-                                echo $diff->format('%h:%i:%s');
+                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
                                 ?>
                             </strong>
                         </span>

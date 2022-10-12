@@ -494,8 +494,7 @@ class QuizAttempt extends MyAppModel
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
         $duration = Label::getLabel('LBL_NA');
         if ($data['quilin_duration'] > 0) {
-            $diff = date_diff(date_create($data['quizat_updated']), date_create($data['quizat_started']));
-            $duration = $diff->format('%h:%i:%s');
+            $duration = MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
         }
 
         $srch = new SearchBase(User::DB_TBL);

@@ -53,7 +53,6 @@ $(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
-            // viewQuizzes($(obj).data('record-id'), $(obj).data('record-type'));
             $('.quizRow' + id).remove();
             $('.noRecordJS').hide();
             if ($('.quizRowJs').length == 0) {
