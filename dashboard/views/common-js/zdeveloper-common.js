@@ -135,6 +135,12 @@ $(document).ready(function () {
                 window.location.href = redirectUrl;
             }, 3000);
         },
+        setEditorLayout: function () {
+            var editors = oUtil.arrEditor;
+            for (x in editors) {
+                $('#idContent' + editors[x]).contents().find("body").css('direction', layoutDirection);
+            }
+        },
     });
     $(document).bind('reveal.facebox', function () {
         fcom.resetFaceboxHeight();

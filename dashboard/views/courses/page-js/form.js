@@ -7,6 +7,7 @@ $(function () {
             window["oEdit_" + id].disableFocusOnLoad = true;
             $('#pageContentJs input[name="course_title"]:first').focus();
             getCourseEligibility();
+            fcom.setEditorLayout();
         });
     };
     
@@ -251,6 +252,7 @@ $(function () {
                 $('#sectionId' + sectionId + ' .lecturesListJs').append(res).show();
                 $('#lectureOrderJs').val(parseInt(lectureOrder) + 1);
             }
+            fcom.setEditorLayout();
         });
     };
     $(document).on('submit', 'form[name=frmLecture]', function (event) {
