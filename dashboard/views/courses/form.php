@@ -28,4 +28,5 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
     <div class="page__body" id="pageContentJs"></div>
     <script>
         var courseId = "<?php echo $courseId ?>";
+        var siteLangId = "<?php echo $siteLangId; ?>";
     </script>

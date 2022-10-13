@@ -135,11 +135,15 @@ $(document).ready(function () {
                 window.location.href = redirectUrl;
             }, 3000);
         },
-        setEditorLayout: function () {
-            var editors = oUtil.arrEditor;
-            for (x in editors) {
-                $('#idContent' + editors[x]).contents().find("body").css('direction', layoutDirection);
-            }
+        setEditorLayout: function (lang_id) {
+            setTimeout(function () {
+                var editors = oUtil.arrEditor;
+                layout = langLbl['language' + lang_id];
+                for (x in editors) {
+                    $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+                    $('#' + editors[x] + "grp").parent().parent().attr('dir', layout);
+                }
+            }, 100);
         },
     });
     $(document).bind('reveal.facebox', function () {

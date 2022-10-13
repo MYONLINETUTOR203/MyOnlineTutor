@@ -327,9 +327,9 @@ class MyUtility extends FatUtility
      * 
      * @return array
      */
-    public static function getCommonLabels(): array
+    public static function getCommonLabels(array $siteLanguages): array
     {
-        return [
+        $jsVariables = [
             'layoutDirection' => MyUtility::getLayoutDirection(),
             'isMandatory' => Label::getLabel('LBL_IS_MANDATORY'),
             'processing' => Label::getLabel('LBL_PROCESSING_PLEASE_WAIT'),
@@ -380,6 +380,10 @@ class MyUtility extends FatUtility
             'confirmCourseSubmission' => Label::getLabel('LBL_PLEASE_CONFIRM_YOU_WANT_TO_SUBMIT_COURSE_FOR_APPROVAL?'),
             'searching' => Label::getLabel('LBL_Searching'),
         ];
+        foreach ($siteLanguages as $val) {
+            $jsVariables['language' . $val['language_id']] = $val['language_direction'];
+        }
+        return $jsVariables;
     }
 
     /**

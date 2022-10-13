@@ -33,6 +33,7 @@ class MyAppController extends FatController
         $this->setSiteCurrency();
         $this->setSiteTimezone();
         $this->setCookieConsent();
+        $siteLanguages = $this->getSiteLanguages();
         $this->sets([
             'siteUser' => $this->siteUser,
             'siteUserId' => $this->siteUserId,
@@ -42,7 +43,7 @@ class MyAppController extends FatController
             'siteCurrId' => $this->siteCurrId,
             'siteCurrency' => $this->siteCurrency,
             'siteTimezone' => $this->siteTimezone,
-            'siteLanguages' => $this->getSiteLanguages(),
+            'siteLanguages' => $siteLanguages,
             'siteCurrencies' => $this->getSiteCurrencies(),
             'cookieConsent' => $this->cookieConsent,
             'messageData' => Message::getData(),
@@ -58,7 +59,7 @@ class MyAppController extends FatController
             $this->set('footerTwoNav', Navigation::footerTwoNav());
             $this->set('footerThreeNav', Navigation::footerThreeNav());
             $this->set('socialPlatforms', SocialPlatform::getAll());
-            $this->set('jsVariables', MyUtility::getCommonLabels());
+            $this->set('jsVariables', MyUtility::getCommonLabels($siteLanguages));
 
             $viewType = 'frontend';
             if (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') {
