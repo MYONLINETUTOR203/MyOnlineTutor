@@ -47,6 +47,9 @@ class Certificate extends MyAppModel
         if (!$this->create($content)) {
             return false;
         }
+        if (!$this->setupMetaTags($data)) {
+            return false;
+        }
         return true;
     }
 
@@ -312,5 +315,41 @@ class Certificate extends MyAppModel
             mkdir($uploadPath . $filePath, 0777, true);
         }
         return $filePath;
+    }
+
+    private function setupMetaTags(array $data)
+    {
+        /* get user name */
+        $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+        $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+
+        $meta = new MetaTag();
+        $meta->assignValues([
+            'meta_controller' => 'Certificates',
+            'meta_action' => 'evaluation',
+            'meta_type' => MetaTag::META_GROUP_QUIZ_CERTIFICATE,
+            'meta_record_id' => $data['quizat_id'],
+            'meta_identifier' => $content
+        ]);
+        if (!$meta->save()) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        if (
+            !FatApp::getDb()->insertFromArray(
+                MetaTag::DB_LANG_TBL,
+                [
+                    'metalang_meta_id' => $meta->getMainTableRecordId(),
+                    'metalang_lang_id' => $this->langId,
+                    'meta_title' => $content,
+                    'meta_og_url' => MyUtility::makeFullUrl('Certificates', 'evaluation', [$data['quizat_id']], CONF_WEBROOT_FRONTEND),
+                    'meta_og_title' => $content
+                ]
+            )
+        ) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        return true;
     }
 }
