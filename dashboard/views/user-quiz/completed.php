@@ -95,7 +95,7 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                         <?php echo Label::getLabel('LBL_RETAKE_QUIZ'); ?>
                     </a>
                 <?php } ?>
-                <a href="#" class="btn btn--primary margin-1 btn--sm-block">
+                <a href="<?php echo MyUtility::makeUrl('QuizReview', 'index', [$data['quizat_id']]) ?>" class="btn btn--primary margin-1 btn--sm-block">
                     <?php echo Label::getLabel('LBL_CHECK_ANSWERS'); ?>
                 </a>
                 <?php $controller = ($data['quilin_record_type'] == AppConstant::LESSON) ? 'Lessons' : 'Classes' ?>
