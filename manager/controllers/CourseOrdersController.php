@@ -74,8 +74,8 @@ class CourseOrdersController extends AdminBaseController
         $frm = new Form('frmSearch');
         $frm->addTextBox(Label::getLabel('LBL_KEYWORD'), 'keyword', '', ['placeholder' => Label::getLabel('LBL_SEARCH_BY_COURSE_TITLE,_TEACHER,_LEARNER,_ORDER_ID')]);
         // $frm->addHiddenField('', 'ordcls_tlang_id', '', ['id' => 'ordcls_tlang_id', 'autocomplete' => 'off']);
-        $frm->addSelectBox(Label::getLabel('LBL_PAYMENT'), 'order_payment_status', Order::getPaymentArr());
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ordcrs_status', $orderStatuses)->requirements()->setIntPositive();
+        $frm->addSelectBox(Label::getLabel('LBL_PAYMENT'), 'order_payment_status', Order::getPaymentArr(), '', [], Label::getLabel('LBL_SELECT'));
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ordcrs_status', $orderStatuses, '', [], Label::getLabel('LBL_SELECT'))->requirements()->setIntPositive();
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'order_addedon_from', '', ['readonly' => 'readonly']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'order_addedon_till', '', ['readonly' => 'readonly']);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
