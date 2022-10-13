@@ -84,12 +84,17 @@ $requestStatuses = Course::getRefundStatuses();
                     <?php } else { ?>
                         <?php
                         $color = 'color-success';
-                        if($course['crspro_status'] == CourseProgress::COMPLETED){
+                        if ($course['crspro_status'] == CourseProgress::CANCELLED) {
+                            $color = 'color-danger';
+                        } elseif ($course['crspro_status'] == CourseProgress::PENDING) {
+                            $color = 'color-warning';
+                        } elseif ($course['crspro_status'] == CourseProgress::IN_PROGRESS) {
+                            $color = 'color-info';
+                        }
                         ?>
                         <span class="card-landscape__status badge <?php echo $color; ?> badge--curve badge--small margin-left-0">
                             <?php echo $orderStatuses[$course['crspro_status']]; ?>
-                        </span>
-                        <?php }?>
+                        </span>                        
                     <?php } ?>
                     <?php if ($siteUserType == User::TEACHER) { ?>
                         <?php if ($course['course_active'] == AppConstant::INACTIVE) { ?>
@@ -116,8 +121,7 @@ $requestStatuses = Course::getRefundStatuses();
 
                    
 
-                    <?php if ($siteUserType == User::LEARNER && $course['crspro_status'] != CourseProgress::COMPLETED &&
-                                (!isset($course['corere_status']) || $course['corere_status'] != Course::REFUND_APPROVED)) { ?>
+                    <?php if ($siteUserType == User::LEARNER && (!isset($course['corere_status']) || $course['corere_status'] != Course::REFUND_APPROVED)) { ?>
                     <div class="course-progress margin-top-2">
                         <div class="course-progress__value"><?php echo Label::getLabel('LBL_COURSE_PROGRESS'); ?></div>
                         <div class="course-progress__content">
