@@ -36,7 +36,7 @@ class QuizLinked extends MyAppModel
             $srch->applyPrimaryConditions();
             $srch->addCondition('ordles_id', '=', $recordId);
             $srch->addMultipleFields([
-                'ordles_id', 'learner.user_first_name AS learner_first_name', 
+                'ordles_id', 'learner.user_first_name AS learner_first_name',
                 'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
                 'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
             ]);
@@ -52,7 +52,7 @@ class QuizLinked extends MyAppModel
             $srch->applyPrimaryConditions();
             $srch->addCondition('grpcls_id', '=', $recordId);
             $srch->addMultipleFields([
-                'ordcls_id', 'learner.user_first_name AS learner_first_name', 
+                'ordcls_id', 'learner.user_first_name AS learner_first_name',
                 'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
                 'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
             ]);
@@ -137,7 +137,7 @@ class QuizLinked extends MyAppModel
                 'quilin_certificate' => $quiz['quiz_certificate'],
                 'quilin_questions' => $quiz['quiz_questions'],
                 'quilin_created' => date('Y-m-d H:i:s')
-            ]; 
+            ];
             $quizLink->assignValues($data);
             if (!$quizLink->addNew()) {
                 $db->rollbackTransaction();
@@ -168,7 +168,7 @@ class QuizLinked extends MyAppModel
 
     /**
      * Get Attached Quiz
-     * 
+     *
      * @param array $recordIds
      * @param int   $type
      * @return array
@@ -190,7 +190,7 @@ class QuizLinked extends MyAppModel
 
     /**
      * Get Attached Quiz
-     * 
+     *
      * @param int $recordIds
      * @param int $type
      * @return array
@@ -307,6 +307,12 @@ class QuizLinked extends MyAppModel
         return $quiz;
     }
 
+    /**
+     * Get question by id
+     *
+     * @param int $id
+     * @return array
+     */
     public static function getQuestionById(int $id)
     {
         $srch = new SearchBase(static::DB_TBL_QUIZ_LINKED_QUESTIONS);
@@ -322,6 +328,38 @@ class QuizLinked extends MyAppModel
             return [];
         }
         return $question;
+    }
+
+    /**
+     * Bind quizzes for users
+     *
+     * @param int $recordId
+     * @param int $type
+     * @return bool
+     */
+    public function bindUserQuiz(int $recordId, int $type)
+    {
+        /* get linked quizzes list */
+        $srch = new SearchBase(static::DB_TBL, 'quilin');
+        $srch->addCondition('quilin.quilin_record_id', '=', $recordId);
+        $srch->addCondition('quilin.quilin_record_type', '=', $type);
+        $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addMultipleFields([
+            'quilin_id',
+        ]);
+        $srch->doNotCalculateRecords();
+        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if (empty($quizzes)) {
+            return true;
+        }
+        foreach ($quizzes as $quiz) {
+            $attempt = new QuizAttempt(0, $this->userId);
+            if (!$attempt->setupUserQuiz($quiz['quilin_id'])) {
+                $this->error = $attempt->getError();
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -362,7 +400,7 @@ class QuizLinked extends MyAppModel
 
     /**
      * Send Quiz Attachment Notification
-     * 
+     *
      * @param array $data
      */
     private function sendQuizAttachedNotification(array $data)
@@ -461,31 +499,6 @@ class QuizLinked extends MyAppModel
                     $this->error = $this->getError();
                     return false;
                 }
-            }
-        }
-        return true;
-    }
-
-    public function bindUserQuiz(int $recordId, int $type)
-    {
-        /* get linked quizzes list */
-        $srch = new SearchBase(static::DB_TBL, 'quilin');
-        $srch->addCondition('quilin.quilin_record_id', '=', $recordId);
-        $srch->addCondition('quilin.quilin_record_type', '=', $type);
-        $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addMultipleFields([
-            'quilin_id',
-        ]);
-        $srch->doNotCalculateRecords();
-        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet());
-        if (empty($quizzes)) {
-            return true;
-        }
-        foreach ($quizzes as $quiz) {
-            $attempt = new QuizAttempt(0, $this->userId);
-            if (!$attempt->setupUserQuiz($quiz['quilin_id'])) {
-                $this->error = $attempt->getError();
-                return false;
             }
         }
         return true;

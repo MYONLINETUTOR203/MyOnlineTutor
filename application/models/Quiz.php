@@ -101,7 +101,7 @@ class Quiz extends MyAppModel
      * Delete binded questions
      *
      * @param int $quesId
-     * @return boolean
+     * @return bool
      */
     public function deleteQuestion(int $quesId): bool
     {

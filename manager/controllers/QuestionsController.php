@@ -63,8 +63,7 @@ class QuestionsController extends AdminBaseController
         $srch->setPageNumber($post['page']);
         $srch->addOrder('ques_status', 'DESC');
         $srch->addOrder('ques_id', 'DESC');
-        $data = $srch->fetchAndFormat(); 
-        $categoryIds = array_keys($data);
+        $data = $srch->fetchAndFormat();
         $this->sets([
             'arrListing' => $data,
             'postedData' => $post,
@@ -85,11 +84,16 @@ class QuestionsController extends AdminBaseController
      * return html
      */
     public function view($quesId)
-    {   
+    {
         $srch = new QuestionSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->addCondition('ques_id', '=', $quesId);
         $srch->applyPrimaryConditions();
-        $srch->joinTable(Category::DB_LANG_TBL, 'LEFT OUTER JOIN', 'ques.ques_cate_id = catg_l.catelang_cate_id', 'catg_l');
+        $srch->joinTable(
+            Category::DB_LANG_TBL,
+            'LEFT OUTER JOIN',
+            'ques.ques_cate_id = catg_l.catelang_cate_id',
+            'catg_l'
+        );
         $srch->addSearchListingFields();
         $data = $srch->fetchAndFormat();
         $questionData = current($data);
@@ -126,7 +130,7 @@ class QuestionsController extends AdminBaseController
 
     /**
      * Get User Search Form
-     * 
+     *
      * @return Form
      */
     private function getSearchForm(): Form
@@ -138,7 +142,8 @@ class QuestionsController extends AdminBaseController
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['id' => 'teacher', 'autocomplete' => 'off']);
-        $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
+        $fld = $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
+        $fld->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();
         $frm->addHiddenField('', 'teacher_id', '');
         $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
@@ -146,7 +151,4 @@ class QuestionsController extends AdminBaseController
         $fld_submit->attachField($fld_cancel);
         return $frm;
     }
-
 }
-
-

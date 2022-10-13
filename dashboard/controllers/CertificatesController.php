@@ -22,7 +22,6 @@ class CertificatesController extends DashboardController
      * Generate Certificate for course
      *
      * @param int $progressId
-     * @return void
      */
     public function index($progressId)
     {
@@ -46,14 +45,26 @@ class CertificatesController extends DashboardController
         if (empty($ordcrsData['ordcrs_certificate_number'])) {
             /* get certificate html */
             $content = $this->getContent(Certificate::TYPE_COURSE);
-            $cert = new Certificate($ordcrsData['ordcrs_id'], Certificate::TYPE_QUIZ, $this->siteUserId, $this->siteUserType);
+            $cert = new Certificate(
+                $ordcrsData['ordcrs_id'],
+                Certificate::TYPE_QUIZ,
+                $this->siteUserId,
+                $this->siteUserType
+            );
             if (!$cert->generate($content)) {
                 FatUtility::dieWithError($cert->getError());
             }
         }
-        FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND));
+        FatApp::redirectUser(
+            MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND)
+        );
     }
 
+    /**
+     * Generate Certificate for quiz
+     *
+     * @param int $id
+     */
     public function quiz(int $id)
     {
         if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ) {
@@ -85,6 +96,11 @@ class CertificatesController extends DashboardController
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'evaluation', [$id], CONF_WEBROOT_FRONTEND));
     }
 
+    /**
+     * Get html content for certificate
+     *
+     * @return string
+     */
     private function getContent()
     {
         /* get background and logo images */

@@ -179,7 +179,6 @@ class QuestionSearch extends YocoachSearch
      * Get Search Form
      *
      * @param int $langId
-     * @return Form
      */
     public static function getSearchForm(int $langId): Form
     {

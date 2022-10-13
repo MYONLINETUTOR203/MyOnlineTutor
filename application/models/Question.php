@@ -114,7 +114,6 @@ class Question extends MyAppModel
         return FatApp::getDb()->fetchAll($srch->getResultSet());
     }
 
-
     /**
      * Delete
      *
