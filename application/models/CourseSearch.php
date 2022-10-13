@@ -400,10 +400,16 @@ class CourseSearch extends YocoachSearch
         if ($langId == 0 || count($categoryIds) == 0) {
             return [];
         }
-        $srch = new SearchBase(Category::DB_LANG_TBL);
-        $srch->addMultipleFields(['catelang_cate_id', 'cate_name']);
-        $srch->addCondition('catelang_cate_id', 'IN', $categoryIds);
-        $srch->addCondition('catelang_lang_id', '=', $langId);
+        $srch = new SearchBase(Category::DB_TBL);
+        $srch->joinTable(
+            Category::DB_LANG_TBL,
+            'LEFT JOIN',
+            'cate_id = catelang_cate_id AND catelang_lang_id = ' . $langId
+        );
+        $srch->addMultipleFields(['cate_id', 'IFNULL(cate_name, cate_identifier) AS cate_name']);
+        $srch->addCondition('cate_id', 'IN', $categoryIds);
+        $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }

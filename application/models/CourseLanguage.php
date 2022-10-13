@@ -63,6 +63,7 @@ class CourseLanguage extends MyAppModel
         );
         $srch->addCondition('clang.clang_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('clang.clang_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('clang.clang_id', '=', $this->getMainTableRecordId());
         $srch->doNotCalculateRecords();
         $srch->addFld('IFNULL(clang_name, clang_identifier) as clang_name');
         $srch->setPageSize(1);
