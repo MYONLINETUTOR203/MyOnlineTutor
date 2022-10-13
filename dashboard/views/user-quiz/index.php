@@ -4,6 +4,14 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="box-view box-view--space">
+                    <hgroup class="margin-bottom-4">
+                        <h4 class="margin-bottom-2">
+                            <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
+                        </h4>
+                    </hgroup>
+                    <div class="check-list margin-bottom-10">
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    </div>
                     <div class="repeat-items margin-bottom-10">
                         <div class="repeat-element">
                             <div class="repeat-element__title">
@@ -69,14 +77,6 @@
                                 </div>
                             </div>
                         <?php } ?>
-                    </div>
-                    <hgroup class="margin-bottom-4">
-                        <h4 class="margin-bottom-2">
-                            <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
-                        </h4>
-                    </hgroup>
-                    <div class="check-list margin-bottom-10">
-                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
                     </div>
                     <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">
                         <?php echo Label::getLabel('LBL_START_NOW'); ?>
