@@ -5467,6 +5467,10 @@ body.sort-active {
         .offers-ui__target-body {
           max-height: 450px; } }
 
+@media (max-width: 1199px) {
+  .calendar-view.scheduled-lesson-popup {
+    height: 91%; } }
+
 .video {
   position: relative;
   width: 100%;

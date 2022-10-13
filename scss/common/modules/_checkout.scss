@@ -78,7 +78,7 @@
             overflow-x: hidden;
         }
         @media(max-width: theme('breakpoints.md','value')){
-            height: calc(100% - 150px);
+            height: calc(100% - 180px);
             overflow-y: auto;
             overflow-x: hidden;
         }

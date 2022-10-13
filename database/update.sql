@@ -267,3 +267,6 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.1.0.20220927' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_MOBILE_SELECT_SLOT_INFO', 'Please press & hold for a few seconds to select a slot.'); 
+
