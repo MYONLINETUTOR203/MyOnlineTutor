@@ -106,29 +106,6 @@ class QuestionsController extends AdminBaseController
     }
 
     /**
-     * Auto Complete JSON
-     */
-    public function teacherAutoCompleteJson()
-    {
-        $keyword = FatApp::getPostedData('keyword', FatUtility::VAR_STRING, '');
-        if (empty($keyword)) {
-            FatUtility::dieJsonSuccess(['data' => []]);
-        }
-        $srch = new SearchBase(User::DB_TBL, 'teacher');
-        $srch->addMultiplefields(['user_id', "CONCAT(teacher.user_first_name, ' ',teacher.user_last_name) as full_name", 'user_email']);
-        if (!empty($keyword)) {
-            $cond = $srch->addCondition('user_email', 'LIKE', '%'.$keyword.'%');
-            $fullname = 'mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)';
-            $cond->attachCondition($fullname, 'LIKE', '%' . $keyword . '%', 'OR', true);
-        }
-        $srch->addOrder('full_name', 'ASC');
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(20);
-        $data = FatApp::getDb()->fetchAll($srch->getResultSet(), 'user_id');
-        FatUtility::dieJsonSuccess(['data' => $data]);
-    }
-
-    /**
      * Fetch sub categories for selected category
      *
      * @param int $catgId
@@ -160,7 +137,7 @@ class QuestionsController extends AdminBaseController
         $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '', ['id' => 'keyword', 'autocomplete' => 'off']);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
-        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'quesTeacher', '', ['id' => 'quesTeacher', 'autocomplete' => 'off']);
+        $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['id' => 'teacher', 'autocomplete' => 'off']);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'))->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();
         $frm->addHiddenField('', 'teacher_id', '');
