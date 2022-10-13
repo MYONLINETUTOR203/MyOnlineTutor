@@ -40,11 +40,14 @@ function isJson(str) {
             }
         },
         setEditorLayout: function (lang_id) {
-            var editors = oUtil.arrEditor;
-            layout = langLbl['language' + lang_id];
-            for (x in editors) {
-                $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
-            }
+            setTimeout(function () {
+                var editors = oUtil.arrEditor;
+                layout = langLbl['language' + lang_id];
+                for (x in editors) {
+                    $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+                    $('#' + editors[x] + "grp").parent().parent().attr('dir', layout);
+                }
+            }, 100);
         },
         resetFaceboxHeight: function () {
             $('html').css('overflow', 'hidden');

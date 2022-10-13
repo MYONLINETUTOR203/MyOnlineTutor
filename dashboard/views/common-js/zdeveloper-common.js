@@ -112,6 +112,25 @@ $(document).ready(function () {
         var screenHeight = $(window).height() - 100;
     };
     $.extend(fcom, {
+        resetEditorInstance: function () {
+            if (typeof oUtil != 'undefined') {
+                var editors = oUtil.arrEditor;
+                for (x in editors) {
+                    eval('delete window.' + editors[x]);
+                }
+                oUtil.arrEditor = [];
+            }
+        },
+        setEditorLayout: function (lang_id) {
+            setTimeout(function () {
+                var editors = oUtil.arrEditor;
+                layout = langLbl['language' + lang_id];
+                for (x in editors) {
+                    $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+                    $('#' + editors[x] + "grp").parent().parent().attr('dir', layout);
+                }
+            }, 100);
+        },
         resetFaceboxHeight: function () {
             $('html').addClass('show-facebox');
             facebocxHeight = screenHeight;
