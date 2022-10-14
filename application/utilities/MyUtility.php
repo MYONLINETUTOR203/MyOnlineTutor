@@ -375,7 +375,9 @@ class MyUtility extends FatUtility
             'currencyLeft' => self::getCurrencyLeftSymbol(),
             'currencyRight' => self::getCurrencyRightSymbol(),
             'selectQuestions' => Label::getLabel('LBL_PLEASE_ADD_QUESTION(S)'),
-            'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION')
+            'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION'),
+            'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
+            'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?')
         ];
     }
 

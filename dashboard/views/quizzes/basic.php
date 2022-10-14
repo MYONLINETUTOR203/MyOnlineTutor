@@ -26,7 +26,7 @@ $submit = $frm->getField('btn_submit');
     </div>
     <div class="page-layout__large">
         <div class="box-panel">
-            <div class="box-panel__head">
+            <div class="box-panel__head  border-bottom">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <h4><?php echo Label::getLabel('LBL_ADD_QUIZ'); ?></h4>

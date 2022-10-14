@@ -34,7 +34,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', [], $srNo);
                 break;
             case 'quiz_title':
-                $td->appendElement('plaintext', [], $row['quiz_title']);
+                $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['quiz_title']));
                 break;
             case 'quiz_type':
                 $td->appendElement('plaintext', [], $types[$row['quiz_type']]);

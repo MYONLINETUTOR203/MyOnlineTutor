@@ -48,7 +48,8 @@ class MyAppController extends FatController
             'messageData' => Message::getData(),
         ]);
         $this->set('actionName', $this->_actionName);
-        $this->set('controllerName', str_replace('Controller', '', $this->_controllerName));
+        $controllerName = str_replace('Controller', '', $this->_controllerName);
+        $this->set('controllerName', $controllerName);
         $this->set('teachLangs', TeachLanguage::getTeachLanguages($this->siteLangId));
         if (!FatUtility::isAjaxCall()) {
             $this->set('canonicalUrl', SeoUrl::getCanonicalUrl());
@@ -59,6 +60,15 @@ class MyAppController extends FatController
             $this->set('socialPlatforms', SocialPlatform::getAll());
             $this->set('jsVariables', MyUtility::getCommonLabels());
             $viewType = (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') ? 'dashboard' : 'frontend';
+
+            $viewType = 'frontend';
+            if (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') {
+                $viewType = 'dashboard';
+                if (strtolower($controllerName) == 'userquiz') {
+                    $viewType = 'quiz';
+                }
+            }
+
             $this->_template->addCss([
                 'css/common-' . $this->siteLanguage['language_direction'] . '.css',
                 'css/' . $viewType . '-' . $this->siteLanguage['language_direction'] . '.css'

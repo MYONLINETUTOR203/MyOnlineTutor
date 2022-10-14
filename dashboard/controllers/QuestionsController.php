@@ -182,8 +182,10 @@ class QuestionsController extends DashboardController
             if ($this->siteUserId != $data['ques_user_id']) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             }
-            $options = $question->getQuesOptions();
-            $answers = json_decode($data['ques_answer'], true);
+            if ($count == $data['ques_options_count']) {
+                $options = $question->getQuesOptions();
+                $answers = json_decode($data['ques_answer'], true);
+            }
         }
         $this->sets([
             'frm' => $this->getOptionsForm($type),
@@ -244,6 +246,7 @@ class QuestionsController extends DashboardController
         $fld->requirements()->setRequired();
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+        $fld->requirements()->setLength(10, 255);
 
         $countFld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
         $countFld->requirements()->setRequired();
@@ -280,7 +283,10 @@ class QuestionsController extends DashboardController
     private function getOptionsForm(int $type = 0)
     {
         $frm = new Form('frmOptions');
-        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired();
+        $fld = $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setLength(1, 255);
+
         if ($type == Question::TYPE_SINGLE) {
             $options = [1 => Label::getLabel('LBL_IS_CORRECT?')];
             $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', $options);

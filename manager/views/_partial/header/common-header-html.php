@@ -7,7 +7,7 @@
 </script>
 </head>
 <?php $isPreviewOn = MyUtility::isDemoUrl() ? 'is-preview-on' : ''; ?>
-<body class="<?php echo $bodyClass . ' ' . $isPreviewOn; ?>">
+<body class="<?php echo $bodyClass . ' ' . $isPreviewOn; ?>" dir="<?php echo $siteLanguage['language_direction']; ?>">
     <?php
     if (MyUtility::isDemoUrl()) {
         include(CONF_INSTALLATION_PATH . 'restore/view/header-bar.php');

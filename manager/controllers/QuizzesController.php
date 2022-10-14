@@ -93,8 +93,14 @@ class QuizzesController extends AdminBaseController
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
-        $srch = new QuizSearch($this->siteLangId, 0, User::SUPPORT);
-        $this->set('questions', $srch->getQuestions($quizId, $data['quiz_type']));
+
+        $srch = new QuizQuestionSearch($this->siteLangId, 0, User::SUPPORT);
+        $srch->addCondition('quique_quiz_id', '=', $quizId);
+        $srch->applyPrimaryConditions();
+        $srch->addSearchListingFields();
+        $srch->joinCategory();
+        $srch->setOrder();
+        $this->set('questions', $srch->fetchAndFormat());
         $this->_template->render(false, false);
     }
 }

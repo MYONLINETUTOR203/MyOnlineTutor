@@ -32,12 +32,15 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                             <div class="timer">
                                 <?php if ($lesson['ordles_status'] == Lesson::SCHEDULED || !empty($lesson['ordles_lesson_time_info'])) { ?>
                                     <div class="timer__media">
-                                        <span><svg class="icon icon--clock icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use></svg></span>
+                                        <span><svg class="icon icon--clock icon--small">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
+                                            </svg></span>
                                     </div>
                                     <div class="timer__content">
                                         <?php if ($lesson['ordles_starttime_unix'] > $lesson['ordles_currenttime_unix']) { ?>
                                             <div class="timer__controls countdowntimer timer-js" id="countdowntimer-<?php echo $lesson['ordles_id']; ?>" remainingTime="<?php echo $lesson['ordles_remaining_unix']; ?>">00:00:00:00</div>
-                                        <?php } if (!empty($lesson['ordles_lesson_time_info'])) { ?>
+                                        <?php }
+                                        if (!empty($lesson['ordles_lesson_time_info'])) { ?>
                                             <span class="color-red"><?php echo Label::getLabel($lesson['ordles_lesson_time_info']); ?></span>
                                         <?php } ?>
                                     </div>
@@ -51,7 +54,8 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                             <span class="card-landscape__status badge color-secondary badge--curve badge--small margin-left-0"><?php echo Lesson::getStatuses($lesson['ordles_status']); ?></span>
                             <?php if ($lesson['order_type'] == Order::TYPE_SUBSCR) { ?>
                                 <span class="card-landscape__status badge color-secondary badge--curve badge--small margin-left-0"><?php echo $subscriptionLabel; ?></span>
-                            <?php } if ($lesson['repiss_id'] > 0) { ?>
+                            <?php }
+                            if ($lesson['repiss_id'] > 0) { ?>
                                 <span class="card-landscape__status badge color-primary badge--curve badge--small margin-left-0"><?php echo Label::getLabel('LBL_ISSUE_REPORTED'); ?></span>
                             <?php } ?>
                         </div>
@@ -60,7 +64,9 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                                 <?php if ($lesson['plan_id'] > 0) { ?>
                                     <div class="d-flex align-items-center">
                                         <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $lesson['plan_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>');" class="attachment-file">
-                                            <svg class="icon icon--issue icon--attachement icon--xsmall color-black"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use></svg>
+                                            <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                            </svg>
                                             <?php echo $lesson['plan_title'] ?>
                                         </a>
                                         <?php if ($siteUserType == User::TEACHER) { ?>
@@ -71,12 +77,37 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                                     <?php
                                 } else {
                                     if ($siteUserType == User::TEACHER) {
-                                        ?>
-                                        <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>')" class="btn btn--transparent btn--addition color-black btn--small"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
-                                        <?php
+                                    ?>
+                                        <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $lesson['ordles_id']; ?>', '<?php echo Plan::PLAN_TYPE_LESSONS; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
+                                <?php
                                     }
                                 }
                                 ?>
+
+                                <?php if ($lesson['quiz_count'] > 0) { ?>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:void(0);" onclick="viewQuizzes('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>');" class="attachment-file">
+                                            <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                            </svg>
+                                            <?php
+                                            $lbl = Label::getLabel('LBL_{quiz-count}_QUIZZES_ATTACHED');
+                                            echo str_replace('{quiz-count}', $lesson['quiz_count'], $lbl);
+                                            ?>
+                                        </a>
+                                        <?php if ($siteUserType == User::TEACHER) { ?>
+                                            <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="underline color-black  btn btn--transparent btn--small mx-1">
+                                                <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                                            </a>
+                                        <?php } ?>
+                                    </div>
+                                <?php } else { ?>
+                                    <?php if ($siteUserType == User::TEACHER) { ?>
+                                        <a href="javascript:void(0);" onclick="quizListing('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1">
+                                            <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                        </a>
+                                    <?php } ?>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
@@ -85,7 +116,7 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                             <div class="profile-meta">
                                 <div class="profile-meta__media">
                                     <span class="avtar" data-title="<?php echo CommonHelper::getFirstChar($lesson['first_name']); ?>">
-                                        <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $lesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL),CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
+                                        <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $lesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
                                     </span>
                                 </div>
                                 <div class="profile-meta__details">
@@ -96,37 +127,57 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                             <div class="actions-group">
                                 <?php if ($lesson['ordles_status'] != Lesson::CANCELLED) { ?>
                                     <a href="<?php echo MyUtility::makeUrl('Lessons', 'view', [$lesson['ordles_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--enter icon--18"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#enter'; ?>"></use></svg>
+                                        <svg class="icon icon--enter icon--18">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#enter'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Enter_Classroom'); ?></div>
                                     </a>
-                                <?php } if ($lesson['canCancelLesson']) { ?>
+                                <?php }
+                                if ($lesson['canCancelLesson']) { ?>
                                     <a href="javascript:void(0);" onclick="cancelForm('<?php echo $lesson['ordles_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--cancel icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#cancel'; ?>"></use></svg>
+                                        <svg class="icon icon--cancel icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#cancel'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Cancel'); ?></div>
                                     </a>
-                                <?php } if ($lesson['canRescheduleLesson']) { ?>
+                                <?php }
+                                if ($lesson['canRescheduleLesson']) { ?>
                                     <a href="javascript:void(0);" onclick="rescheduleForm('<?php echo $lesson['ordles_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--reschedule icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#reschedule'; ?>"></use></svg>
+                                        <svg class="icon icon--reschedule icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#reschedule'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Reschedule'); ?></div>
                                     </a>
-                                <?php } if ($lesson['canScheduleLesson']) { ?>
+                                <?php }
+                                if ($lesson['canScheduleLesson']) { ?>
                                     <a href="javascript:void(0);" onclick="scheduleForm('<?php echo $lesson['ordles_id']; ?>', '');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--reschedule icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#reschedule'; ?>"></use></svg>
+                                        <svg class="icon icon--reschedule icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#reschedule'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Schedule'); ?></div>
                                     </a>
-                                <?php } if ($lesson['repiss_id'] > 0) { ?>
+                                <?php }
+                                if ($lesson['repiss_id'] > 0) { ?>
                                     <a href="javascript:void(0);" onclick="viewIssue('<?php echo $lesson['repiss_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--issue-details icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#view-report'; ?>"></use></svg>
+                                        <svg class="icon icon--issue-details icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#view-report'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Issue'); ?></div>
                                     </a>
-                                <?php } if ($lesson['canReportIssue']) { ?>
+                                <?php }
+                                if ($lesson['canReportIssue']) { ?>
                                     <a href="javascript:void(0);" onclick="issueForm('<?php echo $lesson['ordles_id']; ?>', '<?php echo AppConstant::LESSON; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--issue-reported icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#report-issue'; ?>"></use></svg>
+                                        <svg class="icon icon--issue-reported icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#report-issue'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Report'); ?></div>
                                     </a>
-                                <?php } if ($lesson['canRateLesson']) { ?>
+                                <?php }
+                                if ($lesson['canRateLesson']) { ?>
                                     <a href="javascript:void(0);" onclick="feedbackForm('<?php echo $lesson['ordles_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--reschedule icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lesson-view'; ?>"></use></svg>
+                                        <svg class="icon icon--reschedule icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lesson-view'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_RATE'); ?></div>
                                     </a>
                                 <?php } ?>
@@ -152,8 +203,8 @@ if ($post['view'] != AppConstant::VIEW_DASHBOARD_LISTING) {
 }
 ?>
 <script>
-    $(document).ready(function () {
-        $('.countdowntimer').each(function (i) {
+    $(document).ready(function() {
+        $('.countdowntimer').each(function(i) {
             $("#" + $(this).attr('id')).appTimer();
         });
     });

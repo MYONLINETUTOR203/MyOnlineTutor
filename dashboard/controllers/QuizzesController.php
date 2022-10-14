@@ -47,7 +47,6 @@ class QuizzesController extends DashboardController
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('quiz_active', 'DESC');
         $srch->addOrder('quiz_id', 'DESC');
-
         $this->sets([
             'quizzes' => $srch->fetchAndFormat(),
             'types' => Quiz::getTypes(),
@@ -55,7 +54,6 @@ class QuizzesController extends DashboardController
             'post' => $post,
             'recordCount' => $srch->recordCount()
         ]);
-        
         $this->_template->render(false, false);
     }
 
@@ -143,9 +141,14 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $type = Quiz::getAttributesById($id, 'quiz_type');
-        $quiz = new QuizSearch(0, $this->siteUserId, User::TEACHER);
-        $questions = $quiz->getQuestions($id, $type);
+        
+        $srch = new QuizQuestionSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
+        $srch->addCondition('quique_quiz_id', '=', $id);
+        $srch->applyPrimaryConditions();
+        $srch->addSearchListingFields();
+        $srch->joinCategory();
+        $srch->setOrder();
+        $questions = $srch->fetchAndFormat();
         $this->sets([
             'questions' => $questions,
             'quizId' => $id,
@@ -186,8 +189,7 @@ class QuizzesController extends DashboardController
             'quiz_duration', 'quiz_attempts', 'quiz_passmark', 'quiz_failmsg', 'quiz_passmsg',
             'quiz_validity', 'quiz_certificate'
         ]);
-        $data['quiz_duration'] = ($data['quiz_duration']) / 60;
-        $data['quiz_validity'] = ($data['quiz_validity']) / 3600;
+        $data['quiz_duration'] = ($data['quiz_duration'] > 0) ? ($data['quiz_duration']) / 60 : 0;
         $data['quiz_certificate'] = ($offerCertificate == false) ? AppConstant::NO : $data['quiz_certificate'];
         $frm->fill($data);
 
@@ -276,13 +278,15 @@ class QuizzesController extends DashboardController
     private function getForm()
     {
         $frm = new Form('frmQuiz');
-        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '')->requirements()->setRequired();
+        $fld = $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setLength(10, 120);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type_id', Quiz::getTypes());
         $fld->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
 
@@ -321,8 +325,10 @@ class QuizzesController extends DashboardController
 
         $failFld = $frm->addTextArea(Label::getLabel('LBL_FAIL_MESSAGE'), 'quiz_failmsg', '');
         $failFld->requirements()->setRequired();
+        $failFld->requirements()->setLength(10, 255);
         $passFld = $frm->addTextArea(Label::getLabel('LBL_PASS_MESSAGE'), 'quiz_passmsg', '');
         $passFld->requirements()->setRequired();
+        $passFld->requirements()->setLength(10, 255);
         $frm->addHiddenField('', 'quiz_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;

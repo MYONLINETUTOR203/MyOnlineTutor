@@ -113,7 +113,7 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
                                 <h5><?php echo CommonHelper::renderHtml($ques['faq_title']); ?></h5>
                             </a>
                             <div class="faq-answer faq__target faq__target-js">
-                                <p><?php echo CommonHelper::renderHtml($ques['faq_description']); ?></p>
+                                <iframe srcdoc="<?php echo $ques['faq_description']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
                             </div>
                         </div>
                     <?php } ?>
@@ -133,7 +133,9 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
             $('.faq-group-js').removeClass('is-active');
             $(this).parents('.faq-group-js').addClass('is-active');
             $('.faq__target-js').slideUp();
-            $(this).siblings('.faq__target-js').slideDown();
+            $(this).siblings('.faq__target-js').slideDown(0);
         }
+        var height = $(this).siblings('.faq__target-js').children('iframe').contents().height() + 40;
+        $(this).siblings('.faq__target-js').css('height', height + 'px');
     });
 </script>

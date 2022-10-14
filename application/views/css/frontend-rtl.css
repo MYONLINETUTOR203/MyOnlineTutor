@@ -2,8 +2,7 @@
 .header {
   right: 0;
   left: 0;
-  position: -webkit-sticky;
-  position: sticky;
+  position: relative;
   top: 0;
   -webkit-transition: all 0.5s;
   -o-transition: all 0.5s;
@@ -13,23 +12,13 @@
     .header .container {
       max-width: 1800px;
       width: 100%; } }
-  @media (max-width: 1199px) {
-    .header {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0; } }
-  @media (min-width: 1199px) {
-    .header.nav-down {
-      -webkit-transform: translateY(0);
-          -ms-transform: translateY(0);
-              transform: translateY(0); }
-    .header.nav-up {
-      -webkit-transform: translateY(-100%);
-          -ms-transform: translateY(-100%);
-              transform: translateY(-100%); } }
+
+.home.home-index .header {
+  position: sticky;
+  top: 0; }
 
 .header-primary {
-  padding: var(--padding-2) 0;
+  padding: var(--padding-1) 0;
   color: #111;
   background: var(--color-white);
   -webkit-transition: 0.3s all ease-in-out;
@@ -37,21 +26,22 @@
   transition: 0.3s all ease-in-out;
   -webkit-box-shadow: 0px 3px 3px #0000000F;
           box-shadow: 0px 3px 3px #0000000F; }
+  @media (min-width: 576px) {
+    .header-primary .header-flex {
+      min-height: 70px; } }
   @media (max-width: 767px) {
     .header-primary {
-      padding: var(--padding-2) 0; } }
+      padding: var(--padding-3) 0; } }
   .header-primary .header__logo {
     max-width: 200px;
+    max-height: 100px;
     position: relative;
-    display: -webkit-box !important;
-    display: -ms-flexbox !important;
-    display: flex !important;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center; }
-    @media (max-width: 1199px) {
-      .header-primary .header__logo {
-        max-width: 160px; } }
     @media (min-width: 767px) {
       .header-primary .header__logo {
         margin-left: var(--margin-3); } }
@@ -1601,36 +1591,26 @@ p {
       background-color: var(--color-gray-100);
       content: "";
       pointer-events: none; } }
+  @media (min-width: 1199px) {
+    .section-filters {
+      position: sticky;
+      top: 0; } }
   @media (min-width: 576px) {
     .section-filters {
       background-color: rgba(0, 0, 0, 0.03);
       padding: 5rem 0 0;
-      position: -webkit-sticky;
-      position: sticky;
       z-index: 1;
-      margin-bottom: 3rem;
-      top: 0;
-      -webkit-transition: all 0.3s;
-      -o-transition: all 0.3s;
-      transition: all 0.3s; } }
+      margin-bottom: 2rem; } }
   @media (max-width: 576px) {
     .section-filters {
       padding: 2rem 0;
       border-bottom: 1px solid var(--color-gray-300); }
       .section-filters h1 {
         margin-bottom: 0 !important; } }
-
-@media (min-width: 576px) {
-  .is-tutor-listing .header.nav-up, .is-group-classes .header.nav-up, .teachers.teachers-index .header.nav-up, .groupclasses.groupclasses-index .header.nav-up, .teachers.teachers-languages .header.nav-up {
-    -webkit-transform: translateY(0);
-        -ms-transform: translateY(0);
-            transform: translateY(0); }
-  .is-tutor-listing .header, .is-group-classes .header, .teachers.teachers-index .header, .groupclasses.groupclasses-index .header, .teachers.teachers-languages .header {
-    position: relative; }
-  .is-tutor-listing .header.nav-down, .is-group-classes .header.nav-down, .teachers.teachers-index .header.nav-down, .groupclasses.groupclasses-index .header.nav-down, .teachers.teachers-languages .header.nav-down {
-    -webkit-transform: translateY(0);
-        -ms-transform: translateY(0);
-            transform: translateY(0); } }
+  .section-filters .select-option {
+    margin-bottom: 0; }
+  .section-filters .select2-selection__arrow {
+    display: none !important; }
 
 @media (min-width: 576px) {
   .filter-item {
@@ -1964,7 +1944,10 @@ body.is-filter-show .header {
   body.filter-active .filters-layout {
     z-index: 12; }
   body.filter-active .section-filters {
-    z-index: 12; }
+    z-index: 12;
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none; }
     body.filter-active .section-filters:after {
       display: none; } }
 
@@ -2032,7 +2015,13 @@ body.is-filter-show .header {
       .select-list--vertical .select-option__input:checked + .select-option__item:before {
         display: none; }
     .select-list--vertical li:last-child .select-option__item {
-      border-bottom: none; } }
+      border-bottom: none; }
+    .select-list--vertical > ul > li ul {
+      padding: var(--padding-3);
+      border-bottom: 1px solid var(--color-gray-200); } }
+  @media (min-width: 576px) and (min-width: 576px) {
+    .select-list--vertical > ul > li ul .select-option__item {
+      border: none; } }
   @media (max-width: 576px) {
     .select-list--vertical .select-option__item {
       padding-right: 0; } }
@@ -2286,7 +2275,10 @@ body.is-filter-show .header {
     background-color: #fff;
     padding: 0;
     -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
-            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08); }
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.08);
+    -webkit-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s; }
     .is-filter-fixed .section-filters h1 {
       display: none; }
     .is-filter-fixed .section-filters::after {
@@ -6094,7 +6086,6 @@ body.sort-active {
 .group-secondary {
   text-align: center;
   border: 1px solid var(--color-gray-300);
-  position: -webkit-sticky;
   position: sticky;
   top: 144px; }
   @media (min-width: 1299px) {
@@ -6453,7 +6444,6 @@ body.sort-active {
 
 @media (min-width: 767px) {
   .sticky-side-panel {
-    position: -webkit-sticky;
     position: sticky;
     top: 60px;
     z-index: 1; } }
@@ -7490,7 +7480,6 @@ body.sort-active {
 
 @media (mIN-width: 1199px) {
   .blog-sidebar {
-    position: -webkit-sticky;
     position: sticky;
     top: 115px; } }
 
@@ -8291,7 +8280,6 @@ body.sort-active {
     width: 100%; } }
 
 .profile-secondary .right-panel {
-  position: -webkit-sticky;
   position: sticky;
   top: 60px; }
 
@@ -8681,7 +8669,6 @@ body.sort-active {
 .section--mission {
   background: var(--color-gray-100); }
   .section--mission .primary-content {
-    position: -webkit-sticky;
     position: sticky;
     top: 140px; }
 
