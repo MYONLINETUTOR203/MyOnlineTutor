@@ -1,7 +1,7 @@
 $(function () {
-    view = function (id) {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'view'), { id }, function (response) {
-            $('.quizPanelJs').html(response.html);
+    start = function (id) {
+        fcom.updateWithAjax(fcom.makeUrl('QuizReview', 'start'), { id }, function (response) {
+            window.location = fcom.makeUrl('QuizReview', 'questions', [id]);
         });
     };
 });

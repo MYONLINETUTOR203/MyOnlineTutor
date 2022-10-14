@@ -1,60 +1,63 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <div class="page-body">
     <div class="container container--narrow">
-        <div class="flex-header">
-            <div class="d-sm-flex align-items-center justify-content-between">
-                <div>
-                    <div class="page-meta">
-                        <span class="page-meta__item page-meta__item-first questionInfoJs"></span>
-                        <span class="page-meta__item page-meta__item-second">
-                            <?php echo Label::getLabel('LBL_TOTAL_MARKS'); ?> <strong class="totalMarksJs"></strong>
-                        </span>
-                        <div class="page-meta__item">
-                            <div class="page-progress">
-                                <div class="page-progress__value">
-                                    <?php echo Label::getLabel('LBL_QUIZ_PROGRESS'); ?>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="box-view box-view--space">
+                    <hgroup class="margin-bottom-4">
+                        <h4 class="margin-bottom-2">
+                            <?php echo CommonHelper::renderHtml($data['quilin_title']); ?>
+                        </h4>
+                    </hgroup>
+                    <div class="check-list margin-bottom-10">
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    </div>
+                    <div class="repeat-items margin-bottom-10">
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_QUIZ_SCORE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php
+                                $label = Label::getLabel('LBL_{score}_OF_{total}');
+                                echo str_replace(['{score}', '{total}'], [$data['quizat_marks'], $data['quilin_marks']], $label);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT') ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo MyUtility::formatPercent($data['quizat_scored']); ?>
+                            </div>
+                        </div>
+                        <?php if ($data['quilin_duration'] > 0) { ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_TIME_SPENT'); ?>
                                 </div>
-                                <div class="page-progress__content">
-                                    <div class="progress progress--xsmall progress--round">
-                                        <div class="progress__bar bg-green progressBarJs" role="progressbar" style="width:60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                <div class="repeat-element__content">
+                                    <?php
+                                    echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                                    ?>
                                 </div>
-                                <div class="page-progress__value"> <strong class="progressJs"></strong></div>
+                            </div>
+                        <?php } ?>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_EVALUATION_STATUS'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo QuizAttempt::getEvaluationStatuses($data['quizat_evaluation']) ?>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <div class="page-meta">
-                        <div class="page-meta__item">
-                            <div class="timer">
-                                <?php if ($data['quilin_duration'] > 0) { ?>
-                                    <div class="timer__media">
-                                        <svg class="icon icon--clock" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                            <path d="M9,16a7,7,0,1,1,7-7A7,7,0,0,1,9,16Zm0-1.4A5.6,5.6,0,1,0,3.4,9,5.6,5.6,0,0,0,9,14.6ZM9.7,9h2.8v1.4H8.3V5.5H9.7Z" transform="translate(3 3)" fill="#333" />
-                                        </svg>
-                                        <span><?php echo Label::getLabel('LBL_TIME_LEFT:'); ?> </span>
-                                    </div>
-                                    <div class="timer__content">
-                                        <?php
-                                        $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
-                                        $timer = $endtime - strtotime(date('Y-m-d H:i:s'));
-                                        ?>
-                                        <div class="timer__controls countdowntimer timer-js" id="countdowntimerJs" remainingtime="<?php echo $timer; ?>">00:00:00:00</div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">
+                        <?php echo Label::getLabel('LBL_REVIEW'); ?>
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="flex-layout quizPanelJs">
-        </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        view('<?php echo $data['quizat_id']; ?>');
-    });
-</script>

@@ -129,7 +129,19 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                         </figure>
                         <h1 class="page-title">
                             <?php echo $data['quilin_title'] ?>
+
                         </h1>
+                        <?php if ($siteUserType == User::TEACHER) { ?>
+                            <div class="profile-meta">
+                                <div class="profile-meta__media">
+                                    <span class="avtar avtar--xsmall" data-title="i">
+                                        <img src="/image/show/4/102/SMALL"> </span>
+                                </div>
+                                <div class="profile-meta__details">
+                                    <h4 class="bold-600">iqbal kaur</h4>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
 

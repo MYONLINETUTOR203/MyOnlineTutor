@@ -201,7 +201,7 @@ class UserQuizController extends DashboardController
     }
 
     /**
-     * Save submitted answers
+     * Set question next, previous or by id
      *
      * @return json
      */

@@ -87,7 +87,7 @@ $status = QuizAttempt::getStatuses();
                                                             <td><?php echo $status[$user['quizat_status']] ?></td>
                                                             <td>
                                                                 <?php if ($user['quizat_status'] == QuizAttempt::STATUS_COMPLETED) { ?>
-                                                                    <a target="_blank" href="<?php echo MyUtility::makeFullUrl('UserQuiz', 'index', [$user['quizat_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
+                                                                    <a target="_blank" href="<?php echo MyUtility::makeFullUrl('QuizReview', 'index', [$user['quizat_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                                                         <svg class="icon icon--cancel icon--small">
                                                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
                                                                         </svg>

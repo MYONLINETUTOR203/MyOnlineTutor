@@ -95,9 +95,11 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                         <?php echo Label::getLabel('LBL_RETAKE_QUIZ'); ?>
                     </a>
                 <?php } ?>
-                <a href="<?php echo MyUtility::makeUrl('QuizReview', 'index', [$data['quizat_id']]) ?>" class="btn btn--primary margin-1 btn--sm-block">
-                    <?php echo Label::getLabel('LBL_CHECK_ANSWERS'); ?>
-                </a>
+                <?php if ($data['quizat_evaluation'] != QuizAttempt::EVALUATION_PENDING) { ?>
+                    <a href="<?php echo MyUtility::makeUrl('QuizReview', 'index', [$data['quizat_id']]) ?>" class="btn btn--primary margin-1 btn--sm-block">
+                        <?php echo Label::getLabel('LBL_CHECK_ANSWERS'); ?>
+                    </a>
+                <?php } ?>
                 <?php $controller = ($data['quilin_record_type'] == AppConstant::LESSON) ? 'Lessons' : 'Classes' ?>
                 <a href="<?php echo MyUtility::makeUrl($controller) ?>" class="btn btn--primary-bordered margin-1 btn--sm-block">
                     <svg class="icon icon--png icon--small margin-right-2">
