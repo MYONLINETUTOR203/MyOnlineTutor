@@ -60,7 +60,7 @@ class QuizzesController extends DashboardController
     /**
      * Render add new quiz layout
      *
-     * @param intr $id
+     * @param int $id
      */
     public function form(int $id = 0)
     {
@@ -128,8 +128,6 @@ class QuizzesController extends DashboardController
 
     /**
      * Questions listing
-     *
-     * @return void
      */
     public function questions()
     {
@@ -159,8 +157,6 @@ class QuizzesController extends DashboardController
 
     /**
      * Settings
-     *
-     * @return void
      */
     public function settings()
     {

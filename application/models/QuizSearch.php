@@ -123,8 +123,6 @@ class QuizSearch extends YocoachSearch
 
     /**
      * Get Search Form
-     *
-     * @return Form
      */
     public static function getSearchForm()
     {
@@ -145,6 +143,9 @@ class QuizSearch extends YocoachSearch
         return $frm;
     }
 
+    /**
+     * Get quiz form
+     */
     public static function getQuizForm()
     {
         $frm = new Form('frmQuizLink');

@@ -47,7 +47,6 @@ class QuizQuestionSearch extends YocoachSearch
      */
     public function applySearchConditions(array $post): void
     {
-        
     }
 
     /**

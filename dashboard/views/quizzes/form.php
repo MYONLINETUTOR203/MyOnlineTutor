@@ -23,6 +23,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
     <div class="page__body" id="pageContentJs">
     </div>
     <script>
+        var siteLangId = "<?php echo $siteLangId ?>";
         $(document).ready(function() {
             form("<?php echo $quizId ?>");
         });

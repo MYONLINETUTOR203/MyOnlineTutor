@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This class is used to handle certificates
  *
@@ -12,15 +13,18 @@ class Certificate extends MyAppModel
     const TYPE_COURSE = 1;
     const TYPE_QUIZ = 2;
     
-    private $userId;
-    private $langId;
     private $id;
     private $type;
+    private $userId;
+    private $langId;
 
     /**
      * Initialize certificate
      *
      * @param int $id
+     * @param int $type
+     * @param int $userId
+     * @param int $langId
      */
     public function __construct(int $id = 0, int $type = self::TYPE_QUIZ, int $userId = 0, int $langId = 0)
     {
@@ -30,7 +34,13 @@ class Certificate extends MyAppModel
         $this->type = $type;
     }
 
-    public function generate($content)
+    /**
+     * Generate Certificate
+     *
+     * @param string $content
+     * @return bool
+     */
+    public function generate(string $content)
     {
         if (!$content = $this->setupTemplate($content)) {
             return false;
@@ -47,10 +57,19 @@ class Certificate extends MyAppModel
         if (!$this->create($content)) {
             return false;
         }
+        if (!$this->setupMetaTags($data)) {
+            return false;
+        }
         return true;
     }
 
-    public function generatePreview($content, $type)
+    /**
+     * Generate Certificate & Preview
+     *
+     * @param string $content
+     * @return bool
+     */
+    public function generatePreview(string $content)
     {
         if (!$content = $this->setupTemplate($content)) {
             return false;
@@ -67,6 +86,11 @@ class Certificate extends MyAppModel
         return true;
     }
 
+    /**
+     * Generate & save certificate id
+     *
+     * @return bool
+     */
     public function setupId()
     {
         /* generate certificate */
@@ -92,7 +116,13 @@ class Certificate extends MyAppModel
         return true;
     }
 
-    private function setupTemplate($content)
+    /**
+     * Get & setup certificate template
+     *
+     * @param string $content
+     * @return string|bool
+     */
+    private function setupTemplate(string $content)
     {
         $code = 'course_completion_certificate';
         if ($this->type == static::TYPE_QUIZ) {
@@ -121,79 +151,13 @@ class Certificate extends MyAppModel
     }
 
     /**
-     * Get Course & User details for certificate
-     *
-     * @param int     $ordcrsId
-     * @return array
-     */
-    private function getData()
-    {
-        switch ($this->type) {
-            case static::TYPE_COURSE:
-                $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
-                $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
-                $srch->joinTable(
-                    CourseLanguage::DB_TBL_LANG,
-                    'LEFT JOIN',
-                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
-                    'clanglang'
-                );
-                $srch->applyPrimaryConditions();
-                $srch->addSearchListingFields();
-                $srch->addMultipleFields([
-                    'crspro_completed',
-                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
-                    'learner.user_lang_id',
-                    'ordcrs_certificate_number AS cert_number',
-                    'course_duration'
-                ]);
-                $srch->addCondition('ordcrs_id', '=', $this->id);
-                $data = FatApp::getDb()->fetch($srch->getResultSet());
-                break;
-            case static::TYPE_QUIZ:
-                $quiz = new QuizAttempt($this->id);
-                $data = $quiz->getById();
-                $learner = User::getAttributesById($data['quizat_user_id'], [
-                    'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
-                ]);
-                $teacher = User::getAttributesById($data['quilin_user_id'], [
-                    'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name'
-                ]);
-                $data['quiz_duration'] = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
-                $data = $data + $learner + $teacher;
-                break;
-        }
-
-        return $data;
-    }
-
-    private function getPreviewData()
-    {
-        return [
-            'learner_first_name' => 'Martha',
-            'learner_last_name' => 'Christopher',
-            'teacher_first_name' => 'John',
-            'teacher_last_name' => 'Doe',
-            'quilin_title' => 'English Language Learning - Beginners',
-            'course_title' => 'English Language Learning - Beginners',
-            'course_clang_name' => 'English',
-            'cert_number' => 'YC_h34uwh9e72w',
-            'quizat_certificate_number' => 'YC_h34uwh9e72w',
-            'quizat_updated' => date('Y-m-d H:i:s'),
-            'crspro_completed' => date('Y-m-d H:i:s'),
-            'quiz_duration' => 900,
-            'course_duration' => 900,
-            'quizat_scored' => 85,
-        ];
-    }
-
-    /**
      * Generate Certificate PDF
      *
-     * @param string $token
+     * @param string $content
+     * @param bool $preview
      * @return bool
      */
-    public function create($content, $preview = false)
+    public function create(string $content, bool $preview = false)
     {
         $filename = 'certificate' . $this->id . '.pdf';
         $mpdf = new \Mpdf\Mpdf([
@@ -220,12 +184,13 @@ class Certificate extends MyAppModel
         }
         return true;
     }
-    
+
     /**
      * Get formatted certificate content
      *
-     * @param array $data
-     * @return array
+     * @param string $content
+     * @param array  $data
+     * @return string
      */
     public function formatContent(string $content, array $data)
     {
@@ -300,6 +265,82 @@ class Certificate extends MyAppModel
     }
 
     /**
+     * Get certificate replacers data
+     *
+     * @return array
+     */
+    private function getData()
+    {
+        switch ($this->type) {
+            case static::TYPE_COURSE:
+                $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
+                $srch->joinTable(
+                    CourseLanguage::DB_TBL,
+                    'INNER JOIN',
+                    'clang.clang_id = course.course_clang_id',
+                    'clang'
+                );
+                $srch->joinTable(
+                    CourseLanguage::DB_TBL_LANG,
+                    'LEFT JOIN',
+                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
+                    'clanglang'
+                );
+                $srch->applyPrimaryConditions();
+                $srch->addSearchListingFields();
+                $srch->addMultipleFields([
+                    'crspro_completed',
+                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
+                    'learner.user_lang_id',
+                    'ordcrs_certificate_number AS cert_number',
+                    'course_duration'
+                ]);
+                $srch->addCondition('ordcrs_id', '=', $this->id);
+                $data = FatApp::getDb()->fetch($srch->getResultSet());
+                break;
+            case static::TYPE_QUIZ:
+                $quiz = new QuizAttempt($this->id);
+                $data = $quiz->getById();
+                $learner = User::getAttributesById($data['quizat_user_id'], [
+                    'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+                ]);
+                $teacher = User::getAttributesById($data['quilin_user_id'], [
+                    'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name'
+                ]);
+                $data['quiz_duration'] = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+                $data = $data + $learner + $teacher;
+                break;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get preview dummy data
+     *
+     * @return array
+     */
+    private function getPreviewData()
+    {
+        return [
+            'learner_first_name' => 'Martha',
+            'learner_last_name' => 'Christopher',
+            'teacher_first_name' => 'John',
+            'teacher_last_name' => 'Doe',
+            'quilin_title' => 'English Language Learning - Beginners',
+            'course_title' => 'English Language Learning - Beginners',
+            'course_clang_name' => 'English',
+            'cert_number' => 'YC_h34uwh9e72w',
+            'quizat_certificate_number' => 'YC_h34uwh9e72w',
+            'quizat_updated' => date('Y-m-d H:i:s'),
+            'crspro_completed' => date('Y-m-d H:i:s'),
+            'quiz_duration' => 900,
+            'course_duration' => 900,
+            'quizat_scored' => 85,
+        ];
+    }
+
+    /**
      * function to get path for file uploading
      *
      * @return string
@@ -312,5 +353,48 @@ class Certificate extends MyAppModel
             mkdir($uploadPath . $filePath, 0777, true);
         }
         return $filePath;
+    }
+
+    /**
+     * Setup meta tags for generated certificate
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupMetaTags(array $data)
+    {
+        /* get user name */
+        $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+        $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+
+        $meta = new MetaTag();
+        $meta->assignValues([
+            'meta_controller' => 'Certificates',
+            'meta_action' => 'evaluation',
+            'meta_type' => MetaTag::META_GROUP_QUIZ_CERTIFICATE,
+            'meta_record_id' => $data['quizat_id'],
+            'meta_identifier' => $content
+        ]);
+        if (!$meta->save()) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        $url = MyUtility::makeFullUrl('Certificates', 'evaluation', [$data['quizat_id']], CONF_WEBROOT_FRONTEND);
+        if (
+            !FatApp::getDb()->insertFromArray(
+                MetaTag::DB_LANG_TBL,
+                [
+                    'metalang_meta_id' => $meta->getMainTableRecordId(),
+                    'metalang_lang_id' => $this->langId,
+                    'meta_title' => $content,
+                    'meta_og_url' => $url,
+                    'meta_og_title' => $content
+                ]
+            )
+        ) {
+            $this->error = $meta->getError();
+            return false;
+        }
+        return true;
     }
 }

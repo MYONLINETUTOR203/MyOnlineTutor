@@ -83,6 +83,11 @@ class CertificatesController extends MyAppController
         $this->_template->render();
     }
 
+    /**
+     * Render Certificate Detail Page For Quiz
+     *
+     * @param int $attemptId
+     */
     public function evaluation(int $attemptId)
     {
         $quiz = new QuizAttempt($attemptId);

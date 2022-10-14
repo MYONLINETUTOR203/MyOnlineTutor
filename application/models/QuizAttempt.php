@@ -270,7 +270,13 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
-    public function setupUserQuiz($id)
+    /**
+     * Setup quiz user entries
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function setupUserQuiz(int $id)
     {
         $db = FatApp::getDb();
         $where = ['smt' => 'quizat_quilin_id = ? AND quizat_user_id = ?', 'vals' => [$id, $this->userId]];
@@ -292,6 +298,12 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Get total attempts count
+     *
+     * @param int $quizLinkId
+     * @return int
+     */
     public function getAttemptCount(int $quizLinkId)
     {
         $srch = new SearchBase(static::DB_TBL);
@@ -452,6 +464,11 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Validate retake permission
+     *
+     * @return bool
+     */
     public function canRetake()
     {
         if (!empty($this->quiz['quizat_certificate_number'])) {
@@ -469,6 +486,11 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Validate certificate download permission
+     *
+     * @return bool
+     */
     public function canDownloadCertificate()
     {
         if (
@@ -485,11 +507,19 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Get quiz data
+     *
+     * @return array
+     */
     public function get()
     {
         return $this->quiz;
     }
 
+    /**
+     * Send quiz completion notification to teacher
+     */
     private function sendQuizCompletionNotification()
     {
         $data = $this->getById();
@@ -497,7 +527,8 @@ class QuizAttempt extends MyAppModel
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
         $duration = Label::getLabel('LBL_NA');
         if ($data['quilin_duration'] > 0) {
-            $duration = MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+            $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+            $duration = MyUtility::convertDuration($duration, true, true, true);
         }
 
         $srch = new SearchBase(User::DB_TBL);

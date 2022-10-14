@@ -25,6 +25,8 @@ class UserQuizController extends DashboardController
 
     /**
      * Render Instructions Form
+     *
+     * @param int $id
      */
     public function index(int $id)
     {
@@ -112,7 +114,7 @@ class UserQuizController extends DashboardController
     /**
      * Quiz questions forms
      *
-     * @param int $id
+     * @return json
      */
     public function view()
     {
@@ -141,7 +143,11 @@ class UserQuizController extends DashboardController
 
         /* get question attempt data */
         $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
-        $srch->joinTable(QuizAttempt::DB_TBL_QUESTIONS, 'LEFT JOIN', 'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $id);
+        $srch->joinTable(
+            QuizAttempt::DB_TBL_QUESTIONS,
+            'LEFT JOIN',
+            'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $id
+        );
         $srch->addCondition('qulinqu_quilin_id', '=', $data['quilin_id']);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(['quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order']);
@@ -194,6 +200,11 @@ class UserQuizController extends DashboardController
         ]);
     }
 
+    /**
+     * Save submitted answers
+     *
+     * @return json
+     */
     public function setQuestion()
     {
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
@@ -228,7 +239,13 @@ class UserQuizController extends DashboardController
         FatUtility::dieJsonSuccess('');
     }
 
-    public function saveAndNext($next = AppConstant::YES)
+    /**
+     * Save & fetch next/previous question
+     *
+     * @param int $next
+     * @return json
+     */
+    public function saveAndNext(int $next = AppConstant::YES)
     {
         $post = FatApp::getPostedData();
         $frm = $this->getForm($post['ques_type']);
@@ -246,6 +263,11 @@ class UserQuizController extends DashboardController
         ]);
     }
 
+    /**
+     * Save & Finish Quiz
+     *
+     * @return json
+     */
     public function saveAndFinish()
     {
         $attemptId = FatApp::getPostedData('ques_attempt_id');
@@ -267,6 +289,8 @@ class UserQuizController extends DashboardController
 
     /**
      * Quiz completion page
+     *
+     * @param int $id
      */
     public function completed(int $id)
     {
@@ -289,6 +313,11 @@ class UserQuizController extends DashboardController
         $this->_template->render();
     }
 
+    /**
+     * Retake quiz
+     *
+     * @return json
+     */
     public function retake()
     {
         $id = FatApp::getPostedData('id');
@@ -302,6 +331,11 @@ class UserQuizController extends DashboardController
         ]);
     }
 
+    /**
+     * Download certificate
+     *
+     * @param int $id
+     */
     public function downloadCertificate(int $id)
     {
         $quiz = new QuizAttempt($id, $this->siteUserId);
@@ -316,6 +350,11 @@ class UserQuizController extends DashboardController
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
     }
 
+    /**
+     * Get question form
+     *
+     * @param int $type
+     */
     private function getForm(int $type)
     {
         $frm = new Form('frmQuiz');

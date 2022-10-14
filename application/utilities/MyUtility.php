@@ -327,9 +327,9 @@ class MyUtility extends FatUtility
      * 
      * @return array
      */
-    public static function getCommonLabels(): array
+    public static function getCommonLabels($siteLanguages): array
     {
-        return [
+        $jsVariables = [
             'layoutDirection' => MyUtility::getLayoutDirection(),
             'isMandatory' => Label::getLabel('LBL_IS_MANDATORY'),
             'processing' => Label::getLabel('LBL_PROCESSING_PLEASE_WAIT'),
@@ -379,6 +379,10 @@ class MyUtility extends FatUtility
             'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
             'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?')
         ];
+        foreach ($siteLanguages as $val) {
+            $jsVariables['language' . $val['language_id']] = $val['language_direction'];
+        }
+        return $jsVariables;
     }
 
     /**

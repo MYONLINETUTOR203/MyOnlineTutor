@@ -5,6 +5,7 @@ $(function () {
             $('#pageContentJs').html(resp);
             var eid = $('textarea[name="quiz_detail"]').attr('id');
             window["oEdit_" + eid].disableFocusOnLoad = true;
+            fcom.setEditorLayout(siteLangId);
             getCompletedStatus(id);
         });
     };
