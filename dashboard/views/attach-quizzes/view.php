@@ -28,7 +28,7 @@ $status = QuizAttempt::getStatuses();
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) { ?>
                             <tr class="quizRowJs quizRow<?php echo $quiz['quilin_id'] ?>">
-                                <td width="60%">
+                                <td width="40%">
                                     <div class="d-inline-flex">
                                         <?php if ($recordType == AppConstant::GCLASS) { ?>
                                             <span class="arrow-icon margin-left-0" onclick="view('<?php echo $quiz['quilin_id'] ?>');"></span>
@@ -45,16 +45,22 @@ $status = QuizAttempt::getStatuses();
                                 <?php } ?>
                                 <td>
                                     <?php if ($recordType == AppConstant::LESSON) { ?>
-                                        <?php if ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_COMPLETED) { ?>
-                                            <a target="_blank" href="<?php echo MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['quilin_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                                <svg class="icon icon--cancel icon--small">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
-                                                </svg>
-                                                <div class="tooltip tooltip--top bg-black">
-                                                    <?php echo Label::getLabel('LBL_VIEW'); ?>
-                                                </div>
-                                            </a>
-                                        <?php } ?>
+                                        <?php
+                                        $target = "target='_blank'";
+                                        $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['quilin_id']]);
+                                        if ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
+                                            $target = '';
+                                            $url = "javascript:void(0);";
+                                        }
+                                        ?>
+                                        <a <?php echo $target; ?> href="<?php echo $url; ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover <?php echo empty($target) ? 'btn--disabled' : '' ?>">
+                                            <svg class="icon icon--cancel icon--small">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
+                                            </svg>
+                                            <div class="tooltip tooltip--top bg-black">
+                                                <?php echo Label::getLabel('LBL_VIEW'); ?>
+                                            </div>
+                                        </a>
                                     <?php } ?>
                                     <a href="javascript:void(0);" data-record-id="<?php echo $recordId; ?>" data-record-type="<?php echo $recordType; ?>" onclick="removeQuiz('<?php echo $quiz['quilin_id']; ?>', this);" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--cancel icon--small">
@@ -86,16 +92,22 @@ $status = QuizAttempt::getStatuses();
                                                             </td>
                                                             <td><?php echo $status[$user['quizat_status']] ?></td>
                                                             <td>
-                                                                <?php if ($user['quizat_status'] == QuizAttempt::STATUS_COMPLETED) { ?>
-                                                                    <a target="_blank" href="<?php echo MyUtility::makeFullUrl('QuizReview', 'index', [$user['quizat_id']]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                                                        <svg class="icon icon--cancel icon--small">
-                                                                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
-                                                                        </svg>
-                                                                        <div class="tooltip tooltip--top bg-black">
-                                                                            <?php echo Label::getLabel('LBL_VIEW'); ?>
-                                                                        </div>
-                                                                    </a>
-                                                                <?php } ?>
+                                                                <?php
+                                                                $target = "target='_blank'";
+                                                                $url = MyUtility::makeFullUrl('QuizReview', 'index', [$user['quizat_id']]);
+                                                                if ($user['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
+                                                                    $target = '';
+                                                                    $url = "javascript:void(0);";
+                                                                }
+                                                                ?>
+                                                                <a <?php echo $target; ?> href="<?php echo $url ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover <?php echo empty($target) ? 'btn--disabled' : '' ?>">
+                                                                    <svg class="icon icon--cancel icon--small">
+                                                                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#view"></use>
+                                                                    </svg>
+                                                                    <div class="tooltip tooltip--top bg-black">
+                                                                        <?php echo Label::getLabel('LBL_VIEW'); ?>
+                                                                    </div>
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     <?php } ?>

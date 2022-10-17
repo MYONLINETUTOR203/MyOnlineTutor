@@ -9,6 +9,7 @@ class QuizAttempt extends MyAppModel
     const STATUS_PENDING = 0;
     const STATUS_IN_PROGRESS = 1;
     const STATUS_COMPLETED = 2;
+    const STATUS_CANCELED = 3;
 
     const EVALUATION_PENDING = 0;
     const EVALUATION_PASSED = 1;
@@ -43,7 +44,8 @@ class QuizAttempt extends MyAppModel
         $arr = [
             static::STATUS_PENDING => Label::getLabel('LBL_PENDING'),
             static::STATUS_IN_PROGRESS => Label::getLabel('LBL_IN_PROGRESS'),
-            static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED')
+            static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED'),
+            static::STATUS_CANCELED => Label::getLabel('LBL_CANCELED')
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -123,7 +125,7 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_QUESTION_TYPE');
             return false;
         }
-        
+
         $db = FatApp::getDb();
         $db->startTransaction();
 
@@ -341,6 +343,8 @@ class QuizAttempt extends MyAppModel
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_COMPLETED_QUIZ');
             } elseif ($status == static::STATUS_COMPLETED) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_PENDING_QUIZ');
+            } elseif ($status == static::STATUS_CANCELED) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_CANCELED_QUIZ');
             }
             return false;
         }
@@ -422,6 +426,60 @@ class QuizAttempt extends MyAppModel
     public function get()
     {
         return $this->quiz;
+    }
+
+    /**
+     * Cron to cancel incomplete quizzes
+     *
+     * @return bool
+     */
+    public function cancelIncompleteQuizzes()
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin_id = quizat_quilin_id');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
+        $srch->doNotCalculateRecords();
+        $srch->addCondition('quizat_status', '=', QuizAttempt::STATUS_IN_PROGRESS);
+        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $cond1 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $cond2 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
+        $cond3 = 'quilin_duration = 0 AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $srch->addDirectCondition('((' . $cond1 . ') OR (' . $cond2 . ') OR (' . $cond3 . '))');
+
+        $srch->addMultipleFields([
+            'quizat_id',
+            'quizat_user_id',
+            'user_lang_id',
+            'IF(' . $cond2 . ', ' . QuizAttempt::STATUS_COMPLETED . ', ' . QuizAttempt::STATUS_CANCELED . ') as status'
+        ]);
+
+        $srch->addOrder('quizat_id');
+        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quizat_id');
+        if (!empty($quizzes)) {
+            foreach ($quizzes as $quiz) {
+                if ($quiz['status'] == QuizAttempt::STATUS_COMPLETED) {
+                    $this->userId = $quiz['quizat_user_id'];
+                    $this->userType = User::LEARNER;
+                    $this->langId = $quiz['user_lang_id'];
+                    $this->mainTableRecordId = $quiz['quizat_id'];
+                    if (!$this->markComplete()) {
+                        echo $this->error = $this->getError();
+                        die;
+                        return false;
+                    }
+                } else {
+                    $data = ['quizat_status' => $quiz['status'], 'quizat_updated' => date('Y-m-d H:i:s')];
+                    $where = ['smt' => 'quizat_id = ?', 'vals' => [$quiz['quizat_id']]];
+                    $db = FatApp::getDb();
+                    if (!$db->updateFromArray(QuizAttempt::DB_TBL, $data, $where)) {
+                        $this->error = $db->getError();
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
