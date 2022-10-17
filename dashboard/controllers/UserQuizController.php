@@ -39,6 +39,12 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
 
+        if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
+        } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
+        }
+
         if (strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
             Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
             if ($data['quilin_record_type'] == AppConstant::LESSON) {
@@ -48,12 +54,6 @@ class UserQuizController extends DashboardController
             } else {
                 FatApp::redirectUser(MyUtility::makeUrl('Learner'));
             }
-        }
-
-        if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
-            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
-        } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
-            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
         $this->set('data', $data);
@@ -91,12 +91,14 @@ class UserQuizController extends DashboardController
         if ($data['quizat_user_id'] != $this->siteUserId) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_status'] != QuizAttempt::STATUS_IN_PROGRESS) {
-            FatUtility::exitWithErrorCode(404);
+        if ($data['quizat_status'] == QuizAttempt::STATUS_PENDING) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'index', [$id]));
+        } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
         $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
-        if (strtotime(date('Y-m-d H:i:s')) > $endtime) {
+        if ($data['quilin_duration'] > 0 && strtotime(date('Y-m-d H:i:s')) > $endtime) {
             if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
                 FatUtility::dieJsonError($quiz->getError());
             }

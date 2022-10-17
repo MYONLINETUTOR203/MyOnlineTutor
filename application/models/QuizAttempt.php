@@ -169,69 +169,6 @@ class QuizAttempt extends MyAppModel
     }
 
     /**
-     * Setup question scores on the basis of correct answers
-     *
-     * @param array $data
-     * @return bool
-     */
-    private function setupQuesScore(array $data)
-    {
-        /* get answers */
-        $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
-        if (!$ques) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
-            return false;
-        }
-        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
-        $submittedAnswers = json_decode($data['quatqu_answer'], true);
-        $answers = array_intersect($correctAnswers, $submittedAnswers);
-
-        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
-        $answeredScore = $marksPerAnswer * count($answers);
-
-        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
-        $assignValues = [
-            'quatqu_id' => $data['quatqu_id'],
-            'quatqu_scored' => $answeredScore
-        ];
-        $quesAttempt->assignValues($assignValues);
-        if (!$quesAttempt->addNew([], $assignValues)) {
-            $this->error = $quesAttempt->getError();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Setup quiz progress and scores
-     *
-     * @return bool
-     */
-    private function setupQuizProgress()
-    {
-        $progress = $score = 0;
-        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
-        $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
-        $srch->addFld('SUM(quatqu_scored) as total_score');
-        if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
-            $progress = ($quesCount['attempted_questions'] * 100) / $this->quiz['quilin_questions'];
-            $score = $quesCount['total_score'];
-        }
-
-        $this->assignValues([
-            'quizat_progress' => $progress,
-            'quizat_marks' => $score,
-        ]);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Mark quiz complete
      *
      * @param string $endTime
@@ -314,36 +251,6 @@ class QuizAttempt extends MyAppModel
         $srch->addFld('IFNULL(COUNT(quizat_id), 0) as attempts');
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         return $data['attempts'];
-    }
-
-    /**
-     * Setup final evaluated results
-     *
-     * @return bool
-     */
-    private function setupEvaluation()
-    {
-        $srch = new SearchBase(QuizAttempt::DB_TBL);
-        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addFld('quizat_marks');
-        $data = FatApp::getDb()->fetch($srch->getResultSet());
-
-        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
-        $evaluation = static::EVALUATION_PASSED;
-        if ($percent < $this->quiz['quilin_passmark']) {
-            $evaluation = static::EVALUATION_FAILED;
-        }
-        $this->assignValues([
-            'quizat_scored' => $percent,
-            'quizat_evaluation' => $evaluation,
-        ]);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -560,5 +467,98 @@ class QuizAttempt extends MyAppModel
 
         $notifi = new Notification($teacher['user_id'], Notification::TYPE_QUIZ_COMPLETED);
         $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
+    }
+
+    /**
+     * Setup question scores on the basis of correct answers
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupQuesScore(array $data)
+    {
+        /* get answers */
+        $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
+        if (!$ques) {
+            $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
+            return false;
+        }
+        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
+        $submittedAnswers = json_decode($data['quatqu_answer'], true);
+        $answers = array_intersect($correctAnswers, $submittedAnswers);
+
+        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
+        $answeredScore = $marksPerAnswer * count($answers);
+
+        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
+        $assignValues = [
+            'quatqu_id' => $data['quatqu_id'],
+            'quatqu_scored' => $answeredScore
+        ];
+        $quesAttempt->assignValues($assignValues);
+        if (!$quesAttempt->addNew([], $assignValues)) {
+            $this->error = $quesAttempt->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup quiz progress and scores
+     *
+     * @return bool
+     */
+    private function setupQuizProgress()
+    {
+        $progress = $score = 0;
+        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
+        $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
+        $srch->addFld('SUM(quatqu_scored) as total_score');
+        if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $progress = ($quesCount['attempted_questions'] * 100) / $this->quiz['quilin_questions'];
+            $score = $quesCount['total_score'];
+        }
+
+        $this->assignValues([
+            'quizat_progress' => $progress,
+            'quizat_marks' => $score,
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup final evaluated results
+     *
+     * @return bool
+     */
+    private function setupEvaluation()
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('quizat_marks');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+
+        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
+        $evaluation = static::EVALUATION_PASSED;
+        if ($percent < $this->quiz['quilin_passmark']) {
+            $evaluation = static::EVALUATION_FAILED;
+        }
+        $this->assignValues([
+            'quizat_scored' => $percent,
+            'quizat_evaluation' => $evaluation,
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
     }
 }

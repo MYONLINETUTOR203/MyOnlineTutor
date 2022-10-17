@@ -214,7 +214,6 @@ class QuizLinked extends MyAppModel
         if (empty($attachedQuizzes)) {
             return [];
         }
-        
         $quizLinkedIds = array_column($attachedQuizzes, 'quilin_id');
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
@@ -524,6 +523,7 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quique_quiz_id', 'IN', array_keys($data));
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
+        $srch->addOrder('quique_quiz_id', 'ASC');
         $srch->setOrder();
         $srch->joinCategory();
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
@@ -546,8 +546,11 @@ class QuizLinked extends MyAppModel
             }
         }
 
-        $i = 1;
+        $displayOrder = $quizId = 0;
         foreach ($questions as $question) {
+            if ($question['quique_quiz_id'] != $quizId) {
+                $displayOrder = 1;
+            }
             $opts = $quesOptions[$question['ques_id']] ?? [];
             if ($question['ques_type'] != Question::TYPE_MANUAL && count($opts) < 1) {
                 $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
@@ -565,13 +568,14 @@ class QuizLinked extends MyAppModel
                 'qulinqu_marks' => $question['ques_marks'],
                 'qulinqu_answer' => $question['ques_answer'],
                 'qulinqu_options' => json_encode($opts),
-                'qulinqu_order' => $i
+                'qulinqu_order' => $displayOrder
             ]);
             if (!$linkQues->addNew()) {
                 $this->error = $linkQues->getError();
                 return false;
             }
-            $i++;
+            $quizId = $question['quique_quiz_id'];
+            $displayOrder++;
         }
         
         return true;
