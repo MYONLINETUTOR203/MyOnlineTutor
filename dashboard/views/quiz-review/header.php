@@ -131,14 +131,13 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                             <?php echo $data['quilin_title'] ?>
 
                         </h1>
-                        <?php if ($siteUserType == User::TEACHER) { ?>
+                        <?php if (isset($user) && $siteUserType == User::TEACHER) { ?>
                             <div class="profile-meta">
-                                <div class="profile-meta__media">
-                                    <span class="avtar avtar--xsmall" data-title="i">
-                                        <img src="/image/show/4/102/SMALL"> </span>
-                                </div>
                                 <div class="profile-meta__details">
-                                    <h4 class="bold-600">iqbal kaur</h4>
+                                    <h4 class="bold-600">
+                                        &nbsp;
+                                        <?php echo '(' . ucwords($user['user_first_name'] . ' ' . $user['user_last_name']) . ')' ?>
+                                    </h4>
                                 </div>
                             </div>
                         <?php } ?>

@@ -77,6 +77,10 @@ class QuizReviewController extends DashboardController
             $controller = ($this->siteUserType == User::LEARNER) ? 'Learner' : 'Teacher';
             FatApp::redirectUser(MyUtility::makeUrl($controller));
         }
+        $data = $quiz->get();
+        if ($this->siteUserType == User::TEACHER) {
+            $this->set('user', User::getAttributesById($data['quizat_user_id'], ['user_first_name', 'user_last_name']));
+        }
         $this->set('data', $quiz->get());
         $this->_template->render();
     }

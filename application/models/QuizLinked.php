@@ -277,14 +277,15 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        /* delet user quiz */
+        $this->sendQuizRemovedNotification($data);
+
+        /* delete user quiz */
         if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
             $db->rollbackTransaction();
             $this->error = $db->getError();
             return false;
         }
 
-        $this->sendQuizRemovedNotification($data);
         $db->commitTransaction();
         return true;
     }
@@ -372,7 +373,8 @@ class QuizLinked extends MyAppModel
         $sessionTypes = AppConstant::getSessionTypes();
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_quilin_id', '=', $data['quilin_id']);
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quizat_user_id', 'teacher');
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin.quilin_id = quizat_quilin_id', 'quilin');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quilin_user_id', 'teacher');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = quizat_user_id', 'learner');
         $srch->addMultipleFields([
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
@@ -381,7 +383,6 @@ class QuizLinked extends MyAppModel
         ]);
         $srch->addGroupBy('learner.user_id');
         $users = FatApp::getDb()->fetchAll($srch->getResultSet());
-
         foreach ($users as $user) {
             $mail = new FatMailer($user['user_lang_id'], 'quiz_removed_email');
             $vars = [
@@ -411,12 +412,14 @@ class QuizLinked extends MyAppModel
         $linkedIds = array_column($data, 'quilin_id');
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_quilin_id', 'IN', $linkedIds);
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quizat_user_id', 'teacher');
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin.quilin_id = quizat_quilin_id', 'quilin');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quilin_user_id', 'teacher');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = quizat_user_id', 'learner');
         $srch->addMultipleFields([
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
             'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
-            'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name',
+            'quizat_id'
         ]);
         $srch->addGroupBy('learner.user_id');
         $users = FatApp::getDb()->fetchAll($srch->getResultSet());
@@ -428,20 +431,22 @@ class QuizLinked extends MyAppModel
             '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . MyDate::formatDate($quiz['quilin_validity']) . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="' . MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['quilin_id']], CONF_WEBROOT_DASHBOARD) . '">{view}</a></td>' .
+            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link}">{view}</a></td>' .
             '</tr>';
         }
         $html .= '</tbody></table>';
 
         foreach ($users as $user) {
+            $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$user['quizat_id']], CONF_WEBROOT_DASHBOARD);
             $list = str_replace(
-                ['{title}', '{type}', '{validity}', '{action}', '{view}'],
+                ['{title}', '{type}', '{validity}', '{action}', '{view}', '{link}'],
                 [
                     Label::getLabel('LBL_TITLE', $user['user_lang_id']),
                     Label::getLabel('LBL_TYPE', $user['user_lang_id']),
                     Label::getLabel('LBL_VALIDITY', $user['user_lang_id']),
                     Label::getLabel('LBL_ACTION', $user['user_lang_id']),
                     Label::getLabel('LBL_VIEW', $user['user_lang_id']),
+                    $url
                 ],
                 $html
             );
@@ -456,7 +461,10 @@ class QuizLinked extends MyAppModel
             $mail->sendMail([$user['user_email']]);
 
             $notifi = new Notification($user['user_id'], Notification::TYPE_QUIZ_ATTACHED);
-            $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
+            $notifi->sendNotification([
+                '{session}' => strtolower($sessionType),
+                '{link}' => $url
+            ]);
         }
     }
 

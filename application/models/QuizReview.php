@@ -87,7 +87,7 @@ class QuizReview extends MyAppModel
             'quilin_title', 'quilin_detail', 'quizat_status', 'quizat_user_id', 'quilin_user_id', 'quizat_marks',
             'quilin_marks', 'quizat_scored', 'quilin_duration', 'quizat_started', 'quizat_updated',
             'quizat_evaluation', 'quizat_id', 'quizat_quilin_id', 'quizat_qulinqu_id', 'quilin_id', 'quilin_questions',
-            'quizat_progress', 'quilin_record_type'
+            'quizat_progress', 'quilin_record_type', 'quizat_active'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -103,10 +103,15 @@ class QuizReview extends MyAppModel
         }
 
         if (
-            ($this->userType == User::LEARNER && $data['quizat_user_id'] != $this->userId) &&
+            ($this->userType == User::LEARNER && $data['quizat_user_id'] != $this->userId) ||
             ($this->userType == User::TEACHER && $data['quilin_user_id'] != $this->userId)
         ) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+            return false;
+        }
+
+        if ($data['quizat_active'] == AppConstant::INACTIVE) {
+            $this->error = Label::getLabel('LBL_LINK_HAS_EXPIRED_AS_THE_USER_HAS_REATTEMPTED_THE_QUIZ');
             return false;
         }
 

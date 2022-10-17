@@ -548,7 +548,7 @@ class QuizAttempt extends MyAppModel
             '{learner_full_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
             '{teacher_full_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
             '{session_type}' => $sessionType,
-            '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('UserQuiz', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
+            '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('QuizReview', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
             '{progress_percentage}' => MyUtility::formatPercent($data['quizat_progress']),
             '{pass_fail_status}' => static::getEvaluationStatuses($data['quizat_evaluation']),
             '{marks_acheived}' => $data['quizat_marks'],
