@@ -62,6 +62,18 @@ $("document").ready(function () {
             }
         });
     };
+
+    toggleCourseFavorite = function (courseId, el) {
+        var status = $(el).data('status');
+        var data = 'course_id= ' + courseId + '&status=' + status;
+        fcom.updateWithAjax(fcom.makeUrl('Courses', 'toggleFavorite', [], confWebDashUrl), data, function (resp) {
+            if (status == 0) {
+                $(el).data("status", 1).addClass("is-active");
+            } else {
+                $(el).data("status", 0).removeClass("is-active");
+            }
+        });
+    };
 });
 function viewCalendar(teacherId) {
     fcom.ajax(fcom.makeUrl('Teachers', 'viewCalendar'), {teacherId: teacherId}, function (response) {
