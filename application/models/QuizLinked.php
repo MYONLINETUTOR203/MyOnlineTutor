@@ -542,7 +542,7 @@ class QuizLinked extends MyAppModel
         } elseif ($recordType == AppConstant::COURSE) {
             $users = [];
         }
-
+        
         foreach ($users as $user) {
             foreach ($data as $id) {
                 $attempt = new QuizAttempt(0, $user['user_id']);
@@ -552,6 +552,7 @@ class QuizLinked extends MyAppModel
                 }
             }
         }
+        
         return true;
     }
 

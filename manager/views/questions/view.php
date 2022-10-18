@@ -133,7 +133,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="col-md-12">
                                 <div class="field-set">
                                     <div class="caption-wraper">
-                                        <ul>
+                                        <ul class="list-vertical">
                                             <?php foreach ($options as $option) : ?>
                                                 <li><?php echo $option['queopt_title']; ?></li>
                                             <?php endforeach; ?>
@@ -152,7 +152,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                                 <div class="field-set">
                                     <div class="caption-wraper">
                                         <?php if (isset($answers) && count($answers) > 0) :  ?>
-                                            <ul>
+                                            <ul class="list-vertical">
                                                 <?php foreach ($answers as $answerId) : ?>
                                                     <li><?php echo $options[$answerId]['queopt_title']; ?></li>
                                                 <?php endforeach; ?>

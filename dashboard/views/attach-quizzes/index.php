@@ -100,7 +100,7 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
     <div class="facebox-panel__body padding-0">
         <div class="table-scroll">
             <?php echo $quizFrm->getFormTag(); ?>
-            <table class="table table--styled table--responsive table--aligned-middle" id="quiz-listing">
+            <table class="table table--responsive table--aligned-middle table--bordered" id="quiz-listing">
                 <thead>
                     <tr class="title-row">
                         <th></th>
