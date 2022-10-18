@@ -403,7 +403,7 @@ if ($siteUserId == $teacher['user_id']) {
             <div class="section__head d-flex justify-content-between align-items-center">
                 <h3>
                     <?php
-                    $label = Label::getLabel('LBL_MORE_COURSES_FROM_{teacher-name}');
+                    $label = Label::getLabel('LBL_COURSES_FROM_{teacher-name}');
                     echo str_replace('{teacher-name}', '<strong class="bold-700">' . ucfirst($teacher['user_first_name']) . '</strong>', $label);
                     ?>
                 </h3>
