@@ -490,6 +490,11 @@ class Quiz extends MyAppModel
     {
         $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
         $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        if (Quiz::TYPE_NON_GRADED == Quiz::getAttributesById($this->getMainTableRecordId(), 'quiz_type')) {
+            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
+        } else {
+            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
+        }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
         $srch->joinCategory();
