@@ -6,6 +6,7 @@ $arrFlds = [
     'quiz_title' => Label::getLabel('LBL_TITLE'),
     'quiz_type' => Label::getLabel('LBL_TYPE'),
     'quiz_teacher' => Label::getLabel('LBL_TEACHER'),
+    'quiz_questions' => Label::getLabel('LBL_NO._OF_QUESTIONS'),
     'quiz_duration' => Label::getLabel('LBL_DURATION'),
     'quiz_attempts' => Label::getLabel('LBL_ATTEMPTS'),
     'quiz_passmark' => Label::getLabel('LBL_PASS_PERCENT'),
