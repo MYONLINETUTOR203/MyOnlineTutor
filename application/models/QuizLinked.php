@@ -448,7 +448,7 @@ class QuizLinked extends MyAppModel
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = quizat_user_id', 'learner');
         $srch->addMultipleFields([
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
-            'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
+            'learner.user_lang_id', 'learner.user_email', 'learner.user_id', 'learner.user_timezone',
             'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name',
             'quizat_id'
         ]);
@@ -457,30 +457,39 @@ class QuizLinked extends MyAppModel
 
         $quiztypes = Quiz::getTypes();
         $html = '<table style="border:1px solid #ddd; border-collapse:collapse; width:100%" cellspacing="0" cellpadding="0" border="0"><thead><tr><td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;">{title}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{type}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{validity}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{action}</td></tr></thead><tbody>';
+        $dates = [];
+        $i = 1;
         foreach ($data as $quiz) {
             $html .= '<tr>' .
             '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . MyDate::formatDate($quiz['quilin_validity']) . '</td>' .
+            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">{date_' . $i . '}</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link}">{view}</a></td>' .
             '</tr>';
+            $dates['{date_' . $i . '}'] = $quiz['quilin_validity'];
+            $i++;
         }
         $html .= '</tbody></table>';
 
         foreach ($users as $user) {
+            $timezone = $user['user_timezone'];
+            $userDates = [];
+            foreach ($dates as $key => $date) {
+                $userDates[$key] = MyDate::formatDate($date, 'Y-m-d H:i:s', $timezone);
+            }
+
             $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$user['quizat_id']], CONF_WEBROOT_DASHBOARD);
-            $list = str_replace(
-                ['{title}', '{type}', '{validity}', '{action}', '{view}', '{link}'],
-                [
-                    Label::getLabel('LBL_TITLE', $user['user_lang_id']),
-                    Label::getLabel('LBL_TYPE', $user['user_lang_id']),
-                    Label::getLabel('LBL_VALIDITY', $user['user_lang_id']),
-                    Label::getLabel('LBL_ACTION', $user['user_lang_id']),
-                    Label::getLabel('LBL_VIEW', $user['user_lang_id']),
-                    $url
-                ],
-                $html
-            );
+            $find = array_merge(['{title}', '{type}', '{validity}', '{action}', '{view}', '{link}'], array_keys($userDates));
+            $replacers = array_merge([
+                Label::getLabel('LBL_TITLE', $user['user_lang_id']),
+                Label::getLabel('LBL_TYPE', $user['user_lang_id']),
+                Label::getLabel('LBL_VALIDITY', $user['user_lang_id']),
+                Label::getLabel('LBL_ACTION', $user['user_lang_id']),
+                Label::getLabel('LBL_VIEW', $user['user_lang_id']),
+                $url
+            ], array_values($userDates));
+            $list = str_replace($find, $replacers, $html);
+
             $mail = new FatMailer($user['user_lang_id'], 'quiz_attached_email');
             $vars = [
                 '{learner_full_name}' => ucwords($user['learner_first_name'] . ' ' . $user['learner_last_name']),
