@@ -133,8 +133,15 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                         <?php echo Label::getLabel('LBL_VALIDITY'); ?>
                                     </label>
                                     : <strong>
-                                        <?php echo ($quiz['quiz_validity']) ? MyUtility::convertDuration($quiz['quiz_validity']) : Label::getLabel('LBL_NA'); ?>
-                                </strong>
+                                        <?php
+                                        if (!empty($quiz['quiz_validity'])) {
+                                            $label = Label::getLabel('LBL_{validity}_HOUR(S)');
+                                            echo str_replace('{validity}', $quiz['quiz_validity'], $label);
+                                        } else {
+                                            echo Label::getLabel('LBL_NA');
+                                        }
+                                        ?>
+                                    </strong>
                                 </div>
                             </div>
                         </div>
