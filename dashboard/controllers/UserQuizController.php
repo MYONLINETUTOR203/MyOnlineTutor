@@ -36,7 +36,8 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         if ($data['quizat_user_id'] != $this->siteUserId) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+            Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+            $this->redirect($data);
         }
 
         if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {

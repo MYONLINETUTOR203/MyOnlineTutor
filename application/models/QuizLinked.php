@@ -450,7 +450,7 @@ class QuizLinked extends MyAppModel
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
             'learner.user_lang_id', 'learner.user_email', 'learner.user_id', 'learner.user_timezone',
             'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name',
-            'quizat_id'
+            'GROUP_CONCAT(CONCAT(quizat_quilin_id, "_", quizat_id) SEPARATOR ",") AS link_id'
         ]);
         $srch->addGroupBy('learner.user_id');
         $users = FatApp::getDb()->fetchAll($srch->getResultSet());
@@ -464,21 +464,27 @@ class QuizLinked extends MyAppModel
             '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">{date_' . $i . '}</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link}">{view}</a></td>' .
+            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link_' . $quiz['quilin_id'] . '}">{view}</a></td>' .
             '</tr>';
             $dates['{date_' . $i . '}'] = $quiz['quilin_validity'];
             $i++;
         }
         $html .= '</tbody></table>';
-
+        
         foreach ($users as $user) {
+            $list = $html;
             $timezone = $user['user_timezone'];
             $userDates = [];
             foreach ($dates as $key => $date) {
                 $userDates[$key] = MyDate::formatDate($date, 'Y-m-d H:i:s', $timezone);
             }
+            $links = explode(',', $user['link_id']);
+            foreach ($links as $ids) {
+                $id = explode("_", $ids);
+                $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$id[1]], CONF_WEBROOT_DASHBOARD);
+                $list = str_replace('{link_' . $id[0] . '}', $url, $list);
+            }
 
-            $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$user['quizat_id']], CONF_WEBROOT_DASHBOARD);
             $find = array_merge(['{title}', '{type}', '{validity}', '{action}', '{view}', '{link}'], array_keys($userDates));
             $replacers = array_merge([
                 Label::getLabel('LBL_TITLE', $user['user_lang_id']),
@@ -488,7 +494,7 @@ class QuizLinked extends MyAppModel
                 Label::getLabel('LBL_VIEW', $user['user_lang_id']),
                 $url
             ], array_values($userDates));
-            $list = str_replace($find, $replacers, $html);
+            $list = str_replace($find, $replacers, $list);
 
             $mail = new FatMailer($user['user_lang_id'], 'quiz_attached_email');
             $vars = [
@@ -501,10 +507,7 @@ class QuizLinked extends MyAppModel
             $mail->sendMail([$user['user_email']]);
 
             $notifi = new Notification($user['user_id'], Notification::TYPE_QUIZ_ATTACHED);
-            $notifi->sendNotification([
-                '{session}' => strtolower($sessionType),
-                '{link}' => $url
-            ]);
+            $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
         }
     }
 
