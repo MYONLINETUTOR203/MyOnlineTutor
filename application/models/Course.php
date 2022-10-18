@@ -281,7 +281,7 @@ class Course extends MyAppModel
         ];
         $mail->setVariables($vars);
         if (!$mail->sendMail([$data['user_email']])) {
-            $this->error = $this->getError();
+            $this->error = $mail->getError();
             return false;
         }
         return true;
