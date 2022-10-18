@@ -1148,12 +1148,11 @@ INSERT INTO `tbl_course_languages_lang` (`clanglang_clang_id`, `clanglang_lang_i
 (182, 1, 'Zulu'),
 (182, 2, 'الزولوية');
 
-ALTER TABLE `tbl_courses_lang` DROP PRIMARY KEY;
+ALTER TABLE `tbl_courses_lang` DROP `crslang_id`;
 RENAME TABLE `tbl_courses_lang` TO `tbl_course_details`; 
 ALTER TABLE `tbl_courses` CHANGE `course_tlang_id` `course_clang_id` INT(11) NOT NULL; 
 ALTER TABLE `tbl_course_details` CHANGE `crslang_course_id` `course_id` INT(11) NOT NULL; 
 ALTER TABLE `tbl_course_details` ADD PRIMARY KEY(`course_id`);
-ALTER TABLE `tbl_course_details` DROP `crslang_id`;
 ALTER TABLE `tbl_course_details` DROP `crslang_lang_id`;
 ALTER TABLE `tbl_courses_intended_learners` DROP `coinle_lang_id`;
 ALTER TABLE `tbl_sections`  ADD `section_title` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `section_course_id`,  ADD `section_details` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL  AFTER `section_title`;
