@@ -486,7 +486,7 @@ class AdminStatistic
         $catgData = [];
         if (!empty($records)) {
             $catgIds = array_column($records, 'course_cate_id');
-            $categories = Category::getNames($siteLangId, $catgIds);
+            $categories = Category::getNames($catgIds, $siteLangId);
             foreach ($records as &$record) {
                 if (!array_key_exists($record['course_cate_id'], $categories)) {
                     continue;
