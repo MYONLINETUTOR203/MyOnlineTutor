@@ -8040,7 +8040,7 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
   padding-left: var(--padding-3); }
 
 .table--condensed th, .table--condensed td {
-  padding: var(--padding-2); }
+  padding: var(--padding-2) var(--padding-4); }
 
 .table--sticky thead tr:first-child {
   -webkit-box-shadow: 0 1px 0 0 var(--color-gray-200);
@@ -8061,6 +8061,15 @@ html[dir="rtl"] .fld-date, html[dir="rtl"] #grpcls_start_datetime, html[dir="rtl
 
 .table--aligned-top td {
   vertical-align: top !important; }
+
+.table-inner {
+  border: 1px solid var(--color-gray-200);
+  font-size: 0.9rem; }
+  .table-inner tr:hover {
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important; }
+  .table-inner th {
+    background-color: transparent; }
 
 .tabled {
   width: 100%;
