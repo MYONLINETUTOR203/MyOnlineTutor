@@ -112,16 +112,21 @@
         <div class="box-view__body">
             <nav class="attempt-list">
                 <ul>
-                    <?php foreach ($attemptedQues as $quest) {
-                        $class = "";
+                    <?php foreach ($attemptedQues as $quest) { ?>
+                        <?php
+                        $class = "is-skip";
                         $action = "onclick=\"getByQuesId('" . $data['quizat_id'] . "', '" . $quest['qulinqu_id'] . "')\";";
                         if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
                             $class = "is-current";
                             $action = "";
                         } elseif (!empty($quest['quatqu_id'])) {
-                            $class = "is-visited";
+                            if ($quest['is_correct'] == AppConstant::YES) {
+                                $class = "is-correct";
+                            } else {
+                                $class = "is-wrong";
+                            }
                         }
-                    ?>
+                        ?>
                         <li class="<?php echo $class; ?>">
                             <a href="javascript:void(0);" class="attempt-action" <?php echo $action; ?>>
                                 <?php echo $quest['qulinqu_order'] ?>

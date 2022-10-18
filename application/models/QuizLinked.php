@@ -362,6 +362,38 @@ class QuizLinked extends MyAppModel
         return true;
     }
 
+    public function getQuesWithAttemptedAnswers($attemptId, $quizLinkedId)
+    {
+        $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
+        $srch->joinTable(
+            QuizAttempt::DB_TBL_QUESTIONS,
+            'LEFT JOIN',
+            'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $attemptId
+        );
+        $srch->addCondition('qulinqu_quilin_id', '=', $quizLinkedId);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(['quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order', 'qulinqu_answer']);
+        $srch->addOrder('qulinqu_order', 'ASC');
+        $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
+        if (empty($attemptedQues)) {
+            return [];
+        }
+        foreach ($attemptedQues as $key => $question) {
+            $question['quatqu_answer'] = json_decode($question['quatqu_answer'], true);
+            $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
+
+            $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
+            if (count($question['qulinqu_answer']) == count($answered)) {
+                $question['is_correct'] = AppConstant::YES;
+            } else {
+                $question['is_correct'] = AppConstant::NO;
+            }
+
+            $attemptedQues[$key] = $question;
+        }
+        return $attemptedQues;
+    }
+
     /**
      * Send quiz removal notification
      *

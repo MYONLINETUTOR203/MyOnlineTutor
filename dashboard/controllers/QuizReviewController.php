@@ -110,22 +110,13 @@ class QuizReviewController extends DashboardController
         }
 
         /* get question attempt data */
-        $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
-        $srch->joinTable(
-            QuizAttempt::DB_TBL_QUESTIONS,
-            'LEFT JOIN',
-            'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $id
-        );
-        $srch->addCondition('qulinqu_quilin_id', '=', $data['quilin_id']);
-        $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order']);
-        $srch->addOrder('qulinqu_order', 'ASC');
-        $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
+        $linked = new QuizLinked();
+        $attemptedQues = $linked->getQuesWithAttemptedAnswers($id, $data['quilin_id']);
 
         $answer = [];
         $currentQuesId = $data['quizat_qulinqu_id'];
         if (!empty($attemptedQues[$currentQuesId]['quatqu_answer'])) {
-            $answer = json_decode($attemptedQues[$currentQuesId]['quatqu_answer'], true);
+            $answer = $attemptedQues[$currentQuesId]['quatqu_answer'];
         }
         if ($question['qulinqu_type'] == Question::TYPE_MANUAL) {
             $answer = $answer[0] ?? '';
