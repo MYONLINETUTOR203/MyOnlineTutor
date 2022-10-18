@@ -46,11 +46,11 @@ $status = QuizAttempt::getStatuses();
                                 <td>
                                     <?php if ($recordType == AppConstant::LESSON) { ?>
                                         <?php
-                                        $target = "target='_blank'";
-                                        $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['quilin_id']]);
+                                        $target = '';
+                                        $url = "javascript:void(0);";
                                         if ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
-                                            $target = '';
-                                            $url = "javascript:void(0);";
+                                            $target = "target='_blank'";
+                                            $url = MyUtility::makeFullUrl('QuizReview', 'index', [$quiz['users']['quizat_id']]);
                                         }
                                         ?>
                                         <a <?php echo $target; ?> href="<?php echo $url; ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover <?php echo empty($target) ? 'btn--disabled' : '' ?>">
