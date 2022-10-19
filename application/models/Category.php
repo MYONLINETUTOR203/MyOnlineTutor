@@ -122,14 +122,6 @@ class Category extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
-        if ($status == AppConstant::INACTIVE) {
-            $db = FatApp::getDb();
-            $smt = ['smt' => 'cate_parent = ?', 'vals' => [$this->getMainTableRecordId()]];
-            if (!$db->updateFromArray(Category::DB_TBL, ['cate_status' => $status], $smt)) {
-                $this->error = $db->getError();
-                return false;
-            }
-        }
         return true;
     }
 
