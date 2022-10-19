@@ -104,6 +104,11 @@ class CourseLanguagesController extends AdminBaseController
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_LANGUAGE_IDENTIFIER_NOT_AVAILABLE'));
         }
+        /* check if lang attached to course and can be deactivated */
+        $status = $post['clang_active'];
+        if ($status == AppConstant::INACTIVE && $this->checkCoursesExistsForLang($cLangId)) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_COURSE_ATTACHED_LANGUAGE_CANNOT_BE_DEACTIVATED.'));
+        }
         unset($post['clang_id']);
         $courseLanguage = new CourseLanguage($cLangId);
         $courseLanguage->assignValues($post);
