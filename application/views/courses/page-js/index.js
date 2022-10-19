@@ -6,6 +6,7 @@ $(document).ready(function () {
         fcom.ajax(fcom.makeUrl('Courses', 'search'), data, function (response) {
             $('#listing').html(response);
             (filtersCount > 0) ? $('.mobMoreCountJs').text(filtersCount).show() : $('.mobMoreCountJs').text(filtersCount).hide();
+            $(".gototop").trigger('click');
         });
     };
     gotoPage = function (pageno) {
@@ -13,7 +14,7 @@ $(document).ready(function () {
         $(frm.pageno).val(pageno);
         search(frm);
     };
-    search(document.frmSearch);
+
     clearFieldFilter = function (name) {
         $('select[name="' + name +'"]').val('');
         $('select[name="' + name + '"]').val('').trigger("change");
@@ -23,11 +24,14 @@ $(document).ready(function () {
         $('.select2-selection__arrow').show();
         searchByFilters();
     };
-    applyFilters = function (name) {
+    applyFilters = function (name, reset = false) {
         if ($('select[name="' + name + '"]').val().trim() != '') {
             $('.submit-' + name + '-js').hide();
             $('.reset-' + name + '-js').show();
             $('.select2-selection__arrow').hide();
+        }
+        if (reset === true) {
+            return;
         }
         searchByFilters();
     };
@@ -39,7 +43,7 @@ $(document).ready(function () {
     };
 
     /* Category [ */
-    searchByCategory = function () {
+    searchByCategory = function (reset = false) {
         var categories = '';
         $('.categorySelectJs input[type="checkbox"]:checked').each(function () {
             var text = $(this).parent().find('.select-option__item').text();
@@ -51,6 +55,9 @@ $(document).ready(function () {
             $('.catgPlaceholderJs').html(placeholder);
         } else {
             $('.catgPlaceholderJs').html(categoryLbl);
+        }
+        if (reset === true) {
+            return;
         }
         searchByFilters();
     };
@@ -77,7 +84,7 @@ $(document).ready(function () {
     /* ] */
 
     /* Price [ */
-    searchByPrice = function () {
+    searchByPrice = function (reset = false) {
         var price = [];
         if (!isNaN(parseInt($('input[name="price_from"]').val()))) {
             price.push($('input[name="price_from"]').val());
@@ -94,6 +101,9 @@ $(document).ready(function () {
             $('.pricePlaceholderJs').html(placeholder);
         } else {
             $('.pricePlaceholderJs').html(priceLbl);
+        }
+        if (reset === true) {
+            return;
         }
         searchByFilters();
     };
@@ -114,7 +124,7 @@ $(document).ready(function () {
     /* ] */
 
     /* Rating [ */
-    searchByRating = function () {
+    searchByRating = function (reset = false) {
         var rating = $('.ratingSelectJs input[type="radio"]:checked').parent().find('.select-option__item').text();
         if (rating != '') {
             var placeholder = '<div class="selected-filters"><span class="selected-filters__item">' + rating +
@@ -122,6 +132,9 @@ $(document).ready(function () {
             $('.ratingPlaceholderJs').html(placeholder);
         } else {
             $('.ratingPlaceholderJs').html(ratingLbl);
+        }
+        if (reset === true) {
+            return;
         }
         searchByFilters();
     };
@@ -257,9 +270,12 @@ $(document).ready(function () {
             dataType: 'json',
             processResults: function (data) {
                 if (data.length > 0) {
-                    $.each(data, function (key, value) {
+                    $.each(data, function (key, value) {    
                         $.each(value.children, function (key1, value1) {
-                            options[value1.id] = value.type;
+                            options[value1.id] = { 
+                                type: value.type,
+                                text: value1.text
+                            };
                         });
                     });
                 }
@@ -269,10 +285,16 @@ $(document).ready(function () {
             }
         }
     }).on("select2:select", function (e) {
-        var group = options[e.params.data.id];
+        var group = options[e.params.data.id].type;
+        var text = options[e.params.data.id].text;
+        var reset = false;
+        if (e.params.data.reset) {
+            reset = e.params.data.reset;
+        }
         $('input[name="record_id"]').val(e.params.data.id);
         $('input[name="type"]').val(group);
-        applyFilters('keyword')
+        $('input[name="search_keyword"]').val(text);
+        applyFilters('keyword', reset);
     });
 
     /* filters */
@@ -342,6 +364,38 @@ $(document).ready(function () {
             }
         });
     };
+    searchByKeyword = function() {
+        var keywordData = {
+            id:  $('input[name="record_id"]').val(),
+            text:  $('input[name="search_keyword"]').val(),
+        };
+        if (keywordData.id != '') {
+            options[keywordData.id] = {
+                type: $('input[name="type"]').val(),
+                text: $('input[name="search_keyword"]').val()
+            }
+            var newOption = new Option(keywordData.text, keywordData.id, false, false);
+            $('select[name="keyword"]').append(newOption).trigger('change');
+            $('select[name="keyword"]').trigger({
+                type: 'select2:select',
+                params: {
+                    data: {
+                        id: keywordData.id,
+                        text: keywordData.text,
+                        selected: true,
+                        reset: true,
+                    }
+                }
+            });
+        }
+    };
+
+    searchByCategory(true);
+    searchByPrice(true);
+    searchByRating(true);
+    countSelectedFilters();
+    searchByKeyword(); 
+    searchByFilters();
 });
 
 

@@ -195,7 +195,7 @@ class CertificatesController extends AdminBaseController
             'course_clang_name' => 'English',
             'lang_id' => $langId,
             'cert_number' => 'YC_h34uwh9e72w',
-            'crspro_completed' => date('Y-m-d H:i:s'),
+            'crspro_completed' => date('Y-m-d'),
             'course_duration' => '11265'
         ];
         $cert = new Certificate(0, 0, $langId);

@@ -167,7 +167,7 @@ class Certificate extends MyAppModel
                 ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']),
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 $data['course_clang_name'],
-                MyDate::formatDate($data['crspro_completed']),
+                MyDate::formatDate($data['crspro_completed'], 'Y-m-d'),
                 $data['cert_number'],
                 YouTube::convertDuration($data['course_duration'])
             ],

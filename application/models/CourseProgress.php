@@ -160,7 +160,7 @@ class CourseProgress extends MyAppModel
         $this->setFldValue('crspro_progress', $percent);
         /* completed date will be updated only once(first time completed) */
         if (!$progress['crspro_completed'] && $percent == 100.00) {
-            $this->setFldValue('crspro_completed', date('Y-m-d H:i:s'));
+            $this->setFldValue('crspro_completed', date('Y-m-d'));
             $this->setFldValue('crspro_status', CourseProgress::COMPLETED);
         }
         if (!$this->save()) {

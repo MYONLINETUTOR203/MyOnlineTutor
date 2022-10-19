@@ -316,6 +316,7 @@ class CourseSearch extends YocoachSearch
         $frm->addSelectBox(Label::getLabel('LBL_SEARCH_KEYWORD'), 'keyword', [], '', [], '');
         $frm->addHiddenField('', 'record_id', '');
         $frm->addHiddenField('', 'type', '');
+        $frm->addHiddenField('', 'search_keyword', '');
         $frm->addRadioButtons(
             Label::getLabel('LBL_SORT_BY'),
             'price_sorting',

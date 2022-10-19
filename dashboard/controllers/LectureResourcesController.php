@@ -195,7 +195,7 @@ class LectureResourcesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
-        if ($resource['course_user_id'] != $this->siteLangId) {
+        if ($resource['course_user_id'] != $this->siteUserId) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
 

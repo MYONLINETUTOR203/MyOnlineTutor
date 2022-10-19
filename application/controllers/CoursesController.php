@@ -21,10 +21,14 @@ class CoursesController extends MyAppController
     public function index()
     {
         $params = FatApp::getQueryStringData();
-        $srchFrm = CourseSearch::getSearchForm($this->siteLangId);
+        $data = [];
         if (isset($params['catg']) && $params['catg'] > 0) {
-            $srchFrm->fill(['course_cate_id' => [$params['catg']]]);
+            $data['course_cate_id'] = [$params['catg']];
         }
+        $searchSession = $_SESSION[AppConstant::SEARCH_SESSION] ?? [];
+        $srchFrm = CourseSearch::getSearchForm($this->siteLangId);
+        $srchFrm->fill($data + $searchSession);
+        unset($_SESSION[AppConstant::SEARCH_SESSION]);
         $this->set('srchFrm', $srchFrm);
         $this->set('filterTypes', Course::getFilterTypes());
         $this->_template->render();
@@ -42,6 +46,12 @@ class CoursesController extends MyAppController
         $frm = CourseSearch::getSearchForm($this->siteLangId);
         if (!$post = $frm->getFormDataFromArray($posts, ['course_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        if($posts['price_from'] == ''){
+            $post['price_from'] = $posts['price_from'];
+        }
+        if($posts['price_till'] == '') {
+            $post['price_till'] = $posts['price_till'];
         }
         $post['course_status'] = Course::PUBLISHED;
         $srch = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
