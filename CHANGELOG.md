@@ -1,6 +1,18 @@
 # MyOnlineTutor (YoCoach RV-3.0)
 
 
+## TV-1.1.0.20220927
+
+Features:
+
+    Task-101486 - Question Categories | Admin
+    Task-101487 - Certificate Management | Admin
+    Task-101569 - Questions Listing | Admin
+    Task-101618 - Question Bank Management Development
+    Task-101915 - Quiz Creation
+    Task-101916 - Quiz Settings
+    Task-102194 - Quiz Listing Admin
+
 
 ## TV-1.2.0.20221014
 
@@ -45,14 +57,27 @@ Fixes:
     Bug-067271 - Labels are not coming in Arabic language in category setup
     Bug-067269 - Notice is coming on subcategory page if only category identifier is added
 
-## TV-1.1.0.20220927
+
+## TV-1.2.1.20221019
 
 Features:
 
-    Task-101486 - Question Categories | Admin
-    Task-101487 - Certificate Management | Admin
-    Task-101569 - Questions Listing | Admin
-    Task-101618 - Question Bank Management Development
-    Task-101915 - Quiz Creation
-    Task-101916 - Quiz Settings
-    Task-102194 - Quiz Listing Admin
+    Task-102648 - Quiz Review
+    Task-102835 - Cancel Pending Quizzes
+
+Fixes:
+
+    Bug-068029 - The hint section should not come if the question hint is not available
+    Bug-068028 - Learner is not getting an email when lesson attached quiz is removed
+    Bug-067948 - Learner is unable to access the links available in quiz attached email
+    Bug-067947 - Validity datetime is not coming correct as per learner time zone
+    Bug-067946 - Learner name is coming instead of teacher name in quiz attached email
+    Bug-067937 - The quiz validity value is not coming in the admin quiz detail
+    Bug-067932 - Notices are coming when adding inactive category/subcategory
+    Bug-067659 - Show the count of questions attached with a quiz in the teacher and admin quiz listing
+    Bug-067645 - “+&” special characters are not accepted in the certificate content
+    Bug-067634 - No. of questions count is not coming correct in quiz detail
+    Bug-067624 - Question display order change process is not smooth in the quiz
+    Bug-067621 - Table heading row of question listing is not coming in the quiz setup
+    Bug-067429 - Full content is not getting saved in question setup for description, hints and options
+    Bug-067281 - Show category identifier as well in the category/subcategory listing

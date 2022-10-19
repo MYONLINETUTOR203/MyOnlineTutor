@@ -375,3 +375,4 @@ UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.2.0.20221014' WHERE `tbl_conf
 
 INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Settle Incomplete Quizzes', 'cancelIncompleteQuizzes', '5', '1') 
 
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.2.1.20221019' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
