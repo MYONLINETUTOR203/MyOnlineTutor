@@ -473,7 +473,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
     $(document).ready(function() {
         var catid = "<?php echo count($category->value) ?>";
         if (catid > 0) {
-            searchByCategory();
+            searchByCategory(true);
         }
     });
 </script>
