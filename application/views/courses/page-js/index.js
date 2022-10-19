@@ -6,6 +6,7 @@ $(document).ready(function () {
         fcom.ajax(fcom.makeUrl('Courses', 'search'), data, function (response) {
             $('#listing').html(response);
             (filtersCount > 0) ? $('.mobMoreCountJs').text(filtersCount).show() : $('.mobMoreCountJs').text(filtersCount).hide();
+            $(".gototop").trigger('click');
         });
     };
     gotoPage = function (pageno) {
