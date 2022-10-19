@@ -213,9 +213,11 @@ $yesNoArr = AppConstant::getYesNoArr();
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong><?php echo CommonHelper::renderHtml($courseData['course_details']); ?></strong>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="editor-content"><iframe srcdoc="<?php echo $courseData['course_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe></div>
                         </div>
                     </div>
                 </div>
@@ -223,3 +225,8 @@ $yesNoArr = AppConstant::getYesNoArr();
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        resetEditorHeight();
+    });
+</script>

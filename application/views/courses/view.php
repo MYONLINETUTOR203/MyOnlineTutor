@@ -20,7 +20,8 @@ $levels = Course::getCourseLevels();
                         <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_cate_id'] ?>"><?php echo $course['cate_name']; ?></a>
                         <?php
                         if (!empty($course['subcate_name'])) {
-                            echo ' / '; ?>
+                            echo ' / ';
+                            ?>
                             <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $course['course_subcate_id'] ?>"><?php echo $course['subcate_name']; ?></a>
                         <?php } ?>
                     </span>
@@ -30,20 +31,16 @@ $levels = Course::getCourseLevels();
                 <div class="course-counts margin-bottom-6">
                     <div class="course-counts__item">
                         <a class="rating">
-                            <svg class="rating__media">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#rating"></use>
-                            </svg>
+                            <svg class="rating__media"><use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#rating"></use></svg>
                             <span class="rating__value"><?php echo $course['course_ratings']; ?></span>
-                            <span class="rating__count">
-                                <?php echo $course['course_reviews'] . ' ' . Label::getLabel('LBL_REVIEW(S)'); ?>
-                            </span>
+                            <span class="rating__count"><?php echo $course['course_reviews'] . ' ' . Label::getLabel('LBL_REVIEW(S)'); ?></span>
                         </a>
                     </div>
                     <div class="course-counts__item">
                         <div class="course-info">
                             <div class="course-info__media">
                                 <svg class="icon icon--level">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-students"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-students"></use>
                                 </svg>
                             </div>
                             <div class="course-info__title">
@@ -56,7 +53,7 @@ $levels = Course::getCourseLevels();
                         <div class="course-info">
                             <div class="course-info__media">
                                 <svg class="icon icon--level">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-level"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-level"></use>
                                 </svg>
                             </div>
                             <div class="course-info__title">
@@ -68,7 +65,7 @@ $levels = Course::getCourseLevels();
                         <div class="course-info">
                             <div class="course-info__media">
                                 <svg class="icon icon--level icon--small">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-globe"></use>
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-globe"></use>
                                 </svg>
                             </div>
                             <div class="course-info__title"><strong><?php echo $course['course_clang_name']; ?></strong> </div>
@@ -109,9 +106,7 @@ $levels = Course::getCourseLevels();
                         <div class="page-flex__sticky">
                             <div class="page-box">
                                 <div class="page-box__head">
-                                    <h5 class="bold-700">
-                                        <?php echo Label::getLabel('LBL_THIS_COURSE_INCLUDES:'); ?>
-                                    </h5>
+                                    <h5 class="bold-700"><?php echo Label::getLabel('LBL_THIS_COURSE_INCLUDES:'); ?></h5>
                                 </div>
                                 <div class="page-box__body">
                                     <div class="course-options">
@@ -120,22 +115,20 @@ $levels = Course::getCourseLevels();
                                                 <li class="course-options__item">
                                                     <span class="course-options__item-media">
                                                         <svg class="icon icon--level">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-video">
-                                                            </use>
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-video">
+                                                        </use>
                                                         </svg>
                                                     </span>
                                                     <span class="course-options__item-label">
-                                                        <strong>
-                                                            <?php echo YouTube::convertDuration($course['course_duration']); ?>
-                                                        </strong>
+                                                        <strong><?php echo YouTube::convertDuration($course['course_duration']); ?></strong>
                                                     </span>
                                                 </li>
                                             <?php } ?>
                                             <li class="course-options__item">
                                                 <span class="course-options__item-media">
                                                     <svg class="icon icon--level">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-lecture">
-                                                        </use>
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-lecture">
+                                                    </use>
                                                     </svg>
                                                 </span>
                                                 <span class="course-options__item-label">
@@ -147,8 +140,8 @@ $levels = Course::getCourseLevels();
                                                 <li class="course-options__item">
                                                     <span class="course-options__item-media">
                                                         <svg class="icon icon--level">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-assets">
-                                                            </use>
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-assets">
+                                                        </use>
                                                         </svg>
                                                     </span>
                                                     <span class="course-options__item-label">
@@ -159,8 +152,8 @@ $levels = Course::getCourseLevels();
                                             <li class="course-options__item">
                                                 <span class="course-options__item-media">
                                                     <svg class="icon icon--level">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-access">
-                                                        </use>
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-access">
+                                                    </use>
                                                     </svg>
                                                 </span>
                                                 <span class="course-options__item-label">
@@ -170,8 +163,8 @@ $levels = Course::getCourseLevels();
                                             <li class="course-options__item">
                                                 <span class="course-options__item-media">
                                                     <svg class="icon icon--level">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-tv">
-                                                        </use>
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-tv">
+                                                    </use>
                                                     </svg>
                                                 </span>
                                                 <span class="course-options__item-label">
@@ -182,8 +175,8 @@ $levels = Course::getCourseLevels();
                                                 <li class="course-options__item">
                                                     <span class="course-options__item-media">
                                                         <svg class="icon icon--level">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-certificate">
-                                                            </use>
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-course-certificate">
+                                                        </use>
                                                         </svg>
                                                     </span>
                                                     <span class="course-options__item-label">
@@ -208,7 +201,8 @@ $levels = Course::getCourseLevels();
                                                     </h3>
                                                 <?php } ?>
                                                 <span class="course-pricing__price">
-                                                    <?php if ($course['course_type'] != Course::TYPE_FREE) {
+                                                    <?php
+                                                    if ($course['course_type'] != Course::TYPE_FREE) {
                                                         echo CourseUtility::formatMoney($course['course_price']);
                                                     }
                                                     ?>
@@ -240,11 +234,11 @@ $levels = Course::getCourseLevels();
                                         </div>
                                     </div>
                                     <a href="javascript:void(0)" onclick="toggleCourseFavorite('<?php echo $course['course_id'] ?>', this)" class="btn btn--bordered btn--favorite btn--block <?php echo ($course['is_favorite'] == AppConstant::YES) ? 'is-active' : ''; ?>" data-status="<?php echo $course['is_favorite']; ?>" tabindex="0">
-                                       
+
                                         <svg class="icon icon--heart margin-right-2 fav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25.32 25.32">
-                                            <g>
-                                                <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z"></path>
-                                            </g>
+                                        <g>
+                                        <path class="cls-1" d="M17.16,3.41c3.04,0,5.5,2.5,5.5,6,0,7-7.5,11-10,12.5-2.5-1.5-10-5.5-10-12.5,0-3.5,2.5-6,5.5-6,1.86,0,3.5,1,4.5,2,1-1,2.64-2,4.5-2Z"></path>
+                                        </g>
                                         </svg>
 
                                         <?php echo Label::getLabel("LBL_FAVORITE"); ?>
@@ -358,7 +352,7 @@ $levels = Course::getCourseLevels();
                                             <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                         </h5>
                                         <div class="check-list check-list--half editor-content">
-                                            <?php echo CommonHelper::renderHtml($course['course_details']) ?>
+                                            <iframe srcdoc="<?php echo $course['course_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
                                         </div>
                                     </div>
                                     <?php if (count($course['course_tags']) > 0) { ?>
@@ -367,8 +361,7 @@ $levels = Course::getCourseLevels();
                                                 <?php echo Label::getLabel('LBL_COURSE_TAGS'); ?>
                                             </h5>
                                             <div class="tags">
-                                                <?php
-                                                foreach ($course['course_tags'] as $tag) { ?>
+                                                <?php foreach ($course['course_tags'] as $tag) { ?>
                                                     <a href="javascript:void(0);" class="tags__item badge badge--curve"><?php echo $tag; ?></a>
                                                 <?php } ?>
                                             </div>
@@ -401,11 +394,13 @@ $levels = Course::getCourseLevels();
                                             <?php } ?>
                                         </ul>
                                     </div>
-                                    <?php if (count($sections) > 0) {
+                                    <?php
+                                    if (count($sections) > 0) {
                                         $i = 1;
                                         foreach ($sections as $section) {
                                             $lectures = ($section['lectures']) ?? [];
-                                            if (count($lectures) > 0) { ?>
+                                            if (count($lectures) > 0) {
+                                                ?>
                                                 <div class="course-layout">
                                                     <div class="course-layout__head">
                                                         <div class="d-sm-flex justify-content-sm-between">
@@ -429,8 +424,8 @@ $levels = Course::getCourseLevels();
                                                                                 <div class="course-info">
                                                                                     <div class="course-info__media">
                                                                                         <svg class="icon icon--level">
-                                                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-time">
-                                                                                            </use>
+                                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-time">
+                                                                                        </use>
                                                                                         </svg>
                                                                                     </div>
                                                                                     <div class="course-info__title">
@@ -445,8 +440,8 @@ $levels = Course::getCourseLevels();
                                                                                 <div class="course-info">
                                                                                     <div class="course-info__media">
                                                                                         <svg class="icon icon--level">
-                                                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-lecture">
-                                                                                            </use>
+                                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL ?>images/sprite.svg#icon-lecture">
+                                                                                        </use>
                                                                                         </svg>
                                                                                     </div>
                                                                                     <div class="course-info__title">
@@ -458,7 +453,7 @@ $levels = Course::getCourseLevels();
                                                                                 </div>
                                                                             </div>
                                                                             <div class="course-counts__item">
-                                                                                <a href="javascript:void(0);" onclick="showLectures(this, '<?php echo $i; ?>' );" class="course-trigger course-trigger-js <?php echo ($i == 1) ? 'is-active' : ''; ?>">
+                                                                                <a href="javascript:void(0);" onclick="showLectures(this, '<?php echo $i; ?>');" class="course-trigger course-trigger-js <?php echo ($i == 1) ? 'is-active' : ''; ?>">
                                                                                     <?php echo Label::getLabel('LBL_SEE_ALL') ?>
                                                                                 </a>
                                                                             </div>
@@ -473,21 +468,22 @@ $levels = Course::getCourseLevels();
                                                             <div class="course-layout__left"></div>
                                                             <div class="course-layout__right">
                                                                 <div class="course-topic-list">
-                                                                    <?php foreach ($section['lectures'] as $lesson) {
+                                                                    <?php
+                                                                    foreach ($section['lectures'] as $lesson) {
                                                                         $showPreview = false;
                                                                         $rsrcId = array_search($lesson['lecture_id'], $videos);
                                                                         if ($rsrcId && $lesson['lecture_is_trial']) {
                                                                             $showPreview = true;
                                                                         }
-                                                                    ?>
+                                                                        ?>
                                                                         <div class="course-topic">
                                                                             <?php if ($showPreview) { ?>
                                                                                 <a href="javascript:void(0);" onclick="openMedia('<?php echo $rsrcId ?>');" class="course-topic__action">
                                                                                 <?php } ?>
                                                                                 <div class="course-topic__title">
                                                                                     <svg class="icon icon--play icon--xsmall margin-right-3 color-gray-800">
-                                                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-play">
-                                                                                        </use>
+                                                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#icon-play">
+                                                                                    </use>
                                                                                     </svg>
                                                                                     <span class="course-topic__name">
                                                                                         <?php echo $lesson['lecture_title'] ?>
@@ -515,10 +511,12 @@ $levels = Course::getCourseLevels();
                                                         </div>
                                                     </div>
                                                 </div>
-                                    <?php }
+                                                <?php
+                                            }
                                             $i++;
                                         }
-                                    } ?>
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <!-- ] -->
@@ -546,8 +544,8 @@ $levels = Course::getCourseLevels();
                                                     </div>
                                                     <div class="rating color-yellow">
                                                         <svg class="rating__media">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#rating">
-                                                            </use>
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#rating">
+                                                        </use>
                                                         </svg>
                                                         <span class="rating__value">
                                                             <?php echo $course['testat_ratings'] ?>
@@ -593,9 +591,9 @@ $levels = Course::getCourseLevels();
                                                         <div class="reviews-total">
                                                             <div class="reviews-media">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
-                                                                    <g transform="translate(-28.999 -29)">
-                                                                        <path d="M892.348,2341l17.582,31.851,35.759,6.861L920.8,2406.26l4.518,36.091-32.967-15.445-32.968,15.445,4.518-36.091-24.892-26.546,35.759-6.861L892.348,2341" transform="translate(-808.008 -2308.001)" />
-                                                                    </g>
+                                                                <g transform="translate(-28.999 -29)">
+                                                                <path d="M892.348,2341l17.582,31.851,35.759,6.861L920.8,2406.26l4.518,36.091-32.967-15.445-32.968,15.445,4.518-36.091-24.892-26.546,35.759-6.861L892.348,2341" transform="translate(-808.008 -2308.001)" />
+                                                                </g>
                                                                 </svg>
                                                                 <span class="reviews-count">
                                                                     <?php echo $course['course_ratings'] ?>
@@ -674,11 +672,13 @@ $levels = Course::getCourseLevels();
                 </h3>
             </div>
             <div class="section__body">
-                <?php echo $this->includeTemplate('courses/more-courses.php', [
+                <?php
+                echo $this->includeTemplate('courses/more-courses.php', [
                     'moreCourses' => $moreCourses,
                     'siteLangId' => $siteLangId,
                     'siteUserId' => $siteUserId,
-                ]); ?>
+                ]);
+                ?>
             </div>
         </div>
     </section>

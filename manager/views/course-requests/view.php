@@ -59,7 +59,11 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
-                                <dd><?php echo CommonHelper::renderHtml($requestData['coapre_details']); ?></dd>
+                                <dd>
+                                    <div class="editor-content">
+                                        <iframe srcdoc="<?php echo $requestData['coapre_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
+                                    </div>
+                                </dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_PRICE'); ?></dt>
@@ -83,44 +87,56 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_TAGS'); ?></dt>
-                                <dd><?php echo empty($requestData['coapre_srchtags']) ? Label::getLabel('LBL_NA'): implode(', ', $requestData['coapre_srchtags']); ?></dd>
+                                <dd><?php echo empty($requestData['coapre_srchtags']) ? Label::getLabel('LBL_NA') : implode(', ', $requestData['coapre_srchtags']); ?></dd>
                             </dl>
-                                 
+
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_CONTENT'); ?></dt>
                                 <dd>     
-                                <?php if(!empty($requestData['coapre_learnings'])) { ?>      
-                                    <ul>
-                                        <?php foreach ($requestData['coapre_learnings'] as $content) { ?>
-                                            <li><?php echo $content['coinle_response']; ?></li>   
-                                        <?php } ?>
-                                    </ul>
-                                    <?php } else { echo Label::getLabel('LBL_NA'); } ?>
+                                    <?php if (!empty($requestData['coapre_learnings'])) { ?>      
+                                        <ul>
+                                            <?php foreach ($requestData['coapre_learnings'] as $content) { ?>
+                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                            <?php } ?>
+                                        </ul>
+                                        <?php
+                                    } else {
+                                        echo Label::getLabel('LBL_NA');
+                                    }
+                                    ?>
                                 </dd>
                             </dl>
-                          
+
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_LEARNERS'); ?></dt>
                                 <dd>                                
-                                    <?php if(!empty($requestData['coapre_learners'])) { ?>
-                                    <ul>
-                                        <?php foreach ($requestData['coapre_learners'] as $content) { ?>
-                                            <li><?php echo $content['coinle_response']; ?></li>   
-                                        <?php } ?>
-                                    </ul>
-                                    <?php } else { echo Label::getLabel('LBL_NA'); } ?>
+                                    <?php if (!empty($requestData['coapre_learners'])) { ?>
+                                        <ul>
+                                            <?php foreach ($requestData['coapre_learners'] as $content) { ?>
+                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                            <?php } ?>
+                                        </ul>
+                                        <?php
+                                    } else {
+                                        echo Label::getLabel('LBL_NA');
+                                    }
+                                    ?>
                                 </dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_REQUIREMENTS'); ?></dt>
                                 <dd>                                
-                                    <?php if(!empty($requestData['coapre_requirements'])) { ?>
-                                    <ul>
-                                        <?php foreach ($requestData['coapre_requirements'] as $content) { ?>
-                                            <li><?php echo $content['coinle_response']; ?></li>   
-                                        <?php } ?>
-                                    </ul>
-                                    <?php } else { echo Label::getLabel('LBL_NA'); } ?>
+                                    <?php if (!empty($requestData['coapre_requirements'])) { ?>
+                                        <ul>
+                                            <?php foreach ($requestData['coapre_requirements'] as $content) { ?>
+                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                            <?php } ?>
+                                        </ul>
+                                        <?php
+                                    } else {
+                                        echo Label::getLabel('LBL_NA');
+                                    }
+                                    ?>
                                 </dd>
                             </dl>
                         </div>
@@ -146,7 +162,7 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_GENDER'); ?></dt>
-                                <dd><?php echo empty($requestData['user_gender']) ? '-' : User::getGenderTypes()[$requestData['user_gender']] ; ?></dd>
+                                <dd><?php echo empty($requestData['user_gender']) ? '-' : User::getGenderTypes()[$requestData['user_gender']]; ?></dd>
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_EMAIL'); ?></dt>
@@ -159,3 +175,8 @@
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        resetEditorHeight();
+    });
+</script>
