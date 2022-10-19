@@ -574,7 +574,7 @@ class CoursesController extends DashboardController
      */
     public function getEligibilityStatus(int $courseId)
     {
-        $course = new Course($courseId);
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType);
         $criteria = $course->isEligibleForApproval();
         FatUtility::dieJsonSuccess(['criteria' => $criteria]);
     }

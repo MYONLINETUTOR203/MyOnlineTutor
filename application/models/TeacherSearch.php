@@ -210,9 +210,11 @@ class TeacherSearch extends YocoachSearch
         $videos = static::getYouTubeVideos($teacherIds);
         $userProfileImages = static::getUserProfileImages($teacherIds);
         $offers = OfferPrice::getOffers($this->userId, $teacherIds);
+        $courses = static::getCourses($teacherIds);
         foreach ($records as $key => $record) {
             $record['uft_id'] = $favorites[$record['user_id']] ?? 0;
             $record['user_photo'] = $photos[$record['user_id']] ?? '';
+            $record['courses'] = $courses[$record['user_id']] ?? 0;
             $record['user_biography'] = $langData[$record['user_id']] ?? '';
             $record['user_country_name'] = $countries[$record['user_country_id']]['name'] ?? '';
             $record['user_country_code'] = $countries[$record['user_country_id']]['code'] ?? '';
@@ -229,6 +231,21 @@ class TeacherSearch extends YocoachSearch
             $records[$key] = $record;
         }
         return $records;
+    }
+
+    public static function getCourses(array $teacherIds)
+    {
+        if (empty($teacherIds)) {
+            return [];
+        }
+        $srch = new CourseSearch(0, 0, 0);
+        $srch->addMultipleFields(['course_user_id', 'COUNT(course.course_id) AS courses']);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('course_user_id', 'IN', $teacherIds);
+        $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addGroupBy('course_user_id');
+        return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }
 
     /**
@@ -561,5 +578,4 @@ class TeacherSearch extends YocoachSearch
         $btnSubmit->attachField($frm->addResetButton('', 'btn_reset', Label::getLabel('LBL_Clear')));
         return $frm;
     }
-
 }

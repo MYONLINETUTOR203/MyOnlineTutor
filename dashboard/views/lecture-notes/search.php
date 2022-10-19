@@ -1,7 +1,7 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 if (count($notes) == 0) {
-    $this->includeTemplate('_partial/no-record-found-notes.php', ['isPreview' => $isPreview]);
+    $this->includeTemplate('_partial/no-record-found-notes.php', ['isPreview' => $isPreview, 'ordcrsId' => $post['ordcrs_id']]);
     return;
 }
 ?>

@@ -112,6 +112,8 @@ class CoursesController extends MyAppController
             FatUtility::exitWithErrorCode(404);
         }
         $course = current($courses);
+        $teacherCourses = TeacherSearch::getCourses([$course['course_teacher_id']]);
+        $course['teacher_courses'] = $teacherCourses[$course['course_teacher_id']] ?? 0;
         /* get more course by the same teacher */
         $courseObj = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
         $moreCourses = $courseObj->getMoreCourses($course['course_teacher_id'], $course['course_id']);

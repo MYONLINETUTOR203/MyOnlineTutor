@@ -25,7 +25,8 @@ class CoursesController extends AdminBaseController
      */
     public function index()
     {
-        $frm = $this->getSearchForm();
+        $cateId = FatApp::getQueryStringData('course_cateid') ?? 0;
+        $frm = $this->getSearchForm($cateId);
         $frm->fill(FatApp::getQueryStringData());
         $this->set('srchFrm', $frm);
         $this->set('params', FatApp::getQueryStringData());
@@ -172,9 +173,10 @@ class CoursesController extends AdminBaseController
     /**
      * Get Search Form
      *
+     * @param int $cateId
      * @return \Form
      */
-    private function getSearchForm(): Form
+    private function getSearchForm(int $cateId = 0): Form
     {
         $frm = new Form('frmSearch');
         $frm->addTextBox(
@@ -191,7 +193,11 @@ class CoursesController extends AdminBaseController
         );
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_COURSE, true);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'course_cateid', $categoryList, '', [], Label::getLabel('LBL_SELECT'));
-        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', [], '', [], Label::getLabel('LBL_SELECT'));
+        $subcategories = [];
+        if ($cateId > 0) {
+            $subcategories = Category::getCategoriesByParentId($this->siteLangId, $cateId);
+        }
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'course_subcateid', $subcategories, '', [], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'course_clang_id', '', ['id' => 'course_clang_id', 'autocomplete' => 'off']);
         $frm->addDateField(Label::getLabel('LBL_DATE_FROM'), 'course_addedon_from', '', ['readonly' => 'readonly']);
         $frm->addDateField(Label::getLabel('LBL_DATE_TO'), 'course_addedon_till', '', ['readonly' => 'readonly']);

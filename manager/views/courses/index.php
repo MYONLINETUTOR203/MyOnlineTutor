@@ -46,11 +46,8 @@ $catefld->addFieldtagAttribute('onchange', 'getSubcategories(this.value);');
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        var catId = "<?php echo isset($params['course_cateid']) ? $params['course_cateid'] : 0 ?>";
-        if (catId > 0) {
-            getSubcategories(catId, '<?php echo!empty($subcatefld->value) ? $subcatefld->value : 0; ?>');
-        }
+    $(document).ready(function() {
+        var catId = "<?php echo !empty($catefld->value) ? $catefld->value : 0; ?>";
         if (catId > 0) {
             $('.section.searchform_filter .sectionhead').click();
         }
