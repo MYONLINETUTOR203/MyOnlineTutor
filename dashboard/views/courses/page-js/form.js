@@ -156,7 +156,7 @@ $(function () {
     setCompletedStatus = function (criteria) {
         $('.general-info-js, .intended-learner-js, .course-price-js, .curriculum-js, .course-setting-js').removeClass('is-completed').addClass('is-progress');
         $('.btnApprovalJs').addClass('d-none');
-        if (criteria.course_lang == 1 && criteria.course_image == 1 && criteria.course_preview_video == 1) {
+        if (criteria.course_lang == 1 && criteria.course_image == 1 && criteria.course_preview_video == 1 && criteria.course_cate == 1 && criteria.course_subcate == 1 && criteria.course_clang == 1) {
             $('.general-info-js').removeClass('is-progress').addClass('is-completed');
         }
         if (criteria.courses_intended_learners == 1) {

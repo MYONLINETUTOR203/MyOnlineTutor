@@ -29,8 +29,8 @@ class CourseSearch extends YocoachSearch
             'crsdetail'
         );
         $this->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
-        $this->joinTable(Category::DB_TBL, 'INNER JOIN', 'cate.cate_id = course.course_cate_id', 'cate');
-        $this->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
+        $this->joinTable(Category::DB_TBL, 'LEFT JOIN', 'cate.cate_id = course.course_cate_id', 'cate');
+        $this->joinTable(CourseLanguage::DB_TBL, 'LEFT JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
     }
 
     /**
@@ -251,8 +251,6 @@ class CourseSearch extends YocoachSearch
     public function applyPrimaryConditions(): void
     {
         $this->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
         $this->addDirectCondition('teacher.user_deleted IS NULL');
         $this->addDirectCondition('teacher.user_verified IS NOT NULL');
         $this->addCondition('teacher.user_active', '=', AppConstant::ACTIVE);

@@ -223,6 +223,11 @@ class Course extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
+        $eligibility = $this->isEligibleForApproval();
+        if ($eligibility['course_is_eligible'] == false) {
+            $this->error = Label::getLabel('LBL_COURSE_DETAILS_ARE_INCOMPLETE._CATEGORY,_SUBCATEGORY_OR_LANGUAGE_NOT_AVAILABLE.');
+            return false;
+        }
         $db = FatApp::getDb();
         if (!$db->startTransaction()) {
             $this->error = $db->getError();
@@ -632,15 +637,26 @@ class Course extends MyAppModel
         $criteria = json_decode(FatApp::getConfig('CONF_COURSE_APPROVAL_ELIGIBILITY_CRITERIA'));
         $criteria = array_fill_keys($criteria, 0);
         /* get course curriculum and price tabs data */
-        $courseData = Course::getAttributesById($courseId, [
+        $srch = new CourseSearch(0, $this->userId, $this->userType);
+        $srch->joinTable(Category::DB_TBL, 'LEFT JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');
+        $srch->applyPrimaryConditions();
+        $srch->addMultipleFields([
             'IF(course_sections > 0, 1, 0) as course_sections',
             'IF(course_lectures > 0, 1, 0) as course_lectures',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_currency_id > 0, 1, 0) as course_currency_id',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
+            'IF(cate.cate_deleted IS NULL AND cate.cate_status = ' . AppConstant::ACTIVE . ', 1, 0) course_cate',
+            'IF(subcate.cate_deleted IS NULL AND subcate.cate_status = ' . AppConstant::ACTIVE . ', 1, 0) course_subcate',
+            'IF(clang.clang_deleted IS NULL AND clang.clang_active = ' . AppConstant::ACTIVE . ', 1, 0) course_clang'
         ]);
+        $srch->addCondition('course.course_id', '=', $courseId);
+        $srch->setPageSize(1);
+        $courseData = FatApp::getDb()->fetch($srch->getResultSet());
+
         if ($courseData) {
             $criteria = array_merge($criteria, $courseData);
         }
+
         /* check sections without lectures */
         $srch = new SearchBase(Section::DB_TBL);
         $srch->doNotCalculateRecords();
@@ -682,6 +698,7 @@ class Course extends MyAppModel
         $afile = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
         $criteria['course_preview_video'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
         $criteria['course_is_eligible'] = true;
+
         if (!empty(array_search(0, $criteria))) {
             $criteria['course_is_eligible'] = false;
         }
