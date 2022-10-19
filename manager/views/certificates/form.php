@@ -113,17 +113,17 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                         </div>
                                                         <div class="certificate-content">
                                                             <h1 class="certificate-title contentHeadingJs" contenteditable="true">
-                                                                <?php echo $content['heading'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['heading']) ?>
                                                             </h1>
                                                             <br>
                                                             <div class="certificate-subtitle contentPart1Js" contenteditable="true">
-                                                                <?php echo $content['content_part_1'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['content_part_1']) ?>
                                                             </div>
                                                             <div class="certificate-author contentLearnerJs" contenteditable="true">
-                                                                <?php echo $content['learner'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['learner']) ?>
                                                             </div>
                                                             <div class="certificate-meta contentPart2Js" contenteditable="true">
-                                                                <?php echo $content['content_part_2'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['content_part_2']) ?>
                                                             </div>
 
                                                             <div class="certificate-signs">

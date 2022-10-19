@@ -57,11 +57,13 @@ class Category extends MyAppModel
             return false;
         }
         $status = $data['cate_status'];
-        if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
-            if ($data['cate_type'] == Category::TYPE_QUESTION) {
-                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+        if ($this->mainTableRecordId > 0) {
+            if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
+                if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                    $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+                }
+                return false;
             }
-            return false;
         }
         /* save category data */
         $this->assignValues($data);

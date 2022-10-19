@@ -1,0 +1,63 @@
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="page-body">
+    <div class="container container--narrow">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="box-view box-view--space">
+                    <hgroup class="margin-bottom-4">
+                        <h4 class="margin-bottom-2">
+                            <?php echo CommonHelper::renderHtml($data['quilin_title']); ?>
+                        </h4>
+                    </hgroup>
+                    <div class="check-list margin-bottom-10">
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    </div>
+                    <div class="repeat-items margin-bottom-10">
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_QUIZ_SCORE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php
+                                $label = Label::getLabel('LBL_{score}_OF_{total}');
+                                echo str_replace(['{score}', '{total}'], [$data['quizat_marks'], $data['quilin_marks']], $label);
+                                ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT') ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo MyUtility::formatPercent($data['quizat_scored']); ?>
+                            </div>
+                        </div>
+                        <?php if ($data['quilin_duration'] > 0) { ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_TIME_SPENT'); ?>
+                                </div>
+                                <div class="repeat-element__content">
+                                    <?php
+                                    echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                                    ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_EVALUATION_STATUS'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo QuizAttempt::getEvaluationStatuses($data['quizat_evaluation']) ?>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">
+                        <?php echo Label::getLabel('LBL_REVIEW'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

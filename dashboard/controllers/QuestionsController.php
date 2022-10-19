@@ -217,6 +217,16 @@ class QuestionsController extends DashboardController
         if ($this->siteUserId != $data['ques_user_id']) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
+
+        $srch = new QuizQuestionSearch(0, $this->siteUserId, User::TEACHER);
+        $srch->addCondition('quiz_user_id', '=', $this->siteUserId);
+        $srch->addCondition('quique_ques_id', '=', $id);
+        $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->setPageSize(1);
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_DEACTIVATED'));
+        }
+
         $question->setFldValue('ques_status', $status);
         if (!$question->save()) {
             FatUtility::dieJsonError($question->getError());

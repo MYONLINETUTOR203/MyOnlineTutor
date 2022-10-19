@@ -117,11 +117,11 @@ $btnclear->addFieldTagAttribute('onclick', 'clearSearch();');
             <table class="table table--responsive table--bordered">
                 <thead>
                     <tr class="title-row">
+                        <th></th>
                         <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE') ?></th>
                         <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE') ?></th>
                         <th><?php echo $cateLbl = Label::getLabel('LBL_CATEGORY') ?></th>
                         <th><?php echo $subcateLbl = Label::getLabel('LBL_SUB_CATEGORY') ?></th>
-                        <th><?php echo $actionLbl = Label::getLabel('LBL_ACTION') ?></th>
                     </tr>
                 </thead>
                 <tbody id="listingJs"></tbody>

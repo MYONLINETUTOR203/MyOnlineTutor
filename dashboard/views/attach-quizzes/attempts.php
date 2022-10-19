@@ -36,11 +36,9 @@ $status = QuizAttempt::getStatuses();
                                 $url = MyUtility::makeFullUrl('UserQuiz', 'completed', [$quiz['users']['quizat_id']]);
                             } elseif ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
                                 $url = MyUtility::makeFullUrl('UserQuiz', 'questions', [$quiz['users']['quizat_id']]);
-                            } else {
-                                if ($expired == true) {
-                                    $url = "javascript:void(0);";
-                                    $target = "";
-                                }
+                            } elseif ($quiz['users']['quizat_status'] == QuizAttempt::STATUS_CANCELED || $expired == true) {
+                                $url = "javascript:void(0);";
+                                $target = "";
                             }
                         ?>
                             <tr>

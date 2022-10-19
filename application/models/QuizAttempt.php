@@ -9,6 +9,7 @@ class QuizAttempt extends MyAppModel
     const STATUS_PENDING = 0;
     const STATUS_IN_PROGRESS = 1;
     const STATUS_COMPLETED = 2;
+    const STATUS_CANCELED = 3;
 
     const EVALUATION_PENDING = 0;
     const EVALUATION_PASSED = 1;
@@ -43,7 +44,8 @@ class QuizAttempt extends MyAppModel
         $arr = [
             static::STATUS_PENDING => Label::getLabel('LBL_PENDING'),
             static::STATUS_IN_PROGRESS => Label::getLabel('LBL_IN_PROGRESS'),
-            static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED')
+            static::STATUS_COMPLETED => Label::getLabel('LBL_COMPLETED'),
+            static::STATUS_CANCELED => Label::getLabel('LBL_CANCELED')
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -123,7 +125,7 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_QUESTION_TYPE');
             return false;
         }
-        
+
         $db = FatApp::getDb();
         $db->startTransaction();
 
@@ -165,69 +167,6 @@ class QuizAttempt extends MyAppModel
             }
         }
         $db->commitTransaction();
-        return true;
-    }
-
-    /**
-     * Setup question scores on the basis of correct answers
-     *
-     * @param array $data
-     * @return bool
-     */
-    private function setupQuesScore(array $data)
-    {
-        /* get answers */
-        $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
-        if (!$ques) {
-            $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
-            return false;
-        }
-        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
-        $submittedAnswers = json_decode($data['quatqu_answer'], true);
-        $answers = array_intersect($correctAnswers, $submittedAnswers);
-
-        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
-        $answeredScore = $marksPerAnswer * count($answers);
-
-        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
-        $assignValues = [
-            'quatqu_id' => $data['quatqu_id'],
-            'quatqu_scored' => $answeredScore
-        ];
-        $quesAttempt->assignValues($assignValues);
-        if (!$quesAttempt->addNew([], $assignValues)) {
-            $this->error = $quesAttempt->getError();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Setup quiz progress and scores
-     *
-     * @return bool
-     */
-    private function setupQuizProgress()
-    {
-        $progress = $score = 0;
-        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
-        $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
-        $srch->addFld('SUM(quatqu_scored) as total_score');
-        if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
-            $progress = ($quesCount['attempted_questions'] * 100) / $this->quiz['quilin_questions'];
-            $score = $quesCount['total_score'];
-        }
-
-        $this->assignValues([
-            'quizat_progress' => $progress,
-            'quizat_marks' => $score,
-        ]);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
         return true;
     }
 
@@ -314,36 +253,6 @@ class QuizAttempt extends MyAppModel
         $srch->addFld('IFNULL(COUNT(quizat_id), 0) as attempts');
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         return $data['attempts'];
-    }
-
-    /**
-     * Setup final evaluated results
-     *
-     * @return bool
-     */
-    private function setupEvaluation()
-    {
-        $srch = new SearchBase(QuizAttempt::DB_TBL);
-        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
-        $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
-        $srch->addFld('quizat_marks');
-        $data = FatApp::getDb()->fetch($srch->getResultSet());
-
-        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
-        $evaluation = static::EVALUATION_PASSED;
-        if ($percent < $this->quiz['quilin_passmark']) {
-            $evaluation = static::EVALUATION_FAILED;
-        }
-        $this->assignValues([
-            'quizat_scored' => $percent,
-            'quizat_evaluation' => $evaluation,
-        ]);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -434,6 +343,8 @@ class QuizAttempt extends MyAppModel
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_COMPLETED_QUIZ');
             } elseif ($status == static::STATUS_COMPLETED) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_IN_PROGRESS_OR_PENDING_QUIZ');
+            } elseif ($status == static::STATUS_CANCELED) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS_TO_CANCELED_QUIZ');
             }
             return false;
         }
@@ -518,6 +429,60 @@ class QuizAttempt extends MyAppModel
     }
 
     /**
+     * Cron to cancel incomplete quizzes
+     *
+     * @return bool
+     */
+    public function cancelIncompleteQuizzes()
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin_id = quizat_quilin_id');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
+        $srch->doNotCalculateRecords();
+        $srch->addCondition('quizat_status', '=', QuizAttempt::STATUS_IN_PROGRESS);
+        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $cond1 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $cond2 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
+        $cond3 = 'quilin_duration = 0 AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $srch->addDirectCondition('((' . $cond1 . ') OR (' . $cond2 . ') OR (' . $cond3 . '))');
+
+        $srch->addMultipleFields([
+            'quizat_id',
+            'quizat_user_id',
+            'user_lang_id',
+            'IF(' . $cond2 . ', ' . QuizAttempt::STATUS_COMPLETED . ', ' . QuizAttempt::STATUS_CANCELED . ') as status'
+        ]);
+
+        $srch->addOrder('quizat_id');
+        $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quizat_id');
+        if (!empty($quizzes)) {
+            foreach ($quizzes as $quiz) {
+                if ($quiz['status'] == QuizAttempt::STATUS_COMPLETED) {
+                    $this->userId = $quiz['quizat_user_id'];
+                    $this->userType = User::LEARNER;
+                    $this->langId = $quiz['user_lang_id'];
+                    $this->mainTableRecordId = $quiz['quizat_id'];
+                    if (!$this->markComplete()) {
+                        echo $this->error = $this->getError();
+                        die;
+                        return false;
+                    }
+                } else {
+                    $data = ['quizat_status' => $quiz['status'], 'quizat_updated' => date('Y-m-d H:i:s')];
+                    $where = ['smt' => 'quizat_id = ?', 'vals' => [$quiz['quizat_id']]];
+                    $db = FatApp::getDb();
+                    if (!$db->updateFromArray(QuizAttempt::DB_TBL, $data, $where)) {
+                        $this->error = $db->getError();
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Send quiz completion notification to teacher
      */
     private function sendQuizCompletionNotification()
@@ -548,7 +513,7 @@ class QuizAttempt extends MyAppModel
             '{learner_full_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
             '{teacher_full_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
             '{session_type}' => $sessionType,
-            '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('UserQuiz', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
+            '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('QuizReview', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
             '{progress_percentage}' => MyUtility::formatPercent($data['quizat_progress']),
             '{pass_fail_status}' => static::getEvaluationStatuses($data['quizat_evaluation']),
             '{marks_acheived}' => $data['quizat_marks'],
@@ -560,5 +525,98 @@ class QuizAttempt extends MyAppModel
 
         $notifi = new Notification($teacher['user_id'], Notification::TYPE_QUIZ_COMPLETED);
         $notifi->sendNotification(['{session}' => strtolower($sessionType)]);
+    }
+
+    /**
+     * Setup question scores on the basis of correct answers
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupQuesScore(array $data)
+    {
+        /* get answers */
+        $ques = QuizLinked::getQuestionById($data['quatqu_qulinqu_id']);
+        if (!$ques) {
+            $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
+            return false;
+        }
+        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
+        $submittedAnswers = json_decode($data['quatqu_answer'], true);
+        $answers = array_intersect($correctAnswers, $submittedAnswers);
+
+        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
+        $answeredScore = $marksPerAnswer * count($answers);
+
+        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
+        $assignValues = [
+            'quatqu_id' => $data['quatqu_id'],
+            'quatqu_scored' => $answeredScore
+        ];
+        $quesAttempt->assignValues($assignValues);
+        if (!$quesAttempt->addNew([], $assignValues)) {
+            $this->error = $quesAttempt->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup quiz progress and scores
+     *
+     * @return bool
+     */
+    private function setupQuizProgress()
+    {
+        $progress = $score = 0;
+        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
+        $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
+        $srch->addFld('SUM(quatqu_scored) as total_score');
+        if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $progress = ($quesCount['attempted_questions'] * 100) / $this->quiz['quilin_questions'];
+            $score = $quesCount['total_score'];
+        }
+
+        $this->assignValues([
+            'quizat_progress' => $progress,
+            'quizat_marks' => $score,
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup final evaluated results
+     *
+     * @return bool
+     */
+    private function setupEvaluation()
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('quizat_marks');
+        $data = FatApp::getDb()->fetch($srch->getResultSet());
+
+        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
+        $evaluation = static::EVALUATION_PASSED;
+        if ($percent < $this->quiz['quilin_passmark']) {
+            $evaluation = static::EVALUATION_FAILED;
+        }
+        $this->assignValues([
+            'quizat_scored' => $percent,
+            'quizat_evaluation' => $evaluation,
+        ]);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        return true;
     }
 }

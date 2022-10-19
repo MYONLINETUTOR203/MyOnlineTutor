@@ -372,3 +372,6 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 ('CONF_EVALUATION_CERTIFICATE_DEFAULT_CONTENT', '{"heading": "Certificate Of Evaluation", "learner": "{learner-name}", "trainer": "Tutor:  {teacher-name}", "content_part_1": "This is to certify that", "content_part_2": "has successfully completed \"{quiz-name}\" online quiz on {quiz-completed-date} in {quiz-duration} and has achieved {quiz-score} score.", "certificate_number": "Certificate No.:  {certificate-number}"}', 0);
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.2.0.20221014' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Settle Incomplete Quizzes', 'cancelIncompleteQuizzes', '5', '1') 
+

@@ -18,12 +18,12 @@
             return;
         }
         var data = fcom.frmData(frm);
-        data += "&heading=" + $.trim($('.contentHeadingJs').text());
-        data += "&content_part_1=" + $.trim($('.contentPart1Js').text());
-        data += "&learner=" + $.trim($('.contentLearnerJs').text());
-        data += "&content_part_2=" + $.trim($('.contentPart2Js').text());
-        data += "&trainer=" + $.trim($('.contentTrainerJs').text());
-        data += "&certificate_number=" + $.trim($('.contentCertNoJs').text());
+        data += "&heading=" + encodeURIComponent($.trim($('.contentHeadingJs').text()));
+        data += "&content_part_1=" + encodeURIComponent($.trim($('.contentPart1Js').text()));
+        data += "&learner=" + encodeURIComponent($.trim($('.contentLearnerJs').text()));
+        data += "&content_part_2=" + encodeURIComponent($.trim($('.contentPart2Js').text()));
+        data += "&trainer=" + encodeURIComponent($.trim($('.contentTrainerJs').text()));
+        data += "&certificate_number=" + encodeURIComponent($.trim($('.contentCertNoJs').text()));
         fcom.updateWithAjax(fcom.makeUrl('Certificates', 'setup'), data, function (t) {
             if (preview == 1) {
                 preview = 0;

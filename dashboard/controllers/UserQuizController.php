@@ -36,24 +36,26 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         if ($data['quizat_user_id'] != $this->siteUserId) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
-        }
-
-        if (strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
-            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
-            if ($data['quilin_record_type'] == AppConstant::LESSON) {
-                FatApp::redirectUser(MyUtility::makeUrl('Lessons'));
-            } elseif ($data['quilin_record_type'] == AppConstant::GCLASS) {
-                FatApp::redirectUser(MyUtility::makeUrl('Classes'));
-            } else {
-                FatApp::redirectUser(MyUtility::makeUrl('Learner'));
-            }
+            Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+            $this->redirect($data);
         }
 
         if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'questions', [$id]));
         } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
+        }
+
+        $redirect = false;
+        if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
+            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
+            $redirect = true;
+        } elseif (strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
+            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
+            $redirect = true;
+        }
+        if ($redirect == true) {
+            $this->redirect($data);
         }
 
         $this->set('data', $data);
@@ -91,17 +93,31 @@ class UserQuizController extends DashboardController
         if ($data['quizat_user_id'] != $this->siteUserId) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_status'] != QuizAttempt::STATUS_IN_PROGRESS) {
-            FatUtility::exitWithErrorCode(404);
+
+        if ($data['quizat_status'] == QuizAttempt::STATUS_PENDING) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'index', [$id]));
+        } elseif ($data['quizat_status'] == QuizAttempt::STATUS_COMPLETED) {
+            FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
+        $redirect = false;
         $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
-        if (strtotime(date('Y-m-d H:i:s')) > $endtime) {
+        if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
+            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
+            $redirect = true;
+        } elseif ($data['quilin_duration'] > 0 && strtotime(date('Y-m-d H:i:s')) > $endtime) {
             if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
-                FatUtility::dieJsonError($quiz->getError());
+                Message::addErrorMessage($quiz->getError());
+                $redirect = true;
             }
             Message::addErrorMessage(Label::getLabel('LBL_QUIZ_DURATION_IS_OVER'));
             FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
+        } elseif ($data['quilin_duration'] == 0 && strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
+            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
+            $redirect = true;
+        }
+        if ($redirect == true) {
+            $this->redirect($data);
         }
 
         $this->set('data', $data);
@@ -201,7 +217,7 @@ class UserQuizController extends DashboardController
     }
 
     /**
-     * Save submitted answers
+     * Set question next, previous or by id
      *
      * @return json
      */
@@ -295,14 +311,18 @@ class UserQuizController extends DashboardController
     public function completed(int $id)
     {
         $quiz = new QuizAttempt($id, $this->siteUserId);
+        $redirect = false;
+        $error = '';
         if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
-            FatUtility::exitWithErrorCode(404);
+            Message::addErrorMessage($quiz->getError());
+            $this->redirect();
         }
         $data = $quiz->get();
         if ($data['quizat_active'] == AppConstant::NO) {
-            FatUtility::exitWithErrorCode(404);
+            Message::addErrorMessage($error);
+            $this->redirect();
         }
-        
+
         $this->sets([
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
             'data' => $data,
@@ -389,5 +409,23 @@ class UserQuizController extends DashboardController
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         $frm->addButton('', 'btn_skip', Label::getLabel('LBL_SKIP'));
         return $frm;
+    }
+
+    /**
+     * Redirect user according to the session type
+     *
+     * @param array $data
+     * @return string
+     */
+    private function redirect(array $data = [])
+    {
+        if (!empty($data)) {
+            if ($data['quilin_record_type'] == AppConstant::LESSON) {
+                FatApp::redirectUser(MyUtility::makeUrl('Lessons'));
+            } elseif ($data['quilin_record_type'] == AppConstant::GCLASS) {
+                FatApp::redirectUser(MyUtility::makeUrl('Classes'));
+            }
+        }
+        FatApp::redirectUser(MyUtility::makeUrl('Learner'));
     }
 }

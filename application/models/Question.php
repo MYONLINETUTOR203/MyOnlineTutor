@@ -129,6 +129,17 @@ class Question extends MyAppModel
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
+
+        $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch->addCondition('quique_ques_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->setPageSize(1);
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_DELETED');
+            return false;
+        }
+
         $db = FatApp::getDb();
         $db->startTransaction();
         $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
@@ -161,6 +172,20 @@ class Question extends MyAppModel
             if ($this->userId != $question['ques_user_id']) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
                 return false;
+            }
+            if (
+                ($data['ques_type'] == Question::TYPE_MANUAL && $question['ques_type'] != Question::TYPE_MANUAL) ||
+                ($data['ques_type'] != Question::TYPE_MANUAL && $question['ques_type'] == Question::TYPE_MANUAL)
+            ) {
+                $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+                $srch->addCondition('quiz_user_id', '=', $this->userId);
+                $srch->addCondition('quique_ques_id', '=', $this->mainTableRecordId);
+                $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+                $srch->setPageSize(1);
+                if (FatApp::getDb()->fetch($srch->getResultSet())) {
+                    $this->error = Label::getLabel('LBL_TYPE_FOR_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_UPDATED');
+                    return false;
+                }
             }
             $categories = [$question['ques_cate_id'], $question['ques_subcate_id']];
         }

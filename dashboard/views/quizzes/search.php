@@ -10,6 +10,7 @@ if (count($quizzes) == 0) {
         <tr class="title-row">
             <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE'); ?></th>
             <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE'); ?></th>
+            <th><?php echo $questionsLbl = Label::getLabel('LBL_NO._OF_QUESTIONS'); ?></th>
             <th><?php echo $durationLbl = Label::getLabel('LBL_DURATION'); ?></th>
             <th><?php echo $attemptsLbl = Label::getLabel('LBL_ATTEMPTS'); ?></th>
             <th><?php echo $passLbl = Label::getLabel('LBL_PASS_PERCENT'); ?></th>
@@ -37,6 +38,14 @@ if (count($quizzes) == 0) {
                         <div class="flex-cell__label"><?php echo $typeLbl; ?></div>
                         <div class="flex-cell__content">
                             <?php echo $types[$quiz['quiz_type']]; ?>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex-cell">
+                        <div class="flex-cell__label"><?php echo $questionsLbl; ?></div>
+                        <div class="flex-cell__content">
+                            <?php echo $quiz['quiz_questions']; ?>
                         </div>
                     </div>
                 </td>

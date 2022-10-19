@@ -1,21 +1,5 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
-<?php
-$frm->addFormTagAttribute('class', 'form height-100');
-$btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', 'btn btn--primary');
-$btnSkip = $frm->getField('btn_skip');
-if (count($attemptedQues) == $question['qulinqu_order']) {
-    $frm->addFormTagAttribute('onsubmit', 'save(this); return false;');
-    $btnSubmit->value = Label::getLabel('LBL_SAVE');
-} else {
-    $frm->addFormTagAttribute('onsubmit', 'saveAndNext(this); return false;');
-    $btnSkip->setFieldTagAttribute('onclick', 'skipAndNext(' . $data['quizat_id'] . ');');
-    $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic');
-}
-$fld = $frm->getField('ques_answer');
-?>
 <div class="flex-layout__large">
-    <?php echo $frm->getFormTag(); ?>
     <div class="box-view box-view--space box-flex">
         <div class="box-view__head margin-bottom-8">
             <small class="style-italic"><?php echo Label::getLabel('LBL_MARKS:') . ' ' . $question['qulinqu_marks']; ?></small>
@@ -25,14 +9,24 @@ $fld = $frm->getField('ques_answer');
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
         </div>
         <div class="box-view__body">
-            <div class="option-list">
-                <?php
-                if ($question['qulinqu_type'] != Question::TYPE_MANUAL && count($options) > 0) {
+            <?php if ($question['qulinqu_type'] != Question::TYPE_MANUAL && count($options) > 0) { ?>
+                <div class="option-list">
+                    <?php
                     $type = ($question['qulinqu_type'] == Question::TYPE_SINGLE) ? 'radio' : 'checkbox';
-                    foreach ($options as $option) {
-                ?>
-                        <label class="option">
-                            <input type="<?php echo $type; ?>" name="ques_answer[]" class="option__input" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $fld->value)) ? 'checked="checked"' : ''; ?>>
+                    ?>
+                    <?php foreach ($options as $option) { ?>
+                        <?php
+                        $class = $checked = "";
+                        if (in_array($option['queopt_id'], $answers) && in_array($option['queopt_id'], $quesAnswers)) {
+                            $class = "option-correct";
+                        } elseif (in_array($option['queopt_id'], $answers) && !in_array($option['queopt_id'], $quesAnswers)) {
+                            $class = "option-wrong";
+                        } elseif (!in_array($option['queopt_id'], $answers) && in_array($option['queopt_id'], $quesAnswers)) {
+                            $checked = "checked='checked'";
+                        }
+                        ?>
+                        <label class="option <?php echo $class; ?>">
+                            <input type="<?php echo $type; ?>" name="ques_answer[]" class="option__input" value="<?php echo $option['queopt_id']; ?>" disabled <?php echo $checked; ?>>
                             <span class="option__item">
                                 <span class="option__icon">
                                     <?php if ($question['qulinqu_type'] == Question::TYPE_MULTIPLE) { ?>
@@ -55,10 +49,17 @@ $fld = $frm->getField('ques_answer');
                             </span>
                         </label>
                     <?php } ?>
-                <?php } else { ?>
-                    <?php echo $fld->getHtml(); ?>
-                <?php } ?>
-            </div>
+                </div>
+            <?php } else { ?>
+                <div class="option-manual margin-top-5 margin-bottom-5">
+                    <div class="answer-view margin-bottom-10">
+                        <p>
+                            <strong><?php echo Label::getLabel('LBL_ANSWER:') ?></strong>
+                            <?php echo $answers ?>
+                        </p>
+                    </div>
+                </div>
+            <?php } ?>
             <?php if (!empty($question['qulinqu_hint'])) { ?>
                 <div class="option-hint">
                     <span class="d-inline-flex align-items-center">
@@ -91,27 +92,17 @@ $fld = $frm->getField('ques_answer');
             <div class="box-actions form">
                 <?php if ($question['qulinqu_order'] > 1) { ?>
                     <div class="box-actions__cell box-actions__cell-left">
-                        <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
                     </div>
                 <?php } ?>
-                <div class="box-actions__cell box-actions__cell-right">
-                    <?php
-                    if ($question['qulinqu_order'] < count($attemptedQues)) {
-                        echo $btnSkip->getHtml();
-                    }
-
-                    echo $frm->getFieldHtml('ques_type');
-                    echo $frm->getFieldHtml('ques_id');
-                    echo $frm->getFieldHtml('ques_attempt_id');
-                    echo $frm->getFieldHtml('quatqu_id');
-                    echo $btnSubmit->getHtml();
-                    ?>
-                </div>
+                <?php if (count($attemptedQues) != $question['qulinqu_order']) { ?>
+                    <div class="box-actions__cell box-actions__cell-right">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary">
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
-    </form>
-    <?php echo $frm->getExternalJs(); ?>
 </div>
 <div class="flex-layout__small">
     <div class="box-view box-view--space box-flex">
@@ -121,16 +112,21 @@ $fld = $frm->getField('ques_answer');
         <div class="box-view__body">
             <nav class="attempt-list">
                 <ul>
-                    <?php foreach ($attemptedQues as $quest) {
-                        $class = "";
+                    <?php foreach ($attemptedQues as $quest) { ?>
+                        <?php
+                        $class = "is-skip";
                         $action = "onclick=\"getByQuesId('" . $data['quizat_id'] . "', '" . $quest['qulinqu_id'] . "')\";";
                         if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
                             $class = "is-current";
                             $action = "";
                         } elseif (!empty($quest['quatqu_id'])) {
-                            $class = "is-visited";
+                            if ($quest['is_correct'] == AppConstant::YES) {
+                                $class = "is-correct";
+                            } else {
+                                $class = "is-wrong";
+                            }
                         }
-                    ?>
+                        ?>
                         <li class="<?php echo $class; ?>">
                             <a href="javascript:void(0);" class="attempt-action" <?php echo $action; ?>>
                                 <?php echo $quest['qulinqu_order'] ?>
@@ -145,20 +141,23 @@ $fld = $frm->getField('ques_answer');
                 <h6><?php echo Label::getLabel('LBL_LEGEND'); ?></h6>
                 <div class="legend-list">
                     <ul>
-                        <li class="is-current"><span class="legend-list__item">
-                                <?php echo Label::getLabel('LBL_CURRENT_ACTIVE'); ?>
-                            </span></li>
-                        <li class="is-answered"><span class="legend-list__item">
-                                <?php echo Label::getLabel('LBL_ANSWERED'); ?>
-                            </span></li>
-                        <li class="is-skip"><span class="legend-list__item">
-                                <?php echo Label::getLabel('LBL_NOT_ANSWERED'); ?>
-                            </span></li>
+                        <li class="is-correct">
+                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_CORRECT') ?></span>
+                        </li>
+                        <li class="is-wrong">
+                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_WRONG') ?></span>
+                        </li>
+                        <li class="is-current">
+                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_NOT_ANSWERED') ?></span>
+                        </li>
                     </ul>
                 </div>
             </div>
             <div class="box-actions form">
-                <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="saveAndFinish();">
+                <?php
+                $controller = ($data['quilin_record_type'] == AppConstant::GCLASS) ? 'Classes' : 'Lessons';
+                ?>
+                <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
             </div>
         </div>
     </div>

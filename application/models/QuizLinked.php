@@ -214,7 +214,6 @@ class QuizLinked extends MyAppModel
         if (empty($attachedQuizzes)) {
             return [];
         }
-        
         $quizLinkedIds = array_column($attachedQuizzes, 'quilin_id');
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
@@ -277,14 +276,15 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        /* delet user quiz */
+        $this->sendQuizRemovedNotification($data);
+
+        /* delete user quiz */
         if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
             $db->rollbackTransaction();
             $this->error = $db->getError();
             return false;
         }
 
-        $this->sendQuizRemovedNotification($data);
         $db->commitTransaction();
         return true;
     }
@@ -362,6 +362,38 @@ class QuizLinked extends MyAppModel
         return true;
     }
 
+    public function getQuesWithAttemptedAnswers($attemptId, $quizLinkedId)
+    {
+        $srch = new SearchBase(QuizLinked::DB_TBL_QUIZ_LINKED_QUESTIONS);
+        $srch->joinTable(
+            QuizAttempt::DB_TBL_QUESTIONS,
+            'LEFT JOIN',
+            'quatqu_qulinqu_id = qulinqu_id AND quatqu_quizat_id = ' . $attemptId
+        );
+        $srch->addCondition('qulinqu_quilin_id', '=', $quizLinkedId);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields(['quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order', 'qulinqu_answer']);
+        $srch->addOrder('qulinqu_order', 'ASC');
+        $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
+        if (empty($attemptedQues)) {
+            return [];
+        }
+        foreach ($attemptedQues as $key => $question) {
+            $question['quatqu_answer'] = json_decode($question['quatqu_answer'], true);
+            $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
+
+            $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
+            if (count($question['qulinqu_answer']) == count($answered)) {
+                $question['is_correct'] = AppConstant::YES;
+            } else {
+                $question['is_correct'] = AppConstant::NO;
+            }
+
+            $attemptedQues[$key] = $question;
+        }
+        return $attemptedQues;
+    }
+
     /**
      * Send quiz removal notification
      *
@@ -372,7 +404,8 @@ class QuizLinked extends MyAppModel
         $sessionTypes = AppConstant::getSessionTypes();
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_quilin_id', '=', $data['quilin_id']);
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quizat_user_id', 'teacher');
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin.quilin_id = quizat_quilin_id', 'quilin');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quilin_user_id', 'teacher');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = quizat_user_id', 'learner');
         $srch->addMultipleFields([
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
@@ -381,7 +414,6 @@ class QuizLinked extends MyAppModel
         ]);
         $srch->addGroupBy('learner.user_id');
         $users = FatApp::getDb()->fetchAll($srch->getResultSet());
-
         foreach ($users as $user) {
             $mail = new FatMailer($user['user_lang_id'], 'quiz_removed_email');
             $vars = [
@@ -411,40 +443,59 @@ class QuizLinked extends MyAppModel
         $linkedIds = array_column($data, 'quilin_id');
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_quilin_id', 'IN', $linkedIds);
-        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quizat_user_id', 'teacher');
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin.quilin_id = quizat_quilin_id', 'quilin');
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'teacher.user_id = quilin_user_id', 'teacher');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'learner.user_id = quizat_user_id', 'learner');
         $srch->addMultipleFields([
             'learner.user_first_name AS learner_first_name', 'learner.user_last_name AS learner_last_name',
-            'learner.user_lang_id', 'learner.user_email', 'learner.user_id',
-            'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name'
+            'learner.user_lang_id', 'learner.user_email', 'learner.user_id', 'learner.user_timezone',
+            'teacher.user_first_name as teacher_first_name', 'teacher.user_last_name as teacher_last_name',
+            'GROUP_CONCAT(CONCAT(quizat_quilin_id, "_", quizat_id) SEPARATOR ",") AS link_id'
         ]);
         $srch->addGroupBy('learner.user_id');
         $users = FatApp::getDb()->fetchAll($srch->getResultSet());
 
         $quiztypes = Quiz::getTypes();
         $html = '<table style="border:1px solid #ddd; border-collapse:collapse; width:100%" cellspacing="0" cellpadding="0" border="0"><thead><tr><td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333; font-weight:bold;">{title}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{type}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{validity}</td><td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd; font-weight:bold;">{action}</td></tr></thead><tbody>';
+        $dates = [];
+        $i = 1;
         foreach ($data as $quiz) {
             $html .= '<tr>' .
             '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
             '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . MyDate::formatDate($quiz['quilin_validity']) . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="' . MyUtility::makeFullUrl('UserQuiz', 'index', [$quiz['quilin_id']], CONF_WEBROOT_DASHBOARD) . '">{view}</a></td>' .
+            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">{date_' . $i . '}</td>' .
+            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link_' . $quiz['quilin_id'] . '}">{view}</a></td>' .
             '</tr>';
+            $dates['{date_' . $i . '}'] = $quiz['quilin_validity'];
+            $i++;
         }
         $html .= '</tbody></table>';
-
+        
         foreach ($users as $user) {
-            $list = str_replace(
-                ['{title}', '{type}', '{validity}', '{action}', '{view}'],
-                [
-                    Label::getLabel('LBL_TITLE', $user['user_lang_id']),
-                    Label::getLabel('LBL_TYPE', $user['user_lang_id']),
-                    Label::getLabel('LBL_VALIDITY', $user['user_lang_id']),
-                    Label::getLabel('LBL_ACTION', $user['user_lang_id']),
-                    Label::getLabel('LBL_VIEW', $user['user_lang_id']),
-                ],
-                $html
-            );
+            $list = $html;
+            $timezone = $user['user_timezone'];
+            $userDates = [];
+            foreach ($dates as $key => $date) {
+                $userDates[$key] = MyDate::formatDate($date, 'Y-m-d H:i:s', $timezone);
+            }
+            $links = explode(',', $user['link_id']);
+            foreach ($links as $ids) {
+                $id = explode("_", $ids);
+                $url = MyUtility::makeFullUrl('UserQuiz', 'index', [$id[1]], CONF_WEBROOT_DASHBOARD);
+                $list = str_replace('{link_' . $id[0] . '}', $url, $list);
+            }
+
+            $find = array_merge(['{title}', '{type}', '{validity}', '{action}', '{view}', '{link}'], array_keys($userDates));
+            $replacers = array_merge([
+                Label::getLabel('LBL_TITLE', $user['user_lang_id']),
+                Label::getLabel('LBL_TYPE', $user['user_lang_id']),
+                Label::getLabel('LBL_VALIDITY', $user['user_lang_id']),
+                Label::getLabel('LBL_ACTION', $user['user_lang_id']),
+                Label::getLabel('LBL_VIEW', $user['user_lang_id']),
+                $url
+            ], array_values($userDates));
+            $list = str_replace($find, $replacers, $list);
+
             $mail = new FatMailer($user['user_lang_id'], 'quiz_attached_email');
             $vars = [
                 '{learner_full_name}' => ucwords($user['learner_first_name'] . ' ' . $user['learner_last_name']),
@@ -491,7 +542,7 @@ class QuizLinked extends MyAppModel
         } elseif ($recordType == AppConstant::COURSE) {
             $users = [];
         }
-
+        
         foreach ($users as $user) {
             foreach ($data as $id) {
                 $attempt = new QuizAttempt(0, $user['user_id']);
@@ -501,6 +552,7 @@ class QuizLinked extends MyAppModel
                 }
             }
         }
+        
         return true;
     }
 
@@ -516,6 +568,7 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quique_quiz_id', 'IN', array_keys($data));
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
+        $srch->addOrder('quique_quiz_id', 'ASC');
         $srch->setOrder();
         $srch->joinCategory();
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
@@ -538,8 +591,11 @@ class QuizLinked extends MyAppModel
             }
         }
 
-        $i = 1;
+        $displayOrder = $quizId = 0;
         foreach ($questions as $question) {
+            if ($question['quique_quiz_id'] != $quizId) {
+                $displayOrder = 1;
+            }
             $opts = $quesOptions[$question['ques_id']] ?? [];
             if ($question['ques_type'] != Question::TYPE_MANUAL && count($opts) < 1) {
                 $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
@@ -557,13 +613,14 @@ class QuizLinked extends MyAppModel
                 'qulinqu_marks' => $question['ques_marks'],
                 'qulinqu_answer' => $question['ques_answer'],
                 'qulinqu_options' => json_encode($opts),
-                'qulinqu_order' => $i
+                'qulinqu_order' => $displayOrder
             ]);
             if (!$linkQues->addNew()) {
                 $this->error = $linkQues->getError();
                 return false;
             }
-            $i++;
+            $quizId = $question['quique_quiz_id'];
+            $displayOrder++;
         }
         
         return true;

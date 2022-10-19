@@ -65,7 +65,7 @@ class MyAppController extends FatController
             $viewType = 'frontend';
             if (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') {
                 $viewType = 'dashboard';
-                if (strtolower($controllerName) == 'userquiz') {
+                if (strtolower($controllerName) == 'userquiz' || strtolower($controllerName) == 'quizreview') {
                     $viewType = 'quiz';
                 }
             }

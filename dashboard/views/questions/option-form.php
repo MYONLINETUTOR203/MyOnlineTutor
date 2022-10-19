@@ -42,25 +42,31 @@ if ($type == Question::TYPE_SINGLE) {
                     </a>
                 </div>
                 <div class="col-sm-9 padding-right-0">
-                   
-                        <div class="field-wraper">
-                            <div class="field_cover">
-                                <input data-field-caption="<?php echo $titleFld->getCaption(); ?>" placeholder="<?php echo $titleFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:true}" type="text" name="queopt_title[<?php echo $option['queopt_id']; ?>]" value="<?php echo $option['queopt_title']; ?>">
-                            </div>
+                   <?php
+                    $requirements = [];
+                    if ($titleFld->requirements()->isRequired()) {
+                        $requirements["required"] = true;
+                    }
+                    $length = $titleFld->requirements()->getLength();
+                    if (!empty($length)) {
+                        $requirements["lengthrange"] = $length;
+                    }
+                   ?>
+                    <div class="field-wraper">
+                        <div class="field_cover">
+                            <input data-field-caption="<?php echo $titleFld->getCaption(); ?>" placeholder="<?php echo $titleFld->getCaption(); ?>" data-fatreq='<?php echo json_encode($requirements); ?>' type="text" name="queopt_title[<?php echo $option['queopt_id']; ?>]" value="<?php echo $option['queopt_title']; ?>">
                         </div>
-                   
+                    </div>
                 </div>
                 <div class="col-auto">
-                    
-                        <div class="field-wraper">
-                            <label class="switch-group d-flex align-items-center justify-content-between">
-                                <input class="margin-right-2" data-field-caption="<?php echo $answerFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:false}" type="<?php echo $quesType; ?>" name="ques_answer[]" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $answers)) ? 'checked="checked"' : ''; ?>>
-                                <span class="switch-group__label">
-                                    <?php echo $answerFld->getCaption(); ?>
-                                </span>
-                            </label>
-                        </div>
-                   
+                    <div class="field-wraper">
+                        <label class="switch-group d-flex align-items-center justify-content-between">
+                            <input class="margin-right-2" data-field-caption="<?php echo $answerFld->getCaption(); ?>" data-fatreq="{&quot;required&quot;:false}" type="<?php echo $quesType; ?>" name="ques_answer[]" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $answers)) ? 'checked="checked"' : ''; ?>>
+                            <span class="switch-group__label">
+                                <?php echo $answerFld->getCaption(); ?>
+                            </span>
+                        </label>
+                    </div>
                 </div>
             </div>
         <?php } ?>
