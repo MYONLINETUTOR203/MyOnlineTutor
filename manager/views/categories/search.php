@@ -54,9 +54,9 @@ foreach ($arrListing as $sn => $row) {
                 if ($row['cate_records'] > 0) {
                     if ($row['cate_type'] == Category::TYPE_COURSE) {
                         if ($canViewCourses) {
-                            $qryString = '?ques_cate_id=' . $row['cate_id'];
+                            $qryString = '?course_cateid=' . $row['cate_id'];
                             if ($postedData['parent_id'] > 0) {
-                                $qryString = '?ques_cate_id=' . $postedData['parent_id'] . '&ques_subcate_id=' . $row['cate_id'];
+                                $qryString = '?course_cateid=' . $postedData['parent_id'] . '&course_subcateid=' . $row['cate_id'];
                             }
                             $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $row['cate_records'], true);
                         } else {
