@@ -190,7 +190,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                     <?php foreach ($price->options as $id => $name) { ?>
                                                         <li>
                                                             <label class="select-option">
-                                                                <input class="select-option__input price-filter-js" type="checkbox" name="price[]" value="<?php echo $id; ?>" <?php echo ($id == $price->value) ? 'checked' : ''; ?> />
+                                                                <input class="select-option__input price-filter-js" type="checkbox" name="price[]" value="<?php echo $id; ?>" <?php echo in_array($id, $price->value) ? 'checked' : ''; ?> />
                                                                 <span class="select-option__item"><?php echo $name; ?></span>
                                                             </label>
                                                         </li>
@@ -250,7 +250,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                         foreach ($options as $id => $option) { ?>
                                                             <li>
                                                                 <label class="select-option">
-                                                                    <input class="select-option__input" type="radio" name="course_ratings" value="<?php echo $id; ?>">
+                                                                    <input class="select-option__input" type="radio" name="course_ratings" value="<?php echo $id; ?>"  <?php echo $id == $ratings->value ? 'checked' : ''; ?>>
                                                                     <span class="select-option__item SelectOptJs">
                                                                         <span class="d-flex align-items-center">
                                                                             <svg class="rating__media">
@@ -344,7 +344,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                             foreach ($options as $id => $option) { ?>
                                                                                 <li>
                                                                                     <label class="select-option">
-                                                                                        <input class="select-option__input SelectOptJs" type="checkbox" name="course_level[]" value="<?php echo $id; ?>">
+                                                                                        <input class="select-option__input SelectOptJs" type="checkbox" name="course_level[]" value="<?php echo $id; ?>"  <?php echo in_array($id, $level->value) ? 'checked' : ''; ?>>
                                                                                         <span class="select-option__item levelSelectOptJs">
                                                                                             <?php echo strtolower($option) ?>
                                                                                         </span>
@@ -406,7 +406,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                             foreach ($options as $id => $option) { ?>
                                                                                 <li>
                                                                                     <label class="select-option">
-                                                                                        <input class="select-option__input" type="checkbox" name="course_clang_id[]" value="<?php echo $id; ?>">
+                                                                                        <input class="select-option__input" type="checkbox" name="course_clang_id[]" value="<?php echo $id; ?>"  <?php echo in_array($id, $language->value) ? 'checked' : ''; ?>>
                                                                                         <span class="select-option__item langSelectOptJs">
                                                                                             <?php echo strtolower($option) ?>
                                                                                         </span>
@@ -454,6 +454,8 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
             <input type="hidden" name="price_sorting" value="<?php echo $priceSorting->value; ?>" />
             <?php echo $srchFrm->getFieldHtml('record_id'); ?>
             <?php echo $srchFrm->getFieldHtml('type'); ?>
+            <?php echo $srchFrm->getFieldHtml('search_keyword'); ?>
+            <?php echo $srchFrm->getFieldHtml('pageno'); ?>
             </form>
         </div>
     </div>
