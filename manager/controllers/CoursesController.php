@@ -139,6 +139,8 @@ class CoursesController extends AdminBaseController
             $cond = $srch->addCondition('clanglang.clang_name', 'LIKE', '%' . $keyword . '%');
             $cond->attachCondition('clang.clang_identifier', 'LIKE', '%' . $keyword . '%', 'OR');
         }
+        $srch->addCondition('clang.clang_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('clang.clang_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addOrder('clang_name', 'ASC');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(20);
