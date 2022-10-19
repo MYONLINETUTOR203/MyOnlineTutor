@@ -53,38 +53,22 @@ $(document).ready(function () {
         prevArrow: '<button class="slick-prev cursor-hide" aria-label="Previous" type="button">Previous</button>',
         nextArrow: '<button class="slick-next cursor-hide" aria-label="Next" type="button">Next</button>',
         responsive: [{
-            breakpoint: 1199,
-            settings: {
-                slidesToShow: 3,
-                dots: true,
-                arrows: false,
-            }
-        },
-        {
-            breakpoint: 1023,
-            settings: {
-                slidesToShow: 2,
-                dots: true,
-                arrows: false,
-            }
-        },
-        {
-            breakpoint: 767,
-            settings: {
-                slidesToShow: 2,
-                dots: true,
-                arrows: false,
-            }
-        },
+                breakpoint: 1199,
+                settings: {slidesToShow: 3, dots: true, arrows: false, }
+            },
+            {
+                breakpoint: 1023,
+                settings: {slidesToShow: 2, dots: true, arrows: false, }
+            },
+            {
+                breakpoint: 767,
+                settings: {slidesToShow: 2, dots: true, arrows: false, }
+            },
 
-        {
-            breakpoint: 576,
-            settings: {
-                slidesToShow: 1,
-                dots: true,
-                arrows: false,
+            {
+                breakpoint: 576,
+                settings: {slidesToShow: 1, dots: true, arrows: false, }
             }
-        }
 
         ]
     });
@@ -126,6 +110,7 @@ $(document).ready(function () {
             $('.lecturesListJs' + id).slideDown();
         }
     };
+    resetEditorHeight();
 });
 
 function checkActiveSection() {
