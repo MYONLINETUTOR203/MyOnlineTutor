@@ -62,7 +62,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                             }
                         }
                         if ($count > 0) {
-                            ?>
+                        ?>
                             <span class="filters-count"><?php echo $count; ?></span>
                         <?php } ?>
                     </div>
@@ -122,11 +122,12 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                                 <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating'; ?>"></use>
                                             </svg>
                                             <span class="value"><?php echo FatUtility::convertToType($teacher['testat_ratings'], FatUtility::VAR_FLOAT); ?></span>
-                                            <span class="count">(<?php echo$teacher['testat_reviewes']; ?>)</span>
+                                            <span class="count">(<?php echo $teacher['testat_reviewes']; ?>)</span>
                                         </div>
                                         <div class="info-tag list-count">
                                             <div class="total-count"><span class="value"><?php echo $teacher['testat_students']; ?></span><?php echo Label::getLabel('LBL_Students'); ?></div> -
-                                            <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_Sessions'); ?></div>
+                                            <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_Sessions'); ?></div> -
+                                            <div class="total-count"><span class="value"><?php echo $teacher['courses']; ?></span><?php echo Label::getLabel('LBL_COURSES'); ?></div>
                                         </div>
                                     </div>
                                     <div class="tutor-info">
@@ -211,7 +212,7 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                                         </td>
                                                         <?php
                                                         foreach ($timeslots as $day => $hours) {
-                                                            ?>
+                                                        ?>
                                                             <?php
                                                             if (!empty($hours[$index])) {
                                                                 $hourString = MyDate::getHoursMinutes($hours[$index]);

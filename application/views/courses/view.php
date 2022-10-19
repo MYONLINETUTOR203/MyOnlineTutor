@@ -556,6 +556,19 @@ $levels = Course::getCourseLevels();
                                                     </div>
                                                     <div class="course-counts margin-top-3">
                                                         <div class="course-counts__item">
+                                                            <div class="course-info">
+                                                                <div class="course-info__media">
+                                                                    <svg class="icon icon--level">
+                                                                        <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND ?>images/sprite.svg#icon-lecture">
+                                                                        </use>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="course-info__title">
+                                                                    <?php echo Label::getLabel('LBL_COURSES'); ?>
+                                                                    <strong><?php echo $course['teacher_courses'] ?></strong> </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="course-counts__item">
                                                             <a href="<?php echo MyUtility::makeUrl('teachers', 'view', [$course['teacher_username']]) ?>" class="underline color-primary padding-bottom-5">
                                                                 <?php echo Label::getLabel('LBL_VIEW_PROFILE'); ?>
                                                             </a>

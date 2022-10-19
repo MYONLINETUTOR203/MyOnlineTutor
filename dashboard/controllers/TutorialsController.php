@@ -245,6 +245,8 @@ class TutorialsController extends DashboardController
         $teacher['user_biography'] = $langData[$teacherId] ?? '';
         $teachLangs = TeacherSearch::getTeachLangs($this->siteLangId, [$teacherId]);
         $teacher['teacherTeachLanguageName'] = $teachLangs[$teacherId] ?? '';
+        $teacherCourses = TeacherSearch::getCourses([$teacherId]);
+        $teacher['courses'] = $teacherCourses[$teacherId] ?? 0;
         $this->set('teacher', $teacher);
         $this->_template->render(false, false);
     }
