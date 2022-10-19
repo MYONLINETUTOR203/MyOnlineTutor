@@ -139,7 +139,7 @@
     </p>
     <?php
     $disableClass = '';
-    $event = 'notesForm(0);';
+    $event = 'notesForm(0, ' . $ordcrsId . ');';
     if ($isPreview == 1) {
         $disableClass = 'btn--disabled';
         $event = '';
