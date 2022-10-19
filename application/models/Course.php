@@ -646,7 +646,7 @@ class Course extends MyAppModel
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_currency_id > 0, 1, 0) as course_currency_id',
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
             'IF(cate.cate_deleted IS NULL AND cate.cate_status = ' . AppConstant::ACTIVE . ', 1, 0) course_cate',
-            'IF(subcate.cate_deleted IS NULL AND subcate.cate_status = ' . AppConstant::ACTIVE . ', 1, 0) course_subcate',
+            'IF(course.course_subcate_id > 0 AND (subcate.cate_deleted IS NOT NULL OR subcate.cate_status = ' . AppConstant::INACTIVE . '), 0, 1) course_subcate',
             'IF(clang.clang_deleted IS NULL AND clang.clang_active = ' . AppConstant::ACTIVE . ', 1, 0) course_clang'
         ]);
         $srch->addCondition('course.course_id', '=', $courseId);
