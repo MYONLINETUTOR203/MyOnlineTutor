@@ -182,8 +182,10 @@ class QuestionsController extends DashboardController
             if ($this->siteUserId != $data['ques_user_id']) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             }
-            $options = $question->getQuesOptions();
-            $answers = json_decode($data['ques_answer'], true);
+            if ($count == $data['ques_options_count']) {
+                $options = $question->getQuesOptions();
+                $answers = json_decode($data['ques_answer'], true);
+            }
         }
         $this->sets([
             'frm' => $this->getOptionsForm($type),
@@ -215,6 +217,16 @@ class QuestionsController extends DashboardController
         if ($this->siteUserId != $data['ques_user_id']) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
+
+        $srch = new QuizQuestionSearch(0, $this->siteUserId, User::TEACHER);
+        $srch->addCondition('quiz_user_id', '=', $this->siteUserId);
+        $srch->addCondition('quique_ques_id', '=', $id);
+        $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->setPageSize(1);
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_DEACTIVATED'));
+        }
+
         $question->setFldValue('ques_status', $status);
         if (!$question->save()) {
             FatUtility::dieJsonError($question->getError());
@@ -244,6 +256,7 @@ class QuestionsController extends DashboardController
         $fld->requirements()->setRequired();
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_HINT'), 'ques_hint');
+        $fld->requirements()->setLength(10, 255);
 
         $countFld = $frm->addIntegerField(Label::getLabel('LBL_OPTION_COUNT'), 'ques_options_count');
         $countFld->requirements()->setRequired();
@@ -280,7 +293,10 @@ class QuestionsController extends DashboardController
     private function getOptionsForm(int $type = 0)
     {
         $frm = new Form('frmOptions');
-        $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]')->requirements()->setRequired();
+        $fld = $frm->addTextBox(Label::getLabel('LBL_OPTION_TITLE'), 'queopt_title[]');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setLength(1, 255);
+
         if ($type == Question::TYPE_SINGLE) {
             $options = [1 => Label::getLabel('LBL_IS_CORRECT?')];
             $fld = $frm->addRadioButtons(Label::getLabel('LBL_IS_CORRECT?'), 'ques_answer[]', $options);

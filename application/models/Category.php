@@ -57,11 +57,13 @@ class Category extends MyAppModel
             return false;
         }
         $status = $data['cate_status'];
-        if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
-            if ($data['cate_type'] == Category::TYPE_QUESTION) {
-                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+        if ($this->mainTableRecordId > 0) {
+            if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
+                if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                    $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+                }
+                return false;
             }
-            return false;
         }
         /* save category data */
         $this->assignValues($data);
@@ -119,14 +121,6 @@ class Category extends MyAppModel
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
-        }
-        if ($status == AppConstant::INACTIVE) {
-            $db = FatApp::getDb();
-            $smt = ['smt' => 'cate_parent = ?', 'vals' => [$this->getMainTableRecordId()]];
-            if (!$db->updateFromArray(Category::DB_TBL, ['cate_status' => $status], $smt)) {
-                $this->error = $db->getError();
-                return false;
-            }
         }
         return true;
     }

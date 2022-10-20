@@ -96,7 +96,7 @@ class Question extends MyAppModel
             $srch->addCondition('queopt_id', 'IN', $optionsIds);
         }
         $srch->addOrder('queopt_order', 'ASC');
-        return FatApp::getDb()->fetchAll($srch->getResultSet());
+        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'queopt_id');
     }
 
     /**
@@ -114,7 +114,6 @@ class Question extends MyAppModel
         return FatApp::getDb()->fetchAll($srch->getResultSet());
     }
 
-
     /**
      * Delete
      *
@@ -130,6 +129,17 @@ class Question extends MyAppModel
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
+
+        $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+        $srch->addCondition('quiz_user_id', '=', $this->userId);
+        $srch->addCondition('quique_ques_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->setPageSize(1);
+        if (FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_DELETED');
+            return false;
+        }
+
         $db = FatApp::getDb();
         $db->startTransaction();
         $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
@@ -163,6 +173,20 @@ class Question extends MyAppModel
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
                 return false;
             }
+            if (
+                ($data['ques_type'] == Question::TYPE_MANUAL && $question['ques_type'] != Question::TYPE_MANUAL) ||
+                ($data['ques_type'] != Question::TYPE_MANUAL && $question['ques_type'] == Question::TYPE_MANUAL)
+            ) {
+                $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
+                $srch->addCondition('quiz_user_id', '=', $this->userId);
+                $srch->addCondition('quique_ques_id', '=', $this->mainTableRecordId);
+                $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+                $srch->setPageSize(1);
+                if (FatApp::getDb()->fetch($srch->getResultSet())) {
+                    $this->error = Label::getLabel('LBL_TYPE_FOR_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_UPDATED');
+                    return false;
+                }
+            }
             $categories = [$question['ques_cate_id'], $question['ques_subcate_id']];
         }
         if (!$this->validate($data)) {
@@ -170,9 +194,17 @@ class Question extends MyAppModel
         }
         $db = FatApp::getDb();
         $db->startTransaction();
-        $this->assignValues($data);
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
+        if ($data['ques_type'] == Question::TYPE_MANUAL) {
+            $data['ques_options_count'] = 0;
+        } else {
+            if ($data['ques_options_count'] != count($data['queopt_title'])) {
+                $this->error = Label::getLabel('LBL_OPTION_COUNT_&_N0._OF_OPTIONS_SUBMITTED_DOES_NOT_MATCH');
+                return false;
+            }
+        }
+        $this->assignValues($data);
         if ($this->mainTableRecordId < 1) {
             $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
         }
@@ -262,27 +294,28 @@ class Question extends MyAppModel
             !$db->query(
                 "UPDATE " . Category::DB_TBL . "
                 LEFT JOIN(
-                    SELECT cat.ques_cate_id AS catId,
+                    SELECT ques.ques_cate_id AS catId,
                         COUNT(*) AS totalRecord
                     FROM
-                        " . self::DB_TBL . " AS cat
+                        " . self::DB_TBL . " AS ques
                     WHERE 
-                        cat.ques_cate_id IN (" . implode(',', $cateIds) . ")
+                        ques.ques_cate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques.ques_deleted IS NULL
                     GROUP BY
-                        cat.ques_cate_id 
+                        ques.ques_cate_id 
                 ) mainCat
                 ON
                     mainCat.catId = " . Category::DB_TBL . ".cate_id
                 LEFT JOIN(
                     SELECT
-                        subCat.ques_subcate_id AS catId,
+                        ques1.ques_subcate_id AS catId,
                         COUNT(*) AS totalRecord
                     FROM
-                        " . self::DB_TBL . " AS subCat
-                    WHERE 
-                        subCat.ques_subcate_id IN (" . implode(',', $cateIds) . ")
+                        " . self::DB_TBL . " AS ques1
+                    WHERE ques1.ques_subcate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques1.ques_deleted IS NULL
                     GROUP BY
-                        subCat.ques_subcate_id
+                        ques1.ques_subcate_id
                 ) catChild
                 ON
                     catChild.catId = cate_id
@@ -307,7 +340,7 @@ class Question extends MyAppModel
         $categories = [$data['ques_cate_id'], $data['ques_subcate_id']];
         $srch = Category::getSearchObject();
         $srch->doNotCalculateRecords();
-        $srch->addFld('cate_id');
+        $srch->addMultipleFields(['cate_id', 'cate_parent']);
         $srch->addCondition('cate_id', 'IN', $categories);
         $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -316,9 +349,15 @@ class Question extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_AVAILABLE');
             return false;
         }
-        if ($data['ques_subcate_id'] > 0 && !array_key_exists($data['ques_subcate_id'], $categories)) {
-            $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
-            return false;
+        if ($data['ques_subcate_id'] > 0) {
+            if (!array_key_exists($data['ques_subcate_id'], $categories)) {
+                $this->error = Label::getLabel('LBL_SUBCATEGORY_NOT_AVAILABLE');
+                return false;
+            }
+            if ($categories[$data['ques_subcate_id']]['cate_parent'] != $data['ques_cate_id']) {
+                $this->error = Label::getLabel('LBL_INVALID_SUBCATEGORY');
+                return false;
+            }
         }
         return true;
     }

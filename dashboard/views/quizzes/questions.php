@@ -10,7 +10,7 @@ $count = count($questions);
     </div>
     <div class="page-layout__large">
         <div class="box-panel">
-            <div class="box-panel__head">
+            <div class="box-panel__head border-bottom">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <h4><?php echo Label::getLabel('LBL_ADD_QUIZ'); ?></h4>
@@ -20,23 +20,25 @@ $count = count($questions);
             <div class="box-panel__body">
                 <div class="box-panel__container">
                     <div class="page">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <b><?php echo ($count > 0) ? Label::getLabel('LBL_TOTAL_QUESTIONS:') . ' ' . $count : ''; ?></b>
-                            </div>
-                            <div>
-                                <a href="javascript:void(0);" onclick="addQuestions('<?php echo $quizId ?>')" class="btn color-secondary btn--bordered">
+                        <div class="page__head padding-top-0">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <b><?php echo ($count > 0) ? Label::getLabel('LBL_TOTAL_QUESTIONS:') . ' ' . $count : ''; ?></b>
+                                </div>
+                                <div>
+                                    <a href="javascript:void(0);" onclick="addQuestions('<?php echo $quizId ?>')" class="btn color-secondary btn--bordered">
 
-                                    <svg class="icon icon--uploader icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                        <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm2-1.645V14h-2v-1.5a1 1 0 0 1 1-1 1.5 1.5 0 1 0-1.471-1.794l-1.962-.393A3.501 3.501 0 1 1 13 13.355z" />
-                                    </svg>
-                                    <?php echo Label::getLabel('LBL_ADD_QUESTIONS'); ?>
-                                </a>
+                                        <svg class="icon icon--uploader icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-5h2v2h-2v-2zm2-1.645V14h-2v-1.5a1 1 0 0 1 1-1 1.5 1.5 0 1 0-1.471-1.794l-1.962-.393A3.501 3.501 0 1 1 13 13.355z" />
+                                        </svg>
+                                        <?php echo Label::getLabel('LBL_ADD_QUESTIONS'); ?>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="page__body">
                             <div class="table-scroll">
-                                <table class="table table--styled table--responsive">
+                                <table class="table table--responsive table--bordered">
                                     <thead>
                                         <tr class="title-row">
                                             <th></th>
@@ -50,7 +52,7 @@ $count = count($questions);
                                     <tbody class="sortableJs">
                                         <?php if (count($questions) > 0) { ?>
                                             <?php foreach ($questions as $question) { ?>
-                                                <tr data-id="<?php echo $question['quique_quiz_id'] . '_' . $question['quique_ques_id'] ?>">
+                                                <tr data-id="<?php echo $question['quique_ques_id'] ?>">
                                                     <td>
                                                         <a href=" javascript:void(0)" class="btn btn--equal btn--sort btn--transparent color-gray-1000 cursor-move sortHandlerJs">
                                                             <svg class="svg-icon" viewBox="0 0 16 12.632">

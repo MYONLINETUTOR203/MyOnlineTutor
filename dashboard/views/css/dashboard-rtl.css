@@ -1110,10 +1110,10 @@ p {
 
 .action-bar {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.02);
   padding: var(--padding-6);
   border-bottom: 1px solid var(--color-gray-200);
-  border-top: 1px solid var(--color-gray-200); }
+  border-top: 1px solid var(--color-gray-200);
+  background-color: rgba(0, 0, 0, 0.02); }
   @media (max-width: 576px) {
     .action-bar__content {
       padding-bottom: var(--padding-6); }
@@ -1122,14 +1122,16 @@ p {
       -webkit-box-pack: justify;
           -ms-flex-pack: justify;
               justify-content: space-between; } }
+  .action-bar.selection-disabled {
+    opacity: 1; }
 
 .g-circle {
   position: relative;
   width: 4rem;
   height: 4rem;
   background-color: var(--color-white);
-  -webkit-box-shadow: var(--boxShadow-all);
-          box-shadow: var(--boxShadow-all);
+  -webkit-box-shadow: 0 1px 2px 1px #d4d4d4;
+          box-shadow: 0 1px 2px 1px #d4d4d4;
   border-radius: var(--radius-round);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1880,13 +1882,13 @@ iframe#st_gdpr_iframe {
   border-radius: var(--radius-0);
   -webkit-box-shadow: var(--boxShadow-all);
           box-shadow: var(--boxShadow-all);
-  padding: var(--padding-4) var(--padding-8); }
+  padding: var(--padding-2); }
   .page-steps ul {
     position: relative; }
     @media (min-width: 991px) {
       .page-steps ul:before {
         position: absolute;
-        right: 0;
+        right: 18px;
         top: var(--padding-4);
         bottom: var(--padding-4);
         content: "";
@@ -1902,19 +1904,19 @@ iframe#st_gdpr_iframe {
         margin-bottom: 0; }
       .page-steps ul li > a {
         display: block;
-        padding: var(--padding-4);
-        padding-right: var(--padding-8);
+        padding: var(--padding-4) var(--padding-10);
         position: relative;
         min-height: 18px; }
         @media (min-width: 991px) {
           .page-steps ul li > a {
-            padding-right: var(--padding-8); } }
+            padding-right: var(--padding-12);
+            padding-left: var(--padding-10); } }
         @media (max-width: 991px) {
           .page-steps ul li > a {
             padding-left: var(--padding-8); } }
         .page-steps ul li > a:before {
           position: absolute;
-          right: 0;
+          right: 0.8rem;
           top: var(--padding-4);
           content: "";
           width: 16px;
@@ -1925,12 +1927,15 @@ iframe#st_gdpr_iframe {
           background-color: var(--color-white); }
           @media (min-width: 991px) {
             .page-steps ul li > a:before {
-              right: -8px; } }
+              right: 0.8rem; } }
       .page-steps ul li.is-active {
         color: var(--color-primary);
         font-weight: var(--font-weight-medium); }
         .page-steps ul li.is-active > a::before {
           border-width: 2px; }
+      .page-steps ul li.is-active.is-completed > a {
+        background-color: var(--color-gray-100);
+        border-radius: 10px; }
       .page-steps ul li.is-progress .step-sign {
         background-color: var(--color-yellow); }
         .page-steps ul li.is-progress .step-sign:before {
@@ -1967,7 +1972,7 @@ iframe#st_gdpr_iframe {
         width: 16px;
         height: 16px;
         position: absolute;
-        left: -1rem;
+        left: 0.8rem;
         top: var(--padding-4);
         border-radius: var(--radius-round);
         padding-right: var(--padding-1);
@@ -1975,7 +1980,7 @@ iframe#st_gdpr_iframe {
         @media (max-width: 991px) {
           .page-steps ul li .step-sign {
             left: auto;
-            right: 0; } }
+            right: 0.8rem; } }
   @media (max-width: 991px) {
     .page-steps {
       padding: var(--padding-3) var(--padding-4); }

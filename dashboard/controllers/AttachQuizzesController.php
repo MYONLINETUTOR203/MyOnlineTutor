@@ -150,8 +150,16 @@ class AttachQuizzesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
 
-        $this->set('quizzes', QuizLinked::getQuizzes([$recordId], $recordType, true));
-        $this->_template->render(false, false);
+        $obj = new QuizLinked(0, $this->siteUserId, $this->siteUserType);
+        $quizzes = $obj->getAttachedQuizzes($recordId, $recordType, true);
+        $this->set('quizzes', $quizzes);
+        if ($this->siteUserType == User::TEACHER) {
+            $this->set('recordType', $recordType);
+            $this->set('recordId', $recordId);
+            $this->_template->render(false, false, 'attach-quizzes/view.php');
+        } else {
+            $this->_template->render(false, false, 'attach-quizzes/attempts.php');
+        }
     }
 
     /**

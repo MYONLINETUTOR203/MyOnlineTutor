@@ -100,7 +100,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DURATION'); ?>
                                     </label>
-                                    : <strong><?php echo ($quiz['quiz_duration']) ? MyUtility::convertDuration($quiz['quiz_duration']) : '-'; ?></strong>
+                                    : <strong><?php echo ($quiz['quiz_duration']) ? MyUtility::convertDuration($quiz['quiz_duration']) : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -110,7 +110,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_NO_OF_ATTEMPTS_ALLOWED'); ?>
                                     </label>
-                                    : <strong><?php echo $quiz['quiz_attempts']; ?></strong>
+                                    : <strong><?php echo ($quiz['quiz_attempts']) ? $quiz['quiz_attempts'] : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +122,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_PASS_MARKS'); ?>
                                     </label>
-                                    : <strong><?php echo MyUtility::formatPercent($quiz['quiz_passmark']); ?></strong>
+                                    : <strong><?php echo ($quiz['quiz_passmark']) ? MyUtility::formatPercent($quiz['quiz_passmark']) : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +132,16 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_VALIDITY'); ?>
                                     </label>
-                                    : <strong><?php echo MyUtility::convertDuration($quiz['quiz_validity']); ?></strong>
+                                    : <strong>
+                                        <?php
+                                        if (!empty($quiz['quiz_validity'])) {
+                                            $label = Label::getLabel('LBL_{validity}_HOUR(S)');
+                                            echo str_replace('{validity}', $quiz['quiz_validity'], $label);
+                                        } else {
+                                            echo Label::getLabel('LBL_NA');
+                                        }
+                                        ?>
+                                    </strong>
                                 </div>
                             </div>
                         </div>
@@ -166,7 +175,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_PASS_MESSAGE'); ?>
                                     </label>
-                                    : <strong><?php echo CommonHelper::renderHtml($quiz['quiz_passmsg']) ?></strong>
+                                    : <strong><?php echo ($quiz['quiz_passmsg']) ? CommonHelper::renderHtml($quiz['quiz_passmsg']) : Label::getLabel('LBL_NA');  ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -176,7 +185,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_FAIL_MESSAGE'); ?>
                                     </label>
-                                    : <strong><?php echo CommonHelper::renderHtml($quiz['quiz_failmsg']); ?></strong>
+                                    : <strong><?php echo ($quiz['quiz_failmsg']) ? CommonHelper::renderHtml($quiz['quiz_failmsg'])  : Label::getLabel('LBL_NA'); ?></strong>
                                 </div>
                             </div>
                         </div>

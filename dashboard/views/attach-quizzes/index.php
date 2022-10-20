@@ -16,78 +16,91 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
                 <h6><?php echo Label::getLabel('LBL_ATTACH_QUIZZES'); ?></h6>
             </div>
             <div>
-                <a href="javascript:void(0);" onclick="attachQuizzes();" class="btn btn--bordered color-secondary">
-                    <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                        <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
-                    </svg>
-                    <?php echo Label::getLabel('LBL_ATTACH'); ?>
-                </a>
+
+
+                <div class="buttons-group d-flex align-items-center">
+                    <a href="javascript:void(0)" class="btn btn--secondary qsearch-toggle-js margin-1">
+                        <svg class="icon icon--clock icon--small margin-right-2">
+                            <use xlink:href="/dashboard/images/sprite.svg#search"></use>
+                        </svg>
+                        Search </a>
+                    <a href="javascript:void(0);" onclick="attachQuizzes();" class="btn btn--bordered color-secondary margin-1">
+                        <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                    </a>
+                </div>
+
+
             </div>
         </div>
-        <div class="form-search margin-top-6">
-            <div class="form-search__field">
-                <?php echo $frm->getFormTag(); ?>
-                <div class="row">
-                    <div class="col-lg-4 col-sm-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label">
-                                    <?php echo $keyword->getCaption(); ?>
-                                    <?php if ($keyword->requirement->isRequired()) { ?>
-                                        <span class="spn_must_field">*</span>
-                                    <?php } ?>
-                                </label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $keyword->getHtml(); ?>
+        <div class="qsearch-target-js" style="display:none;">
+            <div class="form-search margin-top-6">
+              
+                    <?php echo $frm->getFormTag(); ?>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php echo $keyword->getCaption(); ?>
+                                        <?php if ($keyword->requirement->isRequired()) { ?>
+                                            <span class="spn_must_field">*</span>
+                                        <?php } ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $keyword->getHtml(); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-4 col-sm-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label">
-                                    <?php echo $type->getCaption(); ?>
-                                    <?php if ($type->requirement->isRequired()) { ?>
-                                        <span class="spn_must_field">*</span>
-                                    <?php } ?>
-                                </label>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php echo $type->getCaption(); ?>
+                                        <?php if ($type->requirement->isRequired()) { ?>
+                                            <span class="spn_must_field">*</span>
+                                        <?php } ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $type->getHtml(); ?>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $type->getHtml(); ?>
+                        </div>
+                        <div class="col-lg-4 col-sm-4  form-buttons-group">
+                            <div class="field-set">
+                                <div class="caption-wraper"><label class="field_label"></label></div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $frm->getFieldHtml('pageno'); ?>
+                                        <?php echo $frm->getFieldHtml('pagesize'); ?>
+                                        <?php echo $frm->getFieldHtml('record_id'); ?>
+                                        <?php echo $frm->getFieldHtml('record_type'); ?>
+                                        <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                                        <?php echo $frm->getFieldHtml('btn_clear'); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-4  form-buttons-group">
-                        <div class="field-set">
-                            <div class="caption-wraper"><label class="field_label"></label></div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $frm->getFieldHtml('pageno'); ?>
-                                    <?php echo $frm->getFieldHtml('pagesize'); ?>
-                                    <?php echo $frm->getFieldHtml('record_id'); ?>
-                                    <?php echo $frm->getFieldHtml('record_type'); ?>
-                                    <?php echo $frm->getFieldHtml('btn_submit'); ?>
-                                    <?php echo $frm->getFieldHtml('btn_clear'); ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </form>
-                <?php echo $frm->getExternalJS(); ?>
+                    </form>
+                    <?php echo $frm->getExternalJS(); ?>
+              
             </div>
         </div>
     </div>
-    <div class="facebox-panel__body">
+    <div class="facebox-panel__body padding-0">
         <div class="table-scroll">
             <?php echo $quizFrm->getFormTag(); ?>
-            <table class="table table--styled table--responsive table--aligned-middle" id="quiz-listing">
+            <table class="table table--responsive table--aligned-middle table--bordered" id="quiz-listing">
                 <thead>
                     <tr class="title-row">
                         <th></th>
@@ -113,3 +126,9 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(".qsearch-toggle-js").click(function () {
+        $(".qsearch-target-js").slideToggle();
+    });
+</script>

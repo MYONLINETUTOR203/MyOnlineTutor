@@ -13,9 +13,12 @@ $section-filters: "section-filters";
         &:after{position: absolute; left: 0; right: 0; bottom: 0; height: 40px; background-color: theme('color.gray.100'); content: ""; pointer-events: none;}
     }
 
+    @media (min-width:theme('breakpoints.xl','value')){
+        &{ position: sticky;top:0; }
+    }
+
     @media (min-width:theme('breakpoints.sm','value')){
-        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  position: sticky; z-index: 1; margin-bottom:3rem;    top: 0;
-        transition: all 0.3s;
+        background-color: rgba(0,0,0,0.03); padding:5rem 0 0;  z-index: 1; margin-bottom:2rem;
     }
 
   
@@ -25,22 +28,35 @@ $section-filters: "section-filters";
         }
     }
 
-   
+    & .select-option{margin-bottom: 0;}
+    & .select2-selection__arrow{display: none!important;}
      
 }
 
 
 
+// .is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .courses.courses-index{
+//     @media (min-width:theme('breakpoints.sm','value')){
+//         .header.nav-up{transform: translateY(0);}
+//         .header{position: relative;}
+//         .header.nav-down{transform: translateY(0);
+//         }
+//     }
 
-.is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .teachers.teachers-languages{
-    @media (min-width:theme('breakpoints.sm','value')){
-        .header.nav-up{transform: translateY(0);}
-        .header{position: relative;}
-        .header.nav-down{transform: translateY(0);
-        }
-    }
+// }
 
-}
+
+
+
+// .is-tutor-listing, .is-group-classes, .teachers.teachers-index, .groupclasses.groupclasses-index, .teachers.teachers-languages{
+//     @media (min-width:theme('breakpoints.sm','value')){
+//         .header.nav-up{transform: translateY(0);}
+//         .header{position: relative;}
+//         .header.nav-down{transform: translateY(0);
+//         }
+//     }
+
+// }
 
 
 
@@ -346,7 +362,7 @@ body.filter-active{
 
     @media (min-width:theme('breakpoints.sm','value')){
         .#{$filters-layout}{ z-index: 12;}
-        .#{$section-filters}{z-index: 12;
+        .#{$section-filters}{z-index: 12; transition:none;
             &:after{display: none;}
         }
     }
@@ -419,6 +435,22 @@ $select-list: "select-list";
                 &__item{border-bottom: none;}
             }
         }
+
+
+        & > ul{
+            & > li{
+                & ul{padding: theme('padding.3'); border-bottom: 1px solid theme('color.gray.200');
+                
+                    @media(min-width:theme('breakpoints.sm','value')){
+                        & .#{$select-option}{
+                            &__item{border: none; }
+                
+                        }
+                   }
+                }
+            }
+        }
+
     }  
 
 
@@ -698,7 +730,7 @@ $filters-more: "filters-more";
     @media (min-width:theme('breakpoints.xl','value')){
 
         .#{$section-filters}{
-            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);
+            background-color: #fff; padding: 0; box-shadow:0 3px 3px rgba(0,0,0,0.08);transition: all 0.2s;
                 & h1{display: none;}
                 &::after{display: none;}
             }

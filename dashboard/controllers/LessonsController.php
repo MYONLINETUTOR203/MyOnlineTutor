@@ -172,6 +172,7 @@ class LessonsController extends DashboardController
             'js/fullcalendar-luxon-global.min.js',
             'js/fateventcalendar.js',
             'plans/page-js/common.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         if ($flashcardEnabled) {
             $this->_template->addJs('js/flashcards.js');

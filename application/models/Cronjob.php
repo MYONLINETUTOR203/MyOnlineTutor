@@ -509,4 +509,18 @@ class Cronjob
         return true;
     }
 
+    /**
+     * Cancel incomplete quizzes
+     *
+     * @return void
+     */
+    public function cancelIncompleteQuizzes()
+    {
+        $quiz = new QuizAttempt();
+        if (!$quiz->cancelIncompleteQuizzes()) {
+            return $quiz->getError();
+        }
+        return 'Incomplete Quizzess Settlement Successful';
+    }
+
 }

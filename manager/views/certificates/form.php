@@ -1,24 +1,24 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form layout--ltr');
+$frm->setFormTagAttribute('class', 'web_form layout--' . $layoutDir);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'setup(); return false;');
 
-$fld = $frm->getField('certpl_lang_id');
-$fld->setFieldTagAttribute('onchange', 'edit("' . $data['certpl_code'] . '", this.value); return false;');
+$lfld = $frm->getField('certpl_lang_id');
+$lfld->setFieldTagAttribute('onchange', 'edit("' . $data['certpl_code'] . '", this.value); return false;');
 
-$mediaFrm->setFormTagAttribute('class', 'web_form layout--ltr');
+$mediaFrm->setFormTagAttribute('class', 'web_form layout--' . $layoutDir);
 $mediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $mediaFrm->developerTags['fld_default_col'] = 12;
 $fld = $mediaFrm->getField('certpl_image');
 $fld->setFieldTagAttribute('onchange', 'setupMedia();');
-$fld->htmlAfterField .= '<small>' . str_replace('{dimensions}', implode('x', $dimensions), Label::getLabel('LBL_PREFERRED_DIMENSIONS_{dimensions}')) .  ' & ' . str_replace('{ext}', $imageExts, Label::getLabel('LBL_ALLOWED_FILE_EXTS_{ext}')) . '</small>';
+$fld->htmlAfterField .= '<small>' . str_replace('{dimensions}', implode('x', $dimensions), Label::getLabel('LBL_PREFERRED_DIMENSIONS_{dimensions}', $lfld->value)) .  ' & ' . str_replace('{ext}', $imageExts, Label::getLabel('LBL_ALLOWED_FILE_EXTS_{ext}', $lfld->value)) . '</small>';
 
 $fld = $frm->getField('btn_preview');
 $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
-
-
+$fld = $frm->getField('btn_reset');
+$fld->setFieldTagAttribute('onclick', 'resetToDefault()');
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -46,7 +46,7 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_BACKGROUND_IMAGE'); ?>
+                                                    <?php echo Label::getLabel('LBL_BACKGROUND_IMAGE', $lfld->value); ?>
                                                 </label>
                                             </div>
                                             <div class="field-wraper">
@@ -66,7 +66,7 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_LANGUAGE'); ?>
+                                                    <?php echo Label::getLabel('LBL_LANGUAGE', $lfld->value); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -83,7 +83,7 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_NAME'); ?>
+                                                    <?php echo Label::getLabel('LBL_NAME', $lfld->value); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -100,11 +100,11 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_BODY'); ?>
+                                                    <?php echo Label::getLabel('LBL_BODY', $lfld->value); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
-                                            
+
                                             <div class="field-wraper">
                                                 <div class="layout--<?php echo $layoutDir; ?>">
                                                     <div class="certificate certificateJs">
@@ -113,39 +113,42 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                                         </div>
                                                         <div class="certificate-content">
                                                             <h1 class="certificate-title contentHeadingJs" contenteditable="true">
-                                                                <?php echo $content['heading'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['heading']) ?>
                                                             </h1>
                                                             <br>
                                                             <div class="certificate-subtitle contentPart1Js" contenteditable="true">
-                                                                <?php echo $content['content_part_1'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['content_part_1']) ?>
                                                             </div>
                                                             <div class="certificate-author contentLearnerJs" contenteditable="true">
-                                                                <?php echo $content['learner'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['learner']) ?>
                                                             </div>
                                                             <div class="certificate-meta contentPart2Js" contenteditable="true">
-                                                                <?php echo $content['content_part_2'] ?>
+                                                                <?php echo CommonHelper::renderHtml($content['content_part_2']) ?>
                                                             </div>
 
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
-                                                                    <span> <?php echo Label::getLabel('LBL_TUTOR:', $data['certpl_lang_id']); ?></span>
-                                                                    <div class="style-bold contentTrainerJs" contenteditable="true">
-                                                                        <?php echo $content['trainer'] ?>
+                                                                    <div class=" contentTrainerJs" contenteditable="true">
+                                                                        <?php
+                                                                        $label = str_replace('{teacher-name}', '<b>{teacher-name}</b>', $content['trainer']);
+                                                                        echo CommonHelper::renderHtml($label);
+                                                                        ?>
                                                                     </div>
                                                                 </div>
-                                                                
+
                                                                 <div class="certificate-signs__middle">
                                                                     <div class="certificate-logo">
                                                                         <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $data['certpl_lang_id']]); ?>" alt="">
                                                                     </div>
                                                                 </div>
-                                       
+
 
                                                                 <div class="certificate-signs__right">
-
-                                                                    <span> <?php echo Label::getLabel('LBL_CERTIFICATE_NO.:', $data['certpl_lang_id']); ?></span>
-                                                                    <div class="style-bold contentCertNoJs" contenteditable="true">
-                                                                        <?php echo $content['certificate_number'] ?>
+                                                                    <div class=" contentCertNoJs" contenteditable="true">
+                                                                        <?php
+                                                                        $label = str_replace('{certificate-number}', '<b>{certificate-number}</b>', $content['certificate_number']);
+                                                                        echo CommonHelper::renderHtml($label);
+                                                                        ?>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -159,7 +162,7 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h3><?php echo $frm->getFieldHtml('replacement_caption'); ?></h3>
@@ -170,13 +173,13 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
                                         <?php echo $frm->getFieldHtml('certpl_vars'); ?>
                                     </div>
                                 </div>
-                               
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="field-set">
                                             <div class="caption-wraper">
                                                 <label class="field_label">
-                                                    <?php echo Label::getLabel('LBL_STATUS'); ?>
+                                                    <?php echo Label::getLabel('LBL_STATUS', $lfld->value); ?>
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
@@ -278,14 +281,16 @@ $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
     .certificate-subtitle {
         font-size: 1.4vw;
         margin-bottom: 2%;
-        font-weight: normal; line-height: 1.4;
+        font-weight: normal;
+        line-height: 1.4;
     }
 
     .certificate-author {
         font-size: 2vw;
         margin-bottom: 10%;
         font-style: normal;
-        font-weight: 700; line-height: 1.2;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .certificate-meta {

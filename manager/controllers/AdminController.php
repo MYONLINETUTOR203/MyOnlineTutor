@@ -35,10 +35,12 @@ class AdminController extends FatController
         $this->sets([
             'favicon' => (new Afile(Afile::TYPE_FAVICON))->getFile(),
             'siteLangId' => $this->siteLangId,
+            'siteLanguage' => $this->siteLanguage,
             'siteLanguages' => $siteLanguages,
             'siteAdminId' => $this->siteAdminId,
             'siteTimezone' => $this->siteTimezone,
             'actionName' => $this->_actionName,
+            'layoutDirection' =>$this->layoutDirection,
             'controllerName' => str_replace('Controller', '', $this->_controllerName),
         ]);
         if (!FatUtility::isAjaxCall()) {

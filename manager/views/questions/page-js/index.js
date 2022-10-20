@@ -2,9 +2,9 @@
 /* global fcom, SITE_ROOT_FRONT_URL */
 $(document).ready(function () {
     searchQuestions(document.frmQuesSearch);
-    $("input[name='quesTeacher']").autocomplete({
+    $("input[name='teacher']").autocomplete({
         'source': function (request, response) {
-            fcom.updateWithAjax(fcom.makeUrl('Questions', 'teacherAutoCompleteJson'), {
+            fcom.updateWithAjax(fcom.makeUrl('Users', 'autoCompleteJson'), {
                 keyword: request
             }, function (result) {
                 response($.map(result.data, function (item) {
@@ -17,10 +17,10 @@ $(document).ready(function () {
         },
         'select': function (item) {
             $("input[name='teacher_id']").val(item.value);
-            $("input[name='quesTeacher']").val(item.name);
+            $("input[name='teacher']").val(item.name);
         }
     });
-    $("input[name='quesTeacher']").keyup(function () {
+    $("input[name='teacher']").keyup(function () {
         $("input[name='teacher_id']").val('');
     });
     $(document).on('click', 'ul.linksvertical li a.redirect--js', function (event) {

@@ -15,7 +15,7 @@ $frm->setFormTagAttribute('onsubmit', 'signinSetup(this); return(false);');
 <section class="section section--gray section--page">
     <div class="container container--fixed">
         <div class="row justify-content-center">
-            <div class="col-sm-10 col-lg-7 col-xl-6">
+            <div class="col-sm-10 col-lg-7 col-xl-4">
                 <div class="box -skin">
                     <div class="box__head -align-center">
                         <h4 class="-border-title"><?php echo Label::getLabel('LBL_LOGIN'); ?></h4>

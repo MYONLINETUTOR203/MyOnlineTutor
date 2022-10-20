@@ -96,7 +96,7 @@ class CertificatesController extends AdminBaseController
         }
         $data['certpl_lang_id'] = $langId;
         /* get template form */
-        $frm = $this->getForm();
+        $frm = $this->getForm($langId);
         $frm->fill($data);
 
         /* get certficate image form */
@@ -113,9 +113,6 @@ class CertificatesController extends AdminBaseController
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $langs = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
-        // echo "<pre>";
-        // print_r(json_decode($data['certpl_body'], true));
-        // exit;
         $this->sets([
             'frm' => $frm,
             'mediaFrm' => $mediaFrm,
@@ -129,6 +126,30 @@ class CertificatesController extends AdminBaseController
         ]);
         
         $this->_template->render();
+    }
+
+    /**
+     * Get Default Certificate Content
+     */
+    public function getDefaultContent()
+    {
+        $post = FatApp::getPostedData();
+        if (empty($post['certpl_code'])) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $certData = [];
+        if ($post['certpl_code'] == 'evaluation_certificate') {
+            $certData = json_decode(FatApp::getConfig('CONF_EVALUATION_CERTIFICATE_DEFAULT_CONTENT'), true);
+
+        } else {
+            $certData = json_decode(FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT'), true);
+        }
+        $certData['trainer'] = str_replace('{teacher-name}', '<b>{teacher-name}</b>', $certData['trainer']);
+        $certData['certificate_number'] = str_replace('{certificate-number}', '<b>{certificate-number}</b>', $certData['certificate_number']);
+        return FatUtility::dieJsonSuccess([
+            'data' => $certData,
+            'msg' => '',
+        ]);
     }
 
     /**
@@ -186,42 +207,50 @@ class CertificatesController extends AdminBaseController
         ]);
     }
 
-    public function generate($langId)
+    public function generate($id)
     {
-        $langId = ($langId < 1) ? $this->siteLangId : $langId;
-        /* Create dummy data */
-        $data = [
-            'learner_first_name' => 'Martha',
-            'learner_last_name' => 'Christopher',
-            'teacher_first_name' => 'John',
-            'teacher_last_name' => 'Doe',
-            'quiz_title' => 'English Language Learning - Beginners',
-            'quiz_clang_name' => 'English',
-            'lang_id' => $langId,
-            'cert_number' => 'YC_h34uwh9e72w',
-            'quiz_completed' => date('Y-m-d H:i:s'),
-            'quiz_duration' => 900,
-        ];
-        $cert = new Certificate(0, 0, $langId);
-        $content = $cert->getFormattedContent($data);
+        $template = CertificateTemplate::getAttributesById($id, ['certpl_code', 'certpl_lang_id']);
+        if (empty($template)) {
+            FatUtility::dieWithError(Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND'));
+        }
+        $type = Certificate::TYPE_QUIZ;
+        if ($template['certpl_code'] == 'course_completion_certificate') {
+            $type = Certificate::TYPE_COURSE;
+        }
+        $langId = $template['certpl_lang_id'];
+        $cert = new Certificate(0, $type, 0, $langId);
+        $content = $this->getContent();
+
+        if (!$cert->generatePreview($content, $type)) {
+            FatUtility::dieWithError($cert->getError());
+        }
+        FatUtility::dieWithError(Label::getLabel('LBL_UNABLE_TO_GENERATE_CERTIFICATE'));
+    }
+
+    private function getContent()
+    {
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
         $backgroundImg = $afile->getFile(0, false);
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $langId);
-        $logoImg = $afile->getFile(0, false);
-        $this->sets([
-            'content' => $content,
-            'layoutDir' => Language::getAttributesById($langId, 'language_direction'),
-            'langId' => $langId,
-            'backgroundImg' => $backgroundImg,
-            'logoImg' => $logoImg,
-        ]);
-        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
-        $filename = 'certificate.pdf';
-        /* generate certificate */
-        if (!$cert->generateCertificate($content, $filename, true)) {
-            FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
+        if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
+            $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $backgroundImg = CONF_UPLOADS_PATH . $backgroundImg['file_path'];
         }
+        $this->set('backgroundImg', $backgroundImg);
+
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
+        $logoImg = $afile->getFile(0, false);
+        if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
+            $logoImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
+        } else {
+            $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
+        }
+        $this->set('logoImg', $logoImg);
+
+        $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
+        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
+        return $content;
     }
 
     /**
@@ -229,7 +258,7 @@ class CertificatesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(): Form
+    private function getForm(int $langId = 0): Form
     {
         $frm = new Form('frmCertificate');
         $frm->addHiddenField('', 'certpl_code')->requirements()->setRequired();
@@ -239,7 +268,7 @@ class CertificatesController extends AdminBaseController
         $fld->requirements()->setIntPositive();
 
         $fld = $frm->addSelectBox(
-            Label::getLabel('LBL_LANGUAGE'),
+            Label::getLabel('LBL_LANGUAGE', $langId),
             'certpl_lang_id',
             Language::getAllNames(),
             '',
@@ -248,23 +277,25 @@ class CertificatesController extends AdminBaseController
         );
         $fld->requirements()->setRequired();
 
-        $frm->addTextBox(Label::getLabel('LBL_NAME'), 'certpl_name')->requirements()->setRequired();
-        $fld = $frm->addTextArea(Label::getLabel('LBL_Body'), 'certpl_body');
+        $frm->addTextBox(Label::getLabel('LBL_NAME', $langId), 'certpl_name')->requirements()->setRequired();
+        $fld = $frm->addTextArea(Label::getLabel('LBL_Body', $langId), 'certpl_body');
         $fld->requirements()->setRequired(true);
         $frm->addHtml(
-            Label::getLabel('LBL_Replacement_Caption'),
+            Label::getLabel('LBL_Replacement_Caption', $langId),
             'replacement_caption',
-            '<h3>' . Label::getLabel('LBL_Replacement_Vars') . '</h3>'
+            '<h3>' . Label::getLabel('LBL_Replacement_Vars', $langId) . '</h3>'
         );
-        $frm->addHtml(Label::getLabel('LBL_Replacement_Vars'), 'certpl_vars', '');
+        $frm->addHtml(Label::getLabel('LBL_Replacement_Vars', $langId), 'certpl_vars', '');
 
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'certpl_status', AppConstant::getActiveArr(), '', [], '')
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS', $langId), 'certpl_status', AppConstant::getActiveArr(), '', [], '')
         ->requirements()
         ->setRequired();
 
-        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES'));
-        $fld_button = $frm->addButton('', 'btn_preview', Label::getLabel('LBL_Save_&_Preview'));
+        $fld_submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_CHANGES', $langId));
+        $fld_button = $frm->addButton('', 'btn_preview', Label::getLabel('LBL_SAVE_&_PREVIEW', $langId));
+        $fld_reset = $frm->addButton('', 'btn_reset', Label::getLabel('LBL_RESET_TO_DEFAULT', $langId));
         $fld_submit->attachField($fld_button);
+        $fld_submit->attachField($fld_reset);
         return $frm;
     }
 

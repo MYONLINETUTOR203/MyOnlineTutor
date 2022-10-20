@@ -61,6 +61,9 @@ class QuestionSearch extends YocoachSearch
         }
         if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
             $this->addCondition('ques.ques_user_id', '=', $post['teacher_id']);
+        } elseif (!empty($post['teacher'])) {
+            $teacher = 'mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)';
+            $this->addCondition($teacher, 'LIKE', '%' . trim($post['teacher']) . '%', 'AND', true);
         }
     }
 
@@ -176,7 +179,6 @@ class QuestionSearch extends YocoachSearch
      * Get Search Form
      *
      * @param int $langId
-     * @return Form
      */
     public static function getSearchForm(int $langId): Form
     {

@@ -60,13 +60,13 @@ $table: "table";
   }
 
   &--bordered{ border-top: 1px solid theme('color.gray.200');
-    tbody{
+  
       tr{
         th, td{
           border-bottom: 1px solid theme('color.gray.200');
         }
       }
-    }
+   
   }
 
   &--striped{
@@ -83,7 +83,7 @@ $table: "table";
 
   &--condensed{
     th, td{
-      padding: theme('padding.2');
+      padding: theme('padding.2') theme('padding.4');
     }
   }
 
@@ -111,6 +111,11 @@ $table: "table";
 }
 
 
+
+.table-inner{border: 1px solid theme('color.gray.200'); font-size: 0.9rem;
+  tr:hover{box-shadow: none!important;}
+  th{background-color:transparent;}
+}
 
 
 .tabled {

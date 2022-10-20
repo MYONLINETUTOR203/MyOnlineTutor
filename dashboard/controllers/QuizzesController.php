@@ -60,7 +60,7 @@ class QuizzesController extends DashboardController
     /**
      * Render add new quiz layout
      *
-     * @param intr $id
+     * @param int $id
      */
     public function form(int $id = 0)
     {
@@ -128,8 +128,6 @@ class QuizzesController extends DashboardController
 
     /**
      * Questions listing
-     *
-     * @return void
      */
     public function questions()
     {
@@ -159,8 +157,6 @@ class QuizzesController extends DashboardController
 
     /**
      * Settings
-     *
-     * @return void
      */
     public function settings()
     {
@@ -278,13 +274,15 @@ class QuizzesController extends DashboardController
     private function getForm()
     {
         $frm = new Form('frmQuiz');
-        $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '')->requirements()->setRequired();
+        $fld = $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'quiz_title', '');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setLength(10, 120);
         $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'quiz_type_id', Quiz::getTypes());
         $fld->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_type', 0)->requirements()->setRequired();
         $frm->addHtmlEditor(Label::getLabel('LBL_INSTRUCTIONS'), 'quiz_detail', '')->requirements()->setRequired();
         $frm->addHiddenField('', 'quiz_id')->requirements()->setInt();
-        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
 
@@ -323,8 +321,10 @@ class QuizzesController extends DashboardController
 
         $failFld = $frm->addTextArea(Label::getLabel('LBL_FAIL_MESSAGE'), 'quiz_failmsg', '');
         $failFld->requirements()->setRequired();
+        $failFld->requirements()->setLength(10, 255);
         $passFld = $frm->addTextArea(Label::getLabel('LBL_PASS_MESSAGE'), 'quiz_passmsg', '');
         $passFld->requirements()->setRequired();
+        $passFld->requirements()->setLength(10, 255);
         $frm->addHiddenField('', 'quiz_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         return $frm;

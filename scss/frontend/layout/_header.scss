@@ -3,7 +3,7 @@ $header: 'header';
 .#{$header} {
    
     #{theme('direction.left','value')}: 0;
-    #{theme('direction.right','value')}: 0; position: sticky; top: 0; transition: all 0.5s;
+    #{theme('direction.right','value')}: 0; position: relative; top: 0; transition: all 0.5s;
    
     z-index: 11; 
 
@@ -15,23 +15,26 @@ $header: 'header';
     }
 
 
-    @media(max-width: theme('breakpoints.xl','value')) {
-       &{ position: sticky; top: 0;}
-    }
+    // @media(max-width: theme('breakpoints.xl','value')) {
+    //    &{ position: sticky; top: 0;}
+    // }
     
-    @media(min-width: theme('breakpoints.xl','value')) {
-        &.nav-down{transform: translateY(0);}
-        &.nav-up{transform: translateY(-100%);}
-    }
+    // @media(min-width: theme('breakpoints.xl','value')) {
+    //     &.nav-down{transform: translateY(0);}
+    //     &.nav-up{transform: translateY(-100%);}
+    // }
 
 }
 
+.home.home-index {
+    .#{$header} { position: sticky; top: 0;}
+}
 
 
 $header-primary: 'header-primary';
 
 .#{$header-primary} {
-    padding: theme('padding.3') 0;
+    padding: theme('padding.1') 0;
     
     color: #111;
     background: theme('color.white');
@@ -41,32 +44,23 @@ $header-primary: 'header-primary';
     transition: 0.3s all ease-in-out;
     box-shadow:0px 3px 3px #0000000F;
 
-    @media(max-width: theme('breakpoints.md','value')) {
-        padding:theme('padding.4') 0;;
+    @media(min-width: theme('breakpoints.sm','value')) {
+        & .header-flex{min-height: 70px;}
     }
 
-    .header__logo{
-       
-        width: 180px;
-        height: 60px;
-        position: relative; display: flex!important; align-items: center;
+    @media(max-width: theme('breakpoints.md','value')) {
+        padding:theme('padding.3') 0;;
+    }
 
+    .header__logo{ max-width: 200px; max-height: 100px;
+        position: relative; display: flex; align-items: center;
+        
 
         @media(min-width: theme('breakpoints.md','value')) {
             margin-#{theme('direction.right','value')}:theme('margin.3');
         }
 
      
-
-        img{
-            position: absolute;
-            #{theme('direction.left','value')}: 0;
-            #{theme('direction.right','value')}: 0;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-            
-        }
     }
 
     .header__left{

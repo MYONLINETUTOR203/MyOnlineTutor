@@ -1,0 +1,88 @@
+<?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
+<div class="page-body">
+    <div class="container container--narrow">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="box-view box-view--space">
+                    <hgroup class="margin-bottom-4">
+                        <h4 class="margin-bottom-2">
+                            <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
+                        </h4>
+                    </hgroup>
+                    <div class="check-list margin-bottom-10">
+                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    </div>
+                    <div class="repeat-items margin-bottom-10">
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_QUIZ_TYPE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo Quiz::getTypes($data['quilin_type']) ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_TOTAL_NO._OF_QUESTIONS') ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo $data['quilin_questions'] ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_DURATION'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php
+                                if ($data['quilin_duration'] > 0) {
+                                    echo MyUtility::convertDuration($data['quilin_duration']);
+                                } else {
+                                    echo Label::getLabel('LBL_NO_LIMIT');
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ATTEMPTS'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo $data['quilin_attempts'] ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_PASS_PERCENTAGE'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo MyUtility::formatPercent($data['quilin_passmark']) ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_VALID_TILL'); ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php echo MyDate::formatDate($data['quilin_validity'], 'Y-m-d H:i') ?>
+                            </div>
+                        </div>
+                        <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_OFFER_CERTIFICATE'); ?>
+                                </div>
+                                <div class="repeat-element__content">
+                                    <?php echo AppConstant::getYesNoArr($data['quilin_certificate']) ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">
+                        <?php echo Label::getLabel('LBL_START_NOW'); ?>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

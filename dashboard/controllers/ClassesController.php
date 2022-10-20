@@ -113,6 +113,7 @@ class ClassesController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         $class = current($classes);
+        // pr($class);
         $learners = [];
         if ($this->siteUserType == User::TEACHER) {
             if (empty($class['grpcls_booked_seats'])) {
@@ -144,7 +145,8 @@ class ClassesController extends DashboardController
             'issues/page-js/common.js',
             'js/jquery.barrating.min.js',
             'classes/page-js/common.js',
-            'plans/page-js/common.js'
+            'plans/page-js/common.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         if ($flashcardEnabled) {
             $this->_template->addJs('js/flashcards.js');

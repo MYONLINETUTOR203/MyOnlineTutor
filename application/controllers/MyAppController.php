@@ -33,6 +33,7 @@ class MyAppController extends FatController
         $this->setSiteCurrency();
         $this->setSiteTimezone();
         $this->setCookieConsent();
+        $siteLanguages = $this->getSiteLanguages();
         $this->sets([
             'siteUser' => $this->siteUser,
             'siteUserId' => $this->siteUserId,
@@ -42,13 +43,14 @@ class MyAppController extends FatController
             'siteCurrId' => $this->siteCurrId,
             'siteCurrency' => $this->siteCurrency,
             'siteTimezone' => $this->siteTimezone,
-            'siteLanguages' => $this->getSiteLanguages(),
+            'siteLanguages' => $siteLanguages,
             'siteCurrencies' => $this->getSiteCurrencies(),
             'cookieConsent' => $this->cookieConsent,
             'messageData' => Message::getData(),
         ]);
         $this->set('actionName', $this->_actionName);
-        $this->set('controllerName', str_replace('Controller', '', $this->_controllerName));
+        $controllerName = str_replace('Controller', '', $this->_controllerName);
+        $this->set('controllerName', $controllerName);
         $this->set('teachLangs', TeachLanguage::getTeachLanguages($this->siteLangId));
         if (!FatUtility::isAjaxCall()) {
             $this->set('canonicalUrl', SeoUrl::getCanonicalUrl());
@@ -57,8 +59,17 @@ class MyAppController extends FatController
             $this->set('footerTwoNav', Navigation::footerTwoNav());
             $this->set('footerThreeNav', Navigation::footerThreeNav());
             $this->set('socialPlatforms', SocialPlatform::getAll());
-            $this->set('jsVariables', MyUtility::getCommonLabels());
+            $this->set('jsVariables', MyUtility::getCommonLabels($siteLanguages));
             $viewType = (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') ? 'dashboard' : 'frontend';
+
+            $viewType = 'frontend';
+            if (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') {
+                $viewType = 'dashboard';
+                if (strtolower($controllerName) == 'userquiz' || strtolower($controllerName) == 'quizreview') {
+                    $viewType = 'quiz';
+                }
+            }
+
             $this->_template->addCss([
                 'css/common-' . $this->siteLanguage['language_direction'] . '.css',
                 'css/' . $viewType . '-' . $this->siteLanguage['language_direction'] . '.css'

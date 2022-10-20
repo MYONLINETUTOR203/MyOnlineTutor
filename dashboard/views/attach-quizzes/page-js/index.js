@@ -1,4 +1,3 @@
-/* global weekDayNames, monthNames, langLbl, layoutDirection, fcom */
 $(function () {
     searchQuizzes = function (frm, page = 1) {
         document.frmSearch.pageno.value = page;
@@ -44,20 +43,35 @@ $(function () {
         });
     };
     viewQuizzes = function (recordId, recordType) {
+        $.facebox.close();
         fcom.ajax(fcom.makeUrl('AttachQuizzes', 'view'), { recordId, recordType }, function (response) {
             $.facebox(response, 'facebox-large');
         });
     };
-    removeQuiz = function (id) {
+    removeQuiz = function (id, obj) {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
-            $('.quizRowJs' + id).remove();
+            $('.quizRow' + id).remove();
+            $('.noRecordJS').hide();
+            if ($('.quizRowJs').length == 0) {
+                $('.noRecordJS').show();
+            }
             if (document.frmSearchPaging) {
                 search(document.frmSearchPaging);
                 return;
             }
+            window.location.reload();
         });
+    };
+    view = function (id) {
+        if ($('.userListJs' + id).hasClass('is-active')) {
+            $('.userListJs' + id).hide().removeClass('is-active').removeClass('is-expanded');
+            return;
+        } else {
+            $('.userListJs').removeClass('is-active').removeClass('is-expanded').hide();
+            $('.userListJs' + id).addClass('is-active').addClass('is-expanded').show();
+        }
     };
 });

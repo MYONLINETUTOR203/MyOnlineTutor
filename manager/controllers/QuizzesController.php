@@ -49,7 +49,7 @@ class QuizzesController extends AdminBaseController
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('quiz_active', 'DESC');
         $srch->addOrder('quiz_id', 'DESC');
-        $data = $srch->fetchAndFormat(); 
+        $data = $srch->fetchAndFormat();
         $this->sets([
             'arrListing' => $data,
             'postedData' => $post,

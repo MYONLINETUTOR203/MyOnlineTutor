@@ -47,7 +47,6 @@ class QuizQuestionSearch extends YocoachSearch
      */
     public function applySearchConditions(array $post): void
     {
-        
     }
 
     /**
@@ -101,6 +100,7 @@ class QuizQuestionSearch extends YocoachSearch
         return [
             'quique.quique_quiz_id' => 'quique_quiz_id',
             'quique.quique_ques_id' => 'quique_ques_id',
+            'quique.quique_order' => 'quique_order',
             'quiz.quiz_id' => 'quiz_id',
             'ques.ques_id' => 'ques_id',
             'ques.ques_title' => 'ques_title',
@@ -112,7 +112,7 @@ class QuizQuestionSearch extends YocoachSearch
             'ques.ques_cate_id' => 'ques_cate_id',
             'ques.ques_subcate_id' => 'ques_subcate_id',
             'ques.ques_created' => 'ques_created',
-            'ques.ques_status' => 'ques_status'
+            'ques.ques_status' => 'ques_status',
         ];
     }
 

@@ -6,12 +6,9 @@ define('CONF_FORM_REQUIRED_STAR_POSITION', Form::FORM_REQUIRED_STAR_POSITION_AFT
 define('CONF_STATIC_FILE_CONTROLLERS', ['fonts', 'images', 'js', 'img', 'innovas', 'assetmanager', 'cache']);
 FatApplication::getInstance()->setControllersForStaticFileServer(CONF_STATIC_FILE_CONTROLLERS);
 $innova_settings = [
-    'width' => '730', 'height' => '400', 'arrStyle' => '[["body", false, "", "min-height:250px;"]]',
+    'width' => '730', 'height' => '200', 'arrStyle' => '[["body", false, "", "min-height:250px;"]]',
     'groups' => ' [
-        ["group1", "", ["FontName", "FontSize", "Superscript", "ForeColor", "BackColor", "FontDialog", "BRK", "Bold", "Italic", "Underline", "Strikethrough", "TextDialog", "Styles", "RemoveFormat"]],
-        ["group2", "", ["JustifyLeft", "JustifyCenter", "JustifyRight", "Paragraph", "BRK", "Bullets", "Numbering", "Indent", "Outdent"]],
-        ["group3", "", ["TableDialog", "Emoticons", "FlashDialog", "BRK", "LinkDialog","YoutubeDialog"]],
-	["group4", "", ["CharsDialog", "Line", "BRK", "ImageDialog", "MyCustomButton"]],
-        ["group5", "", ["SearchDialog", "SourceDialog", "BRK", "Undo", "Redo"]]]',
+        ["group1", "", ["Bold", "Italic", "Underline", "Bullets", "Numbering"]],
+        ]',
     'fileBrowser' => '"' . CONF_WEBROOT_URL . 'innova/assetmanager/asset.php"'
 ];

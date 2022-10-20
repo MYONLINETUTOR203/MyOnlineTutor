@@ -59,6 +59,9 @@ class QuizSearch extends YocoachSearch
         }
         if (isset($post['teacher_id']) && $post['teacher_id'] > 0) {
             $this->addCondition('teacher.user_id', '=', $post['teacher_id']);
+        } elseif (!empty($post['teacher'])) {
+            $teacher = 'mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)';
+            $this->addCondition($teacher, 'LIKE', '%' . trim($post['teacher']) . '%', 'AND', true);
         }
     }
 
@@ -102,6 +105,7 @@ class QuizSearch extends YocoachSearch
             'quiz.quiz_user_id' => 'quiz_user_id',
             'quiz.quiz_duration' => 'quiz_duration',
             'quiz.quiz_attempts' => 'quiz_attempts',
+            'quiz.quiz_marks' => 'quiz_marks',
             'quiz.quiz_passmark' => 'quiz_passmark',
             'quiz.quiz_validity' => 'quiz_validity',
             'quiz.quiz_certificate' => 'quiz_certificate',
@@ -119,8 +123,6 @@ class QuizSearch extends YocoachSearch
 
     /**
      * Get Search Form
-     *
-     * @return Form
      */
     public static function getSearchForm()
     {
@@ -141,6 +143,9 @@ class QuizSearch extends YocoachSearch
         return $frm;
     }
 
+    /**
+     * Get quiz form
+     */
     public static function getQuizForm()
     {
         $frm = new Form('frmQuizLink');

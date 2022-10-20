@@ -6,6 +6,7 @@ $arrFlds = [
     'quiz_title' => Label::getLabel('LBL_TITLE'),
     'quiz_type' => Label::getLabel('LBL_TYPE'),
     'quiz_teacher' => Label::getLabel('LBL_TEACHER'),
+    'quiz_questions' => Label::getLabel('LBL_NO._OF_QUESTIONS'),
     'quiz_duration' => Label::getLabel('LBL_DURATION'),
     'quiz_attempts' => Label::getLabel('LBL_ATTEMPTS'),
     'quiz_passmark' => Label::getLabel('LBL_PASS_PERCENT'),
@@ -34,7 +35,7 @@ foreach ($arrListing as $sn => $row) {
                 $td->appendElement('plaintext', [], $srNo);
                 break;
             case 'quiz_title':
-                $td->appendElement('plaintext', [], $row['quiz_title']);
+                $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['quiz_title']));
                 break;
             case 'quiz_type':
                 $td->appendElement('plaintext', [], $types[$row['quiz_type']]);

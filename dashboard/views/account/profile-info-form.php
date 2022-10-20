@@ -96,8 +96,20 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                 </div>
                             </div>
                             <div class="col-sm-auto">
-                                <a onclick="googleCalendarAuthorize();" href="javascript:void(0);" class="btn social-button social-button--google">
-                                    <span class="social-button__media"><img src="<?php echo CONF_WEBROOT_URL . 'images/google.svg'; ?>" alt="<?php echo Label::getLabel('LBL_CONNECT_GOOGLE_CALENDAR'); ?>"></span>
+                                <a onclick="googleCalendarAuthorize();" href="javascript:void(0);" class="social-button social-button--google">
+                                    <span class="social-button__media">
+                                    <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <g transform="translate(-187 -241)">
+                                            <rect  width="24" height="24" transform="translate(187 241)" fill="none"/>
+                                            <g transform="translate(190 243)">
+                                            <path  d="M4.211,144.619l-.661,2.469-2.417.051a9.517,9.517,0,0,1-.07-8.871h0l2.152.395.943,2.139a5.67,5.67,0,0,0,.053,3.817Z" transform="translate(0 -133.137)" fill="#fbbb00"/>
+                                            <path d="M270.753,208.176a9.5,9.5,0,0,1-3.387,9.183h0l-2.711-.138-.384-2.395a5.662,5.662,0,0,0,2.436-2.891h-5.08v-3.758h9.125Z" transform="translate(-251.919 -200.451)" fill="#518ef8"/>
+                                            <path  d="M44.824,314.835h0a9.5,9.5,0,0,1-14.315-2.906l3.079-2.52a5.65,5.65,0,0,0,8.142,2.893Z" transform="translate(-29.377 -297.927)" fill="#28b446"/>
+                                            <path d="M43.126,2.187l-3.078,2.52a5.649,5.649,0,0,0-8.329,2.958L28.625,5.131h0a9.5,9.5,0,0,1,14.5-2.944Z" transform="translate(-27.562)" fill="#f14336"/>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    </span>
                                     <span class="social-button__label"><?php echo Label::getLabel('LBL_CONNECT_GOOGLE_CALENDAR'); ?></span>
                                 </a>
                             </div>
