@@ -11,11 +11,11 @@ $(function () {
         });
     };
     
-    mediaForm = function () {
+    mediaForm = function (process = true) {
         fcom.ajax(fcom.makeUrl('Courses', 'mediaForm', [courseId]), '', function (res) {
             $('#pageContentJs').html(res);
             getCourseEligibility();
-        });
+        }, {process: process});
     };
     intendedLearnersForm = function () {
         fcom.ajax(fcom.makeUrl('Courses', 'intendedLearnersForm', [courseId]), '', function (res) {
@@ -129,12 +129,11 @@ $(function () {
     };
     setupMedia = function () {
         var frm = $('#frmCourses')[0];
-        fcom.process();
         var data = new FormData(frm);
         frm.reset();
         fcom.ajaxMultipart(fcom.makeUrl('Courses', 'setupMedia'), data, function (res) {
             if (res.status == 1) {
-                mediaForm();
+                mediaForm(false);
                 getCourseEligibility();
             }
         }, { fOutMode: 'json' });
@@ -329,19 +328,18 @@ $(function () {
             lectureResourceForm(res.lectureId);
         });
     };
-    lectureResourceForm = function (lectureId) {
+    lectureResourceForm = function (lectureId, process = true) {
         fcom.ajax(fcom.makeUrl('LectureResources', 'index', [lectureId]), '', function (res) {
             $('#sectionLectures' + lectureId).html(res);
-        });
+        }, { process: process });
     };
     setupLectureResrc = function (frm) {
         if (!$(frm).validate()) {
             return;
         }
-        fcom.process();
         var data = new FormData(frm);
         fcom.ajaxMultipart(fcom.makeUrl('LectureResources', 'setup'), data, function (res) {
-            lectureResourceForm(res.lectureId);
+            lectureResourceForm(res.lectureId, false);
             $.facebox.close();
         }, { fOutMode: 'json' });
     };

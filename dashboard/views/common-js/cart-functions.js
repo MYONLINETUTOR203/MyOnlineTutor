@@ -4,7 +4,6 @@ var cart = {
         add_and_pay: 0,
     },
     addCourse: function (courseId) {
-        fcom.process();
         fcom.ajax(fcom.makeUrl("Cart", "addCourse", '', confFrontEndUrl), { course_id: courseId }, function (response) {
             $.facebox(response, "facebox-large");
         });

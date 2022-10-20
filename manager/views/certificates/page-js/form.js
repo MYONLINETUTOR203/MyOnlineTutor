@@ -5,7 +5,6 @@
         if (!$(frm).validate()) {
             return;
         }
-        fcom.process();
         var data = new FormData(frm);
         fcom.ajaxMultipart(fcom.makeUrl('Certificates', 'setupMedia'), data, function (response) {
             $(frm)[0].reset();
