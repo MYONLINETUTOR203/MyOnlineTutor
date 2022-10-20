@@ -170,17 +170,17 @@ class CourseSearch extends YocoachSearch
         if (isset($post['price']) && count($post['price'])) {
             foreach ($post['price'] as $price) {
                 $range = AppConstant::getPriceRange(FatUtility::int($price));
-                array_push($pricesql, '(course.course_price >= ' . $range[0] . ' AND course.course_price <= ' . $range[1] . ')');
+                array_push($pricesql, '(ROUND(course.course_price, 2) >= ' . $range[0] . ' AND ROUND(course.course_price, 2) <= ' . $range[1] . ')');
             }
         }
         $customPriceSql = [];
         if (!empty($post['price_from'])) {
             $priceFrom = FatUtility::float($post['price_from']);
-            $customPriceSql[] = 'course.course_price >= ' . round(MyUtility::convertToSystemCurrency($priceFrom), 2);
+            $customPriceSql[] = 'ROUND(course.course_price, 2) >= ' . round(MyUtility::convertToSystemCurrency($priceFrom), 2);
         }
         if (!empty($post['price_till'])) {
             $priceTill = FatUtility::float($post['price_till']);
-            $customPriceSql[] = 'course.course_price <= ' . round(MyUtility::convertToSystemCurrency($priceTill), 2);
+            $customPriceSql[] = 'ROUND(course.course_price, 2) <= ' . round(MyUtility::convertToSystemCurrency($priceTill), 2);
         }
         if (count($customPriceSql) > 0) {
             array_push($pricesql, ' ( ' . implode(' AND ', $customPriceSql) . ' ) ');
