@@ -887,10 +887,10 @@ $card: 'card';
 }
 
 .slick-next{
-    right: -170px;
+    #{theme('direction.right','value')}: -170px;
 }
 .slick-prev{
-    left: -170px;
+    #{theme('direction.right','value')}: -170px;
 }
 
 .home.home-index .slick-arrow{
@@ -912,10 +912,10 @@ $card: 'card';
 
         @media(min-width:theme('breakpoints.xxxl','value')){
             .slick-next{
-               right: -10%;
+                #{theme('direction.right','value')}: -10%;
 
             }.slick-prev{
-                left: -10%;
+                #{theme('direction.left','value')}: -10%;
             }
             .slick-arrow{
                 &::before{
@@ -928,10 +928,10 @@ $card: 'card';
 
         @media(min-width:theme('breakpoints.xl','value')) and (max-width:theme('breakpoints.xxxl','value')){
             .slick-next{
-               right: -5%;
+                #{theme('direction.right','value')}: -5%;
 
             }.slick-prev{
-               left: -5%;
+                #{theme('direction.left','value')}: -5%;
             }
         }
 
@@ -1470,9 +1470,9 @@ $card: 'card';
         @media(min-width: theme('breakpoints.xl','value')){
             .slider--onethird  .slick-arrow{background-color: transparent; top: 50%;}
             .slider--onethird  .slick-next{
-                right: -4%;
+                #{theme('direction.right','value')}: -4%;
             }.slider--onethird  .slick-prev{
-                left: -4%;
+                #{theme('direction.left','value')}: -4%;
             }
            
         }
