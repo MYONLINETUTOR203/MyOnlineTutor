@@ -483,7 +483,7 @@ class User extends MyAppModel
         $srch->addMultipleFields([
             'user.user_id as user_id', 'user_first_name', 'user_last_name', 'user_email',
             'user_username', 'user_password', 'user_timezone', 'user_gender', 'user_lang_id',
-            'user_country_id', 'user_is_teacher', 'user_active', 'user_verified', 'user_dashboard'
+            'user_country_id', 'user_is_teacher', 'user_active', 'user_verified', 'user_dashboard', 'user_2fa_enabled'
         ]);
         $srch->addCondition('user_email', '=', $email);
         $srch->addDirectCondition('user_deleted IS NULL');

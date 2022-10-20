@@ -53,14 +53,13 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         $auth = new UserAuth();
-        if (!$auth->login($post['username'], $post['password'], MyUtility::getUserIp())) {
+        if (!$auth->login($post['username'], $post['password'], MyUtility::getUserIp(), true, false)) {
             FatUtility::dieJsonError($auth->getError());
         }
-        $enabled2fa = UserSetting::getSettings(UserAuth::getLoggedUserId(), ['user_2fa_enabled']);
-        if($enabled2fa['user_2fa_enabled'] == AppConstant::YES) {
-            UserAuth::logout();
+        $user = User::getByEmail($post['username']);
+        if($user['user_2fa_enabled'] == AppConstant::YES) {
             FatUtility::dieJsonSuccess([
-                'two_factor_enabled'  => $enabled2fa['user_2fa_enabled'],
+                'twoFactorEnabled'  => $user['user_2fa_enabled'],
             ]);
         }
         if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
@@ -152,6 +151,34 @@ class GuestUserController extends MyAppController
             'redirectUrl' => $redirectUrl,
             'msg' => Label::getLabel('LBL_REGISTERATION_SUCCESSFULL')
         ]);
+    }
+
+    public function twoFactorForm() 
+    {
+        $post = FatApp::getPostedData();
+        $frm = $this->getTwoFactorForm($post['username']);
+        $this->set('frm', $frm);
+        $this->_template->render(false, false);
+    }
+
+
+    private function getTwoFactorForm(string $user)
+    {
+        $frm = new Form('twoFactorForm');
+        $fld1= $frm->addIntegerField('', 'digit_1');
+        $fld2 = $frm->addIntegerField('', 'digit_2');
+        $fld3 = $frm->addIntegerField('', 'digit_3');
+        $fld4 = $frm->addIntegerField('', 'digit_4');
+        $fld5 = $frm->addIntegerField('', 'digit_5');
+        $fld6 = $frm->addIntegerField('', 'digit_6');
+
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Validate'));
+        $resendText = Label::getLabel('LBL_Didnt_Get_The_Code?_{link}');
+        $resendText = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendTwoFactorAuthenticationCode(' . "'" . $user . "'" . ')">' . Label::getLabel('LBL_Resent') . '</a>', $resendText);
+        $frm->addHTML('', 'resend_auth_code', $resendText);
+    
+        return $frm;
+
     }
 
     /**

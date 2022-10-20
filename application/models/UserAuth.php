@@ -27,7 +27,7 @@ class UserAuth extends FatModel
      * @param string $userip
      * @return bool
      */
-    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
+    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true, bool $setSession = true): bool
     {
         if (empty($username) || ($enypass && empty($password))) {
             $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
@@ -53,6 +53,9 @@ class UserAuth extends FatModel
         if (empty($user['user_active'])) {
             $this->error = Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE');
             return false;
+        }
+        if (!$setSession) {
+            return true;
         }
         if (!$this->setUserSession($username, $userip, $user)) {
             $this->error = Label::getLabel('ERR_SOMETHING_WENT_WRONT_TRY_AGAIN');
@@ -757,6 +760,24 @@ class UserAuth extends FatModel
         $frm->addHtml('', 'forgot', '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_LOGIN'));
         return $frm;
+    }
+
+    
+    /**
+     * Send Failed Login Email
+     * 
+     * @param array $user
+     * @return bool
+     */
+    private function sendTwoFactorAuthenticationEmail(array $user): bool
+    {
+        $mail = new FatMailer($user['user_lang_id'], 'two_factor_authentication');
+        $mail->setVariables(['{code}' => rand(100000, 999999)]);
+        if (!$mail->sendMail([$user['user_email']])) {
+            $this->error = $mail->getError();
+            return false;
+        }
+        return true;
     }
 
 }

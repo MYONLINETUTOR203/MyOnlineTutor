@@ -200,7 +200,16 @@ $(document).ready(function () {
             data += '&' + fcom.frmData(document.frmSearchPaging);
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), data, function (res) {
-            window.location.reload();
+            if (!res.twoFactorEnabled) {
+                window.location.reload();
+            }
+            twoFactorForm(data);
+        });
+    };
+    twoFactorForm = function (data) {
+        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorForm'), data, function (response) {
+            $.facebox(response);
+            initialize2FA();
         });
     };
     signupForm = function () {
@@ -370,6 +379,34 @@ $(document).ready(function () {
         }, {fOutMode: 'json', failed: true});
     }
 
+    initialize2FA = function () {
+        $('.digit-group').find('input').each(function() {
+            $(this).attr('maxlength', 1);
+            $(this).on('keyup', function(e) {
+            
+                var parent = $($(this).parent());
+                
+                if(e.keyCode === 8 || e.keyCode === 37) {
+                    var prev = parent.find('input#' + $(this).data('previous'));
+                    
+                    if(prev.length) {
+                        $(prev).select();
+                    }
+                } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                    var next = parent.find('input#' + $(this).data('next'));
+                    
+                    if(next.length) {
+                        $(next).select();
+                    } else {
+                        if(parent.data('autosubmit')) {
+                            parent.submit();
+                        }
+                    }
+                }
+            });
+        });
+    };
+
 })(jQuery);
 function toggleOffers(element) {
     $(element).toggleClass("is-active");
@@ -423,4 +460,5 @@ $(document).ready(function () {
         $.facebox('<iframe id="ytplayer" type="text/html" width="1000" height="460" src="' + $(this).attr('data-src') + '" frameborder="2"></iframe>');
     });
 });
+
 
