@@ -12,7 +12,7 @@ $(document).ready(function () {
                         value: item['user_id'], name: item['full_name']
                     };
                 }));
-            });
+            }, {process: false});
         },
         'select': function (item) {
             $("input[name='learner_id']").val(item.value);
