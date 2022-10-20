@@ -379,7 +379,7 @@ class QuizLinked extends MyAppModel
             return [];
         }
         foreach ($attemptedQues as $key => $question) {
-            $question['quatqu_answer'] = json_decode($question['quatqu_answer'], true);
+            $question['quatqu_answer'] = $question['quatqu_answer'] ? json_decode($question['quatqu_answer'], true) : [];
             $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
 
             $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
