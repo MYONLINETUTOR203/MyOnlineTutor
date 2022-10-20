@@ -55,9 +55,6 @@ class QuizReviewController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
-        if (!$quiz->validate()) {
-            FatUtility::dieJsonError($quiz->getError());
-        }
         if (!$quiz->start()) {
             FatUtility::dieJsonError($quiz->getError());
         }
