@@ -71,14 +71,11 @@
         });
     };
     formatSlug = function (fld) {
-        var slug = $(fld).val();
-        slug = slug.trim(slug.toLowerCase());
-        slug = slug.replace(/[\s,<>\/\"&#%+?$@=]/g, "-");
-        slug = slug.replace(/[\s\s]+/g, '-');
-        slug = slug.replace(/[\-]+/g, '-');
-        $(fld).val(slug);
-        if (slug != '') {
-            checkUnique($(fld), 'tbl_group_classes', 'grpcls_slug', 'grpcls_id', $('#grpcls_id'), []);
-        }
+        fcom.updateWithAjax(fcom.makeUrl('Home', 'slug'), {slug: $(fld).val()}, function (res) {
+            $(fld).val(res.slug);
+            if (res.slug != '') {
+                checkUnique($(fld), 'tbl_group_classes', 'grpcls_slug', 'grpcls_id', $('#grpcls_id'), []);
+            }
+        });
     };
 })();

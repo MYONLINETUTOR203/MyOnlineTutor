@@ -16,7 +16,7 @@
         search(document.frmPackageSearch);
     };
     form = function (packageId) {
-        fcom.ajax(fcom.makeUrl("Packages", "form"), { packageId: packageId }, function (res) {
+        fcom.ajax(fcom.makeUrl("Packages", "form"), {packageId: packageId}, function (res) {
             $.facebox(res, "facebox-medium");
         });
     };
@@ -33,10 +33,10 @@
                 return;
             }
             $.facebox.close();
-        }, { fOutMode: 'json' });
+        }, {fOutMode: 'json'});
     };
     langForm = function (packageId, langId) {
-        fcom.ajax(fcom.makeUrl("Packages", "langForm"), { packageId: packageId, langId: langId }, function (res) {
+        fcom.ajax(fcom.makeUrl("Packages", "langForm"), {packageId: packageId, langId: langId}, function (res) {
             $.facebox(res, "facebox-medium");
         });
     };
@@ -57,21 +57,18 @@
         if (!confirm(langLbl.confirmCancel)) {
             return false;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Packages', 'cancelSetup'), { packageId: packageId }, function () {
+        fcom.updateWithAjax(fcom.makeUrl('Packages', 'cancelSetup'), {packageId: packageId}, function () {
             search(document.frmPackageSearch);
             $.facebox.close();
         });
     };
     formatSlug = function (fld) {
-        var slug = $(fld).val();
-        slug = slug.trim(slug.toLowerCase());
-        slug = slug.replace(/[\s,<>\/\"&#%+?$@=]/g, "-");
-        slug = slug.replace(/[\s\s]+/g, "-");
-        slug = slug.replace(/[\-]+/g, "-");
-        $(fld).val(slug);
-        if (slug != "") {
-            checkUnique($(fld), "tbl_group_classes", "grpcls_slug", "grpcls_id", $("#grpcls_id"), []);
-        }
+        fcom.updateWithAjax(fcom.makeUrl('Home', 'slug'), {slug: $(fld).val()}, function (res) {
+            $(fld).val(res.slug);
+            if (res.slug != '') {
+                checkUnique($(fld), "tbl_group_classes", "grpcls_slug", "grpcls_id", $("#grpcls_id"), []);
+            }
+        });
     };
     addClassRow = function () {
         $(".more-container-js").append(getClassRow(counter + 1));
