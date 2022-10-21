@@ -1509,7 +1509,7 @@ class AdminPrivilege
     }
 
     /**
-     * Can View Categories
+     * Can View Questions
      * 
      * @param bool $returnResult
      * @return type
@@ -1520,18 +1520,7 @@ class AdminPrivilege
     }
 
     /**
-     * Can Edit Categories
-     * 
-     * @param bool $returnResult
-     * @return type
-     */
-    public function canEditQuestions(bool $returnResult = false)
-    {
-        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_WRITE, $returnResult);
-    }
-
-    /**
-     * Can View Categories
+     * Can View Quizzes
      * 
      * @param bool $returnResult
      * @return type
