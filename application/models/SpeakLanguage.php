@@ -32,7 +32,6 @@ class SpeakLanguage extends MyAppModel
         parent::__construct(static::DB_TBL, 'slang_id', $id);
     }
 
-
     /**
      * Get Proficiencies
      * 
@@ -68,7 +67,7 @@ class SpeakLanguage extends MyAppModel
         $srch = new SearchBase(SpeakLanguage::DB_TBL, 'slang');
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'slanglang.slanglang_slang_id = slang.slang_id and slanglang.slanglang_lang_id =' . $langId, 'slanglang');
         $srch->addMultipleFields(['slang.slang_id', 'IFNULL(slang_name, slang_identifier) as slang_name']);
-        $srch->addCondition('slang.slang_id', 'IN', $slangIds);
+        $srch->addDirectCondition('slang.slang_id IN (' . implode(',', FatUtility::int($slangIds)) . ')');
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }

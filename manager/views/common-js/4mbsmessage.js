@@ -26,15 +26,15 @@
             appAlertEl.prepend(alertEl);
             if (type !== 'process') {
                 alertEl.timer = setTimeout(function () {
-                    appAlertEl.removeChild(alertEl);
+                    $.appalert.close(alertId);
                 }, ALERT_CLOSE_TIME * 1000);
             }
         },
         close: function (alertId) {
             if (alertId == undefined) {
-                $('.alert--process').remove();
+                $('.alert--process').css({display: 'none'});
             } else {
-                $('#' + alertId).remove();
+                $('#' + alertId).css({display: 'none'});
                 var appAlertEl = document.getElementById('app-alert');
                 if (appAlertEl.childNodes.length == 0) {
                     appAlertEl.classList.remove('fadeInDown');
