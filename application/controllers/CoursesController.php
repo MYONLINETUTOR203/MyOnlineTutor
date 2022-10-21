@@ -47,10 +47,10 @@ class CoursesController extends MyAppController
         if (!$post = $frm->getFormDataFromArray($posts, ['course_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        if($posts['price_from'] == ''){
+        if ($posts['price_from'] == '') {
             $post['price_from'] = $posts['price_from'];
         }
-        if($posts['price_till'] == '') {
+        if ($posts['price_till'] == '') {
             $post['price_till'] = $posts['price_till'];
         }
         $post['course_status'] = Course::PUBLISHED;
@@ -99,10 +99,10 @@ class CoursesController extends MyAppController
         $srch->addCondition('course_slug', '=', $slug);
         $srch->joinTable(TeacherStat::DB_TBL, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
         $srch->joinTable(
-            User::DB_TBL_LANG,
-            'LEFT JOIN',
-            'userlang.userlang_user_id = teacher.user_id AND userlang.userlang_lang_id = ' . $this->siteLangId,
-            'userlang'
+                User::DB_TBL_LANG,
+                'LEFT JOIN',
+                'userlang.userlang_user_id = teacher.user_id AND userlang.userlang_lang_id = ' . $this->siteLangId,
+                'userlang'
         );
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('teacher.user_username', '!=', "");
@@ -117,7 +117,7 @@ class CoursesController extends MyAppController
         /* get more course by the same teacher */
         $courseObj = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
         $moreCourses = $courseObj->getMoreCourses($course['course_teacher_id'], $course['course_id']);
-        /* get intended learner section details */       
+        /* get intended learner section details */
         $intended = new IntendedLearner();
         $intendedLearners = $intended->get($course['course_id'], $this->siteLangId);
         /* get curriculum */
@@ -169,10 +169,10 @@ class CoursesController extends MyAppController
         /* get course details */
         $srch = new SearchBase(Course::DB_TBL, 'course');
         $srch->joinTable(
-            Course::DB_TBL_LANG,
-            'LEFT JOIN',
-            'crsdetail.course_id = course.course_id',
-            'crsdetail'
+                Course::DB_TBL_LANG,
+                'LEFT JOIN',
+                'crsdetail.course_id = course.course_id',
+                'crsdetail'
         );
         $srch->addFld('crsdetail.course_title');
         $srch->addCondition('course.course_id', '=', $courseId);
@@ -268,10 +268,10 @@ class CoursesController extends MyAppController
         }
         $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE, 'lecsrc');
         $srch->joinTable(
-            Lecture::DB_TBL,
-            'INNER JOIN',
-            'lecture.lecture_id = lecsrc.lecsrc_lecture_id',
-            'lecture'
+                Lecture::DB_TBL,
+                'INNER JOIN',
+                'lecture.lecture_id = lecsrc.lecsrc_lecture_id',
+                'lecture'
         );
         $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultipleFields(['lecsrc_link', 'lecture.lecture_title', 'lecsrc_course_id', 'lecsrc_id', 'lecsrc_lecture_id']);
@@ -284,10 +284,10 @@ class CoursesController extends MyAppController
         $this->set('resource', $resource);
         /* get free lectures */
         $srch1->joinTable(
-            Lecture::DB_TBL,
-            'INNER JOIN',
-            'lecture.lecture_id = lecsrc.lecsrc_lecture_id',
-            'lecture'
+                Lecture::DB_TBL,
+                'INNER JOIN',
+                'lecture.lecture_id = lecsrc.lecsrc_lecture_id',
+                'lecture'
         );
         $srch1->addFld('lecture_duration');
         $srch1->addCondition('lecsrc_course_id', '=', $resource['lecsrc_course_id']);
@@ -307,7 +307,7 @@ class CoursesController extends MyAppController
             FatUtility::dieJsonSuccess(['data' => []]);
         }
         $filterTypes = Course::getFilterTypes();
-        
+
         $courses = $this->getCourses($keyword);
         $data = [];
         if ($courses) {
@@ -438,10 +438,10 @@ class CoursesController extends MyAppController
     {
         $srch = new SearchBase(Course::DB_TBL_LANG, 'crsdetail');
         $srch->joinTable(
-            Course::DB_TBL,
-            'INNER JOIN',
-            'crsdetail.course_id = course.course_id',
-            'course'
+                Course::DB_TBL,
+                'INNER JOIN',
+                'crsdetail.course_id = course.course_id',
+                'course'
         );
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
@@ -456,4 +456,5 @@ class CoursesController extends MyAppController
         }
         return [];
     }
+
 }
