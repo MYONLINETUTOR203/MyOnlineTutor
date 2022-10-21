@@ -76,6 +76,9 @@ class AdminPrivilege
     const SECTION_COURSE_REVIEWS = 68;
     const SECTION_SETTLEMENTS_REPORT = 69;
     const SECTION_COURSE_LANGUAGES = 70;
+    const SECTION_QUESTIONS = 71;
+    const SECTION_QUIZZES = 72;
+
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -191,12 +194,14 @@ class AdminPrivilege
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
             static::SECTION_CATEGORIES => Label::getLabel('MSG_CATEGORIES', $langId),
             static::SECTION_COURSE => Label::getLabel('MSG_COURSE', $langId),
-            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_MANAGE_CERTIFICATES', $langId),
             static::SECTION_COURSE_REQUESTS => Label::getLabel('MSG_COURSE_REQUESTS', $langId),
             static::SECTION_COURSE_REFUND_REQUESTS => Label::getLabel('MSG_COURSE_REFUND_REQUESTS', $langId),
             static::SECTION_COURSE_REVIEWS => Label::getLabel('MSG_COURSE_REVIEWS', $langId),
             static::SECTION_COURSE_LANGUAGES => Label::getLabel('MSG_COURSE_LANGUAGES', $langId),
             static::SECTION_COURSES_ORDERS => Label::getLabel('MSG_COURSE_ORDERS', $langId),
+            static::SECTION_QUESTIONS => Label::getLabel('MSG_QUESTIONS', $langId),
+            static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_CERTIFICATES', $langId),
+            static::SECTION_QUIZZES => Label::getLabel('MSG_QUIZZES', $langId),
         ];
         return $arr;
     }
@@ -1576,7 +1581,7 @@ class AdminPrivilege
     public function canEditPackageClasses(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
-    }
+    } 
 
     /**
      * Can View Course Reviews
@@ -1591,7 +1596,7 @@ class AdminPrivilege
 
     /**
      * Can Edit Course Reviews
-     * 
+     *
      * @param bool $returnResult
      * @return type
      */
@@ -1620,5 +1625,27 @@ class AdminPrivilege
     public function canEditCourseLanguage(bool $returnResult = false)
     {
         return $this->checkPermission(static::SECTION_COURSE_LANGUAGES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Categories
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewQuestions(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUESTIONS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can View Quizzes
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewQuizzes(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_QUIZZES, static::PRIVILEGE_READ, $returnResult);
     }
 }

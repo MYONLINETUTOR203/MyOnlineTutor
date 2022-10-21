@@ -1,31 +1,27 @@
 <div class="layout--<?php echo $layoutDir; ?>" style="width:100%;">
     <div class="certificate " style="width:2070px; height:1680px;background-image: url('<?php echo $backgroundImg ?>'); background-size: 100% 100%; background-repeat: no-repeat;">
         <div class="certificate-content">
-            <h1 class="certificate-title "><b><?php echo $content['heading'] ?></b></h1>
+            <h1 class="certificate-title "><b>{heading}</b></h1>
             <div class="certificate-subtitle ">
-                <?php echo $content['content_part_1'] ?>
+                {content-1}
             </div>
             <div class="certificate-author ">
-                <b><?php echo $content['learner'] ?></b>
+                <b>{learner}</b>
             </div>
             <div class="certificate-meta ">
-                <?php echo CommonHelper::renderHtml($content['content_part_2']) ?>
+                {content-2}
             </div>
             <div class="certificate-signs">
                 <table border="0" cellspacing="0" style="width:100%">
                     <tr>
                         <td width="33.3%" class="certificate-signs__left">
-                            <b>
-                                <?php echo $content['trainer'] ?>
-                            </b>
+                            {trainer}
                         </td>
                         <td width="33.3%" class="certificate-signs__middle">
                             <img width="140" height="47" src="<?php echo $logoImg ?>" alt="">
                         </td>
                         <td width="33.3%" class="certificate-signs__right">
-                            <b>
-                                <?php echo $content['certificate_number'] ?>
-                            </b>
+                            {certificate-number}
                         </td>
                     </tr>
                 </table>

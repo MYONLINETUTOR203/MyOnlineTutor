@@ -18,8 +18,8 @@ if (count($allClasses) == 0) {
             foreach ($classes as $class) {
                 $classId = ($siteUserType == User::LEARNER) ? $class['ordcls_id'] : $class['grpcls_id'];
                 $classScheduled = (($siteUserType == User::TEACHER && $class['grpcls_status'] == GroupClass::SCHEDULED) ||
-                        ($siteUserType == User::LEARNER && $class['ordcls_status'] == OrderClass::SCHEDULED));
-                ?>
+                    ($siteUserType == User::LEARNER && $class['ordcls_status'] == OrderClass::SCHEDULED));
+            ?>
                 <!-- [ LESSON CARD ========= -->
                 <div class="card-landscape">
                     <div class="card-landscape__colum card-landscape__colum--first">
@@ -29,11 +29,14 @@ if (count($allClasses) == 0) {
                         </div>
                         <?php if ($classScheduled) { ?>
                             <div class="timer">
-                                <div class="timer__media"><span><svg class="icon icon--clock icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use></svg></span></div>
+                                <div class="timer__media"><span><svg class="icon icon--clock icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
+                                        </svg></span></div>
                                 <div class="timer__content">
                                     <?php if ($class['grpcls_starttime_unix'] > $class['grpcls_currenttime_unix']) { ?>
                                         <div class="timer__controls countdowntimer timer-js" id="countdowntimer-<?php echo $classId; ?>" remainingTime="<?php echo $class['grpcls_remaining_unix']; ?>">00:00:00:00</div>
-                                    <?php } if (empty($class['grpcls_booked_seats']) && $class['grpcls_starttime_unix'] < $class['grpcls_currenttime_unix']) { ?>
+                                    <?php }
+                                    if (empty($class['grpcls_booked_seats']) && $class['grpcls_starttime_unix'] < $class['grpcls_currenttime_unix']) { ?>
                                         <span class="color-red"><?php echo Label::getLabel('LBL_NO_ONE_HAS_BOOKED'); ?></span>
                                     <?php } elseif (!empty($class['class_time_info'])) { ?>
                                         <span class="color-red"><?php echo Label::getLabel($class['class_time_info']); ?></span>
@@ -67,7 +70,7 @@ if (count($allClasses) == 0) {
                                     <div class="d-flex align-items-center">
                                         <a href="javascript:void(0);" onclick="viewAssignedPlan('<?php echo $class['plan_id']; ?>');" class="attachment-file">
                                             <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
                                             </svg>
                                             <?php echo $class['plan_title'] ?>
                                         </a>
@@ -79,6 +82,31 @@ if (count($allClasses) == 0) {
                                 <?php } elseif ($siteUserType == User::TEACHER) { ?>
                                     <a href="javascript:void(0);" onclick="listLessonPlans('<?php echo $class['grpcls_id']; ?>', '<?php echo Plan::PLAN_TYPE_CLASSES; ?>');" class="btn btn--transparent btn--addition color-black btn--small"><?php echo Label::getLabel('LBL_ATTACH_LESSON_PLAN'); ?></a>
                                 <?php } ?>
+
+                                <?php if ($class['quiz_count'] > 0) { ?>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:void(0);" onclick="viewQuizzes('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>');" class="attachment-file">
+                                            <svg class="icon icon--issue icon--attachement icon--xsmall color-black">
+                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                            </svg>
+                                            <?php 
+                                            $lbl = Label::getLabel('LBL_{quiz-count}_QUIZZES_ATTACHED');
+                                            echo str_replace('{quiz-count}', $class['quiz_count'], $lbl);
+                                            ?>
+                                        </a>
+                                        <?php if ($siteUserType == User::TEACHER) { ?>
+                                            <a href="javascript:void(0);" onclick="quizListing('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>')" class="underline color-black  btn btn--transparent btn--small mx-1">
+                                                <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                                            </a>
+                                        <?php } ?>
+                                    </div>
+                                <?php } else { ?>
+                                    <?php if ($siteUserType == User::TEACHER) { ?>
+                                        <a href="javascript:void(0);" onclick="quizListing('<?php echo $class['grpcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>')" class="btn btn--transparent btn--addition color-black btn--small mx-1">
+                                            <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                        </a>
+                                    <?php } ?>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
@@ -88,7 +116,7 @@ if (count($allClasses) == 0) {
                                 <?php if ($siteUserType == User::LEARNER) { ?>
                                     <div class="profile-meta__media">
                                         <span class="avtar" data-title="<?php echo CommonHelper::getFirstChar($class['teacher_first_name']); ?>">
-                                            <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $class['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL),CONF_DEF_CACHE_TIME, '.jpg') . '" alt="' . $class['teacher_first_name'] . '" />'; ?>
+                                            <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $class['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '" alt="' . $class['teacher_first_name'] . '" />'; ?>
                                         </span>
                                     </div>
                                     <div class="profile-meta__details">
@@ -100,20 +128,24 @@ if (count($allClasses) == 0) {
                             <div class="actions-group">
                                 <?php if ($class['grpcls_booked_seats'] > 0) { ?>
                                     <a href="<?php echo MyUtility::makeUrl('Classes', 'view', [$classId]); ?>" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--enter icon--18"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#enter'; ?>"></use></svg>
+                                        <svg class="icon icon--enter icon--18">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#enter'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_ENTER_CLASSROOM'); ?></div>
                                     </a>
-                                <?php } if ($class['canEdit']) { ?>
+                                <?php }
+                                if ($class['canEdit']) { ?>
                                     <a href="javascript:void(0);" onclick="addForm('<?php echo $class['grpcls_id']; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--edit icon--small">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#edit'; ?>"></use>
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#edit'; ?>"></use>
                                         </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_EDIT'); ?></div>
                                     </a>
-                                <?php } if ($class['canCancelClass']) { ?>
+                                <?php }
+                                if ($class['canCancelClass']) { ?>
                                     <a href="javascript:void(0);" onclick="cancelForm('<?php echo $classId; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
                                         <svg class="icon icon--cancel icon--small">
-                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#cancel'; ?>"></use>
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#cancel'; ?>"></use>
                                         </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_CANCEL'); ?></div>
                                     </a>
@@ -125,22 +157,28 @@ if (count($allClasses) == 0) {
                                         $issueReportBtn = '<a href="' . MyUtility::makeUrl('issues', 'index', [$class['grpcls_id']]) . '" target="_blank" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">';
                                     }
                                     echo $issueReportBtn;
-                                    ?>
-                                    <svg class="icon icon--issue-details icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#view-report'; ?>"></use></svg>
+                                ?>
+                                    <svg class="icon icon--issue-details icon--small">
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#view-report'; ?>"></use>
+                                    </svg>
                                     <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_VIEW_ISSUE_DETAIL'); ?></div>
                                     </a>
-                                    <?php
+                                <?php
                                 }
                                 if ($class['canReportClass']) {
-                                    ?>
+                                ?>
                                     <a href="javascript:void(0);" onclick="issueForm('<?php echo $class['ordcls_id']; ?>', '<?php echo AppConstant::GCLASS; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--issue-reported icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#report-issue'; ?>"></use></svg>
+                                        <svg class="icon icon--issue-reported icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#report-issue'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_REPORT_ISSUE'); ?></div>
                                     </a>
                                 <?php } ?>
                                 <?php if ($class['canRateClass']) { ?>
                                     <a href="javascript:void(0);" onclick="feedbackForm('<?php echo $classId; ?>');" class="btn btn--bordered btn--shadow btn--equal margin-1 is-hover">
-                                        <svg class="icon icon--reschedule icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lesson-view'; ?>"></use></svg>
+                                        <svg class="icon icon--reschedule icon--small">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#lesson-view'; ?>"></use>
+                                        </svg>
                                         <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_Rate'); ?></div>
                                     </a>
                                 <?php } ?>
@@ -164,8 +202,8 @@ echo FatUtility::createHiddenFormFromData($post, ['name' => 'frmSearchPaging']);
 $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 ?>
 <script>
-    $(document).ready(function () {
-        $('.countdowntimer').each(function (i) {
+    $(document).ready(function() {
+        $('.countdowntimer').each(function(i) {
             $("#" + $(this).attr('id')).appTimer();
         });
     });

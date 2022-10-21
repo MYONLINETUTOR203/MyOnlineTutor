@@ -103,7 +103,7 @@ if (!empty($popularLanguages)) {
                     <?php foreach ($popularLanguages as $language) { ?>
                         <div class="flag__box">
                             <div class="flag__media">
-                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_MEDIUM]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
+                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_SMALL]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
                             </div>
                             <div class="flag__name">
                                 <span><?php echo $language['tlang_name'] ?></span>
@@ -119,7 +119,8 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if ($topRatedTeachers) { ?>
+<?php }
+if ($topRatedTeachers) { ?>
     <section class="section padding-bottom-5">
         <div class="container container--narrow">
             <div class="section__head">
@@ -167,9 +168,13 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if (!empty($browseTutorPage)) { ?>
-    <?php echo html_entity_decode($browseTutorPage); ?>
-<?php }if (count($classes) > 0) { ?>
+<?php } ?>
+<?php
+if (!empty($browseTutorPage)) {
+    echo html_entity_decode($browseTutorPage);
+}
+?>
+<?php if (count($classes) > 0) { ?>
     <section class="section section--gray section--upcoming-class">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
@@ -188,7 +193,7 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if (count($courses) > 0) { ?>
+<?php } if (count($courses) > 0) { ?>
     <section class="section section--gray padding-bottom-20 section--popular-courses">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
@@ -200,7 +205,8 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if ($testmonialList) { ?>
+<?php } if ($testmonialList) { ?>
+
     <section class="section section--quote">
         <div class="container container--narrow">
             <div class="quote-slider">

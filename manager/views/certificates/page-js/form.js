@@ -5,6 +5,7 @@
         if (!$(frm).validate()) {
             return;
         }
+        fcom.process();
         var data = new FormData(frm);
         fcom.ajaxMultipart(fcom.makeUrl('Certificates', 'setupMedia'), data, function (response) {
             $(frm)[0].reset();
@@ -17,17 +18,16 @@
             return;
         }
         var data = fcom.frmData(frm);
-        data += "&heading=" + $.trim($('.contentHeadingJs').text());
-        data += "&content_part_1=" + $.trim($('.contentPart1Js').text());
-        data += "&learner=" + $.trim($('.contentLearnerJs').text());
-        data += "&content_part_2=" + $.trim($('.contentPart2Js').text());
-        data += "&trainer=" + $.trim($('.contentTrainerJs').text());
-        data += "&certificate_number=" + $.trim($('.contentCertNoJs').text());
+        data += "&heading=" + encodeURIComponent($.trim($('.contentHeadingJs').text()));
+        data += "&content_part_1=" + encodeURIComponent($.trim($('.contentPart1Js').text()));
+        data += "&learner=" + encodeURIComponent($.trim($('.contentLearnerJs').text()));
+        data += "&content_part_2=" + encodeURIComponent($.trim($('.contentPart2Js').text()));
+        data += "&trainer=" + encodeURIComponent($.trim($('.contentTrainerJs').text()));
+        data += "&certificate_number=" + encodeURIComponent($.trim($('.contentCertNoJs').text()));
         fcom.updateWithAjax(fcom.makeUrl('Certificates', 'setup'), data, function (t) {
             if (preview == 1) {
                 preview = 0;
-                window.open(fcom.makeUrl('Certificates', 'generate', [$('select[name="certpl_lang_id"]').val()]), '_blank');
-                // $('#previewCertificateJs')[0].click();
+                window.open(fcom.makeUrl('Certificates', 'generate', [$('input[name="certpl_id"]').val()]), '_blank');
             }
         });
         return false;
@@ -41,15 +41,15 @@
     };
     resetToDefault = function () {
         var data = fcom.frmData(document.frmCertificate);
-        fcom.ajax(fcom.makeUrl('Certificates', 'getDefaultContent'), data, function(response) {
+        fcom.ajax(fcom.makeUrl('Certificates', 'getDefaultContent'), data, function (response) {
             if (response.data) {
-                $('.contentHeadingJs').text(response.data.heading);
-                $('.contentPart1Js').text(response.data.content_part_1);
-                $('.contentLearnerJs').text(response.data.learner);
-                $('.contentPart2Js').text(response.data.content_part_2);
-                $('.contentTrainerJs').text(response.data.trainer);
-                $('.contentCertNoJs').text(response.data.certificate_number);
+                $('.contentHeadingJs').html(response.data.heading);
+                $('.contentPart1Js').html(response.data.content_part_1);
+                $('.contentLearnerJs').html(response.data.learner);
+                $('.contentPart2Js').html(response.data.content_part_2);
+                $('.contentTrainerJs').html(response.data.trainer);
+                $('.contentCertNoJs').html(response.data.certificate_number);
             }
         }, { fOutMode: 'json' });
-    }
+    };
 })();

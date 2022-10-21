@@ -35,10 +35,7 @@ class Afile extends FatModel
     const TYPE_LESSON_PLAN_IMAGE = 34;
     const TYPE_BLOG_CONTRIBUTION = 36;
     const TYPE_BANNER_SECOND_IMAGE = 38;
-    const TYPE_SPOKEN_LANGUAGES = 39;
-    const TYPE_FLAG_SPOKEN_LANGUAGES = 40;
-    const TYPE_TEACHING_LANGUAGES = 41;
-    const TYPE_FLAG_TEACHING_LANGUAGES = 42;
+    const TYPE_TEACHING_LANGUAGES = 42;
     const TYPE_BLOG_PAGE_IMAGE = 43;
     const TYPE_LESSON_PAGE_IMAGE = 44;
     const TYPE_PWA_APP_ICON = 46;
@@ -206,7 +203,7 @@ class Afile extends FatModel
         }
         $this->fileData['file_id'] = $record->getId();
         if ($unique) {
-            
+
             $stmt = [
                 'vals' => [$this->type, $this->langId, $recordId, $this->fileData['file_id']],
                 'smt' => 'file_type = ? AND file_lang_id = ? AND file_record_id = ? AND file_id != ?'
@@ -624,10 +621,7 @@ class Afile extends FatModel
             case static::TYPE_LESSON_PACKAGE_IMAGE:
             case static::TYPE_LESSON_PLAN_IMAGE:
             case static::TYPE_BANNER_SECOND_IMAGE:
-            case static::TYPE_SPOKEN_LANGUAGES:
-            case static::TYPE_FLAG_SPOKEN_LANGUAGES:
             case static::TYPE_TEACHING_LANGUAGES:
-            case static::TYPE_FLAG_TEACHING_LANGUAGES:
             case static::TYPE_OPENGRAPH_IMAGE:
                 return ['png', 'jpg', 'jpeg', 'gif', 'svg'];
             case static::TYPE_BLOG_CONTRIBUTION:
@@ -802,25 +796,10 @@ class Afile extends FatModel
                 static::SIZE_MEDIUM => [300, 300],
                 static::SIZE_LARGE => [600, 600]
             ],
-            static::TYPE_SPOKEN_LANGUAGES => [
-                static::SIZE_SMALL => [100, 100],
-                static::SIZE_MEDIUM => [300, 300],
-                static::SIZE_LARGE => [600, 600]
-            ],
-            static::TYPE_FLAG_SPOKEN_LANGUAGES => [
-                static::SIZE_SMALL => [100, 100],
-                static::SIZE_MEDIUM => [300, 300],
-                static::SIZE_LARGE => [600, 600]
-            ],
             static::TYPE_TEACHING_LANGUAGES => [
-                static::SIZE_SMALL => [100, 63],
-                static::SIZE_MEDIUM => [250, 163],
-                static::SIZE_LARGE => [350, 263]
-            ],
-            static::TYPE_FLAG_TEACHING_LANGUAGES => [
                 static::SIZE_SMALL => [60, 60],
-                static::SIZE_MEDIUM => [60, 60],
-                static::SIZE_LARGE => [150, 150]
+                static::SIZE_MEDIUM => [120, 120],
+                static::SIZE_LARGE => [240, 240]
             ],
             static::TYPE_BLOG_PAGE_IMAGE => [
                 static::SIZE_SMALL => [100, 100],
@@ -877,7 +856,17 @@ class Afile extends FatModel
                 static::SIZE_SMALL => [300, 169],
                 static::SIZE_MEDIUM => [500, 281],
                 static::SIZE_LARGE => [1000, 563]
-            ]
+            ],
+            static::TYPE_CERTIFICATE_BACKGROUND_IMAGE => [
+                static::SIZE_SMALL => [100, 100],
+                static::SIZE_MEDIUM => [300, 300],
+                static::SIZE_LARGE => [2070, 1680]
+            ],
+            static::TYPE_CERTIFICATE_IMAGE => [
+                static::SIZE_SMALL => [100, 100],
+                static::SIZE_MEDIUM => [300, 300],
+                static::SIZE_LARGE => [2070, 1680]
+            ],
         ];
         if ($size === null) {
             return $arr[$this->type];
@@ -897,7 +886,6 @@ class Afile extends FatModel
             static::TYPE_HOME_BANNER_DESKTOP => Label::getLabel('IMGA_Home_Page_Banner'),
             static::TYPE_CPAGE_BACKGROUND_IMAGE => Label::getLabel('IMGA_CPAGE_BACKGROUND_IMAGE'),
             static::TYPE_TEACHING_LANGUAGES => Label::getLabel('IMGA_TEACHING_LANGUAGES'),
-            static::TYPE_FLAG_TEACHING_LANGUAGES => Label::getLabel('IMGA_TEACHING_LANGUAGES_FLAG'),
             static::TYPE_BLOG_POST_IMAGE => Label::getLabel('IMGA_BLOG_POST_IMAGE'),
         ];
     }
@@ -982,10 +970,7 @@ class Afile extends FatModel
             case static::TYPE_LESSON_PLAN_IMAGE:
             case static::TYPE_BLOG_CONTRIBUTION:
             case static::TYPE_BANNER_SECOND_IMAGE:
-            case static::TYPE_SPOKEN_LANGUAGES:
-            case static::TYPE_FLAG_SPOKEN_LANGUAGES:
             case static::TYPE_TEACHING_LANGUAGES:
-            case static::TYPE_FLAG_TEACHING_LANGUAGES:
             case static::TYPE_BLOG_PAGE_IMAGE:
             case static::TYPE_LESSON_PAGE_IMAGE:
             case static::TYPE_OPENGRAPH_IMAGE:
@@ -1041,6 +1026,7 @@ class Afile extends FatModel
         }
         echo $fileData;
     }
+    
     /**
      * Show Video
      *
@@ -1048,10 +1034,10 @@ class Afile extends FatModel
      * @param integer $subRecordId
      * @return video
      */
-    public function showPdf(int $recordId, int $subRecordId = 0)
+    public function showPdf(int $recordId)
     {
         ob_end_clean();
-        $file = $this->getFile($recordId, $subRecordId);
+        $file = $this->getFile($recordId);
         $filePath = CONF_UPLOADS_PATH . $file['file_path'];
         $fileExt = strtolower(pathinfo($file['file_name'], PATHINFO_EXTENSION));
         header("Content-Type: " . static::getContentType($fileExt));

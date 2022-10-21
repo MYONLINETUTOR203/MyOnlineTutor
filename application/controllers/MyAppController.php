@@ -67,7 +67,11 @@ class MyAppController extends FatController
                 if (strtolower($controllerName) == 'tutorials' || strtolower($controllerName) == 'coursepreview') {
                     $viewType = 'course-personal';
                 }
+                if (strtolower($controllerName) == 'userquiz' || strtolower($controllerName) == 'quizreview') {
+                    $viewType = 'quiz';
+                }
             }
+
             $this->_template->addCss([
                 'css/common-' . $this->siteLanguage['language_direction'] . '.css',
                 'css/' . $viewType . '-' . $this->siteLanguage['language_direction'] . '.css'

@@ -643,6 +643,12 @@ class Order extends MyAppModel
                 $this->error = $class->getError();
                 return false;
             }
+
+            $quiz = new QuizLinked(0, $this->userId);
+            if (!$quiz->bindUserQuiz($record['ordcls_grpcls_id'], AppConstant::GCLASS)) {
+                $this->error = $quiz->getError();
+                return false;
+            }
         }
         return true;
     }

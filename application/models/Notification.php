@@ -39,6 +39,10 @@ class Notification extends FatModel
     const TYPE_SUBSCRIPTION_CANCELLED = 19;
 
     const TYPE_PACKAGE_CANCELLED = 20;
+
+    const TYPE_QUIZ_ATTACHED = 21;
+    const TYPE_QUIZ_REMOVED = 22;
+    const TYPE_QUIZ_COMPLETED = 23;
     
     private $userId;
     private $type;
@@ -168,6 +172,18 @@ class Notification extends FatModel
             case static::TYPE_PACKAGE_CANCELLED:
                 $title = Label::getLabel('NOTIFI_TITLE_TYPE_PACKAGE_CANCELLED', $langId);
                 $desc = Label::getLabel('NOTIFI_DESC_TYPE_PACKAGE_CANCELLED', $langId);
+                break;
+            case static::TYPE_QUIZ_ATTACHED:
+                $title = Label::getLabel('NOTIFI_TITLE_TYPE_QUIZ_ATTACHED', $langId);
+                $desc = Label::getLabel('NOTIFI_DESC_TYPE_QUIZ_ATTACHED', $langId);
+                break;
+            case static::TYPE_QUIZ_REMOVED:
+                $title = Label::getLabel('NOTIFI_TITLE_TYPE_QUIZ_REMOVED', $langId);
+                $desc = Label::getLabel('NOTIFI_DESC_TYPE_QUIZ_REMOVED', $langId);
+                break;
+            case static::TYPE_QUIZ_COMPLETED:
+                $title = Label::getLabel('NOTIFI_TITLE_TYPE_QUIZ_COMPLETED', $langId);
+                $desc = Label::getLabel('NOTIFI_DESC_TYPE_QUIZ_COMPLETED', $langId);
                 break;
         }
         $this->title = str_replace(array_keys($vars), $vars, $title);

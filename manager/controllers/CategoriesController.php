@@ -83,7 +83,8 @@ class CategoriesController extends AdminBaseController
             'arrListing' => $data,
             'postedData' => $post,
             'canEdit' => $this->objPrivilege->canEditCategories(true),
-            'canViewCourses' => $this->objPrivilege->canViewCourses(true)
+            'canViewCourses' => $this->objPrivilege->canViewCourses(true),
+            'canViewQuestions' => $this->objPrivilege->canViewQuestions(true)
         ]);
         $this->_template->render(false, false);
     }
@@ -221,17 +222,24 @@ class CategoriesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getForm(int $catgId = 0): Form
+    private function getForm(int $catgId = 0, int $type = 0): Form
     {
         $frm = new Form('frmCategory');
         $fld = $frm->addHiddenField('', 'cate_id');
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_IDENTIFIER'), 'cate_identifier')->requirements()->setRequired();
-        $fld = $frm->addHiddenField('', 'cate_type', Category::TYPE_COURSE);
-        $fld->requirements()->setIntPositive();
-        $parentCategories = Category::getCategoriesByParentId(
-            $this->siteLangId, 0, Category::TYPE_COURSE, false, false
+
+        $fld = $frm->addSelectBox(
+            Label::getLabel('LBL_TYPE'),
+            'cate_type',
+            Category::getCategoriesTypes(),
+            '',
+            [],
+            Label::getLabel('LBL_ROOT_CATEGORY')
         );
+        $fld->requirements()->setRequired();
+
+        $parentCategories = Category::getCategoriesByParentId($this->siteLangId, 0, $type, false, false);
         if ($catgId > 0) {
             unset($parentCategories[$catgId]);
         }
@@ -270,7 +278,11 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
+<<<<<<< HEAD
         $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_COURSE);
+=======
+        $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_QUESTION);
+>>>>>>> develop_quiz
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         return $frm;

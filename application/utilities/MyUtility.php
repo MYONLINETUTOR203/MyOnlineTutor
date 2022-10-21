@@ -379,6 +379,9 @@ class MyUtility extends FatUtility
             'courseProgressPercent' => Label::getLabel('LBL_{percent}%_COMPLETED'),
             'confirmCourseSubmission' => Label::getLabel('LBL_PLEASE_CONFIRM_YOU_WANT_TO_SUBMIT_COURSE_FOR_APPROVAL?'),
             'searching' => Label::getLabel('LBL_Searching'),
+            'selectQuestions' => Label::getLabel('LBL_PLEASE_ADD_QUESTION(S)'),
+            'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION'),
+            'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
         ];
         foreach ($siteLanguages as $val) {
             $jsVariables['language' . $val['language_id']] = $val['language_direction'];
@@ -730,6 +733,38 @@ class MyUtility extends FatUtility
         $fld1->setRequiredStarPosition(Form::FORM_REQUIRED_STAR_WITH_NONE);
         $frm->addSubmitButton('', 'btnSubmit', Label::getLabel('LBL_SUBSCRIBE'));
         return $frm;
+    }
+
+    public static function convertDuration($duration, $hours = true, $minutes = true, $seconds = false, $format = true)
+    {
+        $formattedTime = [];
+        $time = [];
+        if ($hours) {
+            $hrs = floor($duration / 3600);
+            if ($hrs > 0) {
+                $formattedTime[] =  $hrs . strtolower(Label::getLabel('LBL_H'));
+            }
+            $time[] = $hrs;
+        }
+        if ($minutes) {
+            $min = gmdate("i", $duration);
+            if ($min > 0) {
+                $formattedTime[] = $min . strtolower(Label::getLabel('LBL_M'));
+            }
+            $time[] = $min;
+        }
+        if ($seconds) {
+            $sec = gmdate("s", $duration);
+            if ($sec > 0) {
+                $formattedTime[] = $sec . strtolower(Label::getLabel('LBL_S'));
+            }
+            $time[] = $sec;
+        }
+        if ($format == true) {
+            return (count($formattedTime) > 0) ? implode(' ', $formattedTime) : '';
+        } else {
+            return (count($time) > 0 && array_sum($time) > 0) ? implode(':', $time) : '';
+        }
     }
 
 }

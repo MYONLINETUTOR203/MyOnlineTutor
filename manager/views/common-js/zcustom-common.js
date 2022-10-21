@@ -45,6 +45,7 @@ function isJson(str) {
                 layout = langLbl['language' + lang_id];
                 for (x in editors) {
                     $('#idContent' + editors[x]).contents().find("body").css('direction', layout);
+                    $('#' + editors[x] + "grp").parent().parent().attr('dir', layout);
                 }
             }, 100);
         },

@@ -82,4 +82,74 @@ class CertificatesController extends MyAppController
         ]);
         $this->_template->render();
     }
+
+    /**
+     * Render Certificate Detail Page For Quiz
+     *
+     * @param int $attemptId
+     */
+    public function evaluation(int $attemptId)
+    {
+        $quiz = new QuizAttempt($attemptId);
+        if (!$data = $quiz->getById()) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        if ($data['quizat_active'] == AppConstant::NO) {
+            FatUtility::exitWithErrorCode(404);
+        }
+
+        if ($data['quilin_record_type'] == AppConstant::GCLASS) {
+            $srch = new GroupClassSearch($this->siteLangId, 0, 0);
+            $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
+            $srch->addMultipleFields([
+                'IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as session_title',
+                'grpcls_slug',
+                'teacher.user_first_name as teacher_first_name',
+                'teacher.user_last_name as teacher_last_name',
+                'teacher.user_username as teacher_username',
+                'teacher.user_username',
+                'testat.testat_ratings',
+                'testat.testat_reviewes'
+            ]);
+            $srch->setPageSize(1);
+            $session = FatApp::getDb()->fetch($srch->getResultSet());
+            $learner = User::getAttributesById($data['quizat_user_id'], [
+                'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+            ]);
+            $session = $session + $learner;
+        } else {
+            $srch = new LessonSearch($this->siteLangId, 0, 0);
+            $srch->joinTable(User::DB_TBL_STAT, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
+            $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
+            $srch->setPageSize(1);
+            $srch->addMultipleFields([
+                'ordles_tlang_id',
+                'ordles_duration',
+                'teacher.user_first_name as teacher_first_name',
+                'teacher.user_last_name as teacher_last_name',
+                'teacher.user_username as teacher_username',
+                'testat.testat_ratings',
+                'testat.testat_reviewes',
+                'learner.user_first_name as learner_first_name',
+                'learner.user_last_name as learner_last_name',
+            ]);
+            $session = FatApp::getDb()->fetch($srch->getResultSet());
+            $title = Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson');
+            $session['session_title'] = str_replace(
+                ['{teach-lang}', '{n}'],
+                [
+                    TeachLanguage::getLangById($session['ordles_tlang_id'], $this->siteLangId),
+                    $session['ordles_duration']
+                ],
+                $title
+            );
+        }
+
+        $this->sets([
+            'id' => $attemptId,
+            'data' => $data,
+            'session' => $session,
+        ]);
+        $this->_template->render();
+    }
 }

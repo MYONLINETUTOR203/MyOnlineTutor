@@ -38,7 +38,7 @@ $proficiencyField = $frm->getField('tereq_slang_proficiency[]');
                                                     <label class="selection__trigger">
                                                         <input name="<?php echo $teachLangField->getName(); ?>[]" value="<?php echo $key; ?>" <?php echo in_array($key, $teachLangField->value) ? 'checked' : ''; ?> class="selection__trigger-input" type="checkbox">
                                                         <span class="selection__trigger-action">
-                                                            <span class="selection__trigger-label"><span class="flag-icon flag-icon--s"><img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $key, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt=""></span><?php echo $value; ?></span>
+                                                            <span class="selection__trigger-label"><?php echo $value; ?></span>
                                                             <span class="selection__trigger-icon"></span>
                                                         </span>
                                                     </label>
@@ -68,19 +68,12 @@ $proficiencyField = $frm->getField('tereq_slang_proficiency[]');
                                                         $isLangSpeak = true;
                                                     }
                                                 }
-                                            ?>
+                                                ?>
                                                 <div class="selection selection--select slanguage-<?php echo $key; ?> <?php echo ($isLangSpeak) ? 'is-selected' : ''; ?>">
                                                     <label class="selection__trigger ">
                                                         <input type="checkbox" value="<?php echo $key; ?>" class="slanguage-checkbox-js slanguage-checkbox-<?php echo $key; ?>" onchange="changeSpeakLang(this, <?php echo $key; ?>);" name="<?php echo $speakLangField->getName(); ?>" <?php echo ($isLangSpeak) ? 'checked' : ''; ?>>
                                                         <span class="selection__trigger-action">
-                                                            <span class="selection__trigger-label">
-                                                                <span class="flag-icon flag-icon--s">
-                                                                    <?php
-                                                                    $languageFlagImage = FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_SPOKEN_LANGUAGES, $key, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_IMG_CACHE_TIME, '.jpg');
-                                                                    echo '<img src="' . $languageFlagImage . '" alt="' . $value . '">';
-                                                                    ?>
-                                                                </span> <?php echo $value; ?>
-                                                            </span>
+                                                            <span class="selection__trigger-label"><?php echo $value; ?></span>
                                                             <span class="selection__trigger-icon"></span>
                                                         </span>
                                                     </label>

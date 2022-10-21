@@ -158,6 +158,7 @@ class ClassSearch extends YocoachSearch
         $currentTimeUnix = strtotime(MyDate::formatDate(date('Y-m-d H:i:s')));
         $teachLangIds = array_column($rows, 'grpcls_tlang_id');
         $classPlans = Plan::getGclassPlans($classIds);
+        $classQuizzes = QuizLinked::getQuizzes($classIds, AppConstant::GCLASS);
         $classIssues = Issue::getClassIssueIds($recordIds, $this->userType);
         $teachLangs = TeachLanguage::getNames($this->langId, $teachLangIds);
         $countries = Country::getNames($this->langId, array_column($rows, 'teacher_country_id'));
@@ -174,6 +175,7 @@ class ClassSearch extends YocoachSearch
             $row['grpcls_remaining_unix'] = $row['grpcls_starttime_unix'] - $row['grpcls_currenttime_unix'];
             $recordId = ($this->userType == User::TEACHER) ? $row['grpcls_id'] : $row['ordcls_id'];
             $row['repiss_id'] = $classIssues[$recordId] ?? 0;
+            $row['quiz_count'] = $classQuizzes[$row['grpcls_id']]['quiz_count'] ?? '';
             $status = ($this->userType == User::TEACHER) ? $row['grpcls_status'] : $row['ordcls_status'];
             $row['statusText'] = $statuses[$status] ?? Label::getLabel('LBL_N/A');
             $row['class_time_info'] = '';

@@ -22,6 +22,7 @@ class MetaTag extends MyAppModel
     const META_GROUP_BLOG_POST = 5;
     const META_GROUP_COURSE = 6;
     const META_GROUP_COURSE_CERTIFICATE = 7;
+    const META_GROUP_QUIZ_CERTIFICATE = 8;
 
     /**
      * Initialize MetaTag

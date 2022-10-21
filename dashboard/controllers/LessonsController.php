@@ -47,7 +47,8 @@ class LessonsController extends DashboardController
             'js/fateventcalendar.js',
             'issues/page-js/common.js',
             'plans/page-js/common.js',
-            'lessons/page-js/common.js'
+            'lessons/page-js/common.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         $this->_template->render();
     }
@@ -171,6 +172,7 @@ class LessonsController extends DashboardController
             'js/fullcalendar-luxon-global.min.js',
             'js/fateventcalendar.js',
             'plans/page-js/common.js',
+            'attach-quizzes/page-js/index.js'
         ]);
         if ($flashcardEnabled) {
             $this->_template->addJs('js/flashcards.js');

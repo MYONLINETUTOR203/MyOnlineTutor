@@ -53,16 +53,18 @@
             
             <?php
             if (
-                $objPrivilege->canViewCourses(true) ||
+                $objPrivilege->canViewCourseLanguage(true) || 
                 $objPrivilege->canViewCategories(true) ||
+                $objPrivilege->canViewCourses(true) ||
                 $objPrivilege->canViewCourseRequests(true) ||
                 $objPrivilege->canViewCertificates(true) ||
+                $objPrivilege->canViewCourseReviews(true) ||
                 $objPrivilege->canViewCourseRefundRequests(true) || 
-                $objPrivilege->canViewCourseLanguage(true) || 
-                $objPrivilege->canViewCourseReviews(true)
+                $objPrivilege->canViewQuestions(true) ||
+                $objPrivilege->canViewQuizzes(true)
             ) { ?>
                 <li class="haschild">
-                    <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_COURSES'); ?></a>
+                    <a href="javascript:void(0);"><?php echo Label::getLabel('LBL_MANAGE_COURSES_&_QUIZZES'); ?></a>
                     <ul>
                         <?php if ($objPrivilege->canViewCourseLanguage(true)) { ?>
                             <li>
@@ -97,6 +99,16 @@
                         <?php if ($objPrivilege->canViewCourseRefundRequests(true)) { ?>
                             <li>
                                 <a href="<?php echo MyUtility::makeUrl('CourseRefundRequests'); ?>"><?php echo Label::getLabel('LBL_REFUND_REQUESTS'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewQuestions(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Questions'); ?>"><?php echo Label::getLabel('LBL_QUESTIONS'); ?></a>
+                            </li>
+                        <?php } ?>
+                        <?php if ($objPrivilege->canViewQuizzes(true)) { ?>
+                            <li>
+                                <a href="<?php echo MyUtility::makeUrl('Quizzes'); ?>"><?php echo Label::getLabel('LBL_QUIZZES'); ?></a>
                             </li>
                         <?php } ?>
                     </ul>

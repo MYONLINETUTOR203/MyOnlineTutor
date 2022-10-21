@@ -56,14 +56,17 @@ class Category extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
-        $status = $data['cate_status'];
-        if ($status == AppConstant::INACTIVE && isset($category) && $category['cate_records'] > 0) {
-            if ($data['cate_type'] == Category::TYPE_COURSE) {
-                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
+        if ($this->mainTableRecordId > 0) {
+            if ($data['cate_status'] == AppConstant::INACTIVE && $category['cate_records'] > 0) {
+                if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                    $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+                }
+                if ($data['cate_type'] == Category::TYPE_COURSE) {
+                    $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
+                }
+                return false;
             }
-            return false;
         }
-
         /* save category data */
         $this->assignValues($data);
         if ($this->mainTableRecordId < 1) {
@@ -97,7 +100,6 @@ class Category extends MyAppModel
             'cate_details' => $data['cate_details'],
             'catelang_id' => $data['catelang_id'],
         ];
-
         if (!FatApp::getDb()->insertFromArray(static::DB_LANG_TBL, $assignValues, false, [], $assignValues)) {
             $this->error = FatApp::getDb()->getError();
             return false;
@@ -115,6 +117,8 @@ class Category extends MyAppModel
         if ($status == AppConstant::INACTIVE && $data['cate_records'] > 0) {
             if ($data['cate_type'] == Category::TYPE_COURSE) {
                 $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
+            } elseif ($data['cate_type'] == Category::TYPE_QUESTION) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
             }
             return false;
         }
@@ -136,8 +140,13 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
-        if ($data['cate_type'] == Category::TYPE_COURSE && $data['cate_records'] > 0) {
-            $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.');
+
+        if ($data['cate_records'] > 0) {
+            if ($data['cate_type'] == Category::TYPE_COURSE) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.');
+            } elseif ($data['cate_type'] == Category::TYPE_QUESTION) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_DELETED.');
+            }
             return false;
         }
         if ($data['cate_subcategories'] > 0) {
@@ -180,7 +189,6 @@ class Category extends MyAppModel
             $this->error = FatApp::getDb()->getError();
             return false;
         }
-
         return true;
     }
 
@@ -249,7 +257,6 @@ class Category extends MyAppModel
         if ($havingCourses == true) {
             $srch->addCondition('cate_records', '>', 0);
         }
-
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
@@ -289,7 +296,7 @@ class Category extends MyAppModel
      *
      * @param string $identifier
      * @param int    $parent
-     * @return void
+     * @return bool
      */
     public function checkUnique(string $identifier, int $parent = 0)
     {

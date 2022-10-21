@@ -17,11 +17,31 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
+<<<<<<< HEAD
     var course = src('scss/course-personal*.scss')
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
     return (common, frontend, dashboard, course);
+=======
+
+    var quiz = src('scss/quiz*.scss')
+            .pipe(sass())
+            .pipe(autoprefixer())
+            .pipe(dest('application/views/css'));
+    return (common, frontend, dashboard, quiz);
+}
+
+function svg() {
+    var frontend = src('application/views/images/sprite/*.svg')
+            .pipe(svgSprite(config))
+            .pipe(dest('application/views/images'));
+    var dashboard = src('dashboard/views/images/sprite/*.svg')
+            .pipe(svgSprite(config))
+            .pipe(dest('dashboard/views/images'));
+
+    return merge(frontend, dashboard);
+>>>>>>> develop_quiz
 }
 
 function watchFiles() {

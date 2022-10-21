@@ -87,6 +87,7 @@ class ImageController extends MyAppController
      * 
      * @param int $fileType
      * @param int $recordId
+     * @param int $langId
      */
     public function showVideo($fileType, $recordId, $langId = 0)
     {
@@ -99,6 +100,7 @@ class ImageController extends MyAppController
      * 
      * @param int $fileType
      * @param int $recordId
+     * @param int $langId
      */
     public function showPdf($fileType, $recordId, $langId = 0)
     {

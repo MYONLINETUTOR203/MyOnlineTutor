@@ -19,10 +19,9 @@ class CertificatesController extends DashboardController
     }
 
     /**
-     * Generate Certificate
+     * Generate Certificate for course
      *
      * @param int $progressId
-     * @return void
      */
     public function index($progressId)
     {
@@ -44,47 +43,66 @@ class CertificatesController extends DashboardController
         }
         /* check if certificate already generated */
         if (empty($ordcrsData['ordcrs_certificate_number'])) {
-            $db = FatApp::getDb();
-            $db->startTransaction();
-            /* generate certificate */
-            $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
-            $cert = new Certificate($data['crspro_ordcrs_id'], $this->siteUserId, $this->siteLangId);
-            $cert->setFldValue('ordcrs_certificate_number', $certificateNumber);
-            if (!$cert->save()) {
-                FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
-            }
-            /* get certificate content */
-            $content = $this->getCertificateContent($ordcrsData);
-            $filename = 'certificate' . $ordcrsData['ordcrs_id'] . '.pdf';
-            /* generate certificate */
-            if (!$cert->generateCertificate($content, $filename)) {
-                $db->rollbackTransaction();
-                FatUtility::dieWithError(Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!'));
-            }
-
-            if (!$cert->setupMetaTags($ordcrsData)) {
-                $db->rollbackTransaction();
+            /* get certificate html */
+            $content = $this->getContent(Certificate::TYPE_COURSE);
+            $cert = new Certificate(
+                $ordcrsData['ordcrs_id'],
+                Certificate::TYPE_QUIZ,
+                $this->siteUserId,
+                $this->siteUserType
+            );
+            if (!$cert->generate($content)) {
                 FatUtility::dieWithError($cert->getError());
             }
-            
-            $db->commitTransaction();
         }
-        FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND));
+        FatApp::redirectUser(
+            MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND)
+        );
     }
 
-    public function getCertificateContent(array $data)
+    /**
+     * Generate Certificate for quiz
+     *
+     * @param int $id
+     */
+    public function quiz(int $id)
     {
-        /* get course data */
-        $cert = new Certificate(0, $this->siteUserId, $this->siteLangId);
-        if (!$data = $cert->getDataForCertificate($data['ordcrs_id'])) {
-            FatUtility::dieWithError(Label::getLabel('LBL_CONTENT_NOT_FOUND'));
+        if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ) {
+            FatUtility::exitWithErrorCode(404);
         }
-        /* get certificate template */
-        $data['cert_number'] = $data['ordcrs_certificate_number'];
-        $data['lang_id'] = $this->siteLangId;
-        if (!$content = $cert->getFormattedContent($data)) {
-            FatUtility::dieWithError($cert->getError());
+        $quiz = new QuizAttempt($id, $this->siteUserId);
+        if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
+            FatUtility::exitWithErrorCode(404);
         }
+        $data = $quiz->get();
+        if ($data['quizat_active'] == AppConstant::NO) {
+            FatUtility::exitWithErrorCode(404);
+        }
+        if (!$quiz->canDownloadCertificate()) {
+            FatUtility::exitWithErrorCode(404);
+        }
+
+        /* check if certificate already generated */
+        if (empty($data['quizat_certificate_number'])) {
+            /* get content */
+            $content = $this->getContent();
+
+            /* generate */
+            $cert = new Certificate($id, Certificate::TYPE_QUIZ, $this->siteUserId, $this->siteLangId);
+            if (!$cert->generate($content)) {
+                FatUtility::dieWithError($cert->getError());
+            }
+        }
+        FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'evaluation', [$id], CONF_WEBROOT_FRONTEND));
+    }
+
+    /**
+     * Get html content for certificate
+     *
+     * @return string
+     */
+    private function getContent()
+    {
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
         $backgroundImg = $afile->getFile(0, false);
@@ -94,6 +112,7 @@ class CertificatesController extends DashboardController
             $backgroundImg = CONF_UPLOADS_PATH . $backgroundImg['file_path'];
         }
         $this->set('backgroundImg', $backgroundImg);
+
         $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
         $logoImg = $afile->getFile(0, false);
         if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
@@ -102,8 +121,9 @@ class CertificatesController extends DashboardController
             $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
         }
         $this->set('logoImg', $logoImg);
-        $this->set('content', $content);
+        
         $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
-        return $this->_template->render(false, false, 'certificates/generate.php', true);
+        $content = $this->_template->render(false, false, 'certificates/generate.php', true);
+        return $content;
     }
 }

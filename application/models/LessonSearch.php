@@ -163,6 +163,7 @@ class LessonSearch extends YocoachSearch
         $countries = Country::getNames($this->langId, $countryIds);
         $lessonPlans = Plan::getLessonPlans($lessonIds);
         $lessonIssues = Issue::getLessonIssueIds($lessonIds);
+        $lessonQuizzes = QuizLinked::getQuizzes($lessonIds, AppConstant::LESSON);
         $teachLangs = TeachLanguage::getNames($this->langId, $teachLangIds);
         $title = Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson');
         $freeTrialLbl = Label::getLabel('LBL_FREE_TRIAL');
@@ -179,6 +180,7 @@ class LessonSearch extends YocoachSearch
                 $row['ordles_tlang_name'] = $freeTrialLbl;
             }
             $row = array_merge($row, $lessonPlans[$row['ordles_id']] ?? ['plan_id' => 0]);
+            $row['quiz_count'] = $lessonQuizzes[$row['ordles_id']]['quiz_count'] ?? 0;
             $row['lessonTitle'] = str_replace(['{teach-lang}', '{n}'], [$row['ordles_tlang_name'], $row['ordles_duration']], $title);
             $row['ordles_remaining_unix'] = 0;
             $row['ordles_endtime_remaining_unix'] = 0;
