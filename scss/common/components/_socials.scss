@@ -185,7 +185,10 @@ $social-button: "social-button";
     padding: 5px;
     overflow: hidden;
     position: relative;
-    background: rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .social--share li a img,
@@ -467,88 +470,7 @@ $share: 'share';
 
 
 #signinFrmPopUp, #frm_fat_id_signupFrm{
-<<<<<<< HEAD
     .field_label:empty{
         display: none;
     }
 }
-=======
-    .field_label:empty{display: none;}
-}
-
-
-
-
-
-$share: 'share';
-
-.#{$share} {
-    &{position: relative;
-        &__trigger{padding: theme('padding.3') 0; display:flex; align-items:center; font-weight:theme('font.weight.medium');
-
-            @media (min-width: theme("breakpoints.xl","value")){
-                &{pointer-events:none; cursor: pointer;}
-            }
-        
-            @media (max-width: theme("breakpoints.xl","value")){
-                &{
-                    &.is-active:after{position: fixed; left: 0;right: 0;top: 0;bottom: 0;content: ""; background-color: rgba(0,0,0,0.8);z-index: 100;}
-                }
-            }
-
-            @media (max-width: theme("breakpoints.sm","value")){
-                &{font-size:0; width: 40px; height:40px; display: flex; align-items:center; justify-content:center; padding: 0; }
-            }
-
-        }
-       
-        &__target{
-            @media (min-width: theme("breakpoints.xl","value")){
-                position: absolute; #{theme('direction.right','value')}: 0; top: 140%; background-color: theme('color.white'); min-width: 240px;box-shadow: theme('boxShadow.bottom'); border: 1px solid theme('color.gray.200');padding:theme('padding.6');opacity: 0; visibility:hidden; z-index: 1; transition:all 0.2s;
-      
-                &:before{position: absolute;
-                    #{theme('direction.right','value')}:1rem;
-                    top: -12px;
-                    content: "";
-                    border-left: 12px solid transparent;
-                    border-right: 12px solid transparent;
-                    border-bottom: 12px solid theme('color.gray.200');
-                    pointer-events: none;
-                    z-index: 1;}
-                    &:after{position: absolute;
-                        #{theme('direction.right','value')}:1rem;
-                        top: -10px;
-                        content: "";
-                        border-left: 12px solid transparent;
-                        border-right: 12px solid transparent;
-                        border-bottom: 12px solid #fff;
-                        pointer-events: none;
-                        z-index: 1;}
-                 }
-
-        
-                 @media (max-width: theme("breakpoints.xl","value")) {
-                    &{left:50%; top: 50%; position: fixed; max-width: 350px; transform: translate(-50%, -50%); width: 90%; background-color: theme('color.white'); z-index: 101;padding:theme('padding.6'); opacity: 0; visibility: hidden;
-                        &:after{position: absolute; right: 0; top: -40px; width: 40px; height: 40px; content: "+"; font-size:2rem;color: theme('color.white'); transform: rotate(45deg); text-align: center; line-height: 40px; pointer-events: none;
-                        }
-                    }
-                }
-
-                &.is-visible{opacity: 1; visibility: visible;}
-
-
-
-        }
-     
-        @media (min-width: theme("breakpoints.xl","value")){
-                &:hover{
-                        .#{$share} {
-                            &__target{opacity: 1;visibility:visible; top:100%;}
-                        }
-                } 
-        }
-
-    }
-}
-
->>>>>>> develop_quiz

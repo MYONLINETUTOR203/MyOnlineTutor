@@ -1118,8 +1118,6 @@
                 "object",
                 "object graph"
             ],
-<<<<<<< HEAD
-=======
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
                 "source": "https://github.com/myclabs/DeepCopy/tree/1.11.0"
@@ -1130,7 +1128,6 @@
                     "type": "tidelift"
                 }
             ],
->>>>>>> develop_quiz
             "time": "2022-03-03T13:19:32+00:00"
         },
         {
@@ -1288,13 +1285,10 @@
                 "stream",
                 "uri"
             ],
-<<<<<<< HEAD
-=======
             "support": {
                 "issues": "https://github.com/php-http/message-factory/issues",
                 "source": "https://github.com/php-http/message-factory/tree/master"
             },
->>>>>>> develop_quiz
             "time": "2015-12-19T14:08:53+00:00"
         },
         {
@@ -1800,8 +1794,6 @@
                 "fpdi",
                 "pdf"
             ],
-<<<<<<< HEAD
-=======
             "support": {
                 "issues": "https://github.com/Setasign/FPDI/issues",
                 "source": "https://github.com/Setasign/FPDI/tree/v2.3.6"
@@ -1812,7 +1804,6 @@
                     "type": "tidelift"
                 }
             ],
->>>>>>> develop_quiz
             "time": "2021-02-11T11:37:01+00:00"
         },
         {
@@ -1995,10 +1986,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-<<<<<<< HEAD
-    "platform-dev": []
-=======
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
->>>>>>> develop_quiz
 }

@@ -17,19 +17,15 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-<<<<<<< HEAD
     var course = src('scss/course-personal*.scss')
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-    return (common, frontend, dashboard, course);
-=======
-
     var quiz = src('scss/quiz*.scss')
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('application/views/css'));
-    return (common, frontend, dashboard, quiz);
+    return (common, frontend, dashboard, course, quiz);
 }
 
 function svg() {
@@ -41,7 +37,6 @@ function svg() {
             .pipe(dest('dashboard/views/images'));
 
     return merge(frontend, dashboard);
->>>>>>> develop_quiz
 }
 
 function watchFiles() {
