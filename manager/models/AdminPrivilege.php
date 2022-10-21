@@ -1628,7 +1628,7 @@ class AdminPrivilege
     }
 
     /**
-     * Can View Categories
+     * Can View Questions
      * 
      * @param bool $returnResult
      * @return type
