@@ -58,9 +58,6 @@ class CategoriesController extends AdminBaseController
         if (isset($post['parent_id'])) {
             $srch->addCondition('cate_parent', '=', $post['parent_id']);
         }
-        if (isset($post['cate_type']) && $post['cate_type'] > 0) {
-            $srch->addCondition('catg.cate_type', '=', $post['cate_type']);
-        }
         $srch->addMultipleFields(
             [
                 'catg.cate_id',
@@ -278,11 +275,6 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
-<<<<<<< HEAD
-        $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_COURSE);
-=======
-        $frm->addHiddenField(Label::getLabel('LBL_TYPE'), 'cate_type', Category::TYPE_QUESTION);
->>>>>>> develop_quiz
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         return $frm;
