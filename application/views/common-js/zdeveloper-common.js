@@ -206,12 +206,6 @@ $(document).ready(function () {
             twoFactorForm(data);
         });
     };
-    twoFactorForm = function (data) {
-        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorForm'), data, function (response) {
-            $.facebox(response);
-            initialize2FA();
-        });
-    };
     signupForm = function () {
         fcom.process();
         fcom.ajax(fcom.makeUrl('GuestUser', 'signupForm'), '', function (response) {
@@ -230,6 +224,23 @@ $(document).ready(function () {
             }, 1000);
         });
     };
+    twoFactorForm = function (data) {
+        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorForm'), data, function (response) {
+            $.facebox(response);
+            initializeTwoFactorAuthentication();
+        });
+    };
+
+    setupTwoFactor = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'setupTwoFactor'), fcom.frmData(frm), function (response) {
+            $.facebox.close();
+            window.location.reload();
+        });
+    };
+
     toggleHeaderCurrencyLanguageForDevices = function () {
         $('.nav__item-settings-js').click(function () {
             $(this).toggleClass("is-active");
@@ -379,13 +390,19 @@ $(document).ready(function () {
         }, {fOutMode: 'json', failed: true});
     }
 
-    initialize2FA = function () {
+    resendTwoFactorAuthenticationCode = function (username) {
+        if (username == "undefined" || typeof username === "undefined") {
+            username = '';
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [username]));
+    };
+
+    initializeTwoFactorAuthentication = function () {
         $('.digit-group').find('input').each(function() {
             $(this).attr('maxlength', 1);
             $(this).on('keyup', function(e) {
-            
                 var parent = $($(this).parent());
-                
+               
                 if(e.keyCode === 8 || e.keyCode === 37) {
                     var prev = parent.find('input#' + $(this).data('previous'));
                     

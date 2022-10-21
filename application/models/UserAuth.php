@@ -764,20 +764,28 @@ class UserAuth extends FatModel
 
     
     /**
-     * Send Failed Login Email
+     * Send Two Factor Authentication Code Email
      * 
      * @param array $user
      * @return bool
      */
-    private function sendTwoFactorAuthenticationEmail(array $user): bool
+    public function sendTwoFactorAuthenticationEmail(array $user): bool
     {
+        $auth_code = rand(100000, 999999);
+        $authentication = new TwoFactorAuth();
+        if (!$authentication->addTwoFactorCode($user['user_id'], $auth_code)) {
+            $this->error = $authentication->getError();
+            return false;
+        }
         $mail = new FatMailer($user['user_lang_id'], 'two_factor_authentication');
-        $mail->setVariables(['{code}' => rand(100000, 999999)]);
+        $mail->setVariables(['{auth_code}' => $auth_code]);
         if (!$mail->sendMail([$user['user_email']])) {
             $this->error = $mail->getError();
             return false;
         }
         return true;
     }
+
+  
 
 }
