@@ -221,7 +221,7 @@ $field-count: "field-count";
     &{position: relative;
         &:after{position: absolute;top: 0.44rem; #{theme('direction.right','value')}: 0.44rem; content: attr(field-count); background-color:theme('color.gray.100'); border-radius: theme('radius.1'); 
             padding: theme('padding.2')  theme('padding.2'); font-size: 11px;}
-        &__wrap{ padding-#{theme('direction.right','value')}: theme('padding.12')!important;}
+        &__wrap, input[type="text"]{ padding-#{theme('direction.right','value')}: theme('padding.12')!important;}
     }
 }
 
