@@ -683,7 +683,7 @@
     }
     @media(max-width: theme('breakpoints.md','value')){
         border: none;
-        padding: 0 theme('padding.4');
+        padding: theme('padding.4');
     }
 }
 .book__actions {
@@ -792,7 +792,7 @@
         }
 
         @media(min-width: theme('breakpoints.lg','value')) and (max-width: theme('breakpoints.xxxl','value')){
-            width: calc(100% - 50px);
+            width: calc(100% - 30px);
         }
 
         @media(max-width: theme('breakpoints.md','value')){
@@ -814,8 +814,16 @@
         }
 
         @media(min-width: theme('breakpoints.lg','value')) and (max-width: theme('breakpoints.xxxl','value')){
-            width: 350px;
+            width: 300px;
         }
+
+        @media(max-width: theme('breakpoints.xl','value')){
+            width: 300px;
+        }
+        @media(max-width: theme('breakpoints.lg','value')){
+            width: 100%;
+        }
+
     }
 }
 
