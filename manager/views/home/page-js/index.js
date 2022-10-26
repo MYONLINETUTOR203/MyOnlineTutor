@@ -7,21 +7,21 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
         fcom.ajax(fcom.makeUrl('Home', 'topClassLanguages'), {interval: interval}, function (response) {
             $('.topClassLanguage').html(response);
             $('.languageDurationType-js').text(intervalText);
-        });
+        }, {process: false});
     };
     getTopLessonLanguage = function (interval, intervalText) {
         $('.topLessonLanguage').html('<li>' + fcom.getLoader() + '</li>');
         fcom.ajax(fcom.makeUrl('Home', 'topLessonLanguages'), {interval: interval}, function (response) {
             $('.topLessonLanguage').html(response);
             $('.languageDurationType-js2').text(intervalText);
-        });
+        }, {process: false});
     };
     getTopCourseCategories = function (interval, intervalText) {
         $('.topCourseCategories').html('<li>' + fcom.getLoader() + '</li>');
         fcom.ajax(fcom.makeUrl('Home', 'topCourseCategories'), {interval: interval}, function (response) {
             $('.topCourseCategories').html(response);
             $('.languageDurationType-js2').text(intervalText);
-        });
+        }, {process: false});
     };
     getStatisticsData = function () {
         $("#lessonEarning--js").html(fcom.getLoader());
@@ -29,7 +29,7 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
             chartData = response;
             $("#lessonEarning--js").html('');
             callChart('lessonEarning--js', Object.keys(chartData.lessonData), Object.values(chartData.lessonData), position);
-        });
+        }, {process: false});
     };
     getGoogleAnalytics = function () {
         $("#visitsGraph").html(fcom.getLoader());
@@ -62,7 +62,7 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
             };
             var trafic = new google.visualization.PieChart(document.getElementById('piechart'));
             trafic.draw(dataVisits, optionVisits);
-        });
+        }, {process: false});
     };
     regenerateStat = function () {
         fcom.updateWithAjax(fcom.makeUrl('salesReport', 'regenerate'), '', function (t) {

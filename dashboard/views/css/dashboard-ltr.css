@@ -1114,7 +1114,8 @@ p {
   position: relative;
   padding: var(--padding-6);
   border-bottom: 1px solid var(--color-gray-200);
-  border-top: 1px solid var(--color-gray-200); }
+  border-top: 1px solid var(--color-gray-200);
+  background-color: rgba(0, 0, 0, 0.02); }
   @media (max-width: 576px) {
     .action-bar__content {
       padding-bottom: var(--padding-6); }

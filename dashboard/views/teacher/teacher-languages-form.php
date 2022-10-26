@@ -38,13 +38,7 @@ $saveBtn = $frm->getField('submit');
                                     <label class="selection__trigger">
                                         <input name="<?php echo $teachLangField->getName() . '[]'; ?>" value="<?php echo $key; ?>" class="selection__trigger-input" type="checkbox" <?php echo (in_array($key, $teachLangFieldValue)) ? 'checked' : ''; ?>>
                                         <span class="selection__trigger-action">
-                                            <span class="selection__trigger-label"><span class="flag-icon flag-icon--s">
-                                                    <?php
-                                                    $languageFlagImage = FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $key, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg');
-                                                    echo '<img src="' . $languageFlagImage . '" alt="' . $value . '">';
-                                                    ?>
-                                                </span><?php echo $value; ?>
-                                            </span>
+                                            <span class="selection__trigger-label"><?php echo $value; ?></span>
                                             <span class="selection__trigger-icon"></span>
                                         </span>
                                     </label>
@@ -73,12 +67,7 @@ $saveBtn = $frm->getField('submit');
                                         <input type="checkbox" value="<?php echo $key; ?>" class="slanguage-checkbox-js slanguage-checkbox-<?php echo $key; ?>" onchange="changeSpeakLang(this, <?php echo $key; ?>);" name="<?php echo $speakLangField->getName(); ?>" <?php echo ($isLangSpeak) ? 'checked' : ''; ?>>
                                         <span class="selection__trigger-action">
                                             <span class="selection__trigger-label">
-                                                <span class="flag-icon flag-icon--s">
-                                                    <?php
-                                                    $languageFlagImage = FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_SPOKEN_LANGUAGES, $key, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg');
-                                                    echo '<img src="' . $languageFlagImage . '" alt="' . $value . '">';
-                                                    ?>
-                                                </span> <?php echo $value; ?>
+                                                <?php echo $value; ?>
                                                 <?php if (array_key_exists($proficiencyField->value, $profArr)) { ?>
                                                     <span class="badge color-secondary badge-js  badge--round badge--small margin-0">
                                                         <?php echo $profArr[$proficiencyField->value]; ?>
