@@ -200,10 +200,12 @@ $(document).ready(function () {
             data += '&' + fcom.frmData(document.frmSearchPaging);
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), data, function (res) {
-            if (!res.twoFactorEnabled) {
+            if (res.twoFactorEnabled) {
+                twoFactorForm(data);
+                return;
+            } else {
                 window.location.reload();
             }
-            twoFactorForm(data);
         });
     };
     signupForm = function () {
@@ -390,11 +392,9 @@ $(document).ready(function () {
         }, {fOutMode: 'json', failed: true});
     }
 
-    resendTwoFactorAuthenticationCode = function (username) {
-        if (username == "undefined" || typeof username === "undefined") {
-            username = '';
-        }
-        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [username]));
+    resendTwoFactorAuthenticationCode = function (userId) {
+        
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
     };
 
     initializeTwoFactorAuthentication = function () {
@@ -402,16 +402,13 @@ $(document).ready(function () {
             $(this).attr('maxlength', 1);
             $(this).on('keyup', function(e) {
                 var parent = $($(this).parent());
-               
                 if(e.keyCode === 8 || e.keyCode === 37) {
                     var prev = parent.find('input#' + $(this).data('previous'));
-                    
                     if(prev.length) {
                         $(prev).select();
                     }
-                } else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                }  else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
                     var next = parent.find('input#' + $(this).data('next'));
-                    
                     if(next.length) {
                         $(next).select();
                     } else {
@@ -421,6 +418,13 @@ $(document).ready(function () {
                     }
                 }
             });
+
+            $(this).on('keydown', function (e){
+               if ((e.keyCode >= 65 && e.keyCode <= 90) ) {
+                e.preventDefault();
+                    return;
+                }
+            })
         });
     };
 

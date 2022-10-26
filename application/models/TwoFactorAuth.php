@@ -92,6 +92,7 @@ class TwoFactorAuth extends FatModel
         $srch->addCondition('usauth_user_id', '=', $userId);
         $srch->addCondition('usauth_browser', '=', MyUtility::getUserAgent());
         $srch->addCondition('usauth_ip', '=', MyUtility::getUserIp());
+        $srch->addCondition('usauth_status', '=', AppConstant::ACTIVE);
         $srch->getResultSet();
         if ($srch->recordCount() < 1) {
             $this->error = Label::getLabel('ERR_USER_NOT_AUTHENTICATED');

@@ -54,8 +54,10 @@ class UserAuth extends FatModel
             $this->error = Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE');
             return false;
         }
-        if (!$setSession) {
-            return true;
+        if (empty($user['user_verified'])) {
+            $this->error = Label::getLabel('ERR_YOUR_VERIFICATION_PENDING_{link}');
+            $this->error = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Label::getLabel('LBL_CLICK_HERE') . '</a>', $this->error);
+            return false;
         }
         if (!$this->setUserSession($username, $userip, $user)) {
             $this->error = Label::getLabel('ERR_SOMETHING_WENT_WRONT_TRY_AGAIN');
@@ -771,20 +773,63 @@ class UserAuth extends FatModel
      */
     public function sendTwoFactorAuthenticationEmail(array $user): bool
     {
-        $auth_code = rand(100000, 999999);
         $authentication = new TwoFactorAuth();
+        if (!$authentication->removeCode($user['user_id'])) {
+            $this->error = $authentication->getError();
+            return false;
+        }
+        $auth_code = rand(100000, 999999);
         if (!$authentication->addTwoFactorCode($user['user_id'], $auth_code)) {
             $this->error = $authentication->getError();
             return false;
         }
         $mail = new FatMailer($user['user_lang_id'], 'two_factor_authentication');
-        $mail->setVariables(['{auth_code}' => $auth_code]);
+        $mail->setVariables(['{user_name}' => $user['user_first_name'].' '. $user['user_last_name'], '{auth_code}' => $auth_code]);
         if (!$mail->sendMail([$user['user_email']])) {
             $this->error = $mail->getError();
             return false;
         }
         return true;
     }
+
+    /**
+     *  User Login
+     * 
+     * @param string $username
+     * @param string $password
+     * @param string $userip
+     * @return bool
+     */
+    public function validateLogin(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
+    {
+        if (empty($username) || ($enypass && empty($password))) {
+            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
+            return false;
+        }
+        $user = User::getByEmail($username);
+        if (empty($user)) {
+            $this->logFailedLoginAttempt($username, $userip);
+            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
+            return false;
+        }
+        if ($this->isBruteForcing($username, $userip)) {
+            $this->sendFailedLoginEmail($user);
+            $this->error = Label::getLabel('ERR_YOUR_ATTEMPT_LIMIT_EXCEEDED');
+            return false;
+        }
+        $password = $enypass ? static::encryptPassword($password) : $password;
+        if ($user['user_password'] != $password) {
+            $this->logFailedLoginAttempt($username, $userip);
+            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
+            return false;
+        }
+        if (empty($user['user_active'])) {
+            $this->error = Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE');
+            return false;
+        }
+        return true;
+    }
+
 
   
 
