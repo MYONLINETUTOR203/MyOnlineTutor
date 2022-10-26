@@ -98,22 +98,4 @@ loadOneThirdSlick = function () {
             {breakpoint: 576, settings: {slidesToShow: 1, arrows: false, dots: true}}
         ]
     });
-
-    $('.section-more-courses .slider-onethird-js').slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        infinite: false,
-        rtl: (langLbl.layoutDirection == 'rtl') ? true : false,
-        arrows: true,
-        adaptiveHeight: true,
-        dots: false,
-        prevArrow: '<button class="slick-prev cursor-hide" aria-label="Previous" type="button">Previous</button>',
-        nextArrow: '<button class="slick-next cursor-hide" aria-label="Next" type="button">Next</button>',
-        responsive: [
-            {breakpoint: 1199, settings: {slidesToShow: 1, arrows: false, dots: true}},
-            {breakpoint: 1023, settings: {slidesToShow: 1, arrows: false, dots: true}},
-            {breakpoint: 767, settings: {slidesToShow: 1, arrows: false, dots: true}},
-            {breakpoint: 576, settings: {slidesToShow: 1, arrows: false, dots: true}}
-        ]
-    });
 };

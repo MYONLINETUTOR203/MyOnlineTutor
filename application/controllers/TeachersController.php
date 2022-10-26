@@ -138,8 +138,13 @@ class TeachersController extends MyAppController
             $userQualifications[$value['uqualification_experience_type']][$value['uqualification_id']] = $value;
         }
         $class = new GroupClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
-        $courseObj = new CourseSearch($this->siteLangId, $teacher['user_id'], 0);
+        $courseObj = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
         $moreCourses = $courseObj->getMoreCourses($teacher['user_id']);
+        /* checkout form */
+        $cart = new Cart($this->siteUserId, $this->siteLangId);
+        $checkoutForm = $cart->getCheckoutForm([0 => Label::getLabel('LBL_NA')]);
+        $checkoutForm->fill(['order_type' => Order::TYPE_COURSE]);
+
         $this->sets([
             'isFreeTrailAvailed' => $isFreeTrailAvailed,
             'userPreferences' => $preferencesData,
@@ -151,6 +156,7 @@ class TeachersController extends MyAppController
             'teacher' => $teacher,
             'userTeachLangs' => $teachLangPrices,
             'moreCourses' => $moreCourses,
+            'checkoutForm' => $checkoutForm,
             'freeTrialEnabled' => $freeTrialEnabled,
             'setMonthAndWeekNames' => true,
         ]);
