@@ -1066,8 +1066,8 @@ class Course extends MyAppModel
             $commission = ($course['ordcrs_commission'] / 100) * $course['ordcrs_amount'];
             $teacherAmount = round(($course['ordcrs_amount'] - $commission), 2);
             if ($teacherAmount > 0) {
-                $comment = Label::getLabel('LBL_PAYMENT_ON_COURSE_{orderid}');
-                $comment = str_replace('{orderid}', $course['order_id'], $comment);
+                $comment = Label::getLabel('LBL_PAYMENT_ON_COURSE_"{course-name}"');
+                $comment = str_replace('{course-name}', $course['course_title'], $comment);
                 $txn = new Transaction($course['teacher_id'], Transaction::TYPE_TEACHER_PAYMENT);
                 if (!$txn->credit($teacherAmount, $comment)) {
                     $this->error = $txn->getError();
