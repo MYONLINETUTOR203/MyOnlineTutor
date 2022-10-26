@@ -4894,7 +4894,7 @@ div.tagsinput div {
     border-radius: var(--radius-1);
     padding: var(--padding-2) var(--padding-2);
     font-size: 11px; }
-  .field-count__wrap {
+  .field-count__wrap, .field-count input[type="text"] {
     padding-right: var(--padding-12) !important; }
 
 @media (min-width: 767px) {
