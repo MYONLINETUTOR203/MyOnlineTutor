@@ -472,6 +472,7 @@ class Course extends MyAppModel
         $srch->addFld('cate_id');
         $srch->addCondition('cate_id', 'IN', $categories);
         $srch->addCondition('cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate_type', '=', Category::TYPE_COURSE);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $categories = FatApp::getDb()->fetchAll($srch->getResultSet(), 'cate_id');
         if (!array_key_exists($data['course_cate_id'], $categories)) {
