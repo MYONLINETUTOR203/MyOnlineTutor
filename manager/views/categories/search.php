@@ -1,11 +1,13 @@
 <?php
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
+$types = Category::getCategoriesTypes();
 $arrFlds = [
     'dragdrop' => '',
     'listserial' => Label::getLabel('LBL_Sr._No'),
     'cate_identifier' => Label::getLabel('LBL_IDENTIFIER'),
     'cate_name' => Label::getLabel('LBL_NAME'),
+    'cate_type' => Label::getLabel('LBL_TYPE'),
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
     'cate_courses' => Label::getLabel('LBL_COURSES'),
     'cate_questions' => Label::getLabel('LBL_QUESTIONS'),
@@ -40,6 +42,9 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'listserial':
                 $td->appendElement('plaintext', [], $srNo);
+                break;
+            case 'cate_type':
+                $td->appendElement('plaintext', [], $types[$row[$key]]);
                 break;
             case 'cate_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['cate_created']));

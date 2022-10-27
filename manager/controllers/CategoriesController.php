@@ -226,14 +226,7 @@ class CategoriesController extends AdminBaseController
         $fld->requirements()->setIntPositive();
         $fld = $frm->addTextBox(Label::getLabel('LBL_IDENTIFIER'), 'cate_identifier')->requirements()->setRequired();
 
-        $fld = $frm->addSelectBox(
-            Label::getLabel('LBL_TYPE'),
-            'cate_type',
-            Category::getCategoriesTypes(),
-            '',
-            [],
-            Label::getLabel('LBL_ROOT_CATEGORY')
-        );
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'cate_type', Category::getCategoriesTypes(), '', []);
         $fld->requirements()->setRequired();
 
         $parentCategories = Category::getCategoriesByParentId($this->siteLangId, 0, $type, false, false);

@@ -103,7 +103,7 @@ class Certificate extends MyAppModel
                 return false;
             }
         } elseif ($this->type == static::TYPE_COURSE) {
-            $course = new Course($this->id);
+            $course = new OrderCourse($this->id);
             $course->setFldValue('ordcrs_certificate_number', $certificateNumber);
             if (!$course->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
@@ -363,23 +363,47 @@ class Certificate extends MyAppModel
      */
     private function setupMetaTags(array $data)
     {
-        /* get user name */
-        $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
-        $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+        if ($this->type == static::TYPE_QUIZ) {
+            /* get user name */
+            $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+            $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+            $action = 'evaluation';
+            $recordId = $data['quizat_id'];
+            $type = MetaTag::META_GROUP_QUIZ_CERTIFICATE;
+        } elseif ($this->type == static::TYPE_COURSE) {
+            /* get course details */
+            $srch = new SearchBase(Course::DB_TBL_LANG);
+            $srch->addCondition('course_id', '=', $data['ordcrs_course_id']);
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $srch->addFld('course_title');
+            $course = FatApp::getDb()->fetch($srch->getResultSet());
+
+            /* get user name */
+            $username = User::getAttributesById($data['order_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+            $content = $course['course_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+            
+            $action = 'view';
+            $recordId = $data['ordcrs_id'];
+            $type = MetaTag::META_GROUP_COURSE_CERTIFICATE;
+        } else {
+            $this->error = Label::getLabel('LBL_INVALID_TYPE');
+            return false;
+        }
 
         $meta = new MetaTag();
         $meta->assignValues([
             'meta_controller' => 'Certificates',
-            'meta_action' => 'evaluation',
-            'meta_type' => MetaTag::META_GROUP_QUIZ_CERTIFICATE,
-            'meta_record_id' => $data['quizat_id'],
+            'meta_action' => $action,
+            'meta_type' => $type,
+            'meta_record_id' => $recordId,
             'meta_identifier' => $content
         ]);
         if (!$meta->save()) {
             $this->error = $meta->getError();
             return false;
         }
-        $url = MyUtility::makeFullUrl('Certificates', 'evaluation', [$data['quizat_id']], CONF_WEBROOT_FRONTEND);
+        $url = MyUtility::makeFullUrl('Certificates', $action, [$recordId], CONF_WEBROOT_FRONTEND);
         if (
             !FatApp::getDb()->insertFromArray(
                 MetaTag::DB_LANG_TBL,

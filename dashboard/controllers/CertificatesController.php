@@ -47,7 +47,7 @@ class CertificatesController extends DashboardController
             $content = $this->getContent(Certificate::TYPE_COURSE);
             $cert = new Certificate(
                 $ordcrsData['ordcrs_id'],
-                Certificate::TYPE_QUIZ,
+                Certificate::TYPE_COURSE,
                 $this->siteUserId,
                 $this->siteUserType
             );
