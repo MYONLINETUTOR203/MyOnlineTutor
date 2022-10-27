@@ -28,6 +28,10 @@ $fld3->setFieldTagAttribute('data-previous', 'digit-2');
 $fld4->setFieldTagAttribute('data-previous', 'digit-3');
 $fld5->setFieldTagAttribute('data-previous', 'digit-4');
 $fld6->setFieldTagAttribute('data-previous', 'digit-5');
+
+$btn_submit = $frm->getField('btn_submit');
+$btn_submit->setFieldTagAttribute('id', 'btn_submit');
+$btn_submit->setFieldTagAttribute('disabled', 'disabled');
 ?>
 <style>
     .digit-group input{
@@ -38,7 +42,6 @@ $fld6->setFieldTagAttribute('data-previous', 'digit-5');
 		line-height: 50px;
 		text-align: center;
 		font-size: 24px;
-		/* font-family: "Raleway", sans-serif; */
 		font-weight: 200;
 		color: #000;
 		margin: 0 2px;
@@ -88,3 +91,77 @@ $fld6->setFieldTagAttribute('data-previous', 'digit-5');
         </div>
     </div>
 </section>
+<script>
+    var uid = '<?php echo $userId; ?>';
+
+    $(document).ready(function(){
+    let timerOn = true;
+        resendTwoFactorAuthenticationCode = function (userId, ele) {
+            fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
+            $(ele).removeAttr('onclick');
+            timer(30);
+        };
+
+        var otpFieldNo = $('.digit-group').find(':input[type=text]').length;
+        $('.digit-group').find('input').each(function() {
+            $(this).attr('maxlength', 1);
+            $(this).on('keyup', function(e) {
+                var filledField = 0;
+                var parent = $($(this).parent());
+                if(e.keyCode === 8 || e.keyCode === 37) {
+                    var prev = parent.find('input#' + $(this).data('previous'));
+                    if(prev.length) {
+                        $(prev).select();
+                    }
+                }  else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                    var next = parent.find('input#' + $(this).data('next'));
+                    if(next.length) {
+                        $(next).select();
+                    } else {
+                        if(parent.data('autosubmit')) {
+                            parent.submit();
+                        }
+                    }
+                }
+                $('.digit-group').find('input[type="text"]').each(function() {
+                    if($(this).val() != '') {
+                        filledField++;
+                    } 
+                });    
+                if (filledField == otpFieldNo) {
+                    $('#btn_submit').removeAttr('disabled');
+                } else {
+                    $('#btn_submit').attr('disabled', 'disabled');
+                }     
+            
+            });
+            $(this).on('keydown', function (e){
+                if ((e.keyCode >= 65 && e.keyCode <= 90) ) {
+                    e.preventDefault();
+                    return;
+                }
+            })
+        });
+    
+        timer(30);
+
+        function timer(remaining) {
+            var m = Math.floor(remaining / 60);
+            var s = remaining % 60;
+            m = m < 10 ? '0' + m : m;
+            s = s < 10 ? '0' + s : s;
+            document.getElementById('countdowntimer').innerHTML = m + ':' + s;
+            remaining -= 1;
+            if(remaining >= 0 && timerOn) {
+                setTimeout(function() {
+                    timer(remaining);
+                }, 1000);
+                return;
+            }
+            if(!timerOn) {
+                return;
+            }
+            $('#btn_resend_otp').attr('onclick', "resendTwoFactorAuthenticationCode("+uid+", this); return false;");
+        }
+});
+</script>

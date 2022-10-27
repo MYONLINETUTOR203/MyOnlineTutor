@@ -27,7 +27,7 @@ class UserAuth extends FatModel
      * @param string $userip
      * @return bool
      */
-    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true, bool $setSession = true): bool
+    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
     {
         if (empty($username) || ($enypass && empty($password))) {
             $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');

@@ -229,7 +229,6 @@ $(document).ready(function () {
     twoFactorForm = function (data) {
         fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorForm'), data, function (response) {
             $.facebox(response);
-            initializeTwoFactorAuthentication();
         });
     };
 
@@ -391,42 +390,6 @@ $(document).ready(function () {
             newsletterAjaxRuning = false;
         }, {fOutMode: 'json', failed: true});
     }
-
-    resendTwoFactorAuthenticationCode = function (userId) {
-        
-        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
-    };
-
-    initializeTwoFactorAuthentication = function () {
-        $('.digit-group').find('input').each(function() {
-            $(this).attr('maxlength', 1);
-            $(this).on('keyup', function(e) {
-                var parent = $($(this).parent());
-                if(e.keyCode === 8 || e.keyCode === 37) {
-                    var prev = parent.find('input#' + $(this).data('previous'));
-                    if(prev.length) {
-                        $(prev).select();
-                    }
-                }  else if((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
-                    var next = parent.find('input#' + $(this).data('next'));
-                    if(next.length) {
-                        $(next).select();
-                    } else {
-                        if(parent.data('autosubmit')) {
-                            parent.submit();
-                        }
-                    }
-                }
-            });
-
-            $(this).on('keydown', function (e){
-               if ((e.keyCode >= 65 && e.keyCode <= 90) ) {
-                e.preventDefault();
-                    return;
-                }
-            })
-        });
-    };
 
 })(jQuery);
 function toggleOffers(element) {

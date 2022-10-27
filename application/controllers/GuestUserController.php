@@ -57,7 +57,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError($auth->getError());
         }
         $user = User::getByEmail($post['username']);
-        $setSession = false;
+        $loginUser = false;
         if ($user['user_2fa_enabled'] == AppConstant::YES) {
             $twoFactorAuth = new TwoFactorAuth();
             if (!$twoFactorAuth->checkUserVerified($user['user_id'])) {
@@ -68,19 +68,20 @@ class GuestUserController extends MyAppController
                     'twoFactorEnabled'  => $user['user_2fa_enabled'],
                 ]);
             } else {
-                $setSession = true;
+                $loginUser = true;
             }
         } else {
-            $setSession = true;
+            $loginUser = true;
         }
-        if($setSession) {
-            if (!$auth->login($post['username'], $post['password'], MyUtility::getUserIp(), true, true)) {
+        if($loginUser) {
+            if (!$auth->login($post['username'], $post['password'], MyUtility::getUserIp(), true)) {
                 FatUtility::dieJsonError($auth->getError());
             }
+            if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
+                UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
+            }
         }
-        if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
-            UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
-        }
+       
         $_SESSION[AppConstant::SEARCH_SESSION] = FatApp::getPostedData();
         FatUtility::dieJsonSuccess(Label::getLabel("MSG_LOGIN_SUCCESSFULL"));
     }
@@ -182,6 +183,7 @@ class GuestUserController extends MyAppController
         $user = User::getByEmail($post['username']);
         $post['user_id'] = $user['user_id'];
         $frm = $this->getTwoFactorForm($post);
+        $this->set('userId', $user['user_id']);
         $this->set('frm', $frm);
         $this->_template->render(false, false);
     }
@@ -192,6 +194,24 @@ class GuestUserController extends MyAppController
     public function setupTwoFactor() 
     {   
         $frm = $this->getTwoFactorForm();
+        $fld1 = $frm->getField('digit_1');
+        $fld1->requirements()->setRequired();
+        $fld1->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
+        $fld2 = $frm->getField('digit_2');
+        $fld2->requirements()->setRequired();
+        $fld2->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
+        $fld3 = $frm->getField('digit_3');
+        $fld3->requirements()->setRequired();
+        $fld3->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
+        $fld4 = $frm->getField('digit_4');
+        $fld4->requirements()->setRequired();
+        $fld4->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
+        $fld5 = $frm->getField('digit_5');
+        $fld5->requirements()->setRequired();
+        $fld5->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
+        $fld6 = $frm->getField('digit_6');
+        $fld6->requirements()->setRequired();
+        $fld6->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_COMPLETE_AUTHENTICATION_CODE'));
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }       
@@ -627,19 +647,19 @@ class GuestUserController extends MyAppController
      */ 
     private function getTwoFactorForm($user = [])
     {
-        $userId = empty($user['user_id']) ?  0: FatUtility::int($user['user_id']);
+        $userId = empty($user['user_id']) ? 0 : FatUtility::int($user['user_id']);
         $frm = new Form('twoFactorForm');
-        $fld1= $frm->addIntegerField('', 'digit_1');
-        $fld2 = $frm->addIntegerField('', 'digit_2');
-        $fld3 = $frm->addIntegerField('', 'digit_3');
-        $fld4 = $frm->addIntegerField('', 'digit_4');
-        $fld5 = $frm->addIntegerField('', 'digit_5');
-        $fld6 = $frm->addIntegerField('', 'digit_6');
+        $fld1= $frm->addTextbox('', 'digit_1');
+        $fld2 = $frm->addTextbox('', 'digit_2');
+        $fld3 = $frm->addTextbox('', 'digit_3');
+        $fld4 = $frm->addTextbox('', 'digit_4');
+        $fld5 = $frm->addTextbox('', 'digit_5');
+        $fld6 = $frm->addTextbox('', 'digit_6');
         $frm->addHiddenField('', 'username', $user['username'] ?? '');
         $frm->addHiddenField('', 'password', $user['password'] ?? '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_Validate'));
         $resendText = Label::getLabel('LBL_Didnt_Get_The_Code?_{link}');
-        $resendText = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendTwoFactorAuthenticationCode(' . "'" . $userId . "'" . '); return false;">' . Label::getLabel('LBL_Resend') . '</a>', $resendText);
+        $resendText = str_replace("{link}", '<p><a href="javascript:void(0)" id="btn_resend_otp">' . Label::getLabel('LBL_RESEND_OTP') . '</a><p> in <span id="countdowntimer"></span></p></p>', $resendText);
         $frm->addHTML('', 'resend_auth_code', $resendText);
         return $frm;
     }
