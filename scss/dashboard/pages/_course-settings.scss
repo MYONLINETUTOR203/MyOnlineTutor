@@ -232,21 +232,27 @@ $media-uploader: "media-uploader";
 .#{$media-uploader}{
     &{
         
-       
+       p.style-italic{font-size: 0.95rem;}
     
         @media(min-width:theme('breakpoints.md','value')){
-            &{display: flex; flex-wrap: wrap; justify-content: space-between;margin-top: theme('margin.20');
+            &{display: flex; flex-wrap: wrap; justify-content: space-between;margin-top: theme('margin.20'); align-items: flex-start;
                 &:first-child{margin-top: theme('margin.10');}
-                &__content{flex: 0 0 46%; order: 1;}
-                &__asset{flex: 0 0 42%; order: 2;}
+                &__content{flex: 0 0 42%; order: 1;}
+                &__asset{flex: 0 0 46%; order: 2;}
+            }
+        }
+
+        @media(max-width:theme('breakpoints.xl','value')){
+            &{margin-top: theme('margin.20');
+                &:first-child{margin-top:0;}
             }
         }
 
 
         @media(max-width:1399px){
             &{
-                &__content{flex: 0 0 50%;}
-                &__asset{flex: 0 0 42%;}
+                &__content{flex: 0 0 42%;}
+                &__asset{flex: 0 0 50%;}
             }
         }
 
@@ -974,3 +980,5 @@ $course-progress: "course-progress";
     &__content{flex: 1; padding: 0 theme('padding.2');}
     }
 }
+
+.browser-support{display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; background-color:theme('color.gray.100'); border-radius:theme('radius.2');}

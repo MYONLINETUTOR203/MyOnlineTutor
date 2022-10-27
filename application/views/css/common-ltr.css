@@ -5198,7 +5198,7 @@ img {
     padding-bottom: 25%; }
   .ratio--1by4:before {
     padding-bottom: 400%; }
-  .ratio > * {
+  .ratio > *, .ratio img {
     position: absolute;
     left: 0;
     right: 0;
