@@ -51,21 +51,23 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_FOUND');
             return false;
         }
+        $type = ($this->mainTableRecordId > 0) ? $category['cate_type'] : $data['cate_type'];
         $parent = FatUtility::int($data['cate_parent']);
-        if (!$this->checkUnique($data['cate_identifier'], $parent)) {
+        if (!$this->checkUnique($data['cate_identifier'], $type, $parent)) {
             $this->error = $this->getError();
             return false;
         }
         if ($this->mainTableRecordId > 0) {
             if ($data['cate_status'] == AppConstant::INACTIVE && $category['cate_records'] > 0) {
-                if ($data['cate_type'] == Category::TYPE_QUESTION) {
+                if ($category['cate_type'] == Category::TYPE_QUESTION) {
                     $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
                 }
-                if ($data['cate_type'] == Category::TYPE_COURSE) {
+                if ($category['cate_type'] == Category::TYPE_COURSE) {
                     $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
                 }
                 return false;
             }
+            unset($data['cate_type']);
         }
         /* save category data */
         $this->assignValues($data);
@@ -295,15 +297,17 @@ class Category extends MyAppModel
      * Check unique category
      *
      * @param string $identifier
+     * @param int    $type
      * @param int    $parent
      * @return bool
      */
-    public function checkUnique(string $identifier, int $parent = 0)
+    public function checkUnique(string $identifier, int $type, int $parent = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'catg');
         $srch->addCondition('mysql_func_LOWER(cate_identifier)', '=', strtolower(trim($identifier)), 'AND', true);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate_parent', '=', $parent);
+        $srch->addCondition('cate_type', '=', $type);
         if ($this->getMainTableRecordId() > 0) {
             $srch->addCondition('cate_id', '!=', $this->getMainTableRecordId());
         }

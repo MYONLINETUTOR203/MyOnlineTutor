@@ -57,7 +57,7 @@ foreach ($arrListing as $sn => $row) {
                 }
                 break;
             case 'cate_courses':
-                if ($row['cate_records'] > 0 && Category::TYPE_COURSE) {
+                if ($row['cate_records'] > 0 && $row['cate_type'] ==  Category::TYPE_COURSE) {
                     if ($canViewCourses) {
                         $qryString = '?course_cateid=' . $row['cate_id'];
                         if ($postedData['parent_id'] > 0) {
@@ -65,7 +65,7 @@ foreach ($arrListing as $sn => $row) {
                         }
                         $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $row['cate_records'], true);
                     } else {
-                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_COURSES')], $row['cate_records']);
+                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_COURSES')], 0);
                     }
                 } else {
                     $td->appendElement('plaintext', [], 0);
@@ -80,7 +80,7 @@ foreach ($arrListing as $sn => $row) {
                         }
                         $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
                     } else {
-                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records']);
+                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], 0);
                     }
                 } else {
                     $td->appendElement('plaintext', [], 0);
