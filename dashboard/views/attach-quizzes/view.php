@@ -84,7 +84,7 @@ $status = QuizAttempt::getStatuses();
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php if (count($quiz['users']) > 0) { ?>
+                                                <?php if (isset($quiz['users']) && count($quiz['users']) > 0) { ?>
                                                     <?php foreach ($quiz['users'] as $user) { ?>
                                                         <tr>
                                                             <td>
@@ -111,7 +111,11 @@ $status = QuizAttempt::getStatuses();
                                                             </td>
                                                         </tr>
                                                     <?php } ?>
-                                                <?php } ?>
+                                                <?php } else { ?>
+                                                    <tr>
+                                                        <td colspan="3"><?php echo Label::getLabel('LBL_NO_USER_AVAILABLE'); ?></td>
+                                                    </tr>
+                                                 <?php } ?>
                                             </tbody>
                                         </table>
                                     </td>
