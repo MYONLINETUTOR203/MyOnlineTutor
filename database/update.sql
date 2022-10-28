@@ -1323,3 +1323,5 @@ DELETE FROM `tbl_attached_files` WHERE `file_type` IN (39,40,41);
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.6.20221007' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = "LBL_PAYMENT_ON_COURSE_{orderid}";
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.7.20221028' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
