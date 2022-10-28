@@ -332,7 +332,7 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         /* validate logged in user */
-        if ($quiz['quizat_user_id'] != $this->userId) {
+        if ($quiz['quizat_user_id'] != $this->userId || $quiz['quizat_active'] == AppConstant::NO) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
@@ -478,6 +478,45 @@ class QuizAttempt extends MyAppModel
                     }
                 }
             }
+        }
+        return true;
+    }
+
+    /**
+     * Cancel quizzes
+     *
+     * @param int $recordId
+     * @param int $recordType
+     * @return bool
+     */
+    public function cancel(int $recordId, int $recordType)
+    {
+        $srch = new SearchBase(QuizLinked::DB_TBL, 'quilin');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quilin_id = quizat_quilin_id');
+
+        $srch->addCondition('quilin.quilin_record_id', '=', $recordId);
+        $srch->addCondition('quilin.quilin_record_type', '=', $recordType);
+        $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('quizat_active', '=', AppConstant::YES);
+        if ($this->userType == User::LEARNER) {
+            $srch->addCondition('quizat_user_id', '=', $this->userId);
+        }
+        if ($this->userType == User::TEACHER) {
+            $srch->addCondition('quilin_user_id', '=', $this->userId);
+        }
+        $srch->addFld('quizat_id');
+        $quizIds = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quizat_id');
+        if (empty($quizIds)) {
+            return true;
+        }
+        $db = FatApp::getDb();
+        $where = [
+            'smt' => "quizat_id IN (" . trim(str_repeat('?,', count($quizIds)), ',') . ")",
+            'vals' => array_keys($quizIds)
+        ];
+        if (!$db->updateFromArray(static::DB_TBL, ['quizat_status' => static::STATUS_CANCELED], $where)) {
+            $this->error = $db->getError();
+            return false;
         }
         return true;
     }

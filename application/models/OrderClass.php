@@ -193,6 +193,12 @@ class OrderClass extends MyAppModel
         if (!$this->save()) {
             return false;
         }
+        $quiz = new QuizAttempt(0, $this->userId, $this->userType);
+        if (!$quiz->cancel($class['grpcls_id'], AppConstant::GCLASS)) {
+            $this->error = $quiz->getError();
+            $db->rollbackTransaction();
+            return false;
+        }
         $refundPercent = static::getRefundPercentage(User::LEARNER, $class['grpcls_start_datetime']);
         if (!$this->refundToLearner([$class], $refundPercent)) {
             $db->rollbackTransaction();

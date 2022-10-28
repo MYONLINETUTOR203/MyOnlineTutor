@@ -35,7 +35,7 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             $this->redirect($data);
         }
@@ -90,7 +90,7 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }
 
@@ -238,7 +238,7 @@ class UserQuizController extends DashboardController
         }
 
         /* validate logged in user */
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
         

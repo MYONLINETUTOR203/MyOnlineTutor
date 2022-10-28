@@ -531,6 +531,7 @@ class QuizLinked extends MyAppModel
             $srch->applyPrimaryConditions();
             $srch->addCondition('ordles_id', '=', $recordId);
             $srch->addCondition('learner.user_id', 'IS NOT', 'mysql_func_NULL', 'AND', true);
+            $srch->addCondition('ordles_status', '!=', Lesson::CANCELLED);
             $srch->addFld('learner.user_id');
             $users = FatApp::getDb()->fetchAll($srch->getResultSet());
         } elseif ($recordType == AppConstant::GCLASS) {
@@ -538,6 +539,7 @@ class QuizLinked extends MyAppModel
             $srch->applyPrimaryConditions();
             $srch->addCondition('grpcls_id', '=', $recordId);
             $srch->addCondition('learner.user_id', 'IS NOT', 'mysql_func_NULL', 'AND', true);
+            $srch->addCondition('ordcls_status', '!=', OrderClass::CANCELLED);
             $srch->addFld('learner.user_id');
             $srch->removGroupBy('grpcls.grpcls_id');
             $users = FatApp::getDb()->fetchAll($srch->getResultSet());
