@@ -104,6 +104,7 @@ class CertificatesController extends MyAppController
             $srch->addMultipleFields([
                 'IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as session_title',
                 'grpcls_slug',
+                'grpcls_parent',
                 'teacher.user_first_name as teacher_first_name',
                 'teacher.user_last_name as teacher_last_name',
                 'teacher.user_username as teacher_username',
@@ -116,6 +117,9 @@ class CertificatesController extends MyAppController
             $learner = User::getAttributesById($data['quizat_user_id'], [
                 'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
             ]);
+            if ($session['grpcls_parent'] > 0) {
+                $session['grpcls_slug'] = GroupClass::getAttributesById($session['grpcls_parent'], 'grpcls_slug');
+            }
             $session = $session + $learner;
         } else {
             $srch = new LessonSearch($this->siteLangId, 0, 0);
