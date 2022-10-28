@@ -141,7 +141,7 @@ if ($topRatedTeachers) {
                                     </div>
                                     <div class="tile__body">
                                         <a class="tile__title" href="<?php echo MyUtility::makeUrl('Teachers', 'view', [$teacher['user_username']]); ?>">
-                                            <h4><?php echo $teacher['full_name']; ?></h4>
+                                            <h4><?php echo CommonHelper::truncateCharacters($teacher['full_name'], 60); ?></h4>
                                         </a>
                                         <div class="info-wrapper">
                                             <div class="info-tag location">
@@ -170,11 +170,13 @@ if ($topRatedTeachers) {
             </div>
         </div>
     </section>
-<?php }
+    <?php
+}
 if (!empty($browseTutorPage)) {
     ?>
     <?php echo html_entity_decode($browseTutorPage); ?>
-<?php }
+    <?php
+}
 if (count($classes) > 0) {
     ?>
     <section class="section section--gray section--upcoming-class">
@@ -195,14 +197,15 @@ if (count($classes) > 0) {
             </div>
         </div>
     </section>
-<?php }
+    <?php
+}
 if ($testmonialList) {
     ?>
     <section class="section section--quote">
         <div class="container container--narrow">
             <div class="quote-slider">
                 <div class="slider slider--quote slider-quote-js">
-    <?php foreach ($testmonialList as $testmonialDetail) { ?>
+                    <?php foreach ($testmonialList as $testmonialDetail) { ?>
                         <div>
                             <div class="slider__item">
                                 <div class="quote">
@@ -234,7 +237,7 @@ if ($testmonialList) {
                                 </div>
                             </div>
                         </div>
-    <?php } ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -255,7 +258,7 @@ if ($blogPostsList) {
             <div class="section__body">
                 <div class="blog-wrapper">
                     <div class="slider slider--onehalf slider-onehalf-js">
-    <?php foreach ($blogPostsList as $postDetail) { ?>
+                        <?php foreach ($blogPostsList as $postDetail) { ?>
                             <div>
                                 <div class="slider__item">
                                     <div class="blog-card">
@@ -283,7 +286,7 @@ if ($blogPostsList) {
                                     </div>
                                 </div>
                             </div>
-    <?php } ?>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

@@ -536,7 +536,7 @@ $tile: 'tile';
         margin-bottom: 0;
         padding: theme('padding.6');
         border: 1px solid theme('color.gray.200');
-        min-width: 200px;
+        min-width: 260px;max-width: 260px; height: 100%;
     }
     .card__row--action {
         padding: 0;
