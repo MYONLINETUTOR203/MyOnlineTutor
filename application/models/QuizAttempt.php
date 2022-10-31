@@ -580,12 +580,16 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
             return false;
         }
-        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
-        $submittedAnswers = json_decode($data['quatqu_answer'], true);
-        $answers = array_intersect($correctAnswers, $submittedAnswers);
+        $answers = json_decode($ques['qulinqu_answer'], true);
+        $marksPerAnswer = $ques['qulinqu_marks'] / count($answers);
 
-        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
-        $answeredScore = $marksPerAnswer * count($answers);
+        $submittedAnswers = json_decode($data['quatqu_answer'], true);
+        $wrongAnswers = array_diff($submittedAnswers, $answers);
+        $correctAnswers = array_intersect($answers, $submittedAnswers);
+
+        $correctAnswers = count($correctAnswers) - count($wrongAnswers);
+        $correctAnswers = ($correctAnswers > 0) ? $correctAnswers : 0;
+        $answeredScore = $marksPerAnswer * $correctAnswers;
 
         $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $assignValues = [
