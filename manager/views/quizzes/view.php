@@ -31,9 +31,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong>
-                                        <iframe srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
-                                    </strong>
+                                    : <strong><?php echo CommonHelper::renderHtml($quiz['quiz_detail']); ?></strong>
                                 </div>
                             </div>
                         </div>
