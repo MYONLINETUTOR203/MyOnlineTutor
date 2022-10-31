@@ -13,7 +13,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                 </div>
                 <div class="tabs_panel">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
@@ -23,13 +23,17 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong><?php echo CommonHelper::renderHtml($quiz['quiz_detail']); ?></strong>
+                                    : <strong>
+                                        <iframe srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
+                                    </strong>
                                 </div>
                             </div>
                         </div>
