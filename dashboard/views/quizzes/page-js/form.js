@@ -58,14 +58,7 @@ $(function () {
     }
     clearSearch = function() {
         document.frmQuesSearch.reset();
-        getSubcategories(0);
         searchQuestions(document.frmQuesSearch);
-    };
-    getSubcategories = function (id) {
-        id = (id == '') ? 0 : id;
-        fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id]), '', function (res) {
-            $('#quesSubCateJs').html(res);
-        });
     };
     attachQuestions = function () {
         var frm = document.frmQuestions;

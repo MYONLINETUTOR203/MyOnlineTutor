@@ -28,6 +28,7 @@ class QuestionsController extends DashboardController
     {
         $frm = QuestionSearch::getSearchForm($this->siteLangId);
         $this->set('frm', $frm);
+        $this->_template->addJs('questions/page-js/common.js');
         $this->_template->render();
     }
 
@@ -109,8 +110,9 @@ class QuestionsController extends DashboardController
      * Render add new question form
      *
      * @param int $id
+     * @param int $quizType
      */
-    public function form(int $id = 0)
+    public function form(int $id = 0, int $quizType = 0)
     {
         $question = $options = $answers = [];
         $type = 0;
@@ -124,7 +126,7 @@ class QuestionsController extends DashboardController
             $type = $question['ques_type'];
             $answers = json_decode($question['ques_answer']);
         }
-        $frm = $this->getForm();
+        $frm = $this->getForm($quizType);
         $frm->fill($question);
         $this->sets([
             'optionsFrm' => $this->getOptionsForm($type),
@@ -237,12 +239,19 @@ class QuestionsController extends DashboardController
     /**
      * Get Questions Form
      */
-    private function getForm()
+    private function getForm($quizType = 0)
     {
         $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm = new Form('frmQuestion');
         $frm->addHiddenField('', 'ques_id')->requirements()->setInt();
-        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getTypes());
+        $types = Question::getTypes();
+        if ($quizType == Quiz::TYPE_AUTO_GRADED) {
+            unset($types[Question::TYPE_MANUAL]);
+        } elseif ($quizType == Quiz::TYPE_NON_GRADED) {
+            unset($types[Question::TYPE_MULTIPLE]);
+            unset($types[Question::TYPE_SINGLE]);
+        }
+        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', $types);
         $typeFld->requirements()->setRequired();
         $fld = $frm->addRequiredField(Label::getLabel('LBL_TITLE'), 'ques_title');
         $fld->requirements()->setLength(10, 100);
