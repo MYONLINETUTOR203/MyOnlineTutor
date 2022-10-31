@@ -5,7 +5,7 @@ $frm->setFormTagAttribute('onsubmit', 'searchQuestions(this); return(false);');
 $keyword = $frm->getField('keyword');
 $keyword->addFieldTagAttribute('placeholder', Label::getLabel('LBL_KEYWORD'));
 $cate = $frm->getField('ques_cate_id');
-$cate->addFieldTagAttribute('onchange', 'getSubcategories(this.value);');
+$cate->addFieldTagAttribute('onchange', 'getSubcategories(this.value, "#quesSubCateJs");');
 $subcate = $frm->getField('ques_subcate_id');
 $subcate->addFieldTagAttribute('id', 'quesSubCateJs');
 $btnclear = $frm->getField('btn_clear');
@@ -33,12 +33,6 @@ $btnclear->addFieldTagAttribute('onclick', 'clearSearch();');
                             <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
                         </svg>
                         <?php echo Label::getLabel('LBL_ATTACH'); ?>
-                    </a>
-                    <a href="javascript:void(0);" onclick="questionForm(0, '<?php echo $quizType ?>');" class="btn btn--bordered color-secondary">
-                        <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
-                        </svg>
-                        <?php echo Label::getLabel('LBL_ADD_QUESTION'); ?>
                     </a>
                 </div>
 
@@ -114,6 +108,17 @@ $btnclear->addFieldTagAttribute('onclick', 'clearSearch();');
                 </form>
                 <?php echo $frm->getExternalJs(); ?>
             </div>
+        </div>
+        <div class="note note--secondary">
+            <svg class="icon icon--explanation">
+                <use xlink:href="<?php echo CONF_WEBROOT_FRONTEND ?>/images/sprite.svg#explanation "></use>
+            </svg>
+            <p>
+                <b><?php echo Label::getLabel('LBL_NOTE:') ?></b>
+                <a href="javascript:void(0);" class="underline" onclick="questionForm(0, '<?php echo $quizType ?>');">
+                    <?php echo Label::getLabel("LBL_DIDN'T_FIND_QUESTION?_CLICK_TO_ADD_NEW"); ?>
+                </a>
+            </p>
         </div>
     </div>
     <div class="facebox-panel__body padding-0">
