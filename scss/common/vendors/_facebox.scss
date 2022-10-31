@@ -40,13 +40,13 @@
 #facebox {
     .content.facebox-large{
         @media(min-width: theme('breakpoints.lg','value')) {
-            min-width: 920px;
-            padding:20px; display: block; overflow: auto;
+            min-width:1020px;
+           display: block; overflow: auto;
         }
     }
     .content.facebox-medium{
         @media(min-width: theme('breakpoints.lg','value')) {
-            min-width: 920px; display: block;padding:20px; overflow: auto;
+            min-width: 920px; display: block; overflow: auto;
         }
     }
 }
@@ -56,12 +56,12 @@
     .content.facebox-large{
         @media(max-width: theme('breakpoints.lg','value')) {
             width: 100vw; height: 100vh;
-            padding:20px; display: block; overflow: auto;
+             display: block; overflow: auto;
         }
     }
     .content.facebox-medium{
         @media(max-width: theme('breakpoints.lg','value')) {
-            width: 100vw; height: 100vh; display: block;padding:20px; overflow: auto;
+            width: 100vw; height: 100vh; display: block; overflow: auto;
         }
     }
 }
@@ -164,9 +164,10 @@
         }
     }
     .calendar-view{
-        // @media(min-width:theme('breakpoints.md','value')){
-        //     padding: theme('padding.6');
-        // }
+        @media(min-width:theme('breakpoints.md','value')){
+            padding: theme('padding.6');
+            &.scheduled-lesson-popup{padding: 0;}
+        }
 
         .fc-header-toolbar{
             @media(max-width:theme('breakpoints.md','value')){
