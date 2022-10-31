@@ -370,6 +370,14 @@ class UserQuizController extends DashboardController
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
     }
 
+    public function getTime()
+    {
+        $endTime = FatApp::getPostedData('time');
+        FatUtility::dieJsonSuccess([
+            'time' => ($endTime - strtotime(date('Y-m-d H:i:s')))
+        ]);
+    }
+
     /**
      * Get question form
      *

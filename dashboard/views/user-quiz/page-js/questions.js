@@ -46,11 +46,20 @@ $(function () {
     };
     saveAndFinish = function () {
         if (!confirm(langLbl.confirmQuizComplete)) {
+            resetTimer();
             return;
         }
         var frm = document.frmQuiz;
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), fcom.frmData(frm), function (res) {
             window.location = fcom.makeUrl('UserQuiz', 'completed', [res.id]);
+        });
+    };
+    resetTimer = function () {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'getTime'), {
+            'time': $('#countdowntimerJs').attr('endtime')
+        }, function (res) {
+            $('#countdowntimerJs').attr('remainingtime', res.time);
+            $('#countdowntimerJs').refreshTimer();
         });
     };
 });
