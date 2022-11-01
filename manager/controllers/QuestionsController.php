@@ -30,7 +30,6 @@ class QuestionsController extends AdminBaseController
         $frm->fill(FatApp::getQueryStringData());
         $this->sets([
             "frmSearch" => $frm,
-            "canEdit" => $this->objPrivilege->canEditQuestions(true),
             "params" => FatApp::getQueryStringData(),
         ]);
         $this->_template->render();
@@ -104,7 +103,6 @@ class QuestionsController extends AdminBaseController
             'questionData' => $questionData,
             'options' => $options,
             'answers' => $answerIds,
-            'canEdit' => $this->objPrivilege->canEditQuestions(true),
         ]);
         $this->_template->render(false, false);
     }

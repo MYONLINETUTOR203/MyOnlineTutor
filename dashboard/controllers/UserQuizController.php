@@ -35,7 +35,7 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             $this->redirect($data);
         }
@@ -90,7 +90,7 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }
 
@@ -238,7 +238,7 @@ class UserQuizController extends DashboardController
         }
 
         /* validate logged in user */
-        if ($data['quizat_user_id'] != $this->siteUserId) {
+        if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
         
@@ -368,6 +368,14 @@ class UserQuizController extends DashboardController
         }
         $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ;
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
+    }
+
+    public function getTime()
+    {
+        $endTime = FatApp::getPostedData('time');
+        FatUtility::dieJsonSuccess([
+            'time' => ($endTime - strtotime(date('Y-m-d H:i:s')))
+        ]);
     }
 
     /**

@@ -73,6 +73,7 @@ class QuizzesController extends DashboardController
             "quizId" => $id,
             "includeEditor" => true
         ]);
+        $this->_template->addJs('questions/page-js/common.js');
         $this->_template->render();
     }
 

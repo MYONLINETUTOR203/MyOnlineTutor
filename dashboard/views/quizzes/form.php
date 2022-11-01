@@ -27,4 +27,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
         $(document).ready(function() {
             form("<?php echo $quizId ?>");
         });
+        var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
+        var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
+        var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
     </script>

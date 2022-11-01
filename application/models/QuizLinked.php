@@ -530,19 +530,25 @@ class QuizLinked extends MyAppModel
             $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
             $srch->applyPrimaryConditions();
             $srch->addCondition('ordles_id', '=', $recordId);
+            $srch->addCondition('learner.user_id', 'IS NOT', 'mysql_func_NULL', 'AND', true);
+            $srch->addCondition('ordles_status', '!=', Lesson::CANCELLED);
             $srch->addFld('learner.user_id');
             $users = FatApp::getDb()->fetchAll($srch->getResultSet());
         } elseif ($recordType == AppConstant::GCLASS) {
             $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
             $srch->applyPrimaryConditions();
             $srch->addCondition('grpcls_id', '=', $recordId);
+            $srch->addCondition('learner.user_id', 'IS NOT', 'mysql_func_NULL', 'AND', true);
+            $srch->addCondition('ordcls_status', '!=', OrderClass::CANCELLED);
             $srch->addFld('learner.user_id');
             $srch->removGroupBy('grpcls.grpcls_id');
             $users = FatApp::getDb()->fetchAll($srch->getResultSet());
         } elseif ($recordType == AppConstant::COURSE) {
             $users = [];
         }
-        
+        if (empty($users)) {
+            return true;
+        }
         foreach ($users as $user) {
             foreach ($data as $id) {
                 $attempt = new QuizAttempt(0, $user['user_id']);

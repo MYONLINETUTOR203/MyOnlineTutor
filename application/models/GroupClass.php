@@ -309,6 +309,12 @@ class GroupClass extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
+        $quiz = new QuizAttempt(0, $this->userId, $this->userType);
+        if (!$quiz->cancel($this->mainTableRecordId, AppConstant::GCLASS)) {
+            $this->error = $quiz->getError();
+            $db->rollbackTransaction();
+            return false;
+        }
         $orderClass = new OrderClass();
         if (!$orderClass->refundToLearner($ordClses, 100)) {
             $this->error = $orderClass->getError();

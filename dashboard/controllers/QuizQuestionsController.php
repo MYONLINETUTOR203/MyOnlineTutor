@@ -42,6 +42,7 @@ class QuizQuestionsController extends DashboardController
         $this->sets([
             'frm' => $frm,
             'quesFrm' => $quesFrm,
+            'quizType' => Quiz::getAttributesById($id, 'quiz_type'),
         ]);
         $this->_template->render(false, false);
     }

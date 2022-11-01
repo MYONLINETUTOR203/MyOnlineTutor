@@ -219,7 +219,7 @@ class CertificatesController extends AdminBaseController
         }
         $langId = $template['certpl_lang_id'];
         $cert = new Certificate(0, $type, 0, $langId);
-        $content = $this->getContent();
+        $content = $this->getContent($langId);
 
         if (!$cert->generatePreview($content, $type)) {
             FatUtility::dieWithError($cert->getError());
@@ -227,7 +227,7 @@ class CertificatesController extends AdminBaseController
         FatUtility::dieWithError(Label::getLabel('LBL_UNABLE_TO_GENERATE_CERTIFICATE'));
     }
 
-    private function getContent()
+    private function getContent($langId)
     {
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
@@ -239,7 +239,7 @@ class CertificatesController extends AdminBaseController
         }
         $this->set('backgroundImg', $backgroundImg);
 
-        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $this->siteLangId);
+        $afile = new Afile(Afile::TYPE_CERTIFICATE_LOGO, $langId);
         $logoImg = $afile->getFile(0, false);
         if (!isset($logoImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $logoImg['file_path'])) {
             $logoImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
@@ -248,7 +248,7 @@ class CertificatesController extends AdminBaseController
         }
         $this->set('logoImg', $logoImg);
 
-        $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
+        $this->set('layoutDir', Language::getAttributesById($langId, 'language_direction'));
         $content = $this->_template->render(false, false, 'certificates/generate.php', true);
         return $content;
     }

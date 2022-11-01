@@ -365,7 +365,7 @@ class Certificate extends MyAppModel
     {
         /* get user name */
         $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
-        $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+        $content = $data['quilin_title'] . ' | ' . ucwords($username);
 
         $meta = new MetaTag();
         $meta->assignValues([
@@ -373,7 +373,7 @@ class Certificate extends MyAppModel
             'meta_action' => 'evaluation',
             'meta_type' => MetaTag::META_GROUP_QUIZ_CERTIFICATE,
             'meta_record_id' => $data['quizat_id'],
-            'meta_identifier' => $content
+            'meta_identifier' => $content . ' ' . $this->id
         ]);
         if (!$meta->save()) {
             $this->error = $meta->getError();

@@ -40,7 +40,7 @@
                                         $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
                                         $timer = $endtime - strtotime(date('Y-m-d H:i:s'));
                                         ?>
-                                        <div class="timer__controls countdowntimer timer-js" id="countdowntimerJs" remainingtime="<?php echo $timer; ?>">00:00:00:00</div>
+                                        <div class="timer__controls countdowntimer timer-js" endtime="<?php echo $endtime; ?>" id="countdowntimerJs" remainingtime="<?php echo $timer; ?>">00:00:00:00</div>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -57,7 +57,7 @@
     $(document).ready(function() {
         view('<?php echo $attemptId; ?>');
     });
-    
+
     $('#countdowntimerJs').appTimer(function() {
         window.location.reload();
     });

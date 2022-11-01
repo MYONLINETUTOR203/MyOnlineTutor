@@ -9,7 +9,7 @@
                             <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
                         </h4>
                     </hgroup>
-                    <div class="check-list margin-bottom-10">
+                    <div class="check-list margin-bottom-10 editor-content">
                         <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
                     </div>
                     <div class="repeat-items margin-bottom-10">

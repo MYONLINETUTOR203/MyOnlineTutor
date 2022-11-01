@@ -30,6 +30,14 @@ class QuizReview extends MyAppModel
      */
     public function start()
     {
+        $this->setFldValue('quizat_qulinqu_id', 0);
+        if (!$this->save()) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->validate()) {
+            $this->error = $this->getError();
+        }
         if (!$this->setQuestion()) {
             $this->error = $this->getError();
             return false;
