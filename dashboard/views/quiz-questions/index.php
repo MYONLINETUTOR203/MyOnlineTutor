@@ -115,8 +115,9 @@ $btnclear->addFieldTagAttribute('onclick', 'clearSearch();');
             </svg>
             <p>
                 <b><?php echo Label::getLabel('LBL_NOTE:') ?></b>
+                <?php echo Label::getLabel("LBL_DIDN'T_FIND_QUESTION?_CLICK_TO");?>
                 <a href="javascript:void(0);" class="underline" onclick="questionForm(0, '<?php echo $quizType ?>');">
-                    <?php echo Label::getLabel("LBL_DIDN'T_FIND_QUESTION?_CLICK_TO_ADD_NEW"); ?>
+                    <?php echo Label::getLabel("LBL_ADD_NEW"); ?>
                 </a>
             </p>
         </div>
