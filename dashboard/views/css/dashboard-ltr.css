@@ -3149,6 +3149,9 @@ iframe#st_gdpr_iframe {
 .container--narrow {
   max-width: 1000px; }
 
+.ui-sortable-helper {
+  display: table; }
+
 .screen-chat {
   position: absolute;
   left: 0;
