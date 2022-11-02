@@ -332,7 +332,7 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         /* validate logged in user */
-        if ($quiz['quizat_user_id'] != $this->userId) {
+        if ($quiz['quizat_user_id'] != $this->userId || $quiz['quizat_active'] == AppConstant::NO) {
             $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
             return false;
         }
@@ -483,6 +483,45 @@ class QuizAttempt extends MyAppModel
     }
 
     /**
+     * Cancel quizzes
+     *
+     * @param int $recordId
+     * @param int $recordType
+     * @return bool
+     */
+    public function cancel(int $recordId, int $recordType)
+    {
+        $srch = new SearchBase(QuizLinked::DB_TBL, 'quilin');
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quilin_id = quizat_quilin_id');
+
+        $srch->addCondition('quilin.quilin_record_id', '=', $recordId);
+        $srch->addCondition('quilin.quilin_record_type', '=', $recordType);
+        $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('quizat_active', '=', AppConstant::YES);
+        if ($this->userType == User::LEARNER) {
+            $srch->addCondition('quizat_user_id', '=', $this->userId);
+        }
+        if ($this->userType == User::TEACHER) {
+            $srch->addCondition('quilin_user_id', '=', $this->userId);
+        }
+        $srch->addFld('quizat_id');
+        $quizIds = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quizat_id');
+        if (empty($quizIds)) {
+            return true;
+        }
+        $db = FatApp::getDb();
+        $where = [
+            'smt' => "quizat_id IN (" . trim(str_repeat('?,', count($quizIds)), ',') . ")",
+            'vals' => array_keys($quizIds)
+        ];
+        if (!$db->updateFromArray(static::DB_TBL, ['quizat_status' => static::STATUS_CANCELED], $where)) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Send quiz completion notification to teacher
      */
     private function sendQuizCompletionNotification()
@@ -541,12 +580,16 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
             return false;
         }
-        $correctAnswers = json_decode($ques['qulinqu_answer'], true);
-        $submittedAnswers = json_decode($data['quatqu_answer'], true);
-        $answers = array_intersect($correctAnswers, $submittedAnswers);
+        $answers = json_decode($ques['qulinqu_answer'], true);
+        $marksPerAnswer = $ques['qulinqu_marks'] / count($answers);
 
-        $marksPerAnswer = $ques['qulinqu_marks'] / count($correctAnswers);
-        $answeredScore = $marksPerAnswer * count($answers);
+        $submittedAnswers = json_decode($data['quatqu_answer'], true);
+        $wrongAnswers = array_diff($submittedAnswers, $answers);
+        $correctAnswers = array_intersect($answers, $submittedAnswers);
+
+        $correctAnswers = count($correctAnswers) - count($wrongAnswers);
+        $correctAnswers = ($correctAnswers > 0) ? $correctAnswers : 0;
+        $answeredScore = $marksPerAnswer * $correctAnswers;
 
         $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $assignValues = [

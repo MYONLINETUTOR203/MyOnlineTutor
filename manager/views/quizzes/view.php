@@ -13,7 +13,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                 </div>
                 <div class="tabs_panel">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
@@ -23,7 +23,9 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">

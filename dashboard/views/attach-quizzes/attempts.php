@@ -16,6 +16,7 @@ $status = QuizAttempt::getStatuses();
             <table class="table table--styled table--responsive table--bordered">
                 <thead>
                     <tr class="title-row">
+                        <th><?php echo Label::getLabel('LBL_ID'); ?></th>
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
                         <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
                         <th><?php echo Label::getLabel('LBL_VALID_TILL'); ?></th>
@@ -42,6 +43,13 @@ $status = QuizAttempt::getStatuses();
                             }
                         ?>
                             <tr>
+                                <td>
+                                    <?php
+                                    $label = Label::getLabel('LBL_QZ{quiz-id}');
+                                    $str = str_pad($quiz['quilin_quiz_id'], 3, "0", STR_PAD_LEFT) . '-' . $quiz['users']['quizat_id'];
+                                    echo str_replace('{quiz-id}', $str, $label);
+                                    ?>
+                                </td>
                                 <td>
                                     <?php echo $quiz['quilin_title'] ?>
                                 </td>
@@ -72,7 +80,7 @@ $status = QuizAttempt::getStatuses();
                         <?php } ?>
                     <?php } else { ?>
                         <tr>
-                            <td colspan="3"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
+                            <td colspan="6"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>

@@ -2,7 +2,7 @@
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('id', 'questionFrm');
 $frm->setFormTagAttribute('class', 'form');
-$frm->setFormTagAttribute('onsubmit', 'setup(this); return false;');
+$frm->setFormTagAttribute('onsubmit', 'setupQuestion(this); return false;');
 $titleFld = $frm->getField('ques_title');
 $typeFld = $frm->getField('ques_type');
 $typeFld->setFieldTagAttribute('id', 'ques_type');

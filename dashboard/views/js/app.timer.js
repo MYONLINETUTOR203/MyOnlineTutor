@@ -1,9 +1,10 @@
 /* global moment */
 
 (function ($) {
+    var remainingTime;
     $.fn.appTimer = function (callback) {
         var mytimer = this;
-        var remainingTime = parseInt($(mytimer).attr('remainingTime') * 1000);
+        remainingTime = parseInt($(mytimer).attr('remainingTime') * 1000);
         setInterval(function () {
             if (remainingTime < 1) {
                 $(mytimer).html('00:00:00:00');
@@ -23,6 +24,9 @@
             $(mytimer).html(days + ':' + hours + ':' + minutes + ':' + seconds);
             remainingTime = remainingTime - 1000;
         }, 1000);
+    };
+    $.fn.refreshTimer = function () {
+        remainingTime = parseInt($(this).attr('remainingTime') * 1000);
     };
     $.fn.appEndTimer = function (callback) {
         var mytimer = this;

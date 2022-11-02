@@ -17,7 +17,9 @@
                                 </div>
                                 <div class="page-progress__content">
                                     <div class="progress progress--xsmall progress--round">
-                                        <div class="progress__bar bg-green progressBarJs" role="progressbar" style="width:<?php echo $data['quizat_progress'] ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <?php if ($data['quizat_progress'] > 0) { ?>
+                                            <div class="progress__bar bg-green progressBarJs" role="progressbar" style="width:<?php echo $data['quizat_progress'] ?>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                                 <div class="page-progress__value">

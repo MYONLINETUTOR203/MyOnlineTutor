@@ -58,7 +58,7 @@ class QuizReviewController extends DashboardController
         if (!$quiz->start()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZ_STARTED_SUCCESSFULLY'));
+        FatUtility::dieJsonSuccess('');
     }
 
     /**

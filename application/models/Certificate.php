@@ -397,7 +397,7 @@ class Certificate extends MyAppModel
             'meta_action' => $action,
             'meta_type' => $type,
             'meta_record_id' => $recordId,
-            'meta_identifier' => $content
+            'meta_identifier' => $content . ' ' . $this->id
         ]);
         if (!$meta->save()) {
             $this->error = $meta->getError();
