@@ -248,6 +248,7 @@ class QuizAttempt extends MyAppModel
         $srch = new SearchBase(static::DB_TBL);
         $srch->addCondition('quizat_user_id', '=', $this->userId);
         $srch->addCondition('quizat_quilin_id', '=', $quizLinkId);
+        $srch->addCondition('quizat_status', '=', static::STATUS_COMPLETED);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addFld('IFNULL(COUNT(quizat_id), 0) as attempts');

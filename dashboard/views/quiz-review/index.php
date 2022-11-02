@@ -46,6 +46,21 @@
                         <?php } ?>
                         <div class="repeat-element">
                             <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ATTEMPTS') ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php
+                                $label = Label::getLabel('LBL_{attempts}/{total}');
+                                echo str_replace(
+                                    ['{attempts}', '{total}'],
+                                    [$attempts, $data['quilin_attempts']],
+                                    $label
+                                );
+                                ?>
+                            </div>
+                        </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
                                 <?php echo Label::getLabel('LBL_EVALUATION_STATUS'); ?>
                             </div>
                             <div class="repeat-element__content">

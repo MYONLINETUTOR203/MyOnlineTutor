@@ -59,6 +59,8 @@ class UserQuizController extends DashboardController
         }
 
         $this->set('data', $data);
+        $attempt = new QuizAttempt(0, $data['quizat_user_id']);
+        $this->set('attempts', $attempt->getAttemptCount($data['quizat_quilin_id']));
         $this->_template->render();
     }
 
