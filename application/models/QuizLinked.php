@@ -402,6 +402,45 @@ class QuizLinked extends MyAppModel
     private function sendQuizRemovedNotification(array $data)
     {
         $sessionTypes = AppConstant::getSessionTypes();
+        /* get session title */
+        if ($data['quilin_record_type'] == AppConstant::GCLASS) {
+            $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
+            $srch->joinTable(
+                GroupClass::DB_TBL_LANG,
+                'LEFT JOIN',
+                'gclang.gclang_grpcls_id = grpcls.grpcls_id AND gclang.gclang_lang_id = ' . $this->langId,
+                'gclang'
+            );
+            $srch->addFld('IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as grpcls_title');
+            $srch->setPageSize(1);
+            $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['grpcls_title'];
+        } else {
+            $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
+            $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
+            $srch->joinTable(
+                TeachLanguage::DB_TBL_LANG,
+                'LEFT JOIN',
+                'tlanglang.tlanglang_tlang_id = tlang.tlang_id and tlanglang.tlanglang_lang_id =' . $this->langId,
+                'tlanglang'
+            );
+            $srch->addMultipleFields([
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+            ]);
+            $srch->setPageSize(1);
+            $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = str_replace(
+                ['{teach-lang}', '{n}'],
+                [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
+                Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
+            );
+        }
+
+
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_quilin_id', '=', $data['quilin_id']);
         $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin.quilin_id = quizat_quilin_id', 'quilin');
@@ -421,6 +460,7 @@ class QuizLinked extends MyAppModel
                 '{learner_full_name}' => ucwords($user['learner_first_name'] . ' ' . $user['learner_last_name']),
                 '{teacher_full_name}' => ucwords($user['teacher_first_name'] . ' ' . $user['teacher_last_name']),
                 '{session_type}' => strtolower($sessionTypes[$data['quilin_record_type']]),
+                '{session_title}' => ucwords($sessionTitle),
             ];
             $mail->setVariables($vars);
             $mail->sendMail([$user['user_email']]);
@@ -439,6 +479,44 @@ class QuizLinked extends MyAppModel
     {
         $record = current($data);
         $sessionType = AppConstant::getSessionTypes($record['quilin_record_type']);
+
+        /* get session title */
+        if ($record['quilin_record_type'] == AppConstant::GCLASS) {
+            $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
+            $srch->joinTable(
+                GroupClass::DB_TBL_LANG,
+                'LEFT JOIN',
+                'gclang.gclang_grpcls_id = grpcls.grpcls_id AND gclang.gclang_lang_id = ' . $this->langId,
+                'gclang'
+            );
+            $srch->addFld('IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as grpcls_title');
+            $srch->setPageSize(1);
+            $srch->addCondition('grpcls_id', '=', $record['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['grpcls_title'];
+        } else {
+            $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
+            $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
+            $srch->joinTable(
+                TeachLanguage::DB_TBL_LANG,
+                'LEFT JOIN',
+                'tlanglang.tlanglang_tlang_id = tlang.tlang_id and tlanglang.tlanglang_lang_id =' . $this->langId,
+                'tlanglang'
+            );
+            $srch->addMultipleFields([
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+            ]);
+            $srch->setPageSize(1);
+            $srch->addCondition('ordles_id', '=', $record['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = str_replace(
+                ['{teach-lang}', '{n}'],
+                [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
+                Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
+            );
+        }
 
         $linkedIds = array_column($data, 'quilin_id');
         $srch = new SearchBase(QuizAttempt::DB_TBL);
@@ -501,6 +579,7 @@ class QuizLinked extends MyAppModel
                 '{learner_full_name}' => ucwords($user['learner_first_name'] . ' ' . $user['learner_last_name']),
                 '{teacher_full_name}' => ucwords($user['teacher_first_name'] . ' ' . $user['teacher_last_name']),
                 '{session_type}' => strtolower($sessionType),
+                '{session_title}' => ucwords($sessionTitle),
                 '{quizzes_list}' => $list,
             ];
             $mail->setVariables($vars);
