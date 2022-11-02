@@ -186,6 +186,7 @@ p {
     display: -ms-flexbox;
     display: flex;
     height: 100%;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     bottom: 0;
@@ -1113,7 +1114,8 @@ p {
   position: relative;
   padding: var(--padding-6);
   border-bottom: 1px solid var(--color-gray-200);
-  border-top: 1px solid var(--color-gray-200); }
+  border-top: 1px solid var(--color-gray-200);
+  background-color: rgba(0, 0, 0, 0.02); }
   @media (max-width: 576px) {
     .action-bar__content {
       padding-bottom: var(--padding-6); }
@@ -1762,6 +1764,7 @@ iframe#st_gdpr_iframe {
   background-color: var(--color-white); }
 
 .table-sticky-scroll .first-child {
+  position: -webkit-sticky;
   position: sticky;
   left: 0;
   z-index: 2;
@@ -2142,6 +2145,7 @@ div.tagsinput div {
   @media (min-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 25.6rem;
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2152,6 +2156,7 @@ div.tagsinput div {
   @media (min-width: 1299px) and (max-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 22rem;
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -2780,6 +2785,7 @@ div.tagsinput div {
   padding: var(--padding-5); }
   @media (min-width: 1199px) {
     .page-controls {
+      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
@@ -4789,6 +4795,7 @@ div.tagsinput div {
                 flex: 1; } }
   @media (min-width: 991px) {
     .page-layout__sticky {
+      position: -webkit-sticky;
       position: sticky;
       top: 1.6rem; } }
   @media (max-width: 991px) {
@@ -4887,8 +4894,11 @@ div.tagsinput div {
     border-radius: var(--radius-1);
     padding: var(--padding-2) var(--padding-2);
     font-size: 11px; }
-  .field-count__wrap {
+  .field-count__wrap, .field-count input[type="text"] {
     padding-right: var(--padding-12) !important; }
+
+.media-uploader p.style-italic {
+  font-size: 0.95rem; }
 
 @media (min-width: 767px) {
   .media-uploader {
@@ -4900,33 +4910,42 @@ div.tagsinput div {
     -webkit-box-pack: justify;
         -ms-flex-pack: justify;
             justify-content: space-between;
-    margin-top: var(--margin-20); }
+    margin-top: var(--margin-20);
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start; }
     .media-uploader:first-child {
       margin-top: var(--margin-10); }
     .media-uploader__content {
       -webkit-box-flex: 0;
-          -ms-flex: 0 0 46%;
-              flex: 0 0 46%;
+          -ms-flex: 0 0 42%;
+              flex: 0 0 42%;
       -webkit-box-ordinal-group: 2;
           -ms-flex-order: 1;
               order: 1; }
     .media-uploader__asset {
       -webkit-box-flex: 0;
-          -ms-flex: 0 0 42%;
-              flex: 0 0 42%;
+          -ms-flex: 0 0 46%;
+              flex: 0 0 46%;
       -webkit-box-ordinal-group: 3;
           -ms-flex-order: 2;
               order: 2; } }
 
+@media (max-width: 1199px) {
+  .media-uploader {
+    margin-top: var(--margin-20); }
+    .media-uploader:first-child {
+      margin-top: 0; } }
+
 @media (max-width: 1399px) {
   .media-uploader__content {
     -webkit-box-flex: 0;
-        -ms-flex: 0 0 50%;
-            flex: 0 0 50%; }
+        -ms-flex: 0 0 42%;
+            flex: 0 0 42%; }
   .media-uploader__asset {
     -webkit-box-flex: 0;
-        -ms-flex: 0 0 42%;
-            flex: 0 0 42%; } }
+        -ms-flex: 0 0 50%;
+            flex: 0 0 50%; } }
 
 @media (max-width: 576px) {
   .media-uploader__content {
@@ -5882,3 +5901,21 @@ div.tagsinput div {
         -ms-flex: 1;
             flex: 1;
     padding: 0 var(--padding-2); }
+
+.browser-support {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-2); }

@@ -103,7 +103,7 @@ if (!empty($popularLanguages)) {
                     <?php foreach ($popularLanguages as $language) { ?>
                         <div class="flag__box">
                             <div class="flag__media">
-                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_FLAG_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_MEDIUM]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
+                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_TEACHING_LANGUAGES, $language['tlang_id'], Afile::SIZE_SMALL]), CONF_IMG_CACHE_TIME, '.jpg'); ?>" alt="<?php echo $language['tlang_name']; ?>">
                             </div>
                             <div class="flag__name">
                                 <span><?php echo $language['tlang_name'] ?></span>
@@ -200,7 +200,7 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if ($testmonialList) { ?>
+<?php } if ($testmonialList) { ?>
     <section class="section section--quote">
         <div class="container container--narrow">
             <div class="quote-slider">
