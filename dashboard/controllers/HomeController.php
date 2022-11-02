@@ -24,4 +24,11 @@ class HomeController extends AccountController
         parent::index();
     }
 
+    public function slug()
+    {
+        $slug = FatApp::getPostedData('slug');
+        $slug = MyUtility::createSlug($slug);
+        FatUtility::dieJsonSuccess(['slug' => $slug]);
+    }
+
 }

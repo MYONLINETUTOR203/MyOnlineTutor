@@ -8,13 +8,14 @@
  */
 class Course extends MyAppModel
 {
+
     const DB_TBL = 'tbl_courses';
     const DB_TBL_PREFIX = 'course_';
     const DB_TBL_LANG = 'tbl_course_details';
     const DB_TBL_APPROVAL_REQUEST = 'tbl_course_approval_requests';
     const DB_TBL_REFUND_REQUEST = 'tbl_course_refund_requests';
     const DB_TBL_INTENDED_LEARNERS = 'tbl_courses_intended_learners';
-    
+
     /* Course Status */
     const DRAFTED = 1;
     const SUBMITTED = 2;
@@ -67,9 +68,9 @@ class Course extends MyAppModel
     {
         if ($this->getMainTableRecordId() > 0) {
             $course = static::getAttributesById($this->getMainTableRecordId(), [
-                'course_status',
-                'course_active',
-                'course_user_id'
+                        'course_status',
+                        'course_active',
+                        'course_user_id'
             ]);
             if (!$course) {
                 $this->error = Label::getLabel('LBL_COURSE_NOT_FOUND');
@@ -177,7 +178,7 @@ class Course extends MyAppModel
         }
         return AppConstant::returArrValue($arr, $key);
     }
-    
+
     /**
      * Get Course Filter Types
      *
@@ -193,7 +194,7 @@ class Course extends MyAppModel
         ];
         return AppConstant::returArrValue($arr, $key);
     }
-    
+
     /**
      * Get Course Rating Filters
      *
@@ -327,7 +328,7 @@ class Course extends MyAppModel
             'corere_comment' => $data['corere_comment'],
             'corere_updated' => date('Y-m-d H:i:s')
         ];
-        $where = ['smt' => 'corere_id = ?', 'vals'  => [$requestId]];
+        $where = ['smt' => 'corere_id = ?', 'vals' => [$requestId]];
         if (!$db->updateFromArray(self::DB_TBL_REFUND_REQUEST, $refundData, $where)) {
             $this->error = $db->getError();
             return false;
@@ -342,10 +343,10 @@ class Course extends MyAppModel
             }
             /* update course progress status */
             if (!FatApp::getDb()->updateFromArray(
-                CourseProgress::DB_TBL,
-                ['crspro_status' => CourseProgress::CANCELLED],
-                ['smt' => 'crspro_ordcrs_id = ?', 'vals' => [$request['ordcrs_id']]]
-            )) {
+                            CourseProgress::DB_TBL,
+                            ['crspro_status' => CourseProgress::CANCELLED],
+                            ['smt' => 'crspro_ordcrs_id = ?', 'vals' => [$request['ordcrs_id']]]
+                    )) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED');
                 $db->rollbackTransaction();
                 return false;
@@ -446,11 +447,12 @@ class Course extends MyAppModel
      */
     private function getSlug(string $title)
     {
+        $title = MyUtility::createSlug($title);
         $srch = new SearchBase(static::DB_TBL_LANG);
-        $srch->addCondition('mysql_func_LOWER(course_title)', '=', strtolower($title), 'AND', true);
+        $srch->addCondition('course_title', '=', $title);
         $srch->doNotCalculateRecords();
-        $srch->setPageSize(1);
         $srch->addFld('course_title');
+        $srch->setPageSize(1);
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
             return CommonHelper::seoUrl($title) . '-' . $this->getMainTableRecordId();
         }
@@ -533,7 +535,7 @@ class Course extends MyAppModel
         $langData = [
             'course_id' => $this->getMainTableRecordId(),
             /* 'course_welcome' => $data['course_welcome'],
-            'course_congrats' => $data['course_congrats'], */
+              'course_congrats' => $data['course_congrats'], */
             'course_srchtags' => json_encode($tagsList),
         ];
         if (!$this->setupLangData($langData)) {
@@ -582,7 +584,7 @@ class Course extends MyAppModel
     {
         $courseId = $this->getMainTableRecordId();
         $courseDeleted = static::getAttributesById($courseId, ['course_deleted']);
-        if ((int)$courseDeleted['course_deleted'] > 0) {
+        if ((int) $courseDeleted['course_deleted'] > 0) {
             $this->error = Label::getLabel('LBL_COURSE_ALREADY_DELETED');
             return false;
         }
@@ -598,7 +600,7 @@ class Course extends MyAppModel
         }
         return true;
     }
-    
+
     private function deleteMedia()
     {
         $courseId = $this->getMainTableRecordId();
@@ -626,7 +628,7 @@ class Course extends MyAppModel
         }
         return true;
     }
-    
+
     /**
      * Check and send eligibility status for approval
      *
@@ -678,7 +680,7 @@ class Course extends MyAppModel
         $srch->addMultipleFields([
             'IF(course_id IS NULL, 0, 1) as course_lang',
             /* 'IF(course_welcome IS NULL, 0, 1) as course_welcome',
-            'IF(course_congrats IS NULL, 0, 1) as course_congrats', */
+              'IF(course_congrats IS NULL, 0, 1) as course_congrats', */
             '1 as course_welcome',
             '1 as course_congrats',
             'IF(course_srchtags IS NULL, 0, 1) as course_tags',
@@ -764,7 +766,8 @@ class Course extends MyAppModel
             $intendedLearnerData = $intendedLearner->get($this->getMainTableRecordId());
             $price = 0;
             if ($course['course_price'] > 0) {
-                $price = CourseUtility::convertToSystemCurrency($course['course_price'], $course['course_currency_id']);
+                $baseCurrency = MyUtility::getSiteCurrency();
+                $price = CourseUtility::convertToSystemCurrency($course['course_price'], $baseCurrency['currency_id']);
             }
             $data = [
                 'coapre_course_id' => $this->getMainTableRecordId(),
@@ -808,7 +811,7 @@ class Course extends MyAppModel
     private function sendApprovalRequestEmailToAdmin()
     {
         $srch = new SearchBase(static::DB_TBL, 'course');
-        $srch->addCondition('course.course_id' , '=', $this->getMainTableRecordId());
+        $srch->addCondition('course.course_id', '=', $this->getMainTableRecordId());
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -864,7 +867,7 @@ class Course extends MyAppModel
      */
     public function setStudentCount()
     {
-        /* get count*/
+        /* get count */
         $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
         $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'orders.order_id = ordcrs.ordcrs_order_id', 'orders');
         $srch->doNotCalculateRecords();
@@ -918,7 +921,6 @@ class Course extends MyAppModel
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
-    
     /**
      * Feedback Course
      * 
@@ -996,14 +998,14 @@ class Course extends MyAppModel
         $courseData = static::getAttributesById($this->getMainTableRecordId(), ['course_cate_id', 'course_subcate_id']);
         $srch = new SearchBase(Course::DB_TBL);
         $srch->joinTable(
-            Category::DB_TBL,
-            'INNER JOIN',
-            'c.cate_id = course_cate_id OR c.cate_id = course_subcate_id',
-            'c'
+                Category::DB_TBL,
+                'INNER JOIN',
+                'c.cate_id = course_cate_id OR c.cate_id = course_subcate_id',
+                'c'
         );
         $srch->addCondition('course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course_status', '=', static::PUBLISHED);
-        $srch->addCondition('c.cate_id' , 'IN', $courseData);
+        $srch->addCondition('c.cate_id', 'IN', $courseData);
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields(['c.cate_id, COUNT(*)']);
         $srch->addGroupBy('cate_id');
@@ -1035,7 +1037,7 @@ class Course extends MyAppModel
         $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'crsdetail.course_id = course.course_id', 'crsdetail');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->joinTable(
-            Course::DB_TBL_REFUND_REQUEST, 'LEFT JOIN', 'corere.corere_ordcrs_id = ordcrs.ordcrs_id', 'corere'
+                Course::DB_TBL_REFUND_REQUEST, 'LEFT JOIN', 'corere.corere_ordcrs_id = ordcrs.ordcrs_id', 'corere'
         );
         $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
         $srch->addCondition('ordcrs.ordcrs_status', '=', OrderCourse::COMPLETED);
@@ -1065,8 +1067,8 @@ class Course extends MyAppModel
             $commission = ($course['ordcrs_commission'] / 100) * $course['ordcrs_amount'];
             $teacherAmount = round(($course['ordcrs_amount'] - $commission), 2);
             if ($teacherAmount > 0) {
-                $comment = Label::getLabel('LBL_PAYMENT_ON_COURSE_{orderid}');
-                $comment = str_replace('{orderid}', $course['order_id'], $comment);
+                $comment = Label::getLabel('LBL_PAYMENT_ON_COURSE_"{course-name}"');
+                $comment = str_replace('{course-name}', $course['course_title'], $comment);
                 $txn = new Transaction($course['teacher_id'], Transaction::TYPE_TEACHER_PAYMENT);
                 if (!$txn->credit($teacherAmount, $comment)) {
                     $this->error = $txn->getError();
@@ -1103,7 +1105,7 @@ class Course extends MyAppModel
     public function sendPaymentMailToTeacher(array $data)
     {
         $mail = new FatMailer($data['user_lang_id'], 'completed_course_settlement_email_to_teacher');
-        
+
         $vars = [
             '{username}' => ucwords($data['user_first_name'] . ' ' . $data['user_last_name']),
             '{course_title}' => ucwords($data['course_title']),
@@ -1127,4 +1129,5 @@ class Course extends MyAppModel
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
+
 }

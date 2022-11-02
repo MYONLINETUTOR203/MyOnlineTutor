@@ -344,6 +344,25 @@ if ($siteUserId == $teacher['user_id']) {
                         </div>
                     </div>
                 <?php } ?>
+                <?php if ($moreCourses) { ?>
+                    <div class="panel-cover">
+                        <div class="panel-cover__head panel__head-trigger panel__head-trigger-js">
+                            <h3>
+                                <?php
+                                echo Label::getLabel('LBL_COURSES');
+                                ?>
+                            </h3>
+                        </div>
+                        <div class="panel-cover__body panel__body-target panel__body-target-js">
+                            <?php echo $this->includeTemplate('teachers/courses.php', [
+                                'moreCourses' => $moreCourses,
+                                'checkoutForm' => $checkoutForm,
+                                'siteLangId' => $siteLangId,
+                                'siteUserId' => $siteUserId,
+                            ]); ?>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
             <div class="profile-secondary">
                 <div class="right-panel">
@@ -398,27 +417,6 @@ if ($siteUserId == $teacher['user_id']) {
         </div>
     </div>
 </section>
-<?php if ($moreCourses) { ?>
-    <section class="section section--gray padding-bottom-20">
-        <div class="container container--narrow">
-            <div class="section__head d-flex justify-content-between align-items-center">
-                <h3>
-                    <?php
-                    $label = Label::getLabel('LBL_COURSES_FROM_{teacher-name}');
-                    echo str_replace('{teacher-name}', '<strong class="bold-700">' . ucfirst($teacher['user_first_name']) . '</strong>', $label);
-                    ?>
-                </h3>
-            </div>
-            <div class="section__body section-more-courses">
-                <?php echo $this->includeTemplate('courses/more-courses.php', [
-                    'moreCourses' => $moreCourses,
-                    'siteLangId' => $siteLangId,
-                    'siteUserId' => $siteUserId,
-                ]); ?>
-            </div>
-        </div>
-    </section>
-<?php } ?>
 <script type="text/javascript">
     $(document).ready(function() {
         viewFullAvailbility = function() {

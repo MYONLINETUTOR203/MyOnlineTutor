@@ -32,11 +32,11 @@
                     <div class="card-tile__body">
                         <span class="card-tile__label">
                             <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $crs['course_cate_id'] ?>"><?php echo CommonHelper::renderHtml($crs['cate_name']); ?></a>
-                                <?php
-                                if (!empty($crs['subcate_name'])) {
-                                    echo ' / ' ?>
-                                    <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $crs['course_subcate_id'] ?>"><?php echo CommonHelper::renderHtml($crs['subcate_name']);?></a>
-                                <?php } ?>
+                            <?php
+                            if (!empty($crs['subcate_name'])) {
+                                echo ' / ' ?>
+                                <a href="<?php echo MyUtility::generateUrl('Courses', 'index') . '?catg=' . $crs['course_subcate_id'] ?>"><?php echo CommonHelper::renderHtml($crs['subcate_name']);?></a>
+                            <?php } ?>
                         </span>
                         <h5 class="card-tile__title">
                             <a href="<?php echo MyUtility::makeUrl('Courses', 'view', [$crs['course_slug']]); ?>" class="snakeline-hover">

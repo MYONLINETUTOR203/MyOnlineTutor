@@ -251,6 +251,8 @@ $(function () {
                 $('#sectionId' + sectionId + ' .lecturesListJs').append(res).show();
                 $('#lectureOrderJs').val(parseInt(lectureOrder) + 1);
             }
+            var id = $(res).find('textarea[name="lecture_details"]').attr('id');
+            window["oEdit_" + id].disableFocusOnLoad = true;
             fcom.setEditorLayout(siteLangId);
         });
     };

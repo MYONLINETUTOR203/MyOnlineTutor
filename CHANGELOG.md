@@ -1,5 +1,58 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.7.20221028
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+	#068114	The courses section design should be the same as the classes on the teacher detail page
+	#068101	Multiple processing loaders are coming on the admin dashboard
+	#068073	Some of the images are not coming properly in frontend courses listing
+	#068040	Stop to show the loader when selecting a category
+	#068038	Processing loader is coming twice when learner/teacher reset courses search form
+	#068002	On course approval request submission not getting any response.
+	#067866	Teacher is unable to remove resources attached to the lecture
+	#067843	Deleted/Inactive languages are also coming in the manage courses language filter
+	#067841	The category/subcategory name is not coming if only its identifier is added
+	#067835	All subcategories are getting inactive when inactive the main category
+	#067833	After filtration or pagination change, course page should redirect to the top of the listing
+	#067832	In course listing filter criteria and pagination got reset after login from popup
+	#067831	If entering 3.33 price in "price till" field then courses with 3.33 price are not coming
+	#067813	Respective courses are not coming after clicking on course count in category listing
+	#067811	Notices are coming when adding inactive category
+	#067782	Same label is used for “courses from teacher” section as used in course detail page
+	#067776	Add the “View all” link in the homepage "popular courses" section
+	#067774	Learner is unable to mark course favorites from teacher detail page course slider
+	#067770	Admin is able to deactivate course attached language from setup form
+	#067769	Learner is unable to add lecture notes using “Add new note” button present in listing
+	#067768	Warning is coming in course request detail > course tags
+	#067766	Fatal error is coming in admin dashboard > top course categories section
+	#067199	In RTL mode, Cursor is appearing from the left side in the description field
+	#067184	The "Select" text is not coming in the Arabic language
+	#067139	List content is not coming properly in the course preview and course learning page
+	#067136	Course duration and lecture content are not coming correct in the Arabic language
+	#067129	More courses from tutor slider is not working correctly in Arabic language
+	#067038	Deactivate/delete course category/subcategory/language should be handled properly for drafted and submitted for approval courses
+	#067020	Certificate restored default content should be more accurate
+	#066782	List content is not aligned properly from left hand side
+	#066770	Added note is not coming when course is completed
+	#066637	Show course all the details in course approval request detail
+	#066620	Show course completion percentage on the learner course listing
+	#066563	Teacher details should be like course detail page on course learning page
+	#066502	Cursor focused to description field when adding/editing course/lecture
+	#066467	The filter is not fixed on the top when Scrolling the page
+	#066272	Course price is coming 0 when entering rupee value less than 79(conversion value)
+	#066221	If content is long then its hiding behind the letter counter
+	#066142	Some Content are out of the screen box in Safari browser
+	#066029	Instead of learner order id course name should come in the wallet transaction
+	#066026	If enter special character in course name then 404 page is coming on opening its detail page
+	#065996	Preview Video Thumbnail is not able to see and user not able to play the video
+
+
+
 ## TV-4.1.6.20221007
 
 Enhancements:

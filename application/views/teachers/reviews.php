@@ -15,12 +15,12 @@
             <div class="review-content">
                 <div class="review-content__head">
                     <h6><?php echo $review['ratrev_title']; ?></span></h6>
-                    <div class="info-wrapper">
-                        <div class="info-tag ratings">
-                            <svg class="icon icon--rating"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating'; ?>"></use></svg>
+                    
+                        <div class="ratings">
+                            <svg class="icon icon--rating margin-right-2"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#rating'; ?>"></use></svg>
                             <span class="value"><?php echo FatUtility::convertToType($review['ratrev_overall'], FatUtility::VAR_FLOAT); ?></span>
                         </div>
-                    </div>
+                    
                 </div>
                 <div class="review-content__body">
                     <p><?php echo $review['ratrev_detail']; ?></p>
