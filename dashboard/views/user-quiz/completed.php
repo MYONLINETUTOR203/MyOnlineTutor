@@ -37,7 +37,7 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                         <strong>
                             <?php
                             $label = Label::getLabel('LBL_{score}_OF_{total}');
-                            echo str_replace(['{score}', '{total}'], [$data['quizat_marks'], $data['quilin_marks']], $label);
+                            echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
                             ?>
                         </strong>
                     </span>

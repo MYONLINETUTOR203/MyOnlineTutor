@@ -212,7 +212,7 @@ class UserQuizController extends DashboardController
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'user-quiz/view.php', true),
             'questionsInfo' => $quesInfoLabel,
-            'totalMarks' => $data['quilin_marks'],
+            'totalMarks' => floatval($data['quilin_marks']),
             'progressPercent' => MyUtility::formatPercent($data['quizat_progress']),
             'progress' => $data['quizat_progress'],
         ]);
