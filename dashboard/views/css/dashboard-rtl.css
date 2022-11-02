@@ -60,8 +60,7 @@ p {
     padding-bottom: 54px; } }
 
 .page {
-  width: 100%;
-  overflow: hidden; }
+  width: 100%; }
   .page__head {
     padding: var(--padding-10) 0 var(--padding-6);
     position: relative; }
@@ -187,7 +186,6 @@ p {
     display: -ms-flexbox;
     display: flex;
     height: 100%;
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     bottom: 0;
@@ -605,7 +603,7 @@ p {
 .menu--primary {
   margin: var(--padding-2) 0; }
   .menu--primary > ul > li > a {
-    padding: calc(4px + 0.1vw) 0;
+    padding: calc(3px + 0.1vw) 0;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1762,7 +1760,6 @@ iframe#st_gdpr_iframe {
   background-color: var(--color-white); }
 
 .table-sticky-scroll .first-child {
-  position: -webkit-sticky;
   position: sticky;
   left: 0;
   z-index: 2;
@@ -2022,7 +2019,6 @@ iframe#st_gdpr_iframe {
                 flex: 1; } }
   @media (min-width: 991px) {
     .page-layout__sticky {
-      position: -webkit-sticky;
       position: sticky;
       top: 1.6rem; } }
   @media (max-width: 991px) {
@@ -3429,7 +3425,6 @@ div.tagsinput div {
   @media (min-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 25.6rem;
-      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -3440,7 +3435,6 @@ div.tagsinput div {
   @media (min-width: 1299px) and (max-width: 1399px) {
     .dashboard .dashboard__secondary {
       max-width: 22rem;
-      position: -webkit-sticky;
       position: sticky;
       top: 0;
       bottom: 0;
@@ -4069,7 +4063,6 @@ div.tagsinput div {
   padding: var(--padding-5); }
   @media (min-width: 1199px) {
     .page-controls {
-      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
