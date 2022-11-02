@@ -411,3 +411,6 @@ INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
 INSERT INTO `tbl_cron_schedules` (`cron_id`, `cron_name`, `cron_command`, `cron_duration`, `cron_active`) VALUES (NULL, 'Settle Incomplete Quizzes', 'cancelIncompleteQuizzes', '5', '1');
 
 ALTER TABLE `tbl_question_options` CHANGE `queopt_title` `queopt_title` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL; 
+
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_QZ{quiz-id}', 'QZ{quiz-id}');

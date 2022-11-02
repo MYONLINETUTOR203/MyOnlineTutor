@@ -206,7 +206,7 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quilin.quilin_record_type', '=', $type);
         $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultipleFields([
-            'quilin_record_id', 'quilin_id', 'quilin_title', 'quilin_type', 'quilin_validity'
+            'quilin_record_id', 'quilin_id', 'quilin_title', 'quilin_type', 'quilin_validity', 'quilin_quiz_id'
         ]);
         $srch->doNotCalculateRecords();
         $srch->addOrder('quilin_id', 'DESC');

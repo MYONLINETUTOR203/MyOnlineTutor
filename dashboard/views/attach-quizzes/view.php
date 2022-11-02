@@ -16,6 +16,9 @@ $status = QuizAttempt::getStatuses();
             <table class="table table--responsive table--bordered" id="">
                 <thead>
                     <tr class="title-row">
+                        <?php if ($recordType == AppConstant::LESSON) { ?>
+                            <th><?php echo Label::getLabel('LBL_ID'); ?></th>
+                        <?php } ?>
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
                         <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
                         <?php if ($recordType == AppConstant::LESSON) { ?>
@@ -29,6 +32,15 @@ $status = QuizAttempt::getStatuses();
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) { ?>
                             <tr class="quizRowJs quizRow<?php echo $quiz['quilin_id'] ?>">
+                                <?php if ($recordType == AppConstant::LESSON) { ?>
+                                    <td>
+                                        <?php
+                                        $label = Label::getLabel('LBL_QZ{quiz-id}');
+                                        $str = str_pad($quiz['quilin_quiz_id'], 3, "0", STR_PAD_LEFT) . '-' . $quiz['users']['quizat_id'];
+                                        echo str_replace('{quiz-id}', $str, $label);
+                                        ?>
+                                    </td>
+                                <?php } ?>
                                 <td width="40%">
                                     <div class="d-inline-flex">
                                         <?php if ($recordType == AppConstant::GCLASS) { ?>
@@ -88,6 +100,7 @@ $status = QuizAttempt::getStatuses();
                                         <table class="table table--responsive table--aligned-middle table-inner table--condensed" id="">
                                             <thead>
                                                 <tr class="title-row">
+                                                    <th><?php echo Label::getLabel('LBL_ID'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_LEARNER'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_STATUS'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
@@ -97,6 +110,13 @@ $status = QuizAttempt::getStatuses();
                                                 <?php if (isset($quiz['users']) && count($quiz['users']) > 0) { ?>
                                                     <?php foreach ($quiz['users'] as $user) { ?>
                                                         <tr>
+                                                            <td>
+                                                                <?php
+                                                                $label = Label::getLabel('LBL_QZ{quiz-id}');
+                                                                $str = str_pad($quiz['quilin_quiz_id'], 3, "0", STR_PAD_LEFT) . '-' . $user['quizat_id'];
+                                                                echo str_replace('{quiz-id}', $str, $label);
+                                                                ?>
+                                                            </td>
                                                             <td>
                                                                 <?php echo ucwords($user['user_first_name'] . ' ' . $user['user_last_name']); ?>
                                                             </td>
