@@ -248,6 +248,7 @@ class QuizAttempt extends MyAppModel
         $srch = new SearchBase(static::DB_TBL);
         $srch->addCondition('quizat_user_id', '=', $this->userId);
         $srch->addCondition('quizat_quilin_id', '=', $quizLinkId);
+        $srch->addCondition('quizat_status', '=', static::STATUS_COMPLETED);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $srch->addFld('IFNULL(COUNT(quizat_id), 0) as attempts');
@@ -535,6 +536,44 @@ class QuizAttempt extends MyAppModel
             $duration = MyUtility::convertDuration($duration, true, true, true);
         }
 
+        /* get session title */
+        if ($data['quilin_record_type'] == AppConstant::GCLASS) {
+            $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
+            $srch->joinTable(
+                GroupClass::DB_TBL_LANG,
+                'LEFT JOIN',
+                'gclang.gclang_grpcls_id = grpcls.grpcls_id AND gclang.gclang_lang_id = ' . $this->langId,
+                'gclang'
+            );
+            $srch->addFld('IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as grpcls_title');
+            $srch->setPageSize(1);
+            $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['grpcls_title'];
+        } else {
+            $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
+            $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
+            $srch->joinTable(
+                TeachLanguage::DB_TBL_LANG,
+                'LEFT JOIN',
+                'tlanglang.tlanglang_tlang_id = tlang.tlang_id and tlanglang.tlanglang_lang_id =' . $this->langId,
+                'tlanglang'
+            );
+            $srch->addMultipleFields([
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+            ]);
+            $srch->setPageSize(1);
+            $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
+            $srch->doNotCalculateRecords();
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = str_replace(
+                ['{teach-lang}', '{n}'],
+                [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
+                Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
+            );
+        }
+
         $srch = new SearchBase(User::DB_TBL);
         $srch->addCondition('user_id', 'IN', [$data['quilin_user_id'], $data['quizat_user_id']]);
         $srch->doNotCalculateRecords();
@@ -552,6 +591,7 @@ class QuizAttempt extends MyAppModel
             '{learner_full_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
             '{teacher_full_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
             '{session_type}' => $sessionType,
+            '{session_title}' => $sessionTitle,
             '{quiz_title}' => '<a target="_blank" href="' . MyUtility::makeFullUrl('QuizReview', 'index', [$data['quizat_id']]) . '">' . $data['quilin_title'] . '</a>',
             '{progress_percentage}' => MyUtility::formatPercent($data['quizat_progress']),
             '{pass_fail_status}' => static::getEvaluationStatuses($data['quizat_evaluation']),

@@ -2,7 +2,7 @@
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arr_flds = [
-    'certpl_id' => Label::getLabel('LBL_ID'),
+    'certpl_id' => Label::getLabel('LBL_SR_NO.'),
     'certpl_name' => Label::getLabel('LBL_NAME'),
     'certpl_status' => Label::getLabel('LBL_STATUS'),
 ];
@@ -15,11 +15,15 @@ foreach ($arr_flds as $val) {
     $e = $th->appendElement('th', [], $val);
 }
 $paymentMethod = OrderPayment::getMethods();
+$i = 1;
 foreach ($arrListing as $row) {
     $tr = $tbl->appendElement('tr');
     foreach ($arr_flds as $key => $val) {
         $td = $tr->appendElement('td');
         switch ($key) {
+            case 'certpl_id':
+                $td->appendElement('plaintext', [], $i, true);
+                break;
             case 'action':
                 if ($canEdit) {
                     $ul = $td->appendElement("ul", ["class" => "actions actions--centered"]);
@@ -48,6 +52,7 @@ foreach ($arrListing as $row) {
                 break;
         }
     }
+    $i++;
 }
 
 echo $tbl->getHtml();

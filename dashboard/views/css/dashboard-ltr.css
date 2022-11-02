@@ -60,8 +60,7 @@ p {
     padding-bottom: 54px; } }
 
 .page {
-  width: 100%;
-  overflow: hidden; }
+  width: 100%; }
   .page__head {
     padding: var(--padding-10) 0 var(--padding-6);
     position: relative; }
@@ -604,7 +603,7 @@ p {
 .menu--primary {
   margin: var(--padding-2) 0; }
   .menu--primary > ul > li > a {
-    padding: calc(4px + 0.1vw) 0;
+    padding: calc(3px + 0.1vw) 0;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -3145,6 +3144,9 @@ iframe#st_gdpr_iframe {
 
 .container--narrow {
   max-width: 1000px; }
+
+.ui-sortable-helper {
+  display: table; }
 
 .screen-chat {
   position: absolute;

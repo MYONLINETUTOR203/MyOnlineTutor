@@ -16,11 +16,15 @@ $status = QuizAttempt::getStatuses();
             <table class="table table--responsive table--bordered" id="">
                 <thead>
                     <tr class="title-row">
+                        <?php if ($recordType == AppConstant::LESSON) { ?>
+                            <th><?php echo Label::getLabel('LBL_ID'); ?></th>
+                        <?php } ?>
                         <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
                         <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
                         <?php if ($recordType == AppConstant::LESSON) { ?>
                             <th><?php echo Label::getLabel('LBL_LEARNER'); ?></th>
                         <?php } ?>
+                        <th><?php echo Label::getLabel('LBL_VALID_TILL'); ?></th>
                         <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
                     </tr>
                 </thead>
@@ -28,6 +32,15 @@ $status = QuizAttempt::getStatuses();
                     <?php if (count($quizzes) > 0) { ?>
                         <?php foreach ($quizzes as $quiz) { ?>
                             <tr class="quizRowJs quizRow<?php echo $quiz['quilin_id'] ?>">
+                                <?php if ($recordType == AppConstant::LESSON) { ?>
+                                    <td>
+                                        <?php
+                                        $label = Label::getLabel('LBL_QZ{quiz-id}');
+                                        $str = str_pad($quiz['quilin_quiz_id'], 3, "0", STR_PAD_LEFT) . '-' . $quiz['users']['quizat_id'];
+                                        echo str_replace('{quiz-id}', $str, $label);
+                                        ?>
+                                    </td>
+                                <?php } ?>
                                 <td width="40%">
                                     <div class="d-inline-flex">
                                         <?php if ($recordType == AppConstant::GCLASS) { ?>
@@ -43,6 +56,15 @@ $status = QuizAttempt::getStatuses();
                                         <?php echo ucwords($quiz['users']['user_first_name'] . ' ' . $quiz['users']['user_last_name']); ?>
                                     </td>
                                 <?php } ?>
+                                <td>
+                                    <?php
+                                    if (strtotime(date('Y-m-d H:i:s')) >= strtotime($quiz['quilin_validity'])) {
+                                        echo Label::getLabel('LBL_EXPIRED');
+                                    } else {
+                                        echo MyDate::formatDate($quiz['quilin_validity']);
+                                    }
+                                    ?>
+                                </td>
                                 <td>
                                     <?php if ($recordType == AppConstant::LESSON) { ?>
                                         <?php
@@ -74,10 +96,11 @@ $status = QuizAttempt::getStatuses();
                             </tr>
                             <?php if ($recordType == AppConstant::GCLASS) { ?>
                                 <tr style="display:none;" class="userListJs userListJs<?php echo $quiz['quilin_id'] ?>">
-                                    <td colspan="3">
+                                    <td colspan="4">
                                         <table class="table table--responsive table--aligned-middle table-inner table--condensed" id="">
                                             <thead>
                                                 <tr class="title-row">
+                                                    <th><?php echo Label::getLabel('LBL_ID'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_LEARNER'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_STATUS'); ?></th>
                                                     <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
@@ -87,6 +110,13 @@ $status = QuizAttempt::getStatuses();
                                                 <?php if (isset($quiz['users']) && count($quiz['users']) > 0) { ?>
                                                     <?php foreach ($quiz['users'] as $user) { ?>
                                                         <tr>
+                                                            <td>
+                                                                <?php
+                                                                $label = Label::getLabel('LBL_QZ{quiz-id}');
+                                                                $str = str_pad($quiz['quilin_quiz_id'], 3, "0", STR_PAD_LEFT) . '-' . $user['quizat_id'];
+                                                                echo str_replace('{quiz-id}', $str, $label);
+                                                                ?>
+                                                            </td>
                                                             <td>
                                                                 <?php echo ucwords($user['user_first_name'] . ' ' . $user['user_last_name']); ?>
                                                             </td>
@@ -115,7 +145,7 @@ $status = QuizAttempt::getStatuses();
                                                     <tr>
                                                         <td colspan="3"><?php echo Label::getLabel('LBL_NO_USER_AVAILABLE'); ?></td>
                                                     </tr>
-                                                 <?php } ?>
+                                                <?php } ?>
                                             </tbody>
                                         </table>
                                     </td>
@@ -124,7 +154,7 @@ $status = QuizAttempt::getStatuses();
                         <?php } ?>
                     <?php } ?>
                     <tr class="noRecordJS" style="display:none;">
-                        <td colspan="4"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
+                        <td colspan="6"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
                     </tr>
                 </tbody>
             </table>

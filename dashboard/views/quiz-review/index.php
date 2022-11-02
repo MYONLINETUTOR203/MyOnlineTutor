@@ -20,7 +20,7 @@
                             <div class="repeat-element__content">
                                 <?php
                                 $label = Label::getLabel('LBL_{score}_OF_{total}');
-                                echo str_replace(['{score}', '{total}'], [$data['quizat_marks'], $data['quilin_marks']], $label);
+                                echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
                                 ?>
                             </div>
                         </div>
@@ -44,6 +44,21 @@
                                 </div>
                             </div>
                         <?php } ?>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_ATTEMPTS') ?>
+                            </div>
+                            <div class="repeat-element__content">
+                                <?php
+                                $label = Label::getLabel('LBL_{attempts}/{total}');
+                                echo str_replace(
+                                    ['{attempts}', '{total}'],
+                                    [$attempts, $data['quilin_attempts']],
+                                    $label
+                                );
+                                ?>
+                            </div>
+                        </div>
                         <div class="repeat-element">
                             <div class="repeat-element__title">
                                 <?php echo Label::getLabel('LBL_EVALUATION_STATUS'); ?>

@@ -48,7 +48,14 @@
                                 <?php echo Label::getLabel('LBL_ATTEMPTS'); ?>
                             </div>
                             <div class="repeat-element__content">
-                                <?php echo $data['quilin_attempts'] ?>
+                                <?php
+                                $label = Label::getLabel('LBL_{attempts}/{total}');
+                                echo str_replace(
+                                    ['{attempts}', '{total}'],
+                                    [$attempts, $data['quilin_attempts']],
+                                    $label
+                                );
+                                ?>
                             </div>
                         </div>
                         <div class="repeat-element">

@@ -245,7 +245,7 @@ $teacherName = $class['user_full_name'];
                 <div class="slider slider--onethird slider-onethird-js">
                     <?php
                     foreach ($moreClasses as $class) {
-                        $classData = ['class' => $class, 'siteUserId' => $siteUserId, 'bookingBefore' => $bookingBefore, 'cardClass' => 'col-xl-12'];
+                        $classData = ['class' => $class, 'siteUserId' => $siteUserId, 'bookingBefore' => $bookingBefore, 'cardClass' => 'card-class-cover'];
                         $this->includeTemplate('group-classes/card.php', $classData, false);
                     }
                     ?>
