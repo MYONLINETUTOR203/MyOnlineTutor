@@ -11,7 +11,7 @@ $userPassword->setFieldTagAttribute('placeholder', Label::getLabel('LBL_PASSWORD
 $submitBtn = $applyTeachFrm->getField('btn_submit');
 $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--block ');
 ?>
-<section class="section padding-0">
+<section class="section section-full">
     <div class="slideshow full-view-banner">
         <picture class="hero-img">
             <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('image', 'show', [Afile::TYPE_APPLY_TO_TEACH_BANNER, 0, Afile::SIZE_LARGE], CONF_WEBROOT_URL),CONF_DEF_CACHE_TIME, '.jpg'); ?>" alt="">

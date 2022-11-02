@@ -34,7 +34,7 @@ $header: 'header';
 $header-primary: 'header-primary';
 
 .#{$header-primary} {
-    padding: theme('padding.1') 0;
+    padding: theme('padding.3') 0;
     
     color: #111;
     background: theme('color.white');
@@ -52,7 +52,7 @@ $header-primary: 'header-primary';
         padding:theme('padding.3') 0;;
     }
 
-    .header__logo{ max-width: 200px; max-height: 100px;
+    .header__logo{ max-width: 180px; max-height: 80px;
         position: relative; display: flex; align-items: center;
         
 

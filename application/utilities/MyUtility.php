@@ -738,7 +738,7 @@ class MyUtility extends FatUtility
         if ($hours) {
             $hrs = floor($duration / 3600);
             if ($hrs > 0) {
-                $formattedTime[] =  $hrs . strtolower(Label::getLabel('LBL_H'));
+                $formattedTime[] = $hrs . strtolower(Label::getLabel('LBL_H'));
             }
             $time[] = $hrs;
         }
@@ -761,6 +761,33 @@ class MyUtility extends FatUtility
         } else {
             return (count($time) > 0 && array_sum($time) > 0) ? implode(':', $time) : '';
         }
+    }
+
+    /**
+     * Create Slug
+     * 
+     * @param string $title
+     * @return string
+     */
+    public static function createSlug(string $title): string
+    {
+        $slug = preg_replace("/[^0-9a-zA-Z]/", "-", $title);
+        return self::removeHyphens($slug);
+    }
+
+    /**
+     * Remove Hyphens
+     * 
+     * @param string $slug
+     * @return string
+     */
+    private static function removeHyphens(string $slug): string
+    {
+        $slug = str_replace('--', '-', $slug);
+        if (strpos($slug, '--') !== false) {
+            $slug = self::removeHyphens($slug);
+        }
+        return trim($slug, "-");
     }
 
 }

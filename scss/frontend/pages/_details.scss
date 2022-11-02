@@ -560,13 +560,17 @@
 .teachers.teachers-view {overflow-x: hidden;}
 }
 
-.teachers.teachers-view {
-    .slider.slider--onethird .slick-arrow{
-        &:before{width: 18px;
-            height: 18px;
-            top: 50% !important;
-            left: 50% !important;}
+.card-class-cover{
+    .card-class{border: 1px solid theme('color.gray.200');}
+}
+
+.author-slider{
+    .slick-arrow{top: calc(50% - 160px);
+        &.slick-next{#{theme('direction.right','value')}:1.2rem;
+            &:before{border-color: #fff;}
+        }
+        &.slick-prev{#{theme('direction.left','value')}:1.2rem;
+            &:before{border-color: #fff;}
+        }
     }
-    .slider--onethird .slick-arrow.slick-next{box-shadow: none; right: 1.6rem; background-color: transparent;}
-    .slider--onethird .slick-arrow.slick-prev{box-shadow: none; left: 1.6rem;background-color: transparent;}
 }
