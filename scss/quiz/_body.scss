@@ -314,11 +314,7 @@ $attempt-list: "attempt-list";
                 }
             }
 
-            &.is-current{
-                .#{$attempt-action}{border-color: theme('color.primary');color: theme('color.primary'); font-weight: theme('font.weight.medium');
-                    &:before{position: absolute; left: 0;top: 0; bottom: 0;right: 0;content: ""; background-color:currentColor;pointer-events: none;opacity: 0.04;}
-                }
-            }
+           
 
             &.is-visited{
                 .#{$attempt-action}{border-color:#12D26B;color:#12D26B;font-weight: theme('font.weight.medium');
@@ -341,6 +337,13 @@ $attempt-list: "attempt-list";
             &.is-wrong{
                 .#{$attempt-action}{border-color:#E20000;color:#E20000;font-weight: theme('font.weight.medium');
                     &:before{position: absolute; left: 0;top: 0; bottom: 0;right: 0;content: ""; background-color:currentColor;pointer-events: none;opacity: 0.04;}
+                }
+            }
+
+
+             &.is-current{
+                .#{$attempt-action}{border-width:2px;font-weight: theme('font.weight.bold');border-color: currentColor;
+                    // &:before{position: absolute; left: 0;top: 0; bottom: 0;right: 0;content: ""; background-color:currentColor;pointer-events: none;opacity: 0.04;}
                 }
             }
             
