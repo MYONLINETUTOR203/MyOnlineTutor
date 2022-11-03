@@ -5,3 +5,6 @@ $(function () {
         });
     };
 });
+$(document).ready(function () {
+    resizeIframe(50);
+});

@@ -9,8 +9,8 @@
                             <?php echo CommonHelper::renderHtml($data['quilin_title']); ?>
                         </h4>
                     </hgroup>
-                    <div class="check-list margin-bottom-10">
-                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    <div class="check-list margin-bottom-10 editorContentJs">
+                        <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
                         <div class="repeat-element">
