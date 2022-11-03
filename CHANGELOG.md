@@ -81,3 +81,35 @@ Fixes:
     Bug-067621 - Table heading row of question listing is not coming in the quiz setup
     Bug-067429 - Full content is not getting saved in question setup for description, hints and options
     Bug-067281 - Show category identifier as well in the category/subcategory listing
+
+
+## TV-1.2.2.20221103
+
+Features:
+
+    Task-103135 - Add Questions under Quiz
+
+Fixes:
+
+    #068166 - Quiz instructions should display properly everywhere
+    #068160 - Show the no. of attempts(5/5) on the user quiz page and quiz review page
+    #068158 - Show "valid till" value in quiz detail on teacher panel
+    #068156 - Show lesson and class details with which the quiz is attached in related emails
+    #068146 - Tutor and certificate values are not properly align when preview Arabic evaluation certificate
+    #068145 - Success message is not relevant when review the quiz
+    #068144 - Error is coming sometimes when opening certificate page
+    #068143 - Package link is not coming correct on evaluation certificate page
+    #068124 - Multiple answers choice question marks calculation is not correct
+    #068121 - The quiz processing bar color is coming little bit green if 0% quiz attempted
+    #068103 - The quiz is getting attached to the learner who cancelled the class earlier
+    #068102 - The fatal error is coming when attaching a quiz with a class which is not booked yet
+    #068068 - Color scheme is not coming correct on quiz review page
+    #068067 - Teacher is unable to view the completed quiz of the class
+    #068062 - Quiz review page questions are not coming correctly every time this page opened
+    #068060 - Warnings are coming when the teacher/learner opens the quiz review page
+    #068034 - A quiz with no time limit is getting completed if the learner refreshes the page
+    #068033 - The teacher profile link is coming on the quiz detail on the certificate detail page
+    #068031 - “Page not found” is coming when teacher clicks on quiz link in the quiz completion email
+    #068030 - The quiz timer got stop after the quiz completion confirmation alert is coming
+    #067624 - Question display order change process is not smooth in the quiz
+    #067429 - Full content is not getting saved in question setup for description, hints and options
