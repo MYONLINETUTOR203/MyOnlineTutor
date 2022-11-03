@@ -742,7 +742,7 @@ class MyUtility extends FatUtility
         if ($hours) {
             $hrs = floor($duration / 3600);
             if ($hrs > 0) {
-                $formattedTime[] =  $hrs . strtolower(Label::getLabel('LBL_H'));
+                $formattedTime[] = $hrs . strtolower(Label::getLabel('LBL_H'));
             }
             $time[] = $hrs;
         }

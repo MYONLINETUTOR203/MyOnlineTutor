@@ -9,8 +9,8 @@
                             <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
                         </h4>
                     </hgroup>
-                    <div class="check-list margin-bottom-10 editor-content">
-                        <?php echo CommonHelper::renderHtml($data['quilin_detail']); ?>
+                    <div class="check-list margin-bottom-10 editorContentJs">
+                        <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
                         <div class="repeat-element">
@@ -48,7 +48,14 @@
                                 <?php echo Label::getLabel('LBL_ATTEMPTS'); ?>
                             </div>
                             <div class="repeat-element__content">
-                                <?php echo $data['quilin_attempts'] ?>
+                                <?php
+                                $label = Label::getLabel('LBL_{attempts}/{total}');
+                                echo str_replace(
+                                    ['{attempts}', '{total}'],
+                                    [$attempts, $data['quilin_attempts']],
+                                    $label
+                                );
+                                ?>
                             </div>
                         </div>
                         <div class="repeat-element">

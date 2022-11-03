@@ -209,6 +209,12 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
         }
     }
 }
+function resizeIframe(time = 0) {
+    setTimeout(function () {
+        var height = $('.editorContentJs').find('iframe').contents().height() + 40;
+        $('.editorContentJs').css('height', height + 'px');
+    }, time);
+}
 (function () {
     Slugify = function (str, str_val_id, is_slugify) {
         var str = str.toString().toLowerCase()

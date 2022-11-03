@@ -154,7 +154,7 @@ $status = QuizAttempt::getStatuses();
                         <?php } ?>
                     <?php } ?>
                     <tr class="noRecordJS" style="display:none;">
-                        <td colspan="5"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
+                        <td colspan="6"><?php $this->includeTemplate('_partial/no-record-found.php'); ?></td>
                     </tr>
                 </tbody>
             </table>

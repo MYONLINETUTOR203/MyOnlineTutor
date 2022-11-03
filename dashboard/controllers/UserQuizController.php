@@ -59,6 +59,8 @@ class UserQuizController extends DashboardController
         }
 
         $this->set('data', $data);
+        $attempt = new QuizAttempt(0, $data['quizat_user_id']);
+        $this->set('attempts', $attempt->getAttemptCount($data['quizat_quilin_id']));
         $this->_template->render();
     }
 
@@ -210,7 +212,7 @@ class UserQuizController extends DashboardController
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'user-quiz/view.php', true),
             'questionsInfo' => $quesInfoLabel,
-            'totalMarks' => $data['quilin_marks'],
+            'totalMarks' => floatval($data['quilin_marks']),
             'progressPercent' => MyUtility::formatPercent($data['quizat_progress']),
             'progress' => $data['quizat_progress'],
         ]);

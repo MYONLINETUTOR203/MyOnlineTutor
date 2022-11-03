@@ -8,7 +8,7 @@
                         <span class="page-meta__item page-meta__item-first questionInfoJs"></span>
                         <span class="page-meta__item page-meta__item-second">
                             <?php echo Label::getLabel('LBL_TOTAL_MARKS'); ?>
-                            <strong class="totalMarksJs"><?php echo $data['quilin_marks'] ?></strong>
+                            <strong class="totalMarksJs"><?php echo floatval($data['quilin_marks']) ?></strong>
                         </span>
                         <div class="page-meta__item">
                             <div class="page-progress">

@@ -445,6 +445,13 @@ function bindDatetimePicker(selector) {
         },
     });
 }
+function resizeIframe(time = 0)
+{
+    setTimeout(function () {
+        var height = $('.editorContentJs').find('iframe').contents().height() + 40;
+        $('.editorContentJs').css('height', height + 'px');
+    }, time);
+}
 $(document).ready(function () {
     var userTimezone = getCookie('CONF_SITE_TIMEZONE');
     var tz = jstz.determine();
