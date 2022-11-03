@@ -606,7 +606,7 @@ p {
 .menu--primary {
   margin: var(--padding-2) 0; }
   .menu--primary > ul > li > a {
-    padding: calc(4px + 0.1vw) 0;
+    padding: calc(3px + 0.1vw) 0;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;

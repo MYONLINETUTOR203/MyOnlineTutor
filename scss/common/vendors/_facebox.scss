@@ -61,19 +61,19 @@
 }
 
 
-
 #facebox {
-    .content.facebox-large{
-        @media(min-width: theme('breakpoints.xl','value')) {
+    .content.facebox-large {
+        @media(min-width: theme('breakpoints.lg', 'value')) {
             min-width: 1020px;
             display: block;
+            overflow: auto;
         }
     }
-    .content.facebox-medium{
-        @media(min-width: theme('breakpoints.lg','value')) {
+
+    .content.facebox-medium {
+        @media(min-width: theme('breakpoints.lg', 'value')) {
             min-width: 920px;
             display: block;
-            padding:0;
             overflow: auto;
         }
     }
@@ -81,37 +81,24 @@
 
 
 #facebox {
-    .content.facebox-large{
-        @media(max-width: theme('breakpoints.lg','value')) {
+    .content.facebox-large {
+        @media(max-width: theme('breakpoints.lg', 'value')) {
             width: 100vw;
             height: 100vh;
-            padding:30px 0;
             display: block;
             overflow: auto;
-
-            & + .close{
-                top: 0;
-                &:before{
-                    color: #333;
-                }
-            }
         }
     }
-    .content.facebox-medium{
-        @media(max-width: theme('breakpoints.xl','value')) {
+
+    .content.facebox-medium {
+        @media(max-width: theme('breakpoints.lg', 'value')) {
             width: 100vw;
             height: 100vh;
             display: block;
-            padding:20px 0;
             overflow: auto;
-            max-height: 100%!important;
         }
-
-
-
     }
 }
-
 
 #frmLoginPopUp .caption-wraper .field_label:empty,
 #frmLoginPopUp .caption-wraper:empty,
@@ -215,9 +202,10 @@
         }
     }
     .calendar-view{
-        // @media(min-width:theme('breakpoints.md','value')){
-        //     padding: theme('padding.6');
-        // }
+        @media(min-width:theme('breakpoints.md','value')){
+            padding: theme('padding.6');
+            &.scheduled-lesson-popup{padding: 0;}
+        }
 
         .fc-header-toolbar{
             @media(max-width:theme('breakpoints.md','value')){

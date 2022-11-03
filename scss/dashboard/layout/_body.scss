@@ -74,7 +74,8 @@ $site: "site";
 
 $page: "page";
 
-.#{$page}{width: 100%;
+
+.#{$page}{width: 100%; 
   
   // @media(min-width:theme('breakpoints.xl','value')){
   //   padding-#{theme('direction.left','value')}:290px;

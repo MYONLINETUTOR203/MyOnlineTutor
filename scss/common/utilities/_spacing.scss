@@ -119,6 +119,7 @@ $margin: 'm';
 .margin-4{margin: theme('margin.4')!important;}
 .margin-5{margin: theme('margin.5')!important;}
 
+
 .margin-left-0{margin-#{theme('direction.left','value')}:0!important;}
 .margin-top-auto{margin-top:auto!important;}
 .margin-left-auto{margin-#{theme('direction.left','value')}:auto!important;}
@@ -137,6 +138,7 @@ $margin: 'm';
 .margin-right-4{margin-#{theme('direction.right','value')}:theme('margin.4')!important;}
 .margin-right-5{margin-#{theme('direction.right','value')}:theme('margin.5')!important;}
 
+.margin-top-0{margin-top:0!important;}
 .margin-top-1{margin-top:theme('margin.1')!important;}
 .margin-top-2{margin-top:theme('margin.2')!important;}
 .margin-top-3{margin-top:theme('margin.3')!important;}
@@ -149,12 +151,6 @@ $margin: 'm';
 .margin-top-14{margin-top:theme('margin.14')!important;}
 .margin-top-16{margin-top:theme('margin.16')!important;}
 
-.margin-top-0{margin-top:0!important;}
-.margin-top-1{margin-top:theme('margin.1')!important;}
-.margin-top-2{margin-top:theme('margin.2')!important;}
-.margin-top-3{margin-top:theme('margin.3')!important;}
-.margin-top-4{margin-top:theme('margin.4')!important;}
-.margin-top-5{margin-top:theme('margin.5')!important;}
 
 .margin-bottom-0{margin-bottom:0!important;}
 .margin-bottom-1{margin-bottom:theme('margin.1')!important;}
