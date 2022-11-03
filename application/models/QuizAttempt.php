@@ -391,6 +391,10 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
+        if ($this->quiz['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) {
+            $this->error = Label::getLabel('LBL_RETAKE_IS_NOT_ALLOWED_BEFORE_EVALUATION_IS_COMPLETE');
+            return false;
+        }
         if ($this->quiz['quilin_attempts'] == $this->getAttemptCount($this->quiz['quizat_quilin_id'])) {
             $this->error = Label::getLabel('LBL_REATTEMPT_LIMIT_HAS_BEEN_EXCEEDED');
             return false;

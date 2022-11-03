@@ -95,7 +95,7 @@ class QuizReview extends MyAppModel
             'quilin_title', 'quilin_detail', 'quizat_status', 'quizat_user_id', 'quilin_user_id', 'quizat_marks',
             'quilin_marks', 'quizat_scored', 'quilin_duration', 'quizat_started', 'quizat_updated',
             'quizat_evaluation', 'quizat_id', 'quizat_quilin_id', 'quizat_qulinqu_id', 'quilin_id', 'quilin_questions',
-            'quizat_progress', 'quilin_record_type', 'quizat_active', 'quilin_attempts'
+            'quizat_progress', 'quilin_record_type', 'quizat_active', 'quilin_attempts', 'quilin_type'
         ]);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);

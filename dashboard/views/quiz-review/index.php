@@ -13,25 +13,27 @@
                         <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
-                        <div class="repeat-element">
-                            <div class="repeat-element__title">
-                                <?php echo Label::getLabel('LBL_QUIZ_SCORE'); ?>
+                        <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) { ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_QUIZ_SCORE'); ?>
+                                </div>
+                                <div class="repeat-element__content">
+                                    <?php
+                                    $label = Label::getLabel('LBL_{score}_OF_{total}');
+                                    echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
+                                    ?>
+                                </div>
                             </div>
-                            <div class="repeat-element__content">
-                                <?php
-                                $label = Label::getLabel('LBL_{score}_OF_{total}');
-                                echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
-                                ?>
+                            <div class="repeat-element">
+                                <div class="repeat-element__title">
+                                    <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT') ?>
+                                </div>
+                                <div class="repeat-element__content">
+                                    <?php echo MyUtility::formatPercent($data['quizat_scored']); ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="repeat-element">
-                            <div class="repeat-element__title">
-                                <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT') ?>
-                            </div>
-                            <div class="repeat-element__content">
-                                <?php echo MyUtility::formatPercent($data['quizat_scored']); ?>
-                            </div>
-                        </div>
+                        <?php } ?>
                         <?php if ($data['quilin_duration'] > 0) { ?>
                             <div class="repeat-element">
                                 <div class="repeat-element__title">

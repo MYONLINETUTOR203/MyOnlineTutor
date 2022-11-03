@@ -110,8 +110,11 @@ class QuizReviewController extends DashboardController
         }
 
         /* get question attempt data */
-        $linked = new QuizLinked();
-        $attemptedQues = $linked->getQuesWithAttemptedAnswers($id, $data['quilin_id']);
+        $attemptedQues = [];
+        if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) {
+            $linked = new QuizLinked();
+            $attemptedQues = $linked->getQuesWithAttemptedAnswers($id, $data['quilin_id']);
+        }
 
         $answer = [];
         $currentQuesId = $data['quizat_qulinqu_id'];

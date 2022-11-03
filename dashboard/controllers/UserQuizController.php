@@ -313,7 +313,6 @@ class UserQuizController extends DashboardController
     public function completed(int $id)
     {
         $quiz = new QuizAttempt($id, $this->siteUserId);
-        $redirect = false;
         $error = '';
         if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
             Message::addErrorMessage($quiz->getError());
