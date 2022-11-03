@@ -51,6 +51,25 @@ class Sitemap
         }
         $sitemapUrls = array_merge($sitemapUrls, [Label::getLabel('LBL_GROUP_CLASSES') => $urls]);
         /* ] */
+        /* Courses [ */
+        $srch = new CourseSearch($langId, 0, User::LEARNER);
+        $srch->addMultipleFields(['course_slug', 'course_title']);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('course_status', '=', Course::PUBLISHED);
+        $srch->addCondition('course_active', '=', AppConstant::ACTIVE);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(2000);
+        $resultSet = $srch->getResultSet();
+        $urls = [];
+        while ($row = FatApp::getDb()->fetch($resultSet)) {
+            array_push($urls, [
+                'value' => $row['course_title'],
+                'frequency' => 'weekly',
+                'url' => MyUtility::makeFullUrl('Courses', 'view', [$row['course_slug']], CONF_WEBROOT_FRONT_URL)
+            ]);
+        }
+        $sitemapUrls = array_merge($sitemapUrls, [Label::getLabel('LBL_COURSES') => $urls]);
+        /* ] */
         /* CMS Pages [ */
         $srch = Navigations::getLinkSearchObj($langId);
         $srch->addCondition('nlink_deleted', '=', AppConstant::NO);

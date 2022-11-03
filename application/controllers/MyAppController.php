@@ -60,11 +60,13 @@ class MyAppController extends FatController
             $this->set('footerThreeNav', Navigation::footerThreeNav());
             $this->set('socialPlatforms', SocialPlatform::getAll());
             $this->set('jsVariables', MyUtility::getCommonLabels($siteLanguages));
-            $viewType = (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') ? 'dashboard' : 'frontend';
 
             $viewType = 'frontend';
             if (CONF_APPLICATION_PATH == CONF_INSTALLATION_PATH . 'dashboard/') {
                 $viewType = 'dashboard';
+                if (strtolower($controllerName) == 'tutorials' || strtolower($controllerName) == 'coursepreview') {
+                    $viewType = 'course-personal';
+                }
                 if (strtolower($controllerName) == 'userquiz' || strtolower($controllerName) == 'quizreview') {
                     $viewType = 'quiz';
                 }

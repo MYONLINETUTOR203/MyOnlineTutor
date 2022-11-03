@@ -7,6 +7,7 @@ $header: 'header';
     position: relative;
     top: 0;
     transition: all 0.5s;
+
     z-index: 11;
 
     @media(min-width: theme('breakpoints.xxxxl','value')) {
@@ -35,13 +36,10 @@ $header: 'header';
     }
 }
 
-
 $header-primary: 'header-primary';
 
 .#{$header-primary} {
-
     padding: theme('padding.3') 0;
-
     color: #111;
     background: theme('color.white');
     -webkit-transition: 0.3s all ease-in-out;
@@ -58,7 +56,7 @@ $header-primary: 'header-primary';
 
     @media(max-width: theme('breakpoints.md','value')) {
         padding:theme('padding.3') 0;
-        ;
+      
     }
 
 
@@ -319,7 +317,7 @@ $header-dropdown--arrow: 'header-dropdown--arrow';
 
 
 .header-dropdown__target {
-    min-width: 240px;
+    min-width: 200px;
     z-index: 2;
     #{theme('direction.right','value')}: 0;
     top: 100%;
@@ -367,7 +365,8 @@ $header-dropdown--arrow: 'header-dropdown--arrow';
 
             &:hover{
                 a{
-                    background: theme('color.gray.100')
+                    background: theme('color.gray.100');
+                    color: theme('color.primary');
                 }
             }
         }

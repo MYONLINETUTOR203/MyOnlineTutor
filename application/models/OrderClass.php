@@ -307,8 +307,8 @@ class OrderClass extends MyAppModel
      * 
      * Pass the lesson start time in system timezone  
      * 
-     * @param integer $userType
-     * @param integer $status
+     * @param int $userType
+     * @param int $status
      * @param type $lessonStartTime
      * Pass the lesson status 
      * 

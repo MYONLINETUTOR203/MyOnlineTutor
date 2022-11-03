@@ -4,10 +4,8 @@ $frm->setFormTagAttribute('class', 'web_form layout--' . $layoutDir);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('onsubmit', 'setup(); return false;');
-
 $lfld = $frm->getField('certpl_lang_id');
 $lfld->setFieldTagAttribute('onchange', 'edit("' . $data['certpl_code'] . '", this.value); return false;');
-
 $mediaFrm->setFormTagAttribute('class', 'web_form layout--' . $layoutDir);
 $mediaFrm->developerTags['colClassPrefix'] = 'col-md-';
 $mediaFrm->developerTags['fld_default_col'] = 12;
@@ -35,7 +33,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                 </div>
                 <section class="section">
                     <div class="sectionhead">
-                        <h4><?php echo Label::getLabel('LBL_CERTIFICATE_SETUP'); ?></h4>
+                        <h4><?php echo Label::getLabel('LBL_CERTIFICATE_SETUP', $data['certpl_lang_id']); ?></h4>
                     </div>
                     <div class="sectionbody space">
                         <div class="row">
@@ -104,7 +102,6 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                     <span class="spn_must_field">*</span>
                                                 </label>
                                             </div>
-
                                             <div class="field-wraper">
                                                 <div class="layout--<?php echo $layoutDir; ?>">
                                                     <div class="certificate certificateJs">
@@ -125,7 +122,6 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                             <div class="certificate-meta contentPart2Js" contenteditable="true">
                                                                 <?php echo CommonHelper::renderHtml($content['content_part_2']) ?>
                                                             </div>
-
                                                             <div class="certificate-signs">
                                                                 <div class="certificate-signs__left">
                                                                     <div class=" contentTrainerJs" contenteditable="true">
@@ -135,14 +131,11 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                                         ?>
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="certificate-signs__middle">
                                                                     <div class="certificate-logo">
                                                                         <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_CERTIFICATE_LOGO, 0, Afile::SIZE_MEDIUM, $data['certpl_lang_id']]); ?>" alt="">
                                                                     </div>
                                                                 </div>
-
-
                                                                 <div class="certificate-signs__right">
                                                                     <div class=" contentCertNoJs" contenteditable="true">
                                                                         <?php
@@ -152,17 +145,13 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h3><?php echo $frm->getFieldHtml('replacement_caption'); ?></h3>
@@ -173,7 +162,6 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         <?php echo $frm->getFieldHtml('certpl_vars'); ?>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="field-set">

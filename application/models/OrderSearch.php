@@ -25,6 +25,8 @@ class OrderSearch extends YocoachSearch
         $this->joinTable(Order::DB_TBL_LESSON, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_LESSON . ' AND orders.order_id = ordles.ordles_order_id', 'ordles');
         $this->joinTable(OrderClass::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_GCLASS . ' AND orders.order_id = ordcls.ordcls_order_id', 'ordcls');
         $this->joinTable(GroupClass::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_GCLASS . ' AND ordcls.ordcls_grpcls_id = grpcls.grpcls_id', 'grpcls');
+        $this->joinTable(OrderCourse::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_COURSE . ' AND ordcrs.ordcrs_order_id = orders.order_id', 'ordcrs');
+        $this->joinTable(Course::DB_TBL, 'LEFT JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
     }
 
     /**
@@ -41,7 +43,12 @@ class OrderSearch extends YocoachSearch
             $this->addGroupBy('orders.order_id');
             $cond = $this->addCondition('ordles.ordles_teacher_id', '=', $this->userId);
             $cond->attachCondition('grpcls.grpcls_teacher_id', '=', $this->userId);
-            $this->addCondition('orders.order_type', 'IN', [Order::TYPE_LESSON, Order::TYPE_GCLASS]);
+            $cond->attachCondition('course.course_user_id', '=', $this->userId);
+            $this->addCondition('orders.order_type', 'IN', [
+                Order::TYPE_LESSON,
+                Order::TYPE_GCLASS,
+                Order::TYPE_COURSE
+            ]);
         } else {
             $this->addGroupBy('orders.order_id');
         }
@@ -102,7 +109,6 @@ class OrderSearch extends YocoachSearch
         if (count($rows) == 0) {
             return [];
         }
-        $pmethodIds = array_column($rows, 'order_pmethod_id');
         $pmethods = PaymentMethod::getPayins(true);
         $countryIds = array_column($rows, 'learner_country_id');
         $countries = Country::getNames($this->langId, $countryIds);
@@ -148,6 +154,7 @@ class OrderSearch extends YocoachSearch
             'orders.order_payment_status' => 'order_payment_status',
             'orders.order_total_amount' => 'order_total_amount',
             'orders.order_addedon' => 'order_addedon',
+            'ordcrs.ordcrs_amount' => 'ordcrs_amount',
             'learner.user_email' => 'learner_email',
             'learner.user_first_name' => 'learner_first_name',
             'learner.user_last_name' => 'learner_last_name',
@@ -164,7 +171,6 @@ class OrderSearch extends YocoachSearch
     public static function getSearchForm(): Form
     {
         $orderType = Order::getTypeArr();
-        unset($orderType[Order::TYPE_COURSE]);
         $frm = new Form('orderSearchFrm');
         $frm->addTextBox(Label::getLabel('LBL_Keyword'), 'keyword', '', ['placeholder' => Label::getLabel('LBL_Search_By_Keyword')]);
         $frm->addSelectBox(Label::getLabel('LBL_Order_Type'), 'order_type', $orderType)->requirements()->setIntPositive();

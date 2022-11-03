@@ -44,15 +44,15 @@
     </div>
 <?php } ?>
 <script>
-    $(".expand-js").click(function () {
+    $(".expand-js").click(function() {
         $(".expand-target-js").slideToggle();
     });
-    $(".slide-toggle-js").click(function () {
+    $(".slide-toggle-js").click(function() {
         $(".slide-target-js").slideToggle();
     });
     /******** TABS SCROLL FUNCTION  ****************/
     moveToTargetDiv('.tabs-scrollable-js li.is-active', '.tabs-scrollable-js ul');
-    $('.tabs-scrollable-js li').click(function () {
+    $('.tabs-scrollable-js li').click(function() {
         $('.tabs-scrollable-js li').removeClass('is-active');
         $(this).addClass('is-active');
         moveToTargetDiv('.tabs-scrollable-js li.is-active', '.tabs-scrollable-js ul');
@@ -74,23 +74,23 @@
         }, 800);
         return false;
     }
-    $('.list-inline li').click(function () {
+    $('.list-inline li').click(function() {
         $('.list-inline li').removeClass('is-active');
         $(this).addClass('is-active');
     });
-    $(document).ready(function () {
+    $(document).ready(function() {
         /* SIDE BAR SCROLL DYNAMIC HEIGHT */
         $('.sidebar__body').css('height', 'calc(100% - ' + $('.sidebar__head').innerHeight() + 'px');
-        $(window).resize(function () {
+        $(window).resize(function() {
             $('.sidebar__body').css('height', 'calc(100% - ' + $('.sidebar__head').innerHeight() + 'px');
         });
         /* COMMON TOGGLES */
         var _body = $('html');
         var _toggle = $('.trigger-js');
-        _toggle.each(function () {
+        _toggle.each(function() {
             var _this = $(this),
-                    _target = $(_this.attr('href'));
-            _this.on('click', function (e) {
+                _target = $(_this.attr('href'));
+            _this.on('click', function(e) {
                 e.preventDefault();
                 _target.toggleClass('is-visible');
                 _this.toggleClass('is-active');
@@ -100,10 +100,10 @@
         /* FOR FULL SCREEN TOGGLE */
         var _body = $('html');
         var _toggle = $('.fullview-js');
-        _toggle.each(function () {
+        _toggle.each(function() {
             var _this = $(this),
-                    _target = $(_this.attr('href'));
-            _this.on('click', function (e) {
+                _target = $(_this.attr('href'));
+            _this.on('click', function(e) {
                 e.preventDefault();
                 _target.toggleClass('is-visible');
                 _this.toggleClass('is-active');
@@ -122,23 +122,21 @@ if (FatApp::getConfig('CONF_SITE_TRACKER_CODE', FatUtility::VAR_STRING, '') && !
 ?>
 </body>
 <!-- Custom Loader -->
-<div id="app-alert" class="alert-position alert-position--top-right">
-    <alert role="alert" class="alert">
-        <alert-icon class="alert__icon"></alert-icon>
-        <alert-message class="alert__message"><p></p></alert-message>
-        <alert-close class="alert__close" onclick="$.appalert.close();" ></alert-close>
-    </alert>
-</div>
+<div id="app-alert" class="alert-position alert-position--top-right fadeInDown animated"></div>
 <script>
-<?php if ($siteUserId > 0) { ?>
+    <?php if ($siteUserId > 0) { ?>
         setTimeout(getBadgeCount(), 1000);
-<?php } if (Message::getMessageCount() > 0) { ?>
+    <?php }
+    if (Message::getMessageCount() > 0) { ?>
         fcom.success('<?php echo Message::getData()['msgs'][0]; ?>');
-<?php } if (Message::getDialogCount() > 0) { ?>
+    <?php }
+    if (Message::getDialogCount() > 0) { ?>
         fcom.warning('<?php echo Message::getData()['dialog'][0]; ?>');
-<?php } if (Message::getErrorCount() > 0) { ?>
+    <?php }
+    if (Message::getErrorCount() > 0) { ?>
         fcom.error('<?php echo Message::getData()['errs'][0]; ?>');
-<?php } ?>
+    <?php } ?>
 </script>
 </script>
+
 </html>

@@ -5,6 +5,7 @@ $progress: "progress";
     &--round{ border-radius: theme('radius.round');}
     &--curve{border-radius: theme('radius.curve');}
     &--small{height: 0.7rem;}
+    &--xsmall{height: 0.5rem;}
     & + &{margin-top: 15px;}
 
    

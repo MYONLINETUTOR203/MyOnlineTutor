@@ -55,6 +55,7 @@ class Currency extends MyAppModel
     {
         $srch = self::getSearchObject($langId);
         $srch->addMultipleFields(['currency_id', 'CONCAT(IFNULL(curr_l.currency_name,curr.currency_code)," (",currency_code ,")") as currency_name_code']);
+        $srch->addOrder('currency_order');
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         $row = FatApp::getDb()->fetchAllAssoc($srch->getResultSet(), 'currency_id');
@@ -67,16 +68,19 @@ class Currency extends MyAppModel
     /**
      * Get Data
      * 
-     * @param int $currencyId
-     * @param int $langId
+     * @param int  $currencyId
+     * @param int  $langId
+     * @param bool $active
      * @return null|array
      */
-    public static function getData(int $currencyId, int $langId)
+    public static function getData(int $currencyId, int $langId, $active = true)
     {
         $srch = new SearchBase(static::DB_TBL, 'currency');
         $srch->joinTable(static::DB_TBL_LANG, 'LEFT JOIN', 'curlang.currencylang_currency_id = '
                 . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
-        $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
+        if ($active == true) {
+            $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
+        }
         $srch->addCondition('currency.currency_id', '=', $currencyId);
         $srch->addMultipleFields([
             'currency.currency_id AS currency_id',

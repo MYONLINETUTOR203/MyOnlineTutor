@@ -47,7 +47,7 @@ class CertificatesController extends DashboardController
             $content = $this->getContent(Certificate::TYPE_COURSE);
             $cert = new Certificate(
                 $ordcrsData['ordcrs_id'],
-                Certificate::TYPE_QUIZ,
+                Certificate::TYPE_COURSE,
                 $this->siteUserId,
                 $this->siteUserType
             );
@@ -121,7 +121,7 @@ class CertificatesController extends DashboardController
             $logoImg = CONF_UPLOADS_PATH . $logoImg['file_path'];
         }
         $this->set('logoImg', $logoImg);
-
+        
         $this->set('layoutDir', Language::getAttributesById($this->siteLangId, 'language_direction'));
         $content = $this->_template->render(false, false, 'certificates/generate.php', true);
         return $content;

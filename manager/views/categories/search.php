@@ -1,13 +1,16 @@
 <?php
 
 defined('SYSTEM_INIT') or die('Invalid Usage.');
+$types = Category::getCategoriesTypes();
 $arrFlds = [
     'dragdrop' => '',
     'listserial' => Label::getLabel('LBL_Sr._No'),
     'cate_identifier' => Label::getLabel('LBL_IDENTIFIER'),
     'cate_name' => Label::getLabel('LBL_NAME'),
+    'cate_type' => Label::getLabel('LBL_TYPE'),
     'cate_sub_categories' => Label::getLabel('LBL_SUB_CATEGORIES'),
-    'cate_records' => Label::getLabel('LBL_QUESTIONS'),
+    'cate_courses' => Label::getLabel('LBL_COURSES'),
+    'cate_questions' => Label::getLabel('LBL_QUESTIONS'),
     'cate_created' => Label::getLabel('LBL_ADDED_ON'),
     'status' => Label::getLabel('LBL_STATUS'),
 ];
@@ -40,6 +43,9 @@ foreach ($arrListing as $sn => $row) {
             case 'listserial':
                 $td->appendElement('plaintext', [], $srNo);
                 break;
+            case 'cate_type':
+                $td->appendElement('plaintext', [], $types[$row[$key]]);
+                break;
             case 'cate_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['cate_created']));
                 break;
@@ -50,18 +56,31 @@ foreach ($arrListing as $sn => $row) {
                     $td->appendElement('plaintext', [], 0);
                 }
                 break;
-            case 'cate_records':
-                if ($row['cate_records'] > 0) {
-                    if ($row['cate_type'] == Category::TYPE_QUESTION) {
-                        if ($canViewQuestions) {
-                            $qryString = '?ques_cate_id=' . $row['cate_id'];
-                            if ($postedData['parent_id'] > 0) {
-                                $qryString = '?ques_cate_id=' . $postedData['parent_id'] . '&ques_subcate_id=' . $row['cate_id'];
-                            }
-                            $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
-                        } else {
-                            $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records']);
+            case 'cate_courses':
+                if ($row['cate_records'] > 0 && $row['cate_type'] ==  Category::TYPE_COURSE) {
+                    if ($canViewCourses) {
+                        $qryString = '?course_cateid=' . $row['cate_id'];
+                        if ($postedData['parent_id'] > 0) {
+                            $qryString = '?course_cateid=' . $postedData['parent_id'] . '&course_subcateid=' . $row['cate_id'];
                         }
+                        $td->appendElement('a', ['href' => MyUtility::makeUrl('Courses', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_COURSES')], $row['cate_records'], true);
+                    } else {
+                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_COURSES')], 0);
+                    }
+                } else {
+                    $td->appendElement('plaintext', [], 0);
+                }
+                break;
+            case 'cate_questions':
+                if ($row['cate_records'] > 0 && $row['cate_type'] == Category::TYPE_QUESTION) {
+                    if ($canViewQuestions) {
+                        $qryString = '?ques_cate_id=' . $row['cate_id'];
+                        if ($postedData['parent_id'] > 0) {
+                            $qryString = '?ques_cate_id=' . $postedData['parent_id'] . '&ques_subcate_id=' . $row['cate_id'];
+                        }
+                        $td->appendElement('a', ['href' => MyUtility::makeUrl('Questions', 'index') . $qryString, 'class' => 'button small green', 'title' => Label::getLabel('LBL_QUESTIONS')], $row['cate_records'], true);
+                    } else {
+                        $td->appendElement('plaintext', ['title' => Label::getLabel('LBL_QUESTIONS')], 0);
                     }
                 } else {
                     $td->appendElement('plaintext', [], 0);

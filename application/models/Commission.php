@@ -60,6 +60,7 @@ class Commission extends MyAppModel
             'comhis_user_id' => $data['comm_user_id'],
             'comhis_lessons' => $data['comm_lessons'],
             'comhis_classes' => $data['comm_classes'],
+            'comhis_courses' => $data['comm_courses'],
             'comhis_created' => date('Y-m-d H:i:s'),
         ];
         if (!FatApp::getDb()->insertFromArray(static::DB_TBL_HISTORY, $assignValues)) {
@@ -78,7 +79,7 @@ class Commission extends MyAppModel
     public static function getCommission(int $teacherId)
     {
         $srch = new SearchBase(static::DB_TBL);
-        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_id']);
+        $srch->addMultipleFields(['comm_lessons', 'comm_classes', 'comm_courses', 'comm_id']);
         $srch->addDirectCondition('comm_user_id = ' . $teacherId . ' OR comm_user_id IS NULL');
         $srch->addOrder('comm_user_id', 'DESC');
         $srch->doNotCalculateRecords();

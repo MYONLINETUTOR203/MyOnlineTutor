@@ -572,16 +572,63 @@ class OrderPayment extends FatModel
     /**
      * Update Course Order:
      * 
-     * 1. Update Course counts in (tbl_offer_prices)
-     * 2. Update Course counts in (tbl_teacher_stats)
-     * 3. Update Student counts in (tbl_teacher_stats)
-     * 4. Update Course booked counts in (tbl_courses)
+     * 1. Update Course students counts in (tbl_courses)
      * 
      * @return bool
      */
     private function updateCourseData(): bool
     {
-        /* Not required as of now */
+        $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+        $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_course_id = course.course_id', 'course');
+        $srch->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'course.course_id = crsdetail.course_id', 'crsdetail');
+        $srch->addCondition('ordcrs_order_id', '=', $this->order['order_id']);
+        $srch->addMultipleFields([
+            'ordcrs_id',
+            'ordcrs_course_id',
+            'course_user_id',
+            'course_title',
+            'course_price'
+        ]);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('ordcrs_course_id');
+        if (!$orderCourse = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_INVALID_REQUEST');
+            return false;
+        }
+        $record = new OrderCourse($orderCourse['ordcrs_id']);
+        $record->setFldValue('ordcrs_status', OrderCourse::COMPLETED);
+        if (!$record->save()) {
+            $this->error = $record->getError();
+            return false;
+        }
+        $courseId = $orderCourse['ordcrs_course_id'];
+        $course = new Course($courseId);
+        if (!$course->setStudentCount()) {
+            $this->error = $course->getError();
+            return false;
+        }
+        /* update count in teachers stats */
+        $teacherStats = new TeacherStat($orderCourse['course_user_id']);
+        if (!$teacherStats->setCoursesCount()) {
+            $this->error = $teacherStats->getError();
+            return false;
+        }
+        $learner = User::getAttributesById($this->order['order_user_id'], ['user_lang_id', 'user_first_name', 'user_last_name', 'user_email']);
+        $teacher = User::getAttributesById($orderCourse['course_user_id'], ['user_first_name', 'user_last_name']);
+        $vars = [
+            '{learner_name}' => ucwords($learner['user_first_name'] . ' ' . $learner['user_last_name']),
+            '{teacher_name}' => ucwords($teacher['user_first_name'] . ' ' . $teacher['user_last_name']),
+            '{course_title}' => ucfirst($orderCourse['course_title']),
+            '{course_price}' => MyUtility::formatMoney($orderCourse['course_price']),
+            '{course_link}' => MyUtility::generateFullUrl('Tutorials', 'start', [$orderCourse['ordcrs_id']], CONF_WEBROOT_DASHBOARD)
+        ];
+        $mail = new FatMailer($learner['user_lang_id'], 'course_booking_email_to_learner');
+        $mail->setVariables($vars);
+        $mail->sendMail([$learner['user_email']]);
+        $mail = new FatMailer(MyUtility::getSiteLangId(), 'course_booking_email_to_admin');
+        $mail->setVariables($vars);
+        $mail->sendMail([FatApp::getConfig('CONF_SITE_OWNER_EMAIL')]);
         return true;
     }
 

@@ -28,6 +28,7 @@ class TeacherController extends DashboardController
         $statistics = new Statistics($this->siteUserId);
         $earningData = $statistics->getEarning(MyDate::TYPE_ALL);
         $sessionStats = $statistics->getSessionStats();
+        $courseStats = (new OrderCourse(0, $this->siteUserId, $this->siteUserType, $this->siteLangId))->getCourseStats();
         $this->sets([
             'earnings' => $earningData['earning'] ?? 0,
             'schLessonCount' => $sessionStats['lessStats']['schLessonCount'],
@@ -36,7 +37,8 @@ class TeacherController extends DashboardController
             'durationType' => MyDate::getDurationTypesArr(),
             'userTimezone' => $this->siteTimezone,
             'walletBalance' => User::getWalletBalance($this->siteUserId),
-            'setMonthAndWeekNames' => true
+            'setMonthAndWeekNames' => true,
+            'courseCount' => $courseStats['totalCourses']
         ]);
         $this->_template->addJs([
             'js/moment.min.js', 'js/fullcalendar-luxon.min.js',

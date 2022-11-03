@@ -134,7 +134,9 @@
 
 .slick-arrow.slick-prev {
     #{theme('direction.left','value')}: 0;
+
     &:before{ border-#{theme('direction.right','value')}: 2px solid #333; margin-#{theme('direction.right','value')}:-18px; }
+
 }
 
 .slick-arrow.slick-prev:before {
@@ -195,7 +197,7 @@ body[dir="rtl"]{
         vertical-align: top;
          margin-#{theme('direction.right','value')}: 5px;
          @media(max-width: theme('breakpoints.sm','value')){
-            &{ margin-#{theme('direction.right','value')}: 5px; margin-bottom: 1rem;}
+             &{ margin-#{theme('direction.right','value')}: 5px; margin-bottom: 1rem;}
          }
         button{
             width: 30px;

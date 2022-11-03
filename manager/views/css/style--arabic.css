@@ -132,13 +132,9 @@ select{background-position:10px center; padding-right:10px; padding-left: 30px;}
 .breadcrumb li a:after{right: auto;left: -15px;}
 .breadcrumb li{padding-left: 0; padding-right: 15px;margin-left: 0; margin-right: 15px;}
 #facebox{text-align: right;}
-
-
 .web_form input[type="submit"], .btn-primary, .repeatedrow h3 .icon{margin-right: 0; margin-left: 10px;}
-
 .listview .list dt{text-align: right;clear: right;float: right;}
 .listview .list dd{margin-left: auto; margin-right: 180px;}
 .web_form input[type="button"]{margin-right: auto; margin-left: 1rem;}
-
 .ui-datepicker-header .ui-datepicker-next .ui-icon::before{left:auto; right: 5px; border-left:7px solid transparent; border-right:7px solid #999;}
 .ui-datepicker-header .ui-datepicker-prev .ui-icon::before{left:auto; right: 5px; border-right:4px solid transparent; border-left:7px solid #999;}

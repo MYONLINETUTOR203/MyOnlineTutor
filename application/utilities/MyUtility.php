@@ -327,7 +327,7 @@ class MyUtility extends FatUtility
      * 
      * @return array
      */
-    public static function getCommonLabels($siteLanguages): array
+    public static function getCommonLabels(array $siteLanguages): array
     {
         $jsVariables = [
             'layoutDirection' => MyUtility::getLayoutDirection(),
@@ -374,10 +374,14 @@ class MyUtility extends FatUtility
             'lessonNotAvailable' => Label::getLabel('LBL_LESSON_NOT_AVAILABLE'),
             'currencyLeft' => self::getCurrencyLeftSymbol(),
             'currencyRight' => self::getCurrencyRightSymbol(),
+            'courseSrchPlaceholder' => Label::getLabel('LBL_BY_COURSE_NAME,_TEACHER_NAME,_TAGS'),
+            'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?'),
+            'courseProgressPercent' => Label::getLabel('LBL_{percent}%_COMPLETED'),
+            'confirmCourseSubmission' => Label::getLabel('LBL_PLEASE_CONFIRM_YOU_WANT_TO_SUBMIT_COURSE_FOR_APPROVAL?'),
+            'searching' => Label::getLabel('LBL_Searching'),
             'selectQuestions' => Label::getLabel('LBL_PLEASE_ADD_QUESTION(S)'),
             'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION'),
             'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
-            'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?')
         ];
         foreach ($siteLanguages as $val) {
             $jsVariables['language' . $val['language_id']] = $val['language_direction'];

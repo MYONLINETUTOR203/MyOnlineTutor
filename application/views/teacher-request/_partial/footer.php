@@ -17,15 +17,9 @@
     </div>
 </footer>
 <!-- Custom Loader -->
-<div id="app-alert" class="alert-position alert-position--top-right">
-    <alert role="alert" class="alert">
-        <alert-icon class="alert__icon"></alert-icon>
-        <alert-message class="alert__message"><p></p></alert-message>
-        <alert-close class="alert__close" onclick="$.appalert.close();" ></alert-close>
-    </alert>
-</div>
+<div id="app-alert" class="alert-position alert-position--top-right"></div>
 <script>
-    $(document).on('click', '.btn-Back', function () {
+    $(document).on('click', '.btn-Back', function() {
         var blockId = parseInt($('.is-process').attr('data-blocks-show')) - 1;
         $('.change-block-js').removeClass('is-process');
         $('li[data-blocks-show="' + blockId + '"]').addClass('is-process');

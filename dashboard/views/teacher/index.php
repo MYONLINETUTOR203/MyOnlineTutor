@@ -30,21 +30,7 @@
             <?php } ?>
             <div class="stats-row margin-bottom-6 align-item-stretch">
                 <div class="row align-items-center">
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="stat">
-                            <div class="stat__amount">
-                                <span><?php echo Label::getLabel('LBL_TOTAL_EARNINGS'); ?></span>
-                                <h5><?php echo MyUtility::formatMoney($earnings); ?></h5>
-                            </div>
-                            <div class="stat__media bg-yellow">
-                                <svg class="icon icon--money icon--40 color-white">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#stats'; ?>"></use>
-                                </svg>
-                            </div>
-                            <a href="javascript:void(0);" class="stat__action"></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="stat">
                             <div class="stat__amount">
                                 <span><?php echo Label::getLabel('LBL_SCHEDULED_LESSONS'); ?></span>
@@ -58,7 +44,7 @@
                             <a href="<?php echo MyUtility::makeUrl('Lessons') . '?ordles_status=' . Lesson::SCHEDULED; ?>" class="stat__action"></a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="stat">
                             <div class="stat__amount">
                                 <span><?php echo Label::getLabel('LBL_SCHEDULED_CLASSES'); ?></span>
@@ -72,7 +58,39 @@
                             <a href="<?php echo MyUtility::makeUrl('Classes') . '?grpcls_status=' . GroupClass::SCHEDULED; ?>" class="stat__action"></a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="stat">
+                            <div class="stat__amount">
+                                <span><?php echo Label::getLabel('LBL_COURSES_SOLD'); ?></span>
+                                <h5><?php echo $courseCount; ?></h5>
+                            </div>
+                            <div class="stat__media bg-secondary">
+                                <svg class="icon icon--money icon--40 color-white">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#stats_1'; ?>"></use>
+                                </svg>
+                            </div>
+                            <a href="<?php echo MyUtility::makeUrl('Courses'); ?>" class="stat__action"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-row margin-bottom-6 align-item-stretch">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="stat">
+                            <div class="stat__amount">
+                                <span><?php echo Label::getLabel('LBL_TOTAL_EARNINGS'); ?></span>
+                                <h5><?php echo MyUtility::formatMoney($earnings); ?></h5>
+                            </div>
+                            <div class="stat__media bg-yellow">
+                                <svg class="icon icon--money icon--40 color-white">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#stats'; ?>"></use>
+                                </svg>
+                            </div>
+                            <a href="javascript:void(0);" class="stat__action"></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="stat">
                             <div class="stat__amount">
                                 <span> <?php echo Label::getLabel('LBL_WALLET_BALANCE'); ?></span>
@@ -137,7 +155,7 @@
             <div class="status-bar__head">
                 <div class="status-title">
                     <h5><?php echo Label::getLabel('LBL_UPCOMING_LESSONS'); ?></h5>
-                    <a href="<?php echo MyUtility::makeUrl('Lessons').'?ordles_status='.Lesson::SCHEDULED; ?>" class="color-secondary underline padding-top-3 padding-bottom-3"><?php echo Label::getLabel('LBL_View_All'); ?></a>
+                    <a href="<?php echo MyUtility::makeUrl('Lessons') . '?ordles_status=' . Lesson::SCHEDULED; ?>" class="color-secondary underline padding-top-3 padding-bottom-3"><?php echo Label::getLabel('LBL_View_All'); ?></a>
                 </div>
                 <div class="calendar">
                     <div id='d_calendar' class="dashboard-calendar calendar-view"></div>

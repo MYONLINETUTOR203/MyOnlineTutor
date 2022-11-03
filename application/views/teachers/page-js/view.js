@@ -62,6 +62,18 @@ $("document").ready(function () {
             }
         });
     };
+
+    toggleCourseFavorite = function (courseId, el) {
+        var status = $(el).data('status');
+        var data = 'course_id= ' + courseId + '&status=' + status;
+        fcom.updateWithAjax(fcom.makeUrl('Courses', 'toggleFavorite', [], confWebDashUrl), data, function (resp) {
+            if (status == 0) {
+                $(el).data("status", 1).addClass("is-active");
+            } else {
+                $(el).data("status", 0).removeClass("is-active");
+            }
+        });
+    };
 });
 function viewCalendar(teacherId) {
     fcom.ajax(fcom.makeUrl('Teachers', 'viewCalendar'), {teacherId: teacherId}, function (response) {
@@ -69,7 +81,7 @@ function viewCalendar(teacherId) {
     });
 }
 loadOneThirdSlick = function () {
-    $('.slider-onethird-js').slick({
+    $('.slider--onethird.slider-onethird-js').slick({
         slidesToShow: 2,
         slidesToScroll: 1,
         infinite: false,
@@ -80,8 +92,8 @@ loadOneThirdSlick = function () {
         prevArrow: '<button class="slick-prev cursor-hide" aria-label="Previous" type="button">Previous</button>',
         nextArrow: '<button class="slick-next cursor-hide" aria-label="Next" type="button">Next</button>',
         responsive: [
-            {breakpoint: 1199, settings: {slidesToShow: 1, arrows: false, dots: true}},
-            {breakpoint: 1023, settings: {slidesToShow: 1, arrows: false, dots: true}},
+            {breakpoint: 1199, settings: {slidesToShow: 2, arrows: false, dots: true}},
+            {breakpoint: 1023, settings: {slidesToShow: 2, arrows: false, dots: true}},
             {breakpoint: 767, settings: {slidesToShow: 1, arrows: false, dots: true}},
             {breakpoint: 576, settings: {slidesToShow: 1, arrows: false, dots: true}}
         ]

@@ -126,7 +126,8 @@ $colorClass = [1 => 'cell-green-40', 2 => 'cell-green-60', 3 => 'cell-green-80',
                                         </div>
                                         <div class="info-tag list-count">
                                             <div class="total-count"><span class="value"><?php echo $teacher['testat_students']; ?></span><?php echo Label::getLabel('LBL_Students'); ?></div> -
-                                            <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_Sessions'); ?></div>
+                                            <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_Sessions'); ?></div> -
+                                            <div class="total-count"><span class="value"><?php echo $teacher['courses']; ?></span><?php echo Label::getLabel('LBL_COURSES'); ?></div>
                                         </div>
                                     </div>
                                     <div class="tutor-info">

@@ -67,12 +67,18 @@ class AdminPrivilege
     const SECTION_GDPR_REQUESTS = 59;
     const SECTION_LANGUAGE = 60;
     const SECTION_THEME_MANAGEMENT = 61;
-    const SECTION_PACKAGE_CLASSES = 62;
-    const SECTION_SETTLEMENTS_REPORT = 63;
+    const SECTION_CATEGORIES = 62;
+    const SECTION_COURSE = 63;
     const SECTION_MANAGE_CERTIFICATES = 64;
-    const SECTION_CATEGORIES = 65;
-    const SECTION_QUESTIONS = 66;
-    const SECTION_QUIZZES = 67;
+    const SECTION_COURSE_REQUESTS = 65;
+    const SECTION_COURSE_REFUND_REQUESTS = 66;
+    const SECTION_PACKAGE_CLASSES = 67;
+    const SECTION_COURSE_REVIEWS = 68;
+    const SECTION_SETTLEMENTS_REPORT = 69;
+    const SECTION_COURSE_LANGUAGES = 70;
+    const SECTION_QUESTIONS = 71;
+    const SECTION_QUIZZES = 72;
+
     const PRIVILEGE_NONE = 0;
     const PRIVILEGE_READ = 1;
     const PRIVILEGE_WRITE = 2;
@@ -187,6 +193,12 @@ class AdminPrivilege
             static::SECTION_SALES_REPORT => Label::getLabel('MSG_SALE_REPORT', $langId),
             static::SECTION_SETTLEMENTS_REPORT => Label::getLabel('MSG_SETTLEMENTS_REPORT', $langId),
             static::SECTION_CATEGORIES => Label::getLabel('MSG_CATEGORIES', $langId),
+            static::SECTION_COURSE => Label::getLabel('MSG_COURSE', $langId),
+            static::SECTION_COURSE_REQUESTS => Label::getLabel('MSG_COURSE_REQUESTS', $langId),
+            static::SECTION_COURSE_REFUND_REQUESTS => Label::getLabel('MSG_COURSE_REFUND_REQUESTS', $langId),
+            static::SECTION_COURSE_REVIEWS => Label::getLabel('MSG_COURSE_REVIEWS', $langId),
+            static::SECTION_COURSE_LANGUAGES => Label::getLabel('MSG_COURSE_LANGUAGES', $langId),
+            static::SECTION_COURSES_ORDERS => Label::getLabel('MSG_COURSE_ORDERS', $langId),
             static::SECTION_QUESTIONS => Label::getLabel('MSG_QUESTIONS', $langId),
             static::SECTION_MANAGE_CERTIFICATES => Label::getLabel('MSG_CERTIFICATES', $langId),
             static::SECTION_QUIZZES => Label::getLabel('MSG_QUIZZES', $langId),
@@ -1443,26 +1455,67 @@ class AdminPrivilege
     }
 
     /**
-     * Can View Themes
+     * Can View Categories
      * 
      * @param bool $returnResult
      * @return type
      */
-    public function canViewPackageClasses(bool $returnResult = false)
+    public function canViewCategories(bool $returnResult = false)
     {
-        return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_READ, $returnResult);
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_READ, $returnResult);
     }
 
     /**
-     * Can Edit Themes
+     * Can Edit Categories
      * 
      * @param bool $returnResult
      * @return type
      */
-    public function canEditPackageClasses(bool $returnResult = false)
+    public function canEditCategories(bool $returnResult = false)
     {
-        return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
-    }    
+        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Courses
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Courses
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Course Requests
+     */
+    public function canViewCourseRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REQUESTS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Requests
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseRequests(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
+    }
 
     /**
      * Can View Certificates
@@ -1487,25 +1540,91 @@ class AdminPrivilege
     }
 
     /**
-     * Can View Categories
+     * Can View Course Cancellation Requests
      * 
      * @param bool $returnResult
      * @return type
      */
-    public function canViewCategories(bool $returnResult = false)
+    public function canViewCourseRefundRequests(bool $returnResult = false)
     {
-        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_READ, $returnResult);
+        return $this->checkPermission(static::SECTION_COURSE_REFUND_REQUESTS, static::PRIVILEGE_READ, $returnResult);
     }
 
     /**
-     * Can Edit Categories
+     * Can Edit Course Cancellation Requests
      * 
      * @param bool $returnResult
      * @return type
      */
-    public function canEditCategories(bool $returnResult = false)
+    public function canEditCourseRefundRequests(bool $returnResult = false)
     {
-        return $this->checkPermission(static::SECTION_CATEGORIES, static::PRIVILEGE_WRITE, $returnResult);
+        return $this->checkPermission(static::SECTION_COURSE_REFUND_REQUESTS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Package Classes
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewPackageClasses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Package Classes
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditPackageClasses(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_PACKAGE_CLASSES, static::PRIVILEGE_WRITE, $returnResult);
+    } 
+
+    /**
+     * Can View Course Reviews
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourseReviews(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REVIEWS, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Reviews
+     *
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseReviews(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_REVIEWS, static::PRIVILEGE_WRITE, $returnResult);
+    }
+
+    /**
+     * Can View Course Language
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canViewCourseLanguage(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_LANGUAGES, static::PRIVILEGE_READ, $returnResult);
+    }
+
+    /**
+     * Can Edit Course Language
+     * 
+     * @param bool $returnResult
+     * @return type
+     */
+    public function canEditCourseLanguage(bool $returnResult = false)
+    {
+        return $this->checkPermission(static::SECTION_COURSE_LANGUAGES, static::PRIVILEGE_WRITE, $returnResult);
     }
 
     /**

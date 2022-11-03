@@ -51,19 +51,23 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_CATEGORY_NOT_FOUND');
             return false;
         }
+        $type = ($this->mainTableRecordId > 0) ? $category['cate_type'] : $data['cate_type'];
         $parent = FatUtility::int($data['cate_parent']);
-        if (!$this->checkUnique($data['cate_identifier'], $parent)) {
+        if (!$this->checkUnique($data['cate_identifier'], $type, $parent)) {
             $this->error = $this->getError();
             return false;
         }
-        $status = $data['cate_status'];
         if ($this->mainTableRecordId > 0) {
-            if ($status == AppConstant::INACTIVE && $category['cate_records'] > 0) {
-                if ($data['cate_type'] == Category::TYPE_QUESTION) {
+            if ($data['cate_status'] == AppConstant::INACTIVE && $category['cate_records'] > 0) {
+                if ($category['cate_type'] == Category::TYPE_QUESTION) {
                     $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
+                }
+                if ($category['cate_type'] == Category::TYPE_COURSE) {
+                    $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
                 }
                 return false;
             }
+            unset($data['cate_type']);
         }
         /* save category data */
         $this->assignValues($data);
@@ -113,7 +117,9 @@ class Category extends MyAppModel
         }
         $status = $this->getFldValue('cate_status');
         if ($status == AppConstant::INACTIVE && $data['cate_records'] > 0) {
-            if ($data['cate_type'] == Category::TYPE_QUESTION) {
+            if ($data['cate_type'] == Category::TYPE_COURSE) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_MARKED_INACTIVE');
+            } elseif ($data['cate_type'] == Category::TYPE_QUESTION) {
                 $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_MARKED_INACTIVE');
             }
             return false;
@@ -136,8 +142,13 @@ class Category extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_REQUEST');
             return false;
         }
-        if ($data['cate_type'] == Category::TYPE_QUESTION && $data['cate_records'] > 0) {
-            $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_DELETED.');
+
+        if ($data['cate_records'] > 0) {
+            if ($data['cate_type'] == Category::TYPE_COURSE) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_COURSES_CANNOT_BE_DELETED.');
+            } elseif ($data['cate_type'] == Category::TYPE_QUESTION) {
+                $this->error = Label::getLabel('LBL_CATEGORIES_ATTACHED_WITH_THE_QUESTIONS_CANNOT_BE_DELETED.');
+            }
             return false;
         }
         if ($data['cate_subcategories'] > 0) {
@@ -149,6 +160,7 @@ class Category extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+
         /* update sub categories count */
         $this->updateSubCatCount();
         return true;
@@ -247,7 +259,6 @@ class Category extends MyAppModel
         if ($havingCourses == true) {
             $srch->addCondition('cate_records', '>', 0);
         }
-        
         $srch->doNotCalculateRecords();
         $srch->doNotLimitRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
@@ -285,17 +296,18 @@ class Category extends MyAppModel
     /**
      * Check unique category
      *
-     * @param string $name
-     * @param int    $langId
+     * @param string $identifier
+     * @param int    $type
      * @param int    $parent
-     * @return void
+     * @return bool
      */
-    public function checkUnique(string $identifier, int $parent = 0)
+    public function checkUnique(string $identifier, int $type, int $parent = 0)
     {
         $srch = new SearchBase(static::DB_TBL, 'catg');
         $srch->addCondition('mysql_func_LOWER(cate_identifier)', '=', strtolower(trim($identifier)), 'AND', true);
         $srch->addCondition('cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('cate_parent', '=', $parent);
+        $srch->addCondition('cate_type', '=', $type);
         if ($this->getMainTableRecordId() > 0) {
             $srch->addCondition('cate_id', '!=', $this->getMainTableRecordId());
         }

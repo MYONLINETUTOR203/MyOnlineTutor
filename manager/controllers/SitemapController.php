@@ -66,7 +66,7 @@ class SitemapController extends AdminBaseController
             $this->startSitemapXml();
         }
         echo "<url>
-                <loc>" . $url . "</loc>
+                <loc> " . htmlentities($url) . "</loc>
                 <lastmod>" . date('Y-m-d') . "</lastmod>
                 <changefreq>weekly</changefreq>
                 <priority>0.8</priority>

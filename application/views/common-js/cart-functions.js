@@ -118,6 +118,18 @@ var cart = {
             $.facebox(response, "facebox-large");
         });
     },
+    addCourse: function (courseId) {
+        fcom.process();
+        fcom.ajax(fcom.makeUrl("Cart", "addCourse"), { course_id: courseId }, function (response) {
+            $.facebox(response, "facebox-large");
+        });
+    },
+    addFreeCourse: function (courseId) {
+        fcom.process();
+        fcom.ajax(fcom.makeUrl("Cart", "addCourse"), { course_id: courseId }, function (response) {
+            cart.confirmOrder(document.frmCheckout);
+        });
+    },
     selectWallet: function (checked) {
         document.checkoutForm.add_and_pay.value = checked ? 1 : 0;
         if (!$(document.checkoutForm).validate()) {

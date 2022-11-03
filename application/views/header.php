@@ -2,6 +2,7 @@
 <?php $headerClasses = strtolower($controllerName) . ' ' . strtolower($controllerName) . '-' . strtolower($actionName); ?>
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" class="<?php echo MyUtility::isDemoUrl() ? 'sticky-demo-header' : ''; ?>">
+
     <head>
         <meta charset="utf-8">
         <meta name="author" content="">
@@ -57,26 +58,21 @@ if (isset($setMonthAndWeekNames) && $setMonthAndWeekNames) {
             $(document).ready(function () {
 <?php if ($siteUserId > 0) { ?>
                     setTimeout(getBadgeCount(), 1000);
-<?php } if (!empty($messageData['msgs'][0] ?? '')) { ?>
+<?php }if (!empty($messageData['msgs'][0] ?? '')) { ?>
                     fcom.success('<?php echo $messageData['msgs'][0]; ?>');
-<?php } if (!empty($messageData['dialog'][0] ?? '')) { ?>
+<?php }if (!empty($messageData['dialog'][0] ?? '')) { ?>
                     fcom.warning('<?php echo $messageData['dialog'][0]; ?>');
-<?php } if (!empty($messageData['errs'][0] ?? '')) { ?>
+<?php }if (!empty($messageData['errs'][0] ?? '')) { ?>
                     fcom.error('<?php echo $messageData['errs'][0]; ?>');
 <?php } ?>
             });
         </script>
     </head>
     <?php $isPreviewOn = MyUtility::isDemoUrl() ? 'is-preview-on' : ''; ?>
+
     <body class="<?php echo $headerClasses . ' ' . $isPreviewOn; ?>" dir="<?php echo $siteLanguage['language_direction']; ?>">
         <!-- Custom Loader -->
-        <div id="app-alert" class="alert-position alert-position--top-right">
-            <alert role="alert" class="alert">
-                <alert-icon class="alert__icon"></alert-icon>
-                <alert-message class="alert__message"><p></p></alert-message>
-                <alert-close class="alert__close" onclick="$.appalert.close();"></alert-close>
-            </alert>
-        </div>
+        <div id="app-alert" class="alert-position alert-position--top-right fadeInDown animated"></div>
         <?php
         if (MyUtility::isDemoUrl()) {
             include(CONF_INSTALLATION_PATH . 'restore/view/header-bar.php');
@@ -90,7 +86,7 @@ if (isset($setMonthAndWeekNames) && $setMonthAndWeekNames) {
             <header class="header">
                 <div class="header-primary">
                     <div class="container">
-                        <div class="header-flex d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div class="header__left">
                                 <a href="javascript:void(0)" class="toggle toggle--nav toggle--nav-js">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 515.555 515.555">
@@ -255,6 +251,8 @@ if (isset($setMonthAndWeekNames) && $setMonthAndWeekNames) {
                                                                 <li class="menu__item <?php echo ("Lessons" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Lessons', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Lessons'); ?></a></li>
                                                             <?php }
                                                             ?>
+                                                            <li class="menu__item <?php echo ("Classes" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Classes', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Classes'); ?></a></li>
+                                                            <li class="menu__item <?php echo ("Courses" == $controllerName) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Courses', '', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Courses'); ?></a></li>
                                                             <li class="menu__item <?php echo ("Account" == $controllerName && "profileInfo" == $action) ? 'is-active' : ''; ?>"><a href="<?php echo MyUtility::makeUrl('Account', 'ProfileInfo', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Settings'); ?></a></li>
                                                             <li class="menu__item"><a href="<?php echo MyUtility::makeUrl('Account', 'logout', [], CONF_WEBROOT_DASHBOARD); ?>"><?php echo Label::getLabel('LBL_Logout'); ?></a></li>
                                                         </ul>

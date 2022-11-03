@@ -24,7 +24,6 @@ class MetaTag extends MyAppModel
     const META_GROUP_COURSE_CERTIFICATE = 7;
     const META_GROUP_QUIZ_CERTIFICATE = 8;
 
-
     /**
      * Initialize MetaTag
      * 
@@ -50,6 +49,7 @@ class MetaTag extends MyAppModel
             static::META_GROUP_CMS_PAGE => ['name' => Label::getLabel('METALBL_CMS_Page'), 'controller' => 'Cms', 'action' => 'view'],
             static::META_GROUP_BLOG_CATEGORY => ['name' => Label::getLabel('METALBL_Blog_Categories'), 'controller' => 'Blog', 'action' => 'category'],
             static::META_GROUP_BLOG_POST => ['name' => Label::getLabel('METALBL_Blog_Posts'), 'controller' => 'Blog', 'action' => 'postDetail'],
+            static::META_GROUP_COURSE => ['name' => Label::getLabel('METALBL_Courses'), 'controller' => 'Courses', 'action' => 'view'],
         ];
     }
 

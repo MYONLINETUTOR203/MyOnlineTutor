@@ -15,7 +15,7 @@
     };
     feedbackForm = function (classId) {
         fcom.ajax(fcom.makeUrl('Classes', 'feedbackForm'), {classId: classId}, function (response) {
-            $.facebox(response, 'facebox-small');
+            $.facebox(response, 'facebox-medium');
         });
     };
     feedbackSetup = function (frm) {

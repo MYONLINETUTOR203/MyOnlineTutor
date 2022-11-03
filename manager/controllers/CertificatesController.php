@@ -100,7 +100,7 @@ class CertificatesController extends AdminBaseController
         $frm->fill($data);
 
         /* get certficate image form */
-        $mediaFrm = $this->getMediaForm();
+        $mediaFrm = $this->getMediaForm($langId);
         $mediaFrm->fill(['certpl_id' => $certTplId]);
 
         /* get image dimensions */
@@ -124,7 +124,6 @@ class CertificatesController extends AdminBaseController
             'imageExts' => implode(', ', Afile::getAllowedExts(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE)),
             'layoutDir' => Language::getAttributesById($langId, 'language_direction')
         ]);
-        
         $this->_template->render();
     }
 
@@ -304,11 +303,11 @@ class CertificatesController extends AdminBaseController
      *
      * @return Form
      */
-    private function getMediaForm(): Form
+    private function getMediaForm(int $langId = 0): Form
     {
         $frm = new Form('frmMedia');
         $frm->addHiddenField('', 'certpl_id');
-        $frm->addFileUpload(Label::getLabel('LBL_BACKGROUND_IMAGE'), 'certpl_image');
+        $frm->addFileUpload(Label::getLabel('LBL_BACKGROUND_IMAGE', $langId), 'certpl_image');
         return $frm;
     }
 }

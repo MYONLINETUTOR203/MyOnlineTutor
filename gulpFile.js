@@ -2,30 +2,7 @@ const {src, dest, watch, parallel} = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 sass.compiler = require('node-sass');
 
-
 const autoprefixer = require('gulp-autoprefixer');
-const svgSprite = require('gulp-svg-sprite');
-
-
-const config = {
-    shape: {
-        dimension: {
-            maxWidth: 32,
-            maxHeight: 32,
-            precision: 2,
-            attributes: false,
-        }
-    },
-    mode: {
-        symbol: {
-            dest: './',
-            sprite: 'sprite.svg'
-        }
-    },
-    dest: './'
-};
-
-
 function css() {
     var common = src('scss/common*.scss')
             .pipe(sass())
@@ -40,7 +17,10 @@ function css() {
             .pipe(sass())
             .pipe(autoprefixer())
             .pipe(dest('dashboard/views/css'));
-
+    var course = src('scss/course-personal*.scss')
+            .pipe(sass())
+            .pipe(autoprefixer())
+            .pipe(dest('dashboard/views/css'));
     var quiz = src('scss/quiz*.scss')
             .pipe(sass())
             .pipe(autoprefixer())
@@ -62,5 +42,5 @@ function watchFiles() {
     watch(['scss'], parallel(css));
 }
 
-exports.default = parallel(css, svg);
+exports.default = parallel(css);
 exports.watch = watchFiles;

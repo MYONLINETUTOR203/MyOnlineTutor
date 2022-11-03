@@ -40,7 +40,7 @@ class TeacherPerformanceController extends AdminBaseController
         $srch = new SearchBase(User::DB_TBL, 'teacher');
         $srch->joinTable(User::DB_TBL_STAT, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
         $srch->addMultipleFields(['CONCAT(user_first_name, " ", user_last_name) as teacher_name',
-            'testat_ratings', 'testat_reviewes', 'testat_students', 'testat_lessons', 'testat_classes']);
+            'testat_ratings', 'testat_reviewes', 'testat_students', 'testat_lessons', 'testat_classes', 'testat_courses']);
         if (!empty($post['user_id'])) {
             $srch->addCondition('teacher.user_id', '=', $post['user_id']);
         } elseif (!empty($post['keyword'])) {
@@ -51,6 +51,7 @@ class TeacherPerformanceController extends AdminBaseController
         $cond = $srch->addCondition('testat_students', '>', 0);
         $cond->attachCondition('testat_lessons', '>', 0);
         $cond->attachCondition('testat_classes', '>', 0);
+        $cond->attachCondition('testat_courses', '>', 0);
         $srch->addOrder('testat_ratings', 'DESC');
         $srch->addOrder('testat_students', 'DESC');
         $srch->addOrder('testat_lessons', 'DESC');

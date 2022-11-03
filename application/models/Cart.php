@@ -216,15 +216,48 @@ class Cart extends FatModel
      */
     public function addCourse(int $courseId): bool
     {
-        $srch = new SearchBase(Course::DB_TBL, 'course');
-        $srch->addCondition('course.course_id', '=', $courseId);
-        $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $course = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->clear();
+        $srch = new CourseSearch($this->langId, $this->userId, 0);
+        $srch->applyPrimaryConditions();
+        $srch->applySearchConditions([
+            'course_status' => Course::PUBLISHED,
+            'course_id' => $courseId
+        ]);
+        $srch->addMultipleFields([
+            'crsdetail.course_title AS course_title',
+            'course_clang_id',
+            'clang_identifier',
+            'course_cate_id',
+            'course_subcate_id',
+            'course.course_price AS course_price',
+            'course.course_currency_id AS course_currency_id',
+            'course.course_id',
+            'course.course_user_id',
+            'crsdetail.course_srchtags',
+        ]);
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $courses = $srch->fetchAndFormat();
+        $course = current($courses);
         if (empty($course)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $this->items[static::COURSE][$courseId] = $courseId;
+        if ($course['course_user_id'] == $this->userId) {
+            $this->error = Label::getLabel('LBL_YOU_ARE_NOT_ALLOWED_TO_ENROLL_TO_YOUR_OWN_COURSE');
+            return false;
+        }
+        $unpaidOrders= OrderCourse::getUnpaidCourses($this->userId, $courseId);
+        if (!empty($unpaidOrders)) {
+            foreach ($unpaidOrders as $unpaidOrder) {
+                $order = new Order($unpaidOrder['order_id'], $this->userId);
+                if (!$order->cancelUnpaidOrder($unpaidOrder)) {
+                    $this->error = $order->getError();
+                    return false;
+                }
+            }
+        }
+        $course['total_amount'] = $course['course_price'];
+        $this->items[static::COURSE][$courseId] = $course;
         return $this->refresh();
     }
 

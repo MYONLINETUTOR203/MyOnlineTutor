@@ -1256,7 +1256,7 @@ $offers-ui: "offers-ui";
             .link-detail{
                 opacity: 1;
                 visibility: visible;
-                bottom: -18px;
+                bottom: -42px;
             }
 
         }
@@ -1762,8 +1762,12 @@ $offers-ui: "offers-ui";
 }
 
 
+
 @media(max-width: theme('breakpoints.xl','value')){
     .calendar-view.scheduled-lesson-popup{height: 91%;}
 }
 
+
+
+.panel-content.calender{margin-top: 0;}
 

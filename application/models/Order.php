@@ -233,24 +233,30 @@ class Order extends MyAppModel
      * @param array $courseIds
      * @return bool
      */
-    private function addCourses(array $courseIds): bool
+    private function addCourses(array $courses): bool
     {
+        if (empty($courses)) {
+            return true;
+        }
+
+        $courseIds = array_keys($courses);
         $srch = new SearchBase(Course::DB_TBL, 'course');
         $srch->addCondition('course.course_id', 'IN', $courseIds);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
-        $srch->addMultipleFields(['course_id', 'course_amount']);
-        $rows = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+        $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addMultipleFields(['course_id', 'course_price', 'course_user_id']);
+        $rows = FatApp::getDb()->fetchAll($srch->getResultSet(), 'course_id');
         if (count($rows) < count($courseIds)) {
             $this->error = Label::getLabel('LBL_COURSE_NOT_AVAILABLE');
             return false;
         }
-        $commission = 0;
         foreach ($courseIds as $courseId) {
+            $commission = Commission::getCommission($rows[$courseId]['course_user_id']);
             array_push($this->courses, [
                 'ordcrs_course_id' => $courseId,
-                'ordcrs_amount' => $rows[$courseId],
-                'ordcrs_commission' => $commission,
-                'ordcrs_status' => Lesson::SCHEDULED,
+                'ordcrs_amount' => $rows[$courseId]['course_price'],
+                'ordcrs_commission' => $commission['comm_courses'],
+                'ordcrs_status' => OrderCourse::IN_PROGRESS,
                 'ordcrs_payment' => AppConstant::UNPAID,
             ]);
         }
@@ -715,6 +721,11 @@ class Order extends MyAppModel
                 $this->error = $course->getError();
                 return false;
             }
+            $progress = new CourseProgress();
+            if (!$progress->setup($course->getId())) {
+                $this->error = $progress->getError();
+                return false;
+            }
         }
         return true;
     }
@@ -1111,6 +1122,30 @@ class Order extends MyAppModel
                 ]);
                 break;
             case Order::TYPE_COURSE:
+                $srch->joinTable(OrderCourse::DB_TBL, 'LEFT JOIN', 'orders.order_type = ' . Order::TYPE_COURSE . ' AND orders.order_id = ordcrs.ordcrs_order_id', 'ordcrs');
+                $srch->joinTable(Course::DB_TBL, 'LEFT JOIN', 'course.course_id = ordcrs.ordcrs_course_id', 'course');
+                $srch->joinTable(Course::DB_TBL_LANG, 'LEFT JOIN', 'course.course_id = crsdetail.course_id', 'crsdetail');
+                $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
+                $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang');
+                $srch->joinTable(
+                    CourseLanguage::DB_TBL_LANG,
+                    'LEFT JOIN',
+                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $langId,
+                    'clanglang'
+                );
+                $srch->addMultipleFields([
+                    'crsdetail.course_title',
+                    'teacher.user_first_name',
+                    'teacher.user_last_name',
+                    'teacher.user_timezone',
+                    'teacher.user_country_id',
+                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS clang_name',
+                    'course.course_duration',
+                    'ordcrs.ordcrs_amount',
+                    'teacher.user_email',
+                    'ordcrs.ordcrs_status',
+                    'ordcrs.ordcrs_commission'
+                ]);
                 break;
             case Order::TYPE_WALLET:
                 break;
@@ -1187,6 +1222,11 @@ class Order extends MyAppModel
                 $table = Giftcard::DB_TBL;
                 $updateArray = ['ordgift_status' => Giftcard::STATUS_CANCELLED];
                 $whereArray = ['smt' => 'ordgift_order_id = ?', 'vals' => [$order['order_id']]];
+                break;
+            case Order::TYPE_COURSE:
+                $table = OrderCourse::DB_TBL;
+                $updateArray = ['ordcrs_status' => OrderCourse::CANCELLED];
+                $whereArray = ['smt' => 'ordcrs_order_id = ?', 'vals' => [$order['order_id']]];
                 break;
         }
         if (!empty($table) && !$db->updateFromArray($table, $updateArray, $whereArray)) {

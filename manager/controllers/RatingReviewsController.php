@@ -17,15 +17,22 @@ class RatingReviewsController extends AdminBaseController
     public function __construct(string $action)
     {
         parent::__construct($action);
-        $this->objPrivilege->canViewTeacherReviews();
     }
 
     /**
      * Render Search Form
      */
-    public function index()
+    public function index($type = 0)
     {
-        $this->set("search", $this->getSearchForm($this->siteLangId));
+        if ($type == AppConstant::COURSE) {
+            $this->objPrivilege->canViewCourseReviews();
+        } else {
+            $this->objPrivilege->canViewTeacherReviews();
+        }
+        $frm = $this->getSearchForm($this->siteLangId);
+        $frm->fill(['ratrev_type' => $type]);
+        $this->set("search", $frm);
+        $this->set('type', $type);
         $this->_template->render();
     }
 
@@ -34,6 +41,13 @@ class RatingReviewsController extends AdminBaseController
      */
     public function search()
     {
+        if (FatApp::getPostedData('ratrev_type') == AppConstant::COURSE) {
+            $this->objPrivilege->canViewCourseReviews();
+            $canEdit = $this->objPrivilege->canEditCourseReviews(true);
+        } else {
+            $this->objPrivilege->canViewTeacherReviews();
+            $canEdit = $this->objPrivilege->canEditTeacherReviews(true);
+        }
         $srchFrm = $this->getSearchForm();
         if (!$post = $srchFrm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($srchFrm->getValidationErrors()));
@@ -66,13 +80,18 @@ class RatingReviewsController extends AdminBaseController
         if (isset($post['ratrev_status']) && $post['ratrev_status'] != '') {
             $srch->addCondition('ratrev_status', '=', $post['ratrev_status']);
         }
+        if (isset($post['ratrev_type']) && $post['ratrev_type'] > 0) {
+            $srch->addCondition('ratrev_type', '=', $post['ratrev_type']);
+        } else {
+            $srch->addCondition('ratrev_type', '!=', AppConstant::COURSE);
+        }
         $srch->addOrder('ratrev_status', 'ASC');
         $srch->addOrder('ratrev_id', 'DESC');
         $srch->setPageNumber($post['pageno']);
         $srch->setPageSize(FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $this->sets([
             'reviews' => FatApp::getDb()->fetchAll($srch->getResultSet()),
-            'canEdit' => $this->objPrivilege->canEditTeacherReviews(true),
+            'canEdit' => $canEdit,
             'recordCount' => $srch->recordCount(),
             'pageCount' => $srch->pages(),
             'postedData' => $post
@@ -84,13 +103,20 @@ class RatingReviewsController extends AdminBaseController
      * Render Rating Reviews Form
      */
     public function form()
-    {
-        $this->objPrivilege->canEditTeacherReviews();
+    {   
         $ratrevId = FatApp::getPostedData('ratrevId', FatUtility::VAR_INT, 0);
         $ratingReview = new RatingReview(0, 0, $ratrevId);
         $data = $ratingReview->getDetail();
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            $this->objPrivilege->canEditCourseReviews();
+            $course = new Course(FatUtility::int($data['ratrev_type_id']));
+            $course = $course->get();
+            $data['course_name'] = $course['course_title'] ?? '';
+        } else {
+            $this->objPrivilege->canEditTeacherReviews();
         }
         $frm = $this->getForm();
         $frm->fill($data);
@@ -103,7 +129,6 @@ class RatingReviewsController extends AdminBaseController
      */
     public function setup()
     {
-        $this->objPrivilege->canEditTeacherReviews();
         $frm = $this->getForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
@@ -113,12 +138,21 @@ class RatingReviewsController extends AdminBaseController
         if (empty($data)) {
             FatUtility::dieJsonError($this->str_invalid_request);
         }
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            $this->objPrivilege->canEditCourseReviews();
+        } else {
+            $this->objPrivilege->canEditTeacherReviews();
+        }
+        
         $ratingReview->assignValues(['ratrev_status' => $post['ratrev_status']]);
         if (!$ratingReview->save()) {
             FatUtility::dieJsonError($ratingReview->getError());
         }
         $teacherId = FatUtility::int($data['ratrev_teacher_id']);
         (new TeacherStat($teacherId))->setRatingReviewCount();
+        if ($data['ratrev_type'] == AppConstant::COURSE) {
+            (new Course($data['ratrev_type_id']))->setRatingReviewCount();
+        }
         if ($data['ratrev_teacher_notify'] == AppConstant::NO && $post['ratrev_status'] == RatingReview::STATUS_APPROVED) {
             $ratingReview->sendMailToTeacher($data);
         }
@@ -142,8 +176,9 @@ class RatingReviewsController extends AdminBaseController
         $frm->addSelectBox(Label::getLabel('LBL_STATUS'), 'ratrev_status', RatingReview::getStatues(), '', [], Label::getLabel('LBL_SELECT'));
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $frm->addHiddenField('', 'pageno', 1);
+        $frm->addHiddenField('', 'ratrev_type');
         $submit = $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SEARCH'));
-        $submit->attachField($frm->addButton("", "btn_clear", "Clear", ['onclick' => 'clearSearch();']));
+        $submit->attachField($frm->addButton("", "btn_clear", Label::getLabel('LBL_CLEAR'), ['onclick' => 'clearSearch();']));
         return $frm;
     }
 

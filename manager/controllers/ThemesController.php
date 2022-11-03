@@ -157,7 +157,7 @@ class ThemesController extends AdminBaseController
     /**
      * Function to show preview of the selected theme
      *
-     * @param integer $themeId
+     * @param int $themeId
      *
      * @return void
      */

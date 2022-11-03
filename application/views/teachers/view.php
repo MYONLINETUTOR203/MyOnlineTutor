@@ -56,7 +56,7 @@ if ($siteUserId == $teacher['user_id']) {
                                 <h4><?php echo $teacher['user_first_name'] . ' ' . $teacher['user_last_name']; ?></h4>
                                 <div class="flag">
                                     <?php if ($teacher['user_country_id'] > 0) { ?>
-                                    <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.svg'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" style="border: 1px solid #000;" />
+                                        <img src="<?php echo CONF_WEBROOT_FRONTEND . 'flags/' . strtolower($teacher['user_country_code']) . '.svg'; ?>" alt="<?php echo $teacher['user_country_name']; ?>" style="border: 1px solid #000;" />
                                     <?php } ?>
                                 </div>
                             </div>
@@ -82,6 +82,7 @@ if ($siteUserId == $teacher['user_id']) {
                                 <div class="info-tag list-count">
                                     <div class="total-count"><span class="value"><?php echo $teacher['testat_students']; ?></span><?php echo Label::getLabel('LBL_Students') ?></div>
                                     <div class="total-count"><span class="value"><?php echo $teacher['testat_lessons'] + $teacher['testat_classes']; ?></span><?php echo Label::getLabel('LBL_SESSIONS'); ?></div>
+                                    <div class="total-count"><span class="value"><?php echo $teacher['courses']; ?></span><?php echo Label::getLabel('LBL_COURSES'); ?></div>
                                 </div>
                             </div>
                             <div class="har-rate"><?php echo Label::getLabel('LBL_TEACHER_PRICING'); ?><b> <?php echo MyUtility::formatMoney($teacher['testat_minprice']); ?> - <?php echo MyUtility::formatMoney($teacher['testat_maxprice']); ?></b></div>
@@ -340,6 +341,25 @@ if ($siteUserId == $teacher['user_id']) {
                                 </div>
                                 <div id="listing-reviews" class="reviews-wrapper__body"></div>
                             </div>
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if ($moreCourses) { ?>
+                    <div class="panel-cover">
+                        <div class="panel-cover__head panel__head-trigger panel__head-trigger-js">
+                            <h3>
+                                <?php
+                                echo Label::getLabel('LBL_COURSES');
+                                ?>
+                            </h3>
+                        </div>
+                        <div class="panel-cover__body panel__body-target panel__body-target-js">
+                            <?php echo $this->includeTemplate('teachers/courses.php', [
+                                'moreCourses' => $moreCourses,
+                                'checkoutForm' => $checkoutForm,
+                                'siteLangId' => $siteLangId,
+                                'siteUserId' => $siteUserId,
+                            ]); ?>
                         </div>
                     </div>
                 <?php } ?>

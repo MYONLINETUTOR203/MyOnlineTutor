@@ -8,10 +8,10 @@ $(document).ready(function () {
         $(frm.page).val(page);
         search(frm);
     };
-    search = function (form) {
+    search = function (form, process = true) {
         fcom.ajax(fcom.makeUrl('Categories', 'search'), fcom.frmData(form), function (response) {
             $('#listing').html(response);
-        });
+        }, {process: process});
     };
     clearSearch = function () {
         document.categorySearch.reset();
@@ -30,31 +30,31 @@ $(document).ready(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('Categories', 'setup'), fcom.frmData(frm), function (res) {
-            search(document.categorySearch);
+            search(document.categorySearch, false);
             let element = $('.tabs_nav a.active').parent().next('li');
             if (element.length > 0) {
                 let langId = element.find('a').attr('data-id');
-                langForm(res.cateId, langId);
+                langForm(res.cateId, langId, false);
                 return;
             }
             $(document).trigger('close.facebox');
         });
     };
-    langForm = function (cateId, langId) {
+    langForm = function (cateId, langId, process = true) {
         fcom.ajax(fcom.makeUrl('Categories', 'langForm', [cateId, langId]), '', function (response) {
             $.facebox(response);
-        });
+        }, {process: process});
     };
     langSetup = function (frm) {
         if (!$(frm).validate()) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('Categories', 'langSetup'), fcom.frmData(frm), function (res) {
-            search(document.categorySearch);
+            search(document.categorySearch, false);
             let element = $('.tabs_nav a.active').parent().next('li');
             if (element.length > 0) {
                 let langId = element.find('a').attr('data-id');
-                langForm(res.cateId, langId);
+                langForm(res.cateId, langId, false);
                 return;
             }
             $(document).trigger('close.facebox');

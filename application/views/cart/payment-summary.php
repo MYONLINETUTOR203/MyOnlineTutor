@@ -135,6 +135,16 @@ $steps = Cart::getSteps();
                                 <div><b><?php echo MyUtility::formatMoney($package['grpcls_amount']); ?></b></div>
                             </div>
                         <?php } ?>
+                        <?php foreach ($cartItems[Cart::COURSE] as $key => $course) { ?>
+                            <div class="payment__row">
+                                <div>
+                                    <b><?php echo $course['course_title']; ?></b>
+                                    <p><?php echo str_replace('{itemprice}', CourseUtility::formatMoney($course['course_price']), Label::getLabel('LBL_ITEM_PRICE:_{itemprice}/COURSE')); ?></p>
+                                    <p><?php echo Label::getLabel('LBL_LANGUAGE') . ' : ' . $course['course_clang_name']; ?> </p>
+                                </div>
+                                <div><b><?php echo CourseUtility::formatMoney($course['course_price']); ?></b></div>
+                            </div>
+                        <?php } ?>
                         <?php if (!empty($appliedCoupon['coupon_id'])) { ?>
                             <div class="payment__row">
                                 <div><b><?php echo Label::getLabel('LBL_COUPON_DISCOUNT'); ?></b></div>
@@ -143,7 +153,7 @@ $steps = Cart::getSteps();
                         <?php } ?>
                         <?php if ($addAndPay == AppConstant::YES && $walletBalance > 0 && $walletBalance < $cartNetAmount) { ?>
                             <div class="payment__row">
-                                <div><b><?php echo Label::getLabel('LBL_WALLET_DETUCTION'); ?></b></div>
+                                <div><b><?php echo Label::getLabel('LBL_WALLET_DEDUCTION'); ?></b></div>
                                 <div><b><?php echo '-' . MyUtility::formatMoney($walletBalance); ?></b></div>
                             </div>
                             <div class="payment__row">

@@ -424,3 +424,11 @@ $(document).ready(function () {
     });
 });
 
+function resetEditorHeight() {
+    setTimeout(function () {
+        $('.editor-content').each(function (i, div) {
+            var height = $(div).children('iframe').contents().height() + 20;
+            $(div).css('height', height + 'px');
+        });
+    }, 100);
+}

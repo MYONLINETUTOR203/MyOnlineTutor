@@ -6,6 +6,7 @@ $arrFlds = [
     'teacher_name' => Label::getLabel('LBL_TEACHER'),
     'testat_lessons' => Label::getLabel('LBL_LESSONS'),
     'testat_classes' => Label::getLabel('LBL_CLASSES'),
+    'testat_courses' => Label::getLabel('LBL_COURSES'),
     'testat_students' => Label::getLabel('LBL_STUDENTS'),
     'testat_reviewes' => Label::getLabel('LBL_REVIEWES'),
     'testat_ratings' => Label::getLabel('LBL_RATINGS')

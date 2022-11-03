@@ -7,14 +7,21 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
         fcom.ajax(fcom.makeUrl('Home', 'topClassLanguages'), {interval: interval}, function (response) {
             $('.topClassLanguage').html(response);
             $('.languageDurationType-js').text(intervalText);
-        });
+        }, {process: false});
     };
     getTopLessonLanguage = function (interval, intervalText) {
         $('.topLessonLanguage').html('<li>' + fcom.getLoader() + '</li>');
         fcom.ajax(fcom.makeUrl('Home', 'topLessonLanguages'), {interval: interval}, function (response) {
             $('.topLessonLanguage').html(response);
             $('.languageDurationType-js2').text(intervalText);
-        });
+        }, {process: false});
+    };
+    getTopCourseCategories = function (interval, intervalText) {
+        $('.topCourseCategories').html('<li>' + fcom.getLoader() + '</li>');
+        fcom.ajax(fcom.makeUrl('Home', 'topCourseCategories'), {interval: interval}, function (response) {
+            $('.topCourseCategories').html(response);
+            $('.languageDurationType-js2').text(intervalText);
+        }, {process: false});
     };
     getStatisticsData = function () {
         $("#lessonEarning--js").html(fcom.getLoader());
@@ -22,7 +29,7 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
             chartData = response;
             $("#lessonEarning--js").html('');
             callChart('lessonEarning--js', Object.keys(chartData.lessonData), Object.values(chartData.lessonData), position);
-        });
+        }, {process: false});
     };
     getGoogleAnalytics = function () {
         $("#visitsGraph").html(fcom.getLoader());
@@ -55,7 +62,7 @@ var position = (layoutDirection != 'rtl') ? 'start' : 'end';
             };
             var trafic = new google.visualization.PieChart(document.getElementById('piechart'));
             trafic.draw(dataVisits, optionVisits);
-        });
+        }, {process: false});
     };
     regenerateStat = function () {
         fcom.updateWithAjax(fcom.makeUrl('salesReport', 'regenerate'), '', function (t) {
@@ -71,6 +78,7 @@ $(document).ready(function () {
     getGoogleAnalytics();
     getTopClassLanguage();
     getTopLessonLanguage();
+    getTopCourseCategories();
     $('.carousel--oneforth-js').slick(getSlickSliderSettings(4));
     $('.statistics-nav-js li a').click(function () {
         $('.statistics-tab-js .tabs_panel').hide();
@@ -84,6 +92,8 @@ $(document).ready(function () {
             } else if (activeTab == 'tabs_2') {
                 callChart('classEarning--js', Object.keys(chartData.classData), Object.values(chartData.classData), position);
             } else if (activeTab == 'tabs_3') {
+                callChart('courseEarning--js', Object.keys(chartData.courseData), Object.values(chartData.courseData), position);
+            } else if (activeTab == 'tabs_4') {
                 callChart('userSignups--js', Object.keys(chartData.userData), Object.values(chartData.userData), position);
             }
         }

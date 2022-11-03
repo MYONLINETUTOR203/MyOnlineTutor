@@ -32,6 +32,8 @@ class SaleStat extends FatModel
         $saleData = $this->generateLessonsNetSale($date, $saleData);
         $saleData = $this->generateClassesReport($date, $saleData);
         $saleData = $this->generateClassesNetSale($date, $saleData);
+        $saleData = $this->generateCoursesReport($date, $saleData);
+        $saleData = $this->generateCoursesNetSale($date, $saleData);
         $db = FatApp::getDb();
         $db->startTransaction();
         foreach ($saleData as $sale) {
@@ -58,7 +60,7 @@ class SaleStat extends FatModel
                  
     }
 
-      /**
+    /**
      * Generate Lessons Report
      * 
      * @return array
@@ -175,4 +177,63 @@ class SaleStat extends FatModel
         return $data;
     }
 
+    /**
+     * Generate Courses Report
+     * 
+     * @return array
+     */
+    private function generateCoursesReport(string $date, array $data): array
+    {
+        $srch = new SearchBase(Order::DB_TBL, 'orders');
+        $srch->joinTable(OrderCourse::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'ordcrs');
+        $srch->addCondition('mysql_func_DATE(ordcrs.ordcrs_updated)', ">=", $date, 'AND', true);
+        $srch->addDirectCondition('((ordcrs.ordcrs_status = ' . OrderCourse::COMPLETED . ' AND ordcrs_teacher_paid IS NOT NULL) OR ( ordcrs.ordcrs_status = ' . OrderCourse::CANCELLED . ') )');
+        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+        $srch->addMultipleFields([
+            'DATE(ordcrs.ordcrs_updated) AS slstat_date',
+            'SUM(IFNULL(ordcrs.ordcrs_refund, 0)) AS slstat_crs_refund',
+            'SUM(IFNULL(ordcrs.ordcrs_earnings, 0)) AS slstat_crs_earnings',
+            'SUM(IFNULL(ordcrs.ordcrs_teacher_paid, 0)) AS slstat_crs_teacher_paid',
+        ]);
+        $srch->addGroupBy('DATE(ordcrs.ordcrs_updated)');
+        $srch->addOrder('ordcrs.ordcrs_updated');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();
+        while ($row = FatApp::getDb()->fetch($rs)) {
+            $data[$row['slstat_date']] = [
+                'slstat_date' => $row['slstat_date'],
+                'slstat_crs_refund' => $row['slstat_crs_refund'],
+                'slstat_crs_earnings' => $row['slstat_crs_earnings'],
+                'slstat_crs_teacher_paid' => $row['slstat_crs_teacher_paid'],
+            ];
+        }
+        return $data;
+    }
+
+    /**
+     * Generate Courses NetSale
+     */
+    public function generateCoursesNetSale(string $date, array $data): array
+    {
+        $srch = new SearchBase(Order::DB_TBL, 'orders');
+        $srch->addMultipleFields([
+            'DATE(orders.order_addedon) AS slstat_date',
+            'SUM(orders.order_net_amount) AS slstat_crs_sales',
+            'SUM(order_discount_value) AS slstat_crs_discount'
+        ]);
+        $srch->addCondition('orders.order_type', 'IN', [Order::TYPE_COURSE]);
+        $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('mysql_func_DATE(orders.order_addedon)', ">=", $date, 'AND', true);
+        $srch->addGroupBy('DATE(orders.order_addedon)');
+        $srch->doNotCalculateRecords();
+        $srch->doNotLimitRecords();
+        $rs = $srch->getResultSet();
+        while ($row = FatApp::getDb()->fetch($rs)) {
+            $data[$row['slstat_date']]['slstat_date'] = $row['slstat_date'];
+            $data[$row['slstat_date']]['slstat_crs_sales'] = $row['slstat_crs_sales'] ?? 0;
+            $data[$row['slstat_date']]['slstat_crs_discount'] = $row['slstat_crs_discount'] ?? 0;
+        }
+        return $data;
+    }
 }
