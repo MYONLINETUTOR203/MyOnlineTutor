@@ -229,7 +229,7 @@ if ($siteUserId == $teacher['user_id']) {
                             <h3><?php echo Label::getLabel('LBL_GROUP_CLASSES'); ?></h3>
                         </div>
                         <div class="panel-cover__body panel__body-target panel__body-target-js">
-                            <div class="slider slider--onethird slider-onethird-js">
+                            <div class="slider author-slider slider--onethird slider-onethird-js">
                                 <?php
                                 foreach ($classes as $class) {
                                     $classData = ['class' => $class, 'siteUserId' => $siteUserId, 'bookingBefore' => $bookingBefore, 'cardClass' => 'card-class-cover'];

@@ -488,7 +488,7 @@ $view-panel: 'view-panel';
 $class-list: 'class-list';
 
 .#{$class-list} {position: relative; width:100%; counter-reset: my-sec-counter;
-    &__item{position: relative; border: 1px solid theme('color.gray.200'); border-radius: theme('radius.0'); padding: theme('padding.6'); padding-left: theme('padding.20'); margin-top: theme('margin.4');
+    &__item{position: relative; border: 1px solid theme('color.gray.200'); border-radius: theme('radius.0'); padding: theme('padding.6'); padding-#{theme('direction.left','value')}: theme('padding.20'); margin-top: theme('margin.4');
        
        
 

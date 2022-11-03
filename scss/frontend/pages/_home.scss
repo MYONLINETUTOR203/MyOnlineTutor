@@ -51,7 +51,7 @@ $slideshow: "slideshow";
     color: #111;
     transform: translateY(-50%);
     z-index: 2;
-    padding: theme('padding.14') theme('padding.12');
+    padding: theme('padding.14') theme('padding.14');
     text-align: center;
     backdrop-filter: saturate(180%) blur(20px);
     background: rgba(255,255,255,0.7);
@@ -81,10 +81,10 @@ $slideshow: "slideshow";
     }
 
     h1{
-        font-size: 2rem;
+        font-size:1.9rem;
         font-weight:theme('font.weight.bold');
-        line-height: 3rem;
-        margin-bottom: theme('margin.3');
+        line-height: 2.8rem;
+        margin-bottom: theme('margin.2');
         @media(max-width: theme('breakpoints.xl','value')) {
             &{
                 font-size: 1.4rem;
@@ -93,18 +93,18 @@ $slideshow: "slideshow";
         }
         @media(max-width: theme('breakpoints.md','value')) {
             &{
-                font-size: 24px;
-                line-height: 40px;
-                font-weight: 600;
-                padding: 0 theme('padding.5');
+                font-size: 20px;
+                line-height:1.8;
+                font-weight:700;
+              
             }
         }
     }
     p{
-        font-size: theme('font.size.p');
+        font-size: 14px;
         color: inherit;
         line-height: 30px;
-        margin-bottom: theme('padding.14');
+        margin-bottom: theme('padding.6');
         @media(max-width: theme('breakpoints.xl','value')) {
             margin-bottom: theme('margin.6');
             font-size: 1.1rem;
@@ -340,13 +340,13 @@ $service: 'service';
     }
 }
 
-.section--services {
-    .section__body{
-        @media (max-width:theme('breakpoints.md','value')){
-            padding: 0 theme('padding.8');
-        }
-    }
-}
+// .section--services {
+//     .section__body{
+//         @media (max-width:theme('breakpoints.md','value')){
+//             padding: 0 theme('padding.8');
+//         }
+//     }
+// }
 
 .bg-gray {
     background: #F6F6F6;
@@ -531,12 +531,12 @@ $tile: 'tile';
         }
     }
 
-    @media(max-width: theme('breakpoints.md','value')){
+    @media(max-width: theme('breakpoints.xl','value')){
         box-shadow: none;
         margin-bottom: 0;
         padding: theme('padding.6');
         border: 1px solid theme('color.gray.200');
-        min-width: 200px;
+        min-width: 300px;max-width: 300px; height: 100%;
     }
     .card__row--action {
         padding: 0;
@@ -553,13 +553,13 @@ $tile: 'tile';
 }
 
 .teacher-wrapper{
-    @media(max-width: theme('breakpoints.md','value')){
+    @media(max-width: theme('breakpoints.xl','value')){
         .row{
             flex-wrap: nowrap;
             overflow: auto;
         }
         [class*="col-"]{
-            padding-#{theme('direction.right','value')}: 0;
+            padding-#{theme('direction.right','value')}: 0; max-width: inherit; flex: 0;
             &:last-child{
                 margin-#{theme('direction.right','value')}: theme('margin.5');
             }
@@ -886,87 +886,95 @@ $card: 'card';
     }
 }
 
-.slick-next{
-    #{theme('direction.right','value')}: -170px;
-}
-.slick-prev{
-    #{theme('direction.right','value')}: -170px;
-}
 
-.home.home-index .slick-arrow{
-    background: transparent;
-    box-shadow: none;
-    &::before{
-        width: 25px;
-        height: 25px;
-     
-    }
-}
+// .home.home-index .slick-arrow{
+//     background: transparent;
+//     box-shadow: none;
+   
 
-.quote-slider{
+//     &.slick-next:before{ width: 24px;  height: 24px; margin-#{theme('direction.left','value')}:-18px;}
+//     &.slick-prev:before{width: 24px;  height: 24px; margin-#{theme('direction.right','value')}:-18px;}
+
+// }
+
+.quote-slider {
     max-width: 1030px;
     margin: 0 auto;
-    
-    .slider{
+
+    .slider {
 
 
-        @media(min-width:theme('breakpoints.xxxl','value')){
-            .slick-next{
+        @media(min-width:theme('breakpoints.xxxl', 'value')) {
+            .slick-next {
                 #{theme('direction.right','value')}: -10%;
 
-            }.slick-prev{
-                #{theme('direction.left','value')}: -10%;
+                &:before {
+                    border-color: #fff;
+                }
+
             }
-            .slick-arrow{
-                &::before{
-                   
-                    border-color: theme('color.white');
+
+            .slick-prev {
+                #{theme('direction.left','value')}: -10%;
+
+                &:before {
+                    border-color: #fff;
                 }
             }
         }
 
 
-        @media(min-width:theme('breakpoints.xl','value')) and (max-width:theme('breakpoints.xxxl','value')){
-            .slick-next{
+        @media(min-width:theme('breakpoints.xl', 'value')) and (max-width:theme('breakpoints.xxxl', 'value')) {
+            .slick-next {
                 #{theme('direction.right','value')}: -5%;
 
-            }.slick-prev{
+                &:before {
+                    border-color: #fff;
+                }
+
+            }
+
+            .slick-prev {
                 #{theme('direction.left','value')}: -5%;
+
+                &:before {
+                    border-color: #fff;
+                }
             }
         }
 
-        .slider__item{
+        .slider__item {
             padding: 0 theme('padding.4');
         }
     }
 
     .quote {
-        
+
         padding: theme('padding.12') 0;
 
-        @media(min-width:theme('breakpoints.md','value')){
+        @media(min-width:theme('breakpoints.md', 'value')) {
             display: flex;
         }
 
-        @media(max-width:theme('breakpoints.md','value')){
+        @media(max-width:theme('breakpoints.md', 'value')) {
             text-align: center;
         }
 
-        .quote__media{
+        .quote__media {
             position: relative;
 
-            @media(min-width:theme('breakpoints.md','value')){
+            @media(min-width:theme('breakpoints.md', 'value')) {
                 min-width: 260px;
             }
 
-            @media(max-width:theme('breakpoints.md','value')){
+            @media(max-width:theme('breakpoints.md', 'value')) {
                 margin-bottom: theme('margin.6');
                 width: 140px;
                 height: 140px;
                 margin: 0 auto theme('margin.6');
             }
 
-            .quote__box{
+            .quote__box {
                 width: 80px;
                 height: 80px;
                 display: flex;
@@ -976,35 +984,38 @@ $card: 'card';
                 position: absolute;
                 top: -18px;
                 #{theme('direction.right','value')}: -18px;
-                svg{
+
+                svg {
                     fill: theme('color.white')
                 }
 
-                @media(max-width:theme('breakpoints.md','value')){
+                @media(max-width:theme('breakpoints.md', 'value')) {
                     width: 40px;
                     height: 40px;
-                    svg{
+
+                    svg {
                         max-width: 18px;
                     }
                 }
             }
-    
+
         }
-        .quote__content{
+
+        .quote__content {
             position: relative;
 
-            @media(min-width:theme('breakpoints.md','value')){
+            @media(min-width:theme('breakpoints.md', 'value')) {
                 width: calc(100% - 260px);
                 margin-#{theme('direction.left','value')}: theme('padding.26');
             }
 
-            p{
+            p {
                 font-size: theme('font.size.h4');
                 line-height: 3rem;
                 margin-bottom: theme('margin.20');
                 color: inherit;
 
-                @media(max-width:theme('breakpoints.md','value')){
+                @media(max-width:theme('breakpoints.md', 'value')) {
                     margin-bottom: theme('margin.14');
                     font-size: 1.1rem;
                     line-height: 2.3rem;
@@ -1015,20 +1026,20 @@ $card: 'card';
                 position: absolute;
                 right: 0;
                 bottom: -26px;
-                svg{
+
+                svg {
                     opacity: 0.07;
                     fill: theme('color.white');
                 }
 
-                @media(max-width:theme('breakpoints.md','value')){
-                    bottom: 30px; 
+                @media(max-width:theme('breakpoints.md', 'value')) {
+                    bottom: 30px;
                 }
             }
         }
-       
+
     }
 }
-
 .quote-info{
     padding-#{theme('direction.left','value')}: theme('padding.5');
     position: relative;
@@ -1074,7 +1085,7 @@ $card: 'card';
     padding-bottom: theme('padding.14');
 
     @media(max-width: theme('breakpoints.md','value')){
-        padding-bottom: theme('padding.12');
+        padding-bottom: 0;
     }
     .step__content{
         padding: theme('padding.8');
@@ -1386,27 +1397,8 @@ $card: 'card';
             }
         }
     }
-    .slick-arrow{
-        top: calc(50% - 10rem); background-color: theme('color.white');
-    }
-    .slick-arrow.slick-next{
-        color: theme('color.black');
-        @media(min-width: theme('breakpoints.xl','value')){
-            &:before{border-color: currentColor;}
-        }
-        // @media(min-width: theme('breakpoints.xl','value')){
-        //     &:before{border-color: currentColor; width: 16px; height: 16px; margin-top: -8px; margin-left: -6px;}
-        // }
-    }
-    .slick-arrow.slick-prev{
-        color: theme('color.black');
-        @media(min-width: theme('breakpoints.xl','value')){
-            &:before{border-color: currentColor;}
-        }
-        // @media(min-width: theme('breakpoints.xl','value')){
-        //     &:before{border-color: currentColor; width: 16px; height: 16px; margin-top: -8px; margin-left: -6px;}
-        // }
-    }
+
+   
 }
 
 .slider--onehalf {
@@ -1419,47 +1411,7 @@ $card: 'card';
     }
 }
 
-@media(max-width: theme('breakpoints.xl','value')){
-    
-    .slick-arrow{
-        position: absolute;
-        width: 3rem;
-        height: 3rem;
-        background-color: theme('color.white');
-        font-size: 0;
-        z-index: 1;
-        border: none;
-        transition: all 0.3s;
-        color: theme('color.primary');
-        border-radius: 0;
-        box-shadow: 0 0 10px rgba(0,0,0,0.10);
-    }
 
-    .slick-arrow.slick-prev:before {
-        position: absolute;
-        left: 70%;
-        top: 67%;
-        width: 14px;
-        height: 14px;
-        border-top: 3px solid currentColor;
-        border-#{theme('direction.left','value')}: 3px solid currentColor;
-        content: "";
-        transform: translate(-50%, -50%) rotate(-45deg);
-    }
-    .slick-arrow.slick-next:before {
-        position: absolute;
-        left: 70%;
-        top: 67%;
-        width: 14px;
-        height: 14px;
-        border-top: 3px solid currentColor;
-        border-#{theme('direction.left','value')}: 3px solid currentColor;
-        content: "";
-        transform: translate(-50%, -50%) rotate(135deg);
-        
-    }
-
-}
 
 
 .step-tabs .slick-track{transform: translate3d(0,0,0)!important;}
@@ -1468,7 +1420,7 @@ $card: 'card';
 .section--upcoming-class{
     &{
         @media(min-width: theme('breakpoints.xl','value')){
-            .slider--onethird  .slick-arrow{background-color: transparent; top: 50%;}
+            
             .slider--onethird  .slick-next{
                 #{theme('direction.right','value')}: -4%;
             }.slider--onethird  .slick-prev{

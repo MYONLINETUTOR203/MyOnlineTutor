@@ -1,15 +1,12 @@
 $social-button: "social-button";
 .#{$social-button} {
-    border: 1px solid transparent;
+    
     display: inline-flex;
     align-items: center;
     padding: theme('padding.1') theme('padding.2');
-    background-color: theme('color.white');
-    border-radius:3px;
-    color: theme('color.black');
-    font-weight: theme('font.weight.medium');
-    box-shadow:0 1px 2px 1px #d4d4d4;
-
+    background-color: theme('color.white'); border-radius:3px;
+    color: theme('color.black'); font-weight: theme('font.weight.medium');border:1px solid theme('color.gray.400');
+   
 
     &__label {
         padding: 0 theme('padding.6');
@@ -108,9 +105,7 @@ $social-button: "social-button";
         background-color: #eeeeee;
     }
     @media (min-width: theme('breakpoints.xl', 'value')) {
-        &:hover{
-            box-shadow:0 2px 2px 2px #ddd;
-        }
+        &:hover{box-shadow:0 4px 3px 1px rgba(0,0,0,.10); border-color: theme('color.gray.800');}
     }
 
 }

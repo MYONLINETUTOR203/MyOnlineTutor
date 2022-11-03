@@ -138,7 +138,7 @@ if (!empty($popularLanguages)) {
                                     </div>
                                     <div class="tile__body">
                                         <a class="tile__title" href="<?php echo MyUtility::makeUrl('Teachers', 'view', [$teacher['user_username']]); ?>">
-                                            <h4><?php echo $teacher['full_name']; ?></h4>
+                                            <h4><?php echo CommonHelper::truncateCharacters($teacher['full_name'], 60); ?></h4>
                                         </a>
                                         <div class="info-wrapper">
                                             <div class="info-tag location">
@@ -167,9 +167,15 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php }if (!empty($browseTutorPage)) { ?>
+    <?php
+}
+if (!empty($browseTutorPage)) {
+    ?>
     <?php echo html_entity_decode($browseTutorPage); ?>
-<?php }if (count($classes) > 0) { ?>
+    <?php
+}
+if (count($classes) > 0) {
+    ?>
     <section class="section section--gray section--upcoming-class">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
@@ -200,7 +206,10 @@ if (!empty($popularLanguages)) {
             </div>
         </div>
     </section>
-<?php } if ($testmonialList) { ?>
+    <?php
+}
+if ($testmonialList) {
+    ?>
     <section class="section section--quote">
         <div class="container container--narrow">
             <div class="quote-slider">
