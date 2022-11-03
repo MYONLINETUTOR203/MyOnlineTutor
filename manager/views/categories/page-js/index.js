@@ -18,11 +18,19 @@ $(document).ready(function () {
         search(document.categorySearch);
     };
     categoryForm = function (categoryId) {
-        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId]), '', function (response) {
+        type = document.categorySearch.cate_type.value;
+        fcom.ajax(fcom.makeUrl('Categories', 'form', [categoryId, type]), '', function (response) {
             $.facebox(response, 'faceboxWidth');
             if (categoryId < 1 && document.categorySearch.parent_id.value > 0) {
                 document.frmCategory.cate_parent.value = document.categorySearch.parent_id.value;
+                document.frmCategory.cate_type.value = type;
+                console.log(type);
             }
+        });
+    };
+    getCategories = function (type) {
+        fcom.ajax(fcom.makeUrl('Categories', 'get'), { type }, function (response) {
+            $('select[name="cate_parent"]').html(response);
         });
     };
     setup = function (frm) {

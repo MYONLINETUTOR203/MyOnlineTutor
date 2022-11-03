@@ -5,8 +5,11 @@ $frm->developerTags['fld_default_col'] = 12;
 $frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->setFormTagAttribute('onsubmit', 'setup(this); return(false);');
 $id = $frm->getField('cate_id');
+$type = $frm->getField('cate_type');
 if ($id->value > 0) {
-    $frm->getField('cate_type')->setFieldTagAttribute('disabled', 'disabled');
+    $type->setFieldTagAttribute('disabled', 'disabled');
+} else {
+    $type->addFieldTagAttribute('onchange', 'getCategories(this.value);');
 }
 ?>
 <section class="section">
