@@ -9,7 +9,6 @@ body {
   z-index: 11; }
   @media (min-width: 576px) {
     .header {
-      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
@@ -251,7 +250,6 @@ p {
 
 @media (min-width: 1199px) {
   .flex-layout__sticky {
-    position: -webkit-sticky;
     position: sticky;
     top: 6rem; } }
 
@@ -541,20 +539,6 @@ p {
     .attempt-list ul li:hover .attempt-action {
       color: var(--color-primary);
       border-color: var(--color-primary); } }
-  .attempt-list ul li.is-current .attempt-action {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    font-weight: var(--font-weight-medium); }
-    .attempt-list ul li.is-current .attempt-action:before {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      content: "";
-      background-color: currentColor;
-      pointer-events: none;
-      opacity: 0.04; }
   .attempt-list ul li.is-visited .attempt-action {
     border-color: #12D26B;
     color: #12D26B;
@@ -611,6 +595,10 @@ p {
       background-color: currentColor;
       pointer-events: none;
       opacity: 0.04; }
+  .attempt-list ul li.is-current .attempt-action {
+    border-width: 2px;
+    font-weight: var(--font-weight-bold);
+    border-color: currentColor; }
 
 .legend-list li {
   margin-top: var(--margin-4); }

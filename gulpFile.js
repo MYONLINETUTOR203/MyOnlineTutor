@@ -44,7 +44,7 @@ function css() {
     var quiz = src('scss/quiz*.scss')
             .pipe(sass())
             .pipe(autoprefixer())
-            .pipe(dest('application/views/css'));
+            .pipe(dest('dashboard/views/css'));
     return (common, frontend, dashboard, quiz);
 }
 

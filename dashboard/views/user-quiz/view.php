@@ -124,11 +124,12 @@ $fld = $frm->getField('ques_answer');
                     <?php foreach ($attemptedQues as $quest) {
                         $class = "";
                         $action = "onclick=\"getByQuesId('" . $data['quizat_id'] . "', '" . $quest['qulinqu_id'] . "')\";";
-                        if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
-                            $class = "is-current";
-                            $action = "";
-                        } elseif (!empty($quest['quatqu_id'])) {
+                        if (!empty($quest['quatqu_id'])) {
                             $class = "is-visited";
+                        }
+                        if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
+                            $class .= " is-current";
+                            $action = "";
                         }
                     ?>
                         <li class="<?php echo $class; ?>">
@@ -145,9 +146,6 @@ $fld = $frm->getField('ques_answer');
                 <h6><?php echo Label::getLabel('LBL_LEGEND'); ?></h6>
                 <div class="legend-list">
                     <ul>
-                        <li class="is-current"><span class="legend-list__item">
-                                <?php echo Label::getLabel('LBL_CURRENT_ACTIVE'); ?>
-                            </span></li>
                         <li class="is-answered"><span class="legend-list__item">
                                 <?php echo Label::getLabel('LBL_ANSWERED'); ?>
                             </span></li>
