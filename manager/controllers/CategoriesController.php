@@ -27,8 +27,13 @@ class CategoriesController extends AdminBaseController
      */
     public function index($cateId = 0)
     {
+        $type = 0;
+        if ($cateId > 0) {
+            $category = (new Category($cateId))->getDataById();
+            $type = $category['cate_type'];
+        }
         $frm = $this->getSearchForm();
-        $frm->fill(['parent_id' => $cateId]);
+        $frm->fill(['parent_id' => $cateId, 'cate_type' => $type]);
         $this->sets([
             "frmSearch" => $frm,
             "canEdit" => $this->objPrivilege->canEditCategories(true),
@@ -90,9 +95,9 @@ class CategoriesController extends AdminBaseController
      * Render Categories Form
      *
      * @param int $categoryId
-     * @param int $langId
+     * @param int $type
      */
-    public function form(int $categoryId)
+    public function form(int $categoryId, int $type = 0)
     {
         $this->objPrivilege->canEditCategories();
         $categoryId = FatUtility::int($categoryId);
@@ -103,8 +108,9 @@ class CategoriesController extends AdminBaseController
             if (count($data) < 1) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
+            $type = $data['cate_type'];
         }
-        $frm = $this->getForm($categoryId);
+        $frm = $this->getForm($categoryId, $type);
         $frm->fill($data);
         $this->sets([
             'frm' => $frm,
@@ -214,6 +220,13 @@ class CategoriesController extends AdminBaseController
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORD_DELETED_SUCCESSFULLY'));
     }
 
+    public function get()
+    {
+        $type = FatApp::getPostedData('type', FatUtility::VAR_INT, 0);
+        $this->set('categories', Category::getCategoriesByParentId($this->siteLangId, 0, $type, false, false));
+        $this->_template->render(false, false);
+    }
+
     /**
      * Get Form
      *
@@ -268,6 +281,7 @@ class CategoriesController extends AdminBaseController
     {
         $frm = new Form('categorySearch');
         $frm->addHiddenField('', 'parent_id', '');
+        $frm->addHiddenField('', 'cate_type', '');
         $frm->addHiddenField('', 'page', 1);
         $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         return $frm;

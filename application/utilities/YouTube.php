@@ -52,6 +52,9 @@ class YouTube extends FatUtility
         curl_close($ch);
         $youtubeData = json_decode($curlResource);
         $youtubeVals = json_decode(json_encode($youtubeData), true);
+        if (!empty($youtubeVals['error'])) {
+            return false;
+        }
         if ($youtubeVals['pageInfo']['totalResults'] < 1) {
             return false;
         }
