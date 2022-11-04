@@ -225,7 +225,7 @@ class Course extends MyAppModel
             return false;
         }
         $eligibility = $this->isEligibleForApproval();
-        if ($eligibility['course_is_eligible'] == false) {
+        if ($eligibility['course_is_eligible'] == false && $status != static::REQUEST_DECLINED) {
             $this->error = Label::getLabel('LBL_COURSE_DETAILS_ARE_INCOMPLETE._CATEGORY,_SUBCATEGORY_OR_LANGUAGE_NOT_AVAILABLE.');
             return false;
         }

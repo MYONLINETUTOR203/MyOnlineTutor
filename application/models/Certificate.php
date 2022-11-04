@@ -293,7 +293,9 @@ class Certificate extends MyAppModel
                     'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
                     'learner.user_lang_id',
                     'ordcrs_certificate_number AS cert_number',
-                    'course_duration'
+                    'course_duration',
+                    'ordcrs_course_id',
+                    'order_user_id'
                 ]);
                 $srch->addCondition('ordcrs_id', '=', $this->id);
                 $data = FatApp::getDb()->fetch($srch->getResultSet());
