@@ -96,7 +96,6 @@ class CourseRequestSearch extends YocoachSearch
             'u.user_first_name' => 'user_first_name',
             'u.user_last_name' => 'user_last_name',
             'u.user_email' => 'user_email',
-            'u.user_gender ' => 'user_gender',
         ];
     }
 
