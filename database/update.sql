@@ -1331,5 +1331,4 @@ ALTER TABLE `tbl_orders` CHANGE `order_total_amount` `order_total_amount` DECIMA
 ALTER TABLE `tbl_order_courses` CHANGE `ordcrs_amount` `ordcrs_amount` DECIMAL(20,8) NOT NULL;
 
 
-INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES
-('LBL_COURSE_PURCHASED', 1, 'Course Purchased');
+UPDATE `tbl_language_labels` SET `label_caption` = 'Course Purchased' WHERE `label_key` = 'LBL_COURSE_PURCHASED';
