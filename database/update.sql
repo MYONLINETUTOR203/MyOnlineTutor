@@ -1325,3 +1325,7 @@ UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.6.20221007' WHERE `tbl_conf
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = "LBL_PAYMENT_ON_COURSE_{orderid}";
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.7.20221028' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+
+ALTER TABLE `tbl_orders` CHANGE `order_total_amount` `order_total_amount` DECIMAL(20,8) NOT NULL, CHANGE `order_net_amount` `order_net_amount` DECIMAL(20,8) NOT NULL;
+ALTER TABLE `tbl_order_courses` CHANGE `ordcrs_amount` `ordcrs_amount` DECIMAL(20,8) NOT NULL;
