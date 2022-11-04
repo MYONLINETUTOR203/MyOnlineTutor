@@ -287,7 +287,7 @@ class CertificatesController extends AdminBaseController
         );
         $frm->addHtml(Label::getLabel('LBL_Replacement_Vars', $langId), 'certpl_vars', '');
 
-        $frm->addSelectBox(Label::getLabel('LBL_STATUS', $langId), 'certpl_status', AppConstant::getActiveArr(), '', [], '')
+        $frm->addSelectBox(Label::getLabel('LBL_STATUS', $langId), 'certpl_status', AppConstant::getActiveArr(null, $langId), '', [], '')
         ->requirements()
         ->setRequired();
 
