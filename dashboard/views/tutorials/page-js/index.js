@@ -160,11 +160,11 @@ $(function () {
         $('.sidebarPanelJs').css({ 'display': '' });
         $('.notesJs, .tabsPanelJs').show();
     };
-    notesSearch = function (frm) {
+    notesSearch = function (frm, process = true) {
         var data = fcom.frmData(frm);
         fcom.ajax(fcom.makeUrl('LectureNotes', 'search'), data, function (res) {
             $('.notesListingJs').html(res);
-        });
+        }, {process: process});
     };
     clearNotesSearch = function () {
         document.frmNotesSearch.reset();
@@ -200,7 +200,7 @@ $(function () {
         var data = fcom.frmData(frm);
         fcom.updateWithAjax(fcom.makeUrl('LectureNotes', 'setup'), data, function (res) {
             clearNotesSearch();
-            notesSearch(document.frmNotesSearch);
+            notesSearch(document.frmNotesSearch, false);
             $.facebox.close();
         });
     };

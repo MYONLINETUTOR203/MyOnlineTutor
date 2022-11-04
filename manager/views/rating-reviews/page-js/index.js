@@ -12,7 +12,7 @@ $(document).ready(function () {
                         value: item['user_id'], name: item['full_name']
                     };
                 }));
-            });
+            }, { process: false });
         },
         'select': function (item) {
             $("input[name='ratrev_user_id']").val(item.value);
@@ -40,7 +40,7 @@ $(document).ready(function () {
                         value: item['user_id'], name: item['full_name']
                     };
                 }));
-            });
+            }, { process: false });
         },
         'select': function (item) {
             $("input[name='ratrev_teacher_id']").val(item.value);

@@ -63,17 +63,17 @@ $(document).delegate('.language-js', 'change', function () {
         fcom.updateWithAjax(fcom.makeUrl('MetaTags', 'setup'), fcom.frmData(frm), function (t) {
             reloadList();
             if (t.langId > 0) {
-                editMetaTagLangForm(t.metaId, t.langId, t.metaType);
+                editMetaTagLangForm(t.metaId, t.langId, t.metaType, false);
                 return;
             }
             $(document).trigger('close.facebox');
         });
     }
-    editMetaTagLangForm = function (metaId, langId, metaType) {
+    editMetaTagLangForm = function (metaId, langId, metaType, process = true) {
         fcom.ajax(fcom.makeUrl('MetaTags', 'langForm', [metaId, langId, metaType]), '', function (t) {
             fcom.updateFaceboxContent(t);
             images(metaId, langId);
-        });
+        }, { process: process });
     };
     setupLangMetaTag = function (frm, metaType) {
         if (!$(frm).validate()){
@@ -82,7 +82,7 @@ $(document).delegate('.language-js', 'change', function () {
         fcom.updateWithAjax(fcom.makeUrl('MetaTags', 'langSetup'), fcom.frmData(frm), function (t) {
             reloadList();
             if (t.langId > 0) {
-                editMetaTagLangForm(t.metaId, t.langId, metaType);
+                editMetaTagLangForm(t.metaId, t.langId, metaType, false);
                 return;
             }
             $(document).trigger('close.facebox');

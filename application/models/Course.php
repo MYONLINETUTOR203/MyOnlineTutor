@@ -415,7 +415,6 @@ class Course extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
-
         $this->setFldValue('course_id', $this->getMainTableRecordId());
         $this->setFldValue('course_slug', $this->getSlug($data['course_title']));
         if (!$this->save()) {
@@ -448,10 +447,10 @@ class Course extends MyAppModel
     private function getSlug(string $title)
     {
         $title = MyUtility::createSlug($title);
-        $srch = new SearchBase(static::DB_TBL_LANG);
-        $srch->addCondition('course_title', '=', $title);
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->addCondition('course_slug', '=', $title);
         $srch->doNotCalculateRecords();
-        $srch->addFld('course_title');
+        $srch->addFld('course_slug');
         $srch->setPageSize(1);
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
             return CommonHelper::seoUrl($title) . '-' . $this->getMainTableRecordId();
