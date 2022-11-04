@@ -438,6 +438,11 @@ class CoursesController extends DashboardController
         if ($post['course_price'] > 0) {
             $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
         }
+        if ($price < 1) {
+            $label = Label::getLabel('LBL_COURSE_PRICE_LESS_THAN_1_{currency}');
+            $label = str_replace('{currency}', MyUtility::getSystemCurrency()['currency_code'], $label);
+            FatUtility::dieJsonError($label);
+        }
         $course->assignValues([
             'course_type' => $post['course_type'],
             'course_currency_id' => $post['course_currency_id'],

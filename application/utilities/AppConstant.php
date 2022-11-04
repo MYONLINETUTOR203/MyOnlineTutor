@@ -109,11 +109,11 @@ class AppConstant
      * @param int $key
      * @return string|array
      */
-    public static function getActiveArr(int $key = null)
+    public static function getActiveArr(int $key = null, int $langId = 0)
     {
         $arr = [
-            static::ACTIVE => Label::getLabel('LBL_ACTIVE'),
-            static::INACTIVE => Label::getLabel('LBL_INACTIVE')
+            static::ACTIVE => Label::getLabel('LBL_ACTIVE', $langId),
+            static::INACTIVE => Label::getLabel('LBL_INACTIVE', $langId)
         ];
         return static::returArrValue($arr, $key);
     }
