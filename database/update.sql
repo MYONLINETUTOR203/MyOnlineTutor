@@ -1610,3 +1610,4 @@ INSERT INTO `tbl_certificate_templates` (`certpl_lang_id`, `certpl_code`, `certp
 ALTER TABLE `tbl_orders` CHANGE `order_total_amount` `order_total_amount` DECIMAL(20,8) NOT NULL, CHANGE `order_net_amount` `order_net_amount` DECIMAL(20,8) NOT NULL;
 ALTER TABLE `tbl_order_courses` CHANGE `ordcrs_amount` `ordcrs_amount` DECIMAL(20,8) NOT NULL;
 
+UPDATE `tbl_language_labels` SET `label_caption` = 'Course Purchased' WHERE `label_key` = 'LBL_COURSE_PURCHASED';
