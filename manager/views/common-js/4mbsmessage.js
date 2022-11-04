@@ -3,7 +3,7 @@
     $.appalert = function () { };
     $.extend($.appalert, {
         open: function (message, type) {
-            const alertId = (new Date()).getTime();
+            const alertId = Math.random() * 1000000000000000000;
             const alertEl = document.createElement("alert");
             alertEl.setAttribute("id", alertId);
             alertEl.setAttribute("role", 'alert');
