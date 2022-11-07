@@ -653,16 +653,19 @@ class QuizAttempt extends MyAppModel
      *
      * @return bool
      */
-    private function setupQuizProgress()
+    public function setupQuizProgress()
     {
         $progress = $score = 0;
-        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
+        $srch = new SearchBase(static::DB_TBL_QUESTIONS);
+        $srch->joinTable(static::DB_TBL, 'INNER JOIN', 'quizat_id = quatqu_quizat_id');
         $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
         $srch->doNotCalculateRecords();
         $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
         $srch->addFld('SUM(quatqu_scored) as total_score');
+        $srch->addFld('quizat_quilin_id');
         if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
-            $progress = ($quesCount['attempted_questions'] * 100) / $this->quiz['quilin_questions'];
+            $questions = QuizLinked::getAttributesById($quesCount['quizat_quilin_id'], 'quilin_questions');
+            $progress = ($quesCount['attempted_questions'] * 100) / $questions;
             $score = $quesCount['total_score'];
         }
 
@@ -682,18 +685,20 @@ class QuizAttempt extends MyAppModel
      *
      * @return bool
      */
-    private function setupEvaluation()
+    public function setupEvaluation()
     {
         $srch = new SearchBase(QuizAttempt::DB_TBL);
         $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('quizat_marks');
+        $srch->addMultipleFields(['quizat_marks', 'quizat_quilin_id']);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
 
-        $percent = ($data['quizat_marks'] * 100) / $this->quiz['quilin_marks'];
+        $quiz = QuizLinked::getAttributesById($data['quizat_quilin_id'], ['quilin_marks', 'quilin_passmark']);
+
+        $percent = ($data['quizat_marks'] * 100) / $quiz['quilin_marks'];
         $evaluation = static::EVALUATION_PASSED;
-        if ($percent < $this->quiz['quilin_passmark']) {
+        if ($percent < $quiz['quilin_passmark']) {
             $evaluation = static::EVALUATION_FAILED;
         }
         $this->assignValues([

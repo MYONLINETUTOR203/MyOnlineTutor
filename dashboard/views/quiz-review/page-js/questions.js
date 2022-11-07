@@ -24,4 +24,20 @@ $(function () {
             window.location = fcom.makeUrl(type);
         });
     };
+    submitAndFinish = function (id, type) {
+        if (!confirm(langLbl.confirmQuizReviewComplete)) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('QuizReview', 'finish'), { 'id': id, 'submit' : 1 }, function (res) {
+            window.location = fcom.makeUrl(type);
+        });
+    };
+    setup = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('QuizReview', 'setup'), fcom.frmData(frm), function (res) {
+            
+        });
+    };
 });
