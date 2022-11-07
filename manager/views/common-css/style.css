@@ -10808,7 +10808,6 @@ body.page--front .page__cell #footer {
 .export-btn {
     cursor: pointer;
     box-shadow: unset;
-    padding: 8px 15px;
     font-size: 13px;
     border-radius: 3px;
 }
