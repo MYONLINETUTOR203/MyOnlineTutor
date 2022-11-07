@@ -10962,3 +10962,6 @@ background-repeat:no-repeat; background-position: calc(100% - 10px) 10px ; backg
 #frm_fat_id_frmConfiguration .caption-wraper{margin-bottom: 0.6rem;}
 #frmBlock .tabs_panel_wrap{padding-left: 0; padding-right: 0;}
 .web_form.layout--rtl input[type="button"]{margin-right: auto; margin-left: 1rem;}
+
+
+form.layout--rtl input[type="submit"]{margin-right: 0; margin-left: 1rem;}
