@@ -5,15 +5,15 @@
  * @package YoCoach
  * @author Fatbit Team
  */
-class TwoFactorAuth extends FatModel
+class TwoFactorAuth extends MyAppModel
 {   
     
     const DB_TBL = 'tbl_two_factor_auths';
     const DB_TBL_PREFIX = 'usauth_';
 
-    public function __construct()
+    public function __construct(int $userId = 0)
     {
-        parent::__construct();
+        parent::__construct(static::DB_TBL, 'usauth_user_id', $userId);
     }
 
     /**
@@ -24,11 +24,11 @@ class TwoFactorAuth extends FatModel
      * @param string $browser
      * @return bool
      */
-    public function addTwoFactorCode(int $userId, string $otp) 
+    public function addCode(string $otp) 
     {
         $record = new TableRecord(static::DB_TBL);
         $record->assignValues([
-            'usauth_user_id' => $userId,
+            'usauth_user_id' => $this->getMainTableRecordId(),
             'usauth_otp' => $otp,
             'usauth_expiry' => date('Y-m-d H:i:s', strtotime('+5 min')),
             'usauth_browser' => MyUtility::getUserAgent(),
@@ -62,39 +62,37 @@ class TwoFactorAuth extends FatModel
     }
 
 
-    public function validateCode(int $userId, string $code)
+    public function validateCode(string $code)
     {
-        if (empty($userId) || empty($code)) {
+        if (empty($code)) {
             $this->error = Label::getLabel('ERR_INVALID_REQUEST');
             return false;
         }
         $srch = new SearchBase(static::DB_TBL, 'usauth');
-        $srch->addCondition('usauth_user_id', '=', $userId);
+        $srch->addCondition('usauth_user_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('usauth_otp', '=', $code);
         $srch->addCondition('usauth_browser', '=', MyUtility::getUserAgent());
         $srch->addCondition('usauth_ip', '=', MyUtility::getUserIp());
         $srch->addCondition('usauth_expiry', '>=', date('Y-m-d H:i:s'));
-        $srch->getResultSet();
-        if ($srch->recordCount() < 1) {
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if (!FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('ERR_INVALID_AUTHENTICATION_CODE');
             return false;
         }
         return true;
     }
 
-    public function isVerified(int $userId) 
+    public function isVerified() 
     {
-        if (empty($userId)) {
-            $this->error = Label::getLabel('ERR_INVALID_REQUEST');
-            return false;
-        }
         $srch = new SearchBase(static::DB_TBL, 'usauth');
-        $srch->addCondition('usauth_user_id', '=', $userId);
+        $srch->addCondition('usauth_user_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('usauth_browser', '=', MyUtility::getUserAgent());
         $srch->addCondition('usauth_ip', '=', MyUtility::getUserIp());
         $srch->addCondition('usauth_status', '=', AppConstant::ACTIVE);
-        $srch->getResultSet();
-        if ($srch->recordCount() < 1) {
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        if (!FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('ERR_USER_NOT_AUTHENTICATED');
             return false;
         }
@@ -107,10 +105,10 @@ class TwoFactorAuth extends FatModel
      * @param int $userId
      * @return bool
      */
-    public function removeCode(int $userId): bool
+    public function removeCode(): bool
     {
         if (!FatApp::getDb()->deleteRecords(static::DB_TBL,
-                        ['smt' => 'usauth_user_id = ?', 'vals' => [$userId]])) {
+                        ['smt' => 'usauth_user_id = ?', 'vals' => [$this->getMainTableRecordId()]])) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
@@ -125,4 +123,71 @@ class TwoFactorAuth extends FatModel
         }
         return true;    
     }
+
+     
+    /**
+     * Send Two Factor Authentication Code Email
+     * 
+     * @param array $user
+     * @return bool
+     */
+    public function sendTwoFactorAuthenticationEmail(array $user, int $auth_code): bool
+    {       
+        $mail = new FatMailer($user['user_lang_id'], 'two_factor_authentication');
+        $mail->setVariables(['{user_name}' => $user['user_first_name'].' '. $user['user_last_name'], '{auth_code}' => $auth_code]);
+        if (!$mail->sendMail([$user['user_email']])) {
+            $this->error = $mail->getError();
+            return false;
+        }
+        return true;
+    }
+
+    public function send2FactorAuthCode(array $user) 
+    {
+        if ($this->isVerified()) {
+            return true;
+        }
+        if (!$this->removeCode()) {
+            $this->error = $this->getError();
+            return false;
+        }       
+        $auth_code = rand(100000, 999999);
+        if (!$this->addCode($auth_code)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->sendTwoFactorAuthenticationEmail($user, $auth_code)) {
+            $this->error = $this->getError();
+            return false;
+        }       
+        return true;
+    }
+
+    public function setup(int $authCode)
+    {
+        if ($this->isVerified()) {
+            return true;
+        }
+        if (!$this->validateCode($authCode)) {
+            $this->error = $this->getError();
+            return false;
+        }
+        if (!$this->updateStatus()) {
+            $this->error = Label::getLabel('LBL_SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN');
+            return false;
+        }
+        return true;      
+    }
+
+    public function updateStatus()
+    {
+        $record = new TableRecord(TwoFactorAuth::DB_TBL);
+        $record->assignValues(['usauth_status' => AppConstant::ACTIVE]);
+        if (!$record->update(['smt' => 'usauth_user_id = ?', 'vals' => [$this->getMainTableRecordId()]])) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

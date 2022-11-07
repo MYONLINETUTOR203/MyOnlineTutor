@@ -27,7 +27,7 @@ class UserAuth extends FatModel
      * @param string $userip
      * @return bool
      */
-    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
+    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true, bool $setSession = true): bool
     {
         if (empty($username) || ($enypass && empty($password))) {
             $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
@@ -58,6 +58,9 @@ class UserAuth extends FatModel
             $this->error = Label::getLabel('ERR_YOUR_VERIFICATION_PENDING_{link}');
             $this->error = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Label::getLabel('LBL_CLICK_HERE') . '</a>', $this->error);
             return false;
+        }
+        if (!$setSession) {
+            return true;
         }
         if (!$this->setUserSession($username, $userip, $user)) {
             $this->error = Label::getLabel('ERR_SOMETHING_WENT_WRONT_TRY_AGAIN');
@@ -762,34 +765,6 @@ class UserAuth extends FatModel
         $frm->addHtml('', 'forgot', '');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_LOGIN'));
         return $frm;
-    }
-
-    
-    /**
-     * Send Two Factor Authentication Code Email
-     * 
-     * @param array $user
-     * @return bool
-     */
-    public function sendTwoFactorAuthenticationEmail(array $user): bool
-    {
-        $authentication = new TwoFactorAuth();
-        if (!$authentication->removeCode($user['user_id'])) {
-            $this->error = $authentication->getError();
-            return false;
-        }
-        $auth_code = rand(100000, 999999);
-        if (!$authentication->addTwoFactorCode($user['user_id'], $auth_code)) {
-            $this->error = $authentication->getError();
-            return false;
-        }
-        $mail = new FatMailer($user['user_lang_id'], 'two_factor_authentication');
-        $mail->setVariables(['{user_name}' => $user['user_first_name'].' '. $user['user_last_name'], '{auth_code}' => $auth_code]);
-        if (!$mail->sendMail([$user['user_email']])) {
-            $this->error = $mail->getError();
-            return false;
-        }
-        return true;
     }
 
     /**

@@ -9,6 +9,7 @@ $fld3 = $frm->getField('digit_3');
 $fld4 = $frm->getField('digit_4');
 $fld5 = $frm->getField('digit_5');
 $fld6 = $frm->getField('digit_6');
+$userFld = $frm->getField('user_id');
 
 $fld1->setFieldTagAttribute('id', 'digit-1');
 $fld2->setFieldTagAttribute('id', 'digit-2');
@@ -68,8 +69,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                             echo $frm->getFieldHtml('digit_4'); 
                             echo $frm->getFieldHtml('digit_5'); 
                             echo $frm->getFieldHtml('digit_6'); 
-                            echo $frm->getFieldHtml('username'); 
-                            echo $frm->getFieldHtml('password'); 
+                            echo $frm->getFieldHtml('user_id'); 
                         ?>
                             <span class="-gap"></span><span class="-gap"></span>
                         
@@ -92,7 +92,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
     </div>
 </section>
 <script>
-    var uid = '<?php echo $userId; ?>';
+    var uid = '<?php echo $userFld->value; ?>';
 
     $(document).ready(function(){
     let timerOn = true;

@@ -572,4 +572,23 @@ class User extends MyAppModel
         return empty($teacher) ? false : $teacher;
     }
 
+    public static function getById(int $userId, array $fields = []) 
+    {
+        $srch = new SearchBase(User::DB_TBL, 'user');
+        $srch->joinTable(User::DB_TBL_SETTING, 'INNER JOIN', 'user.user_id=uset.user_id', 'uset');
+        if (is_null($fields)) {
+            $fields = [
+                'user.user_id as user_id', 'user_first_name', 'user_last_name', 'user_email',
+                'user_username', 'user_password', 'user_timezone', 'user_gender', 'user_lang_id',
+                'user_country_id', 'user_is_teacher', 'user_active', 'user_verified', 'user_dashboard'
+            ];
+        }
+        $srch->addMultipleFields($fields);
+        $srch->addCondition('user.user_id', '=', $userId);
+        $srch->addDirectCondition('user_deleted IS NULL');
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
+
 }
