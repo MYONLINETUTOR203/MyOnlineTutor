@@ -49,7 +49,7 @@ class QuizReviewController extends DashboardController
     }
 
     /**
-     * Start Quiz
+     * Start Quiz Review
      */
     public function start()
     {
@@ -110,25 +110,37 @@ class QuizReviewController extends DashboardController
         }
 
         /* get question attempt data */
+        $attemptedQues = [];
         $linked = new QuizLinked();
         $attemptedQues = $linked->getQuesWithAttemptedAnswers($id, $data['quilin_id']);
 
         $answer = [];
-        $currentQuesId = $data['quizat_qulinqu_id'];
-        if (!empty($attemptedQues[$currentQuesId]['quatqu_answer'])) {
-            $answer = $attemptedQues[$currentQuesId]['quatqu_answer'];
+        $currentQues = $attemptedQues[$data['quizat_qulinqu_id']];
+        if (!empty($currentQues['quatqu_answer'])) {
+            $answer = $currentQues['quatqu_answer'];
         }
+
         if ($question['qulinqu_type'] == Question::TYPE_MANUAL) {
             $answer = $answer[0] ?? '';
+
+            /* evaluation form for Manual quiz */
+            $frm = $this->getForm($question['qulinqu_marks']);
+            $frm->fill([
+                'quatqu_id' => ($currentQues['quatqu_id'] ?? ''),
+                'quizat_id' => $id,
+                'quatqu_scored' => floatval($currentQues['quatqu_scored']) ?? ''
+            ]);
+            $this->set('frm', $frm);
         }
 
         $this->sets([
             'data' => $data,
             'attemptedQues' => $attemptedQues,
+            'currentQues' => $currentQues,
             'answers' => $answer,
             'question' => $question,
             'quesAnswers' => json_decode($question['qulinqu_answer'], true),
-            'options' => json_decode($question['qulinqu_options'], true),
+            'options' => json_decode($question['qulinqu_options'], true)
         ]);
 
         /* Set quiz stats data */
@@ -144,7 +156,7 @@ class QuizReviewController extends DashboardController
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'quiz-review/view.php', true),
             'questionsInfo' => $quesInfoLabel,
-            'totalMarks' => $data['quilin_marks'],
+            'totalMarks' => $data['quilin_marks']
         ]);
     }
 
@@ -180,18 +192,85 @@ class QuizReviewController extends DashboardController
         FatUtility::dieJsonSuccess('');
     }
 
+    /**
+     * Finish Review
+     *
+     * @return json
+     */
     public function finish()
     {
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $submit = FatApp::getPostedData('submit', FatUtility::VAR_INT, AppConstant::NO);
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-
-        $quiz->setFldValue('quizat_qulinqu_id', 0);
-        if (!$quiz->save()) {
+        if (!$quiz->setupEvaluation($submit)) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        FatUtility::dieJsonSuccess('');
+        $msg = Label::getLabel('LBL_REVIEW_FINISHED_SUCCESSFULLY');
+        if ($submit == AppConstant::YES) {
+            $msg = Label::getLabel('LBL_EVALUATION_SUBMITTED_SUCCESSFULLY');
+        }
+        FatUtility::dieJsonSuccess($msg);
+    }
+
+    /**
+     * Setup Question Evaluation
+     *
+     * @return bool
+     */
+    public function setup()
+    {
+        $post = FatApp::getPostedData();
+        /* validate question id */
+        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('quatqu_qulinqu_id');
+        $srch->addCondition('quatqu_id', '=', $post['quatqu_id']);
+        $srch->addCondition('quatqu_quizat_id', '=', $post['quizat_id']);
+        if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
+        }
+
+        $marks = QuizLinked::getQuestionById($data['quatqu_qulinqu_id'])['qulinqu_marks'];
+        $frm = $this->getForm($marks);
+        $post = $frm->getFormDataFromArray($post);
+
+        $quiz = new QuizReview($post['quizat_id'], $this->siteUserId, $this->siteUserType);
+        if (!$quiz->validate()) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+
+        $quizData = $quiz->get();
+        if ($quizData['quizat_evaluation'] != QuizAttempt::EVALUATION_PENDING) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_EVALUATION_IS_ALREADY_SUBMITTED'));
+        }
+
+        if (!$quiz->setup($post)) {
+            FatUtility::dieJsonError($quiz->getError());
+        }
+
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_SCORE_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * Load question evaluation form
+     *
+     * @param float $marks
+     */
+    private function getForm(float $marks = 0)
+    {
+        $frm = new Form('frmEvaluation');
+        $fld = $frm->addFloatField(Label::getLabel('LBL_SCORE'), 'quatqu_scored');
+        $fld->requirements()->setRequired();
+        if ($marks > 0) {
+            $fld->requirements()->setRange(0, $marks);
+        }
+        $frm->addHiddenField('', 'quatqu_id');
+        $frm->addHiddenField('', 'quizat_id');
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SUBMIT'));
+        return $frm;
     }
 }

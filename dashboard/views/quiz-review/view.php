@@ -57,6 +57,69 @@
                             <strong><?php echo Label::getLabel('LBL_ANSWER:') ?></strong>
                             <?php echo $answers ?>
                         </p>
+                        <?php if ($siteUserType == User::TEACHER) { ?>
+                            <div class="margin-top-10">
+                                <?php
+                                $frm->setFormTagAttribute('class', 'form');
+                                $btnSubmit = $frm->getField('btn_submit');
+                                $score = $frm->getField('quatqu_scored');
+                                if ($frm->getField('quatqu_id')->value < 1 || $data['quizat_evaluation'] != QuizAttempt::EVALUATION_PENDING) {
+                                    $btnSubmit->setFieldTagAttribute('class', 'btn btn--disabled');
+                                    $btnSubmit->setFieldTagAttribute('disabled', 'disabled');
+                                    $score->setFieldTagAttribute('disabled', 'disabled');
+                                } else {
+                                    $frm->setFormTagAttribute('onsubmit', 'setup(this); return false;');
+                                }
+                                echo $frm->getFormTag();
+                                ?>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php Label::getLabel('LBL_ADD_SCORE'); ?>
+                                                </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $frm->getFieldHtml('quatqu_scored'); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-auto">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label"></label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $frm->getFieldHtml('quizat_id'); ?>
+                                                    <?php echo $frm->getFieldHtml('quatqu_id'); ?>
+                                                    <?php echo $btnSubmit->getHtml(); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                                <?php echo $frm->getExternalJs(); ?>
+                            </div>
+                        <?php } else { ?>
+                            <div class="margin-top-10">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php echo Label::getLabel('LBL_SCORE'); ?> : <?php echo floatval($currentQues['quatqu_scored']) ?? 0; ?>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
             <?php } ?>
@@ -117,7 +180,7 @@
                         $class = "is-skip";
                         $action = "onclick=\"getByQuesId('" . $data['quizat_id'] . "', '" . $quest['qulinqu_id'] . "')\";";
                         if (!empty($quest['quatqu_id'])) {
-                            if ($quest['is_correct'] == AppConstant::YES) {
+                            if ($quest['is_correct'] == AppConstant::YES || $data['quilin_type'] == Quiz::TYPE_NON_GRADED) {
                                 $class = "is-correct";
                             } else {
                                 $class = "is-wrong";
@@ -126,7 +189,7 @@
                         if ($data['quizat_qulinqu_id'] == $quest['qulinqu_id']) {
                             $class .= " is-current";
                             $action = "";
-                        } 
+                        }
                         ?>
                         <li class="<?php echo $class; ?>">
                             <a href="javascript:void(0);" class="attempt-action" <?php echo $action; ?>>
@@ -141,24 +204,37 @@
             <div class="legends margin-bottom-10">
                 <h6><?php echo Label::getLabel('LBL_LEGEND'); ?></h6>
                 <div class="legend-list">
-                    <ul>
-                        <li class="is-correct">
-                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_CORRECT') ?></span>
-                        </li>
-                        <li class="is-wrong">
-                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_WRONG') ?></span>
-                        </li>
-                        <li class="is-current">
-                            <span class="legend-list__item"><?php echo Label::getLabel('LBL_NOT_ANSWERED') ?></span>
-                        </li>
-                    </ul>
+                    <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) { ?>
+                        <ul>
+                            <li class="is-correct">
+                                <span class="legend-list__item"><?php echo Label::getLabel('LBL_CORRECT') ?></span>
+                            </li>
+                            <li class="is-wrong">
+                                <span class="legend-list__item"><?php echo Label::getLabel('LBL_WRONG') ?></span>
+                            </li>
+                            <li class="is-current">
+                                <span class="legend-list__item"><?php echo Label::getLabel('LBL_NOT_ANSWERED') ?></span>
+                            </li>
+                        </ul>
+                    <?php } else { ?>
+                        <ul>
+                            <li class="is-correct">
+                                <span class="legend-list__item"><?php echo Label::getLabel('LBL_ANSWERED') ?></span>
+                            </li>
+                            <li class="is-skip">
+                                <span class="legend-list__item"><?php echo Label::getLabel('LBL_NOT_ANSWERED') ?></span>
+                            </li>
+                        </ul>
+                    <?php } ?>
                 </div>
             </div>
             <div class="box-actions form">
-                <?php
-                $controller = ($data['quilin_record_type'] == AppConstant::GCLASS) ? 'Classes' : 'Lessons';
-                ?>
-                <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
+                <?php $controller = ($data['quilin_record_type'] == AppConstant::GCLASS) ? 'Classes' : 'Lessons'; ?>
+                <?php if ($siteUserType == User::TEACHER && $question['qulinqu_type'] == Question::TYPE_MANUAL && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) { ?>
+                    <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="submitAndFinish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
+                <?php } else { ?>
+                    <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
+                <?php } ?>
             </div>
         </div>
     </div>

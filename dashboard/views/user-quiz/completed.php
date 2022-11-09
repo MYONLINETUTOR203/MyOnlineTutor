@@ -1,62 +1,11 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.');
-$username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
+$username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name']);
+$showStats = true;
 ?>
 <div class="page-body">
     <div class="container container--narrow">
         <div class="message-display no-skin">
-            <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) { ?>
-                <?php if ($data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
-                    <div class="message-display__media">
-                        <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/700x400.svg" alt="">
-                    </div>
-                    <h3 class="margin-bottom-2">
-                        <?php
-                        $label = Label::getLabel('LBL_QUIZ_PASS_MSG_HEADING');
-                        echo str_replace('{username}', '<strong class="bold-700">' . $username . '</strong>', $label);
-                        ?>
-                    </h3>
-                    <p class="margin-bottom-2">
-                        <?php echo $data['quilin_passmsg']; ?>
-                    </p>
-                <?php } else { ?>
-                    <div class="message-display__media">
-                        <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/quiz-fail.svg" alt="">
-                    </div>
-                    <h3 class="margin-bottom-2">
-                        <?php
-                        $label = Label::getLabel('LBL_QUIZ_FAIL_MSG_HEADING');
-                        echo str_replace('{username}', '<strong class="bold-700">' . $username . '</strong>', $label);
-                        ?>
-                    </h3>
-                    <p class="margin-bottom-2">
-                        <?php echo $data['quilin_failmsg']; ?>
-                    </p>
-                <?php } ?>
-                <div class="inline-meta margin-top-5 margin-bottom-5">
-                    <span class="inline-meta__item">Score:
-                        <strong>
-                            <?php
-                            $label = Label::getLabel('LBL_{score}_OF_{total}');
-                            echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
-                            ?>
-                        </strong>
-                    </span>
-                    <span class="inline-meta__item">
-                        <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT:'); ?>
-                        <strong><?php echo MyUtility::formatPercent($data['quizat_scored']); ?></strong>
-                    </span>
-                    <?php if ($data['quilin_duration'] > 0) { ?>
-                        <span class="inline-meta__item">
-                            <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
-                            <strong>
-                                <?php
-                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
-                                ?>
-                            </strong>
-                        </span>
-                    <?php } ?>
-                </div>
-            <?php } else { ?>
+            <?php if ($data['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) { ?>
                 <div class="message-display__media">
                     <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/700x400.svg" alt="">
                 </div>
@@ -73,6 +22,61 @@ $username = ucwords($user['user_first_name'] . ' ' . $user['user_last_name'])
                     <span class="inline-meta__item">
                         <?php echo Label::getLabel('LBL_PROGRESS:'); ?>
                         <strong><?php echo MyUtility::formatPercent($data['quizat_progress']); ?></strong>
+                    </span>
+                    <?php if ($data['quilin_duration'] > 0) { ?>
+                        <span class="inline-meta__item">
+                            <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
+                            <strong>
+                                <?php
+                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                                ?>
+                            </strong>
+                        </span>
+                    <?php } ?>
+                </div>
+                <?php $showStats = false; ?>
+            <?php } elseif ($data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
+                <div class="message-display__media">
+                    <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/700x400.svg" alt="">
+                </div>
+                <h3 class="margin-bottom-2">
+                    <?php
+                    $label = Label::getLabel('LBL_QUIZ_PASS_MSG_HEADING');
+                    echo str_replace('{username}', '<strong class="bold-700">' . $username . '</strong>', $label);
+                    ?>
+                </h3>
+                <p class="margin-bottom-2">
+                    <?php echo $data['quilin_passmsg']; ?>
+                </p>
+            <?php } else { ?>
+                <div class="message-display__media">
+                    <img src="<?php echo CONF_WEBROOT_DASHBOARD ?>images/quiz-fail.svg" alt="">
+                </div>
+                <h3 class="margin-bottom-2">
+                    <?php
+                    $label = Label::getLabel('LBL_QUIZ_FAIL_MSG_HEADING');
+                    echo str_replace('{username}', '<strong class="bold-700">' . $username . '</strong>', $label);
+                    ?>
+                </h3>
+                <p class="margin-bottom-2">
+                    <?php echo $data['quilin_failmsg']; ?>
+                </p>
+            <?php } ?>
+
+            <?php if ($showStats == true) { ?>
+                <div class="inline-meta margin-top-5 margin-bottom-5">
+                    <span class="inline-meta__item">
+                        <?php echo Label::getLabel('LBL_SCORE:'); ?>
+                        <strong>
+                            <?php
+                            $label = Label::getLabel('LBL_{score}_OF_{total}');
+                            echo str_replace(['{score}', '{total}'], [floatval($data['quizat_marks']), floatval($data['quilin_marks'])], $label);
+                            ?>
+                        </strong>
+                    </span>
+                    <span class="inline-meta__item">
+                        <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT:'); ?>
+                        <strong><?php echo MyUtility::formatPercent($data['quizat_scored']); ?></strong>
                     </span>
                     <?php if ($data['quilin_duration'] > 0) { ?>
                         <span class="inline-meta__item">
