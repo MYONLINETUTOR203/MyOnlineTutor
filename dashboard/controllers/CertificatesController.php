@@ -44,10 +44,10 @@ class CertificatesController extends DashboardController
         /* check if certificate already generated */
         if (empty($ordcrsData['ordcrs_certificate_number'])) {
             /* get certificate html */
-            $content = $this->getContent(Certificate::TYPE_COURSE);
+            $content = $this->getContent();
             $cert = new Certificate(
                 $ordcrsData['ordcrs_id'],
-                Certificate::TYPE_QUIZ,
+                'course_completion_certificate',
                 $this->siteUserId,
                 $this->siteUserType
             );
@@ -88,7 +88,7 @@ class CertificatesController extends DashboardController
             $content = $this->getContent();
 
             /* generate */
-            $cert = new Certificate($id, Certificate::TYPE_QUIZ, $this->siteUserId, $this->siteLangId);
+            $cert = new Certificate($id, 'evaluation_certificate', $this->siteUserId, $this->siteLangId);
             if (!$cert->generate($content)) {
                 FatUtility::dieWithError($cert->getError());
             }

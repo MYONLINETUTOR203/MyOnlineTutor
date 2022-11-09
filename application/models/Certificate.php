@@ -10,28 +10,27 @@ class Certificate extends MyAppModel
 {
     const CERTIFICATE_NO_PREFIX = 'YC_';
 
-    const TYPE_COURSE = 1;
-    const TYPE_QUIZ = 2;
+    const TYPE_QUIZ = 1;
     
     private $id;
-    private $type;
+    private $code;
     private $userId;
     private $langId;
 
     /**
      * Initialize certificate
      *
-     * @param int $id
-     * @param int $type
-     * @param int $userId
-     * @param int $langId
+     * @param int    $id
+     * @param string $code
+     * @param int    $userId
+     * @param int    $langId
      */
-    public function __construct(int $id = 0, int $type = self::TYPE_QUIZ, int $userId = 0, int $langId = 0)
+    public function __construct(int $id = 0, string $code, int $userId = 0, int $langId = 0)
     {
+        $this->id = $id;
+        $this->code = $code;
         $this->userId = $userId;
         $this->langId = $langId;
-        $this->id = $id;
-        $this->type = $type;
     }
 
     /**
@@ -95,14 +94,14 @@ class Certificate extends MyAppModel
     {
         /* generate certificate */
         $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
-        if ($this->type == static::TYPE_QUIZ) {
+        if ($this->code == 'evaluation_certificate') {
             $quiz = new QuizAttempt($this->id);
             $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
             if (!$quiz->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
                 return false;
             }
-        } elseif ($this->type == static::TYPE_COURSE) {
+        } elseif ($this->code == 'course_completion_certificate') {
             $course = new Course($this->id);
             $course->setFldValue('ordcrs_certificate_number', $certificateNumber);
             if (!$course->save()) {
@@ -124,12 +123,8 @@ class Certificate extends MyAppModel
      */
     private function setupTemplate(string $content)
     {
-        $code = 'course_completion_certificate';
-        if ($this->type == static::TYPE_QUIZ) {
-            $code = 'evaluation_certificate';
-        }
         $srch = CertificateTemplate::getSearchObject($this->langId);
-        $srch->addCondition('certpl_code', '=', $code);
+        $srch->addCondition('certpl_code', '=', $this->code);
         if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND');
             return false;
@@ -194,7 +189,8 @@ class Certificate extends MyAppModel
      */
     public function formatContent(string $content, array $data)
     {
-        if ($this->type == static::TYPE_QUIZ) {
+        $title = '';
+        if ($this->code == 'evaluation_certificate') {
             $title = htmlentities(stripslashes(utf8_encode($data['quilin_title'])), ENT_QUOTES);
         } else {
             $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
@@ -218,7 +214,7 @@ class Certificate extends MyAppModel
                 '<b>' . ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']) . '</b>',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated']) : '',
-                '<b>' . (($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number']) . '</b>',
+                '<b>' . (($this->code == 'evaluation_certificate') ? $data['quizat_certificate_number'] : $data['cert_number']) . '</b>',
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
@@ -271,8 +267,8 @@ class Certificate extends MyAppModel
      */
     private function getData()
     {
-        switch ($this->type) {
-            case static::TYPE_COURSE:
+        switch ($this->code) {
+            case 'course_completion_certificate':
                 $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
                 $srch->joinTable(
                     CourseLanguage::DB_TBL,
@@ -298,7 +294,7 @@ class Certificate extends MyAppModel
                 $srch->addCondition('ordcrs_id', '=', $this->id);
                 $data = FatApp::getDb()->fetch($srch->getResultSet());
                 break;
-            case static::TYPE_QUIZ:
+            case 'evaluation_certificate':
                 $quiz = new QuizAttempt($this->id);
                 $data = $quiz->getById();
                 $learner = User::getAttributesById($data['quizat_user_id'], [
