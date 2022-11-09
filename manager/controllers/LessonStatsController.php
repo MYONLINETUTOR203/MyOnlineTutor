@@ -51,7 +51,7 @@ class LessonStatsController extends AdminBaseController
         }
         $srch->addGroupBy('sesslog_user_id');
         $srch->addHaving('rescheduledCount', '>', 0);
-        $srch->addHaving('cancelledCount', '>', 0);
+        $srch->addHaving('cancelledCount', '>', 0, 'OR');
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $this->sets([
@@ -145,7 +145,7 @@ class LessonStatsController extends AdminBaseController
             $data = [
                 $row['teacher_first_name'] . ' ' . $row['teacher_last_name'],
                 $row['learner_first_name'] . ' ' . $row['learner_last_name'],
-                $row['order_id'], $row['ordles_id']
+                Order::formatOrderId($row['order_id']), $row['ordles_id']
             ];
             if (SessionLog::LESSON_RESCHEDULED_LOG == $post['reportType']) {
                 $data = array_merge($data, [MyDate::formatDate($row['sesslog_prev_starttime']), MyDate::formatDate($row['sesslog_prev_endtime'])]);

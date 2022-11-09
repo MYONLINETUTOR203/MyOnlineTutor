@@ -43,6 +43,7 @@ class Notification extends FatModel
     const TYPE_QUIZ_ATTACHED = 21;
     const TYPE_QUIZ_REMOVED = 22;
     const TYPE_QUIZ_COMPLETED = 23;
+    const TYPE_QUIZ_EVALUATION_SUBMITTED = 24;
     
     private $userId;
     private $type;
@@ -184,6 +185,10 @@ class Notification extends FatModel
             case static::TYPE_QUIZ_COMPLETED:
                 $title = Label::getLabel('NOTIFI_TITLE_TYPE_QUIZ_COMPLETED', $langId);
                 $desc = Label::getLabel('NOTIFI_DESC_TYPE_QUIZ_COMPLETED', $langId);
+                break;
+            case static::TYPE_QUIZ_EVALUATION_SUBMITTED:
+                $title = Label::getLabel('NOTIFI_TITLE_TYPE_QUIZ_EVALUATION_SUBMITTED', $langId);
+                $desc = Label::getLabel('NOTIFI_DESC_TYPE_QUIZ_EVALUATION_SUBMITTED', $langId);
                 break;
         }
         $this->title = str_replace(array_keys($vars), $vars, $title);
