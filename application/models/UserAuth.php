@@ -767,41 +767,13 @@ class UserAuth extends FatModel
         return $frm;
     }
 
-    /**
-     *  User Login
-     * 
-     * @param string $username
-     * @param string $password
-     * @param string $userip
-     * @return bool
-     */
-    public function validateLogin(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
+    public static function clearAllAuthTokensUser(int $userId)
     {
-        if (empty($username) || ($enypass && empty($password))) {
-            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
+        $query = ['smt' => 'usrtok_user_id = ?', 'vals' => [$userId]];
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_USER_AUTH,$query)) {
             return false;
         }
-        $user = User::getByEmail($username);
-        if (empty($user)) {
-            $this->logFailedLoginAttempt($username, $userip);
-            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
-            return false;
-        }
-        if ($this->isBruteForcing($username, $userip)) {
-            $this->sendFailedLoginEmail($user);
-            $this->error = Label::getLabel('ERR_YOUR_ATTEMPT_LIMIT_EXCEEDED');
-            return false;
-        }
-        $password = $enypass ? static::encryptPassword($password) : $password;
-        if ($user['user_password'] != $password) {
-            $this->logFailedLoginAttempt($username, $userip);
-            $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
-            return false;
-        }
-        if (empty($user['user_active'])) {
-            $this->error = Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE');
-            return false;
-        }
+        MyUtility::setCookie(static::COOKIES_ELEMENT, '', time() - 3600, CONF_WEBROOT_FRONTEND);
         return true;
     }
 
