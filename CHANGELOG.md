@@ -111,3 +111,14 @@ Fixes:
     #068030 - The quiz timer got stop after the quiz completion confirmation alert is coming
     #067624 - Question display order change process is not smooth in the quiz
     #067429 - Full content is not getting saved in question setup for description, hints and options
+
+## TV-1.3.0.20221109
+
+Features:
+
+    Task-103291 - Manual Quiz Review
+    Task-103337 - Courses Module Merging
+
+Updates: N/A
+
+Fixes: N/A
