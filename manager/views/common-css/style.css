@@ -10963,3 +10963,8 @@ background-repeat:no-repeat; background-position: calc(100% - 10px) 10px ; backg
 .web_form.layout--rtl input[type="button"]{margin-right: auto; margin-left: 1rem;}
 
 .list-vertical{list-style: inside;}
+
+form.layout--rtl input[type="submit"]{margin-right: 0; margin-left: 1rem;}
+
+form.layout--ltr select{background-position:calc(100% - 15px) center; padding-right:30px; padding-left: 10px;}
+form.layout--ltr{text-align: left!important;}
