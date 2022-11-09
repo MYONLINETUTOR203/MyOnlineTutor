@@ -390,6 +390,14 @@ $(function () {
             });
         }
     }
+    getCertificates = function () {
+        if ($("input[name='course_certificate']:checked").val() == 1) {
+            $('.certTypeJs').show();
+        } else {
+            $('.certTypeJs').hide();
+            $("select[name='course_certificate_type']").val('');
+        }
+    }
 });
 $(document).ready(function(){
     $('body').on('input', 'input[type="text"], textarea', function () {

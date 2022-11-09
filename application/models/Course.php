@@ -525,6 +525,7 @@ class Course extends MyAppModel
         }
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_certificate', $data['course_certificate']);
+        $this->setFldValue('course_certificate_type', $data['course_certificate_type']);
         if (!$this->save()) {
             $db->rollbackTransaction();
             $this->error = $this->getError();

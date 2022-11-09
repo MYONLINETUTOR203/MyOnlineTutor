@@ -5,6 +5,7 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'frmCourses');
 $frm->setFormTagAttribute('onsubmit', 'setupSettings(this); return false;');
 $certFld = $frm->getField('course_certificate');
+$typeFld = $frm->getField('course_certificate_type');
 /* $welcomeFld = $frm->getField('course_welcome');
 $welcomeFld->setFieldTagAttribute('class', 'field-count__wrap');
 $welcomeFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_WELCOME_MESSAGE'));
@@ -54,7 +55,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                                             <li>
                                                                 <label>
                                                                     <span class="radio">
-                                                                        <input type="radio" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' onchange="updatePriceForm(this.value);" name="course_certificate" value="<?php echo $val; ?>">
+                                                                        <input type="radio" onchange="getCertificates();" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' name="course_certificate" value="<?php echo $val; ?>">
                                                                         <i class="input-helper"></i>
                                                                     </span>
                                                                     <?php echo $option; ?>
@@ -110,7 +111,25 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                         </div>
                                     </div>
                                 </div>
-                            </div> */ ?>
+                            </div> */
+                            ?>
+                            <div class="row certTypeJs" style="display:<?php echo ($certFld->value == AppConstant::YES) ? 'block' : 'none'; ?>">
+                                <div class="col-md-12">
+                                    <div class="field-set">
+                                        <div class="caption-wraper">
+                                            <label class="field_label">
+                                                <?php echo $typeFld->getCaption(); ?>
+                                                <span class="spn_must_field">*</span>
+                                            </label>
+                                        </div>
+                                        <div class="field-wraper">
+                                            <div class="field_cover">
+                                                <?php echo $typeFld->getHtml(); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">
@@ -143,7 +162,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
     var TYPE_PAID = "<?php echo Course::TYPE_PAID; ?>";
     $(document).ready(function() {
         $('input[name="course_tags"]').tagit({
-            caseSensitive : false, 
+            caseSensitive: false,
             allowDuplicates: false,
             allowSpaces: true,
         });

@@ -491,7 +491,9 @@ class CoursesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /* validate course id */
-        if (!$courseData = Course::getAttributesById($courseId, ['course_id', 'course_certificate'])) {
+        if (!$courseData = Course::getAttributesById($courseId, [
+            'course_id', 'course_certificate', 'course_certificate_type'
+        ])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
@@ -501,7 +503,8 @@ class CoursesController extends DashboardController
         /* create form data */
         $data = [
             'course_id' => $courseId,
-            'course_certificate' => $courseData['course_certificate']
+            'course_certificate' => $courseData['course_certificate'],
+            'course_certificate_type' => $courseData['course_certificate_type']
         ];
         /* get form data from lang table */
         $srch = new SearchBase(Course::DB_TBL_LANG);
@@ -831,6 +834,9 @@ class CoursesController extends DashboardController
         } else {
             $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
         }
+        $types = Certificate::getTypes();
+        unset($types[Certificate::TYPE_QUIZ_EVALUATION]);
+        $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
         /* $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
         $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
         $fld->requirements()->setRequired(); */

@@ -367,7 +367,7 @@ class UserQuizController extends DashboardController
             Message::addErrorMessage($quiz->getError());
             FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
         }
-        $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ;
+        $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ_EVALUATION;
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
     }
 

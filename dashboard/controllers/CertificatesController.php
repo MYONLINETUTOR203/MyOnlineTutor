@@ -67,7 +67,7 @@ class CertificatesController extends DashboardController
      */
     public function quiz(int $id)
     {
-        if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ) {
+        if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ_EVALUATION) {
             FatUtility::exitWithErrorCode(404);
         }
         $quiz = new QuizAttempt($id, $this->siteUserId);

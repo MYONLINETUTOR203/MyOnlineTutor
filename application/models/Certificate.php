@@ -10,7 +10,9 @@ class Certificate extends MyAppModel
 {
     const CERTIFICATE_NO_PREFIX = 'YC_';
 
-    const TYPE_QUIZ = 1;
+    const TYPE_QUIZ_EVALUATION = 1;
+    const TYPE_COURSE_COMPLETION = 2;
+    const TYPE_COURSE_EVALUTAION = 3;
     
     private $id;
     private $code;
@@ -31,6 +33,22 @@ class Certificate extends MyAppModel
         $this->code = $code;
         $this->userId = $userId;
         $this->langId = $langId;
+    }
+
+    /**
+     * Get Types
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getTypes(int $key = null)
+    {
+        $arr = [
+            static::TYPE_QUIZ_EVALUATION => Label::getLabel('LBL_QUIZ_EVALUATION'),
+            static::TYPE_COURSE_COMPLETION => Label::getLabel('LBL_COURSE_COMPLETION'),
+            static::TYPE_COURSE_EVALUTAION => Label::getLabel('LBL_COURSE_EVALUATION')
+        ];
+        return AppConstant::returArrValue($arr, $key);
     }
 
     /**
@@ -207,7 +225,8 @@ class Certificate extends MyAppModel
                 '{course-language}',
                 '{course-completed-date}',
                 '{course-duration}',
-                '{quiz-score}'
+                '{quiz-score}',
+                '{course-score}',
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
@@ -220,6 +239,7 @@ class Certificate extends MyAppModel
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
                 isset($data['crspro_completed']) ? MyDate::formatDate($data['crspro_completed']) : '',
                 isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : '',
+                isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
                 isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
             ],
             $content
