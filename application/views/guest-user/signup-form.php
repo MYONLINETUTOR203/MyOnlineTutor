@@ -13,6 +13,8 @@
     $fldFirstName->developerTags['col'] = 6;
     $fldLastName = $frm->getField('user_last_name');
     $fldLastName->developerTags['col'] = 6;
+    $fld = $frm->getField('agree');
+    $fld->setWrapperAttribute('class', 'set-remember');
     $fldPassword = $frm->getField('user_password');
     $fldPassword->changeCaption('');
     $fldPassword->captionWrapper = (array(Label::getLabel('LBL_Password') . '<span class="spn_must_field">*</span><a onClick="togglePassword(this)" href="javascript:void(0)" class="-link-underline -float-right link-color" data-show-caption="' . Label::getLabel('LBL_Show_Password') . '" data-hide-caption="' . Label::getLabel('LBL_Hide_Password') . '">' . Label::getLabel('LBL_Show_Password'), '</a>'));

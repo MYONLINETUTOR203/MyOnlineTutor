@@ -15,7 +15,7 @@ $fldPassword->changeCaption('');
 $fldPassword->captionWrapper = (array(Label::getLabel('LBL_Password') . '<span class="spn_must_field">*</span><a onClick="togglePassword(this)" href="javascript:void(0)" class="-link-underline -float-right link-color" data-show-caption="' . Label::getLabel('LBL_Show_Password') . '" data-hide-caption="' . Label::getLabel('LBL_Hide_Password') . '">' . Label::getLabel('LBL_Show_Password'), '</a>'));
 $termLink = ' <a target="_blank" class = "-link-underline link-color" href="' . $termsConditionsLink . '">' . Label::getLabel('LBL_TERMS_AND_CONDITION') . '</a> and <a href="' . $privacyPolicyLink . '" target="_blank" class = "-link-underline link-color" >' . Label::getLabel('LBL_Privacy_Policy') . '</a>';
 $terms_caption = '<span>' . $termLink . '</span>';
-$frm->getField('agree')->addWrapperAttribute('class', 'terms_wrap');
+$frm->getField('agree')->addWrapperAttribute('class', 'terms_wrap set-remember');
 $frm->getField('agree')->htmlAfterField = $terms_caption;
 ?>
 <section class="section section--gray section--page">

@@ -5095,12 +5095,17 @@ img {
   font-size: 1.75rem; }
 
 .box--narrow {
-  padding: 30px;
+  padding: 15px 30px 30px;
   min-width: 460px;
   max-width: 460px; }
+  @media (min-width: 1199px) {
+    .box--narrow {
+      display: block;
+      overflow: auto;
+      max-height: 85vh; } }
 
 .box--narrow h2 {
-  margin-bottom: 25px; }
+  margin-bottom: 15px; }
 
 .box--narrow .box__logo {
   width: 140px;
@@ -5110,6 +5115,15 @@ img {
 .box--narrow .form input[type="button"] {
   width: 100%;
   text-align: center; }
+
+.box--narrow .form .field_label {
+  margin-bottom: 0.4rem; }
+
+.box--narrow p {
+  margin-bottom: 0.4rem; }
+
+.set-remember .caption-wraper {
+  display: none; }
 
 .box-list {
   margin: 0 0 30px;
@@ -7669,7 +7683,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
       border-color: var(--color-gray-800); } }
 
 .social-actions .social-button {
-  margin-bottom: var(--margin-5); }
+  margin-bottom: var(--margin-3); }
 
 .group--social a span,
 .group--social a {
