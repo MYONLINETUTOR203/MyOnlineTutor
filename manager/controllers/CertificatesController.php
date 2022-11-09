@@ -188,7 +188,7 @@ class CertificatesController extends AdminBaseController
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         
-        if (!$code = CertificateTemplate::getAttributesById($post['certpl_id'], 'certpl_code')) {
+        if (!CertificateTemplate::getAttributesById($post['certpl_id'], 'certpl_code')) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
@@ -212,15 +212,11 @@ class CertificatesController extends AdminBaseController
         if (empty($template)) {
             FatUtility::dieWithError(Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND'));
         }
-        $type = Certificate::TYPE_QUIZ;
-        if ($template['certpl_code'] == 'course_completion_certificate') {
-            $type = Certificate::TYPE_COURSE;
-        }
         $langId = $template['certpl_lang_id'];
-        $cert = new Certificate(0, $type, 0, $langId);
+        $cert = new Certificate(0, $template['certpl_code'], 0, $langId);
         $content = $this->getContent($langId);
 
-        if (!$cert->generatePreview($content, $type)) {
+        if (!$cert->generatePreview($content)) {
             FatUtility::dieWithError($cert->getError());
         }
         FatUtility::dieWithError(Label::getLabel('LBL_UNABLE_TO_GENERATE_CERTIFICATE'));
