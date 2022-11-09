@@ -285,6 +285,18 @@ class AccountController extends DashboardController
             $db->rollbackTransaction();
             FatUtility::dieJsonError($userSetting->getError());
         }
+        if ($this->siteUser['user_2fa_enabled'] != $post['user_2fa_enabled']) {
+            if ($post['user_2fa_enabled'] != AppConstant::YES) {
+                $twoFactorAuth = new TwoFactorAuth($this->siteUserId);
+                if (!$twoFactorAuth->removeAllCodes()) {
+                    FatUtility::dieJsonError($twoFactorAuth->getError());
+                }
+            } else {
+                if (!UserAuth::clearAllAuthTokensUser($this->siteUserId))    {
+                    FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
+                }
+            }
+        }
         $db->commitTransaction();
         if (!empty($post['user_timezone'])) {
             MyUtility::setSiteTimezone($post['user_timezone'], true);

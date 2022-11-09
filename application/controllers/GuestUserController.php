@@ -36,6 +36,7 @@ class GuestUserController extends MyAppController
     public function loginForm()
     {
         $this->set('frm', UserAuth::getSigninForm());
+        unset($_SESSION[AppConstant::TWO_FACTOR_AUTH_ID]);
         if (FatApp::getPostedData('isPopUp', FatUtility::VAR_INT, 0)) {
             $this->_template->render(false, false, 'guest-user/login-form-popup.php');
             return;
@@ -54,7 +55,7 @@ class GuestUserController extends MyAppController
         }
         $auth = new UserAuth();
         $user_ip = MyUtility::getUserIp();
-        if (!$auth->validateLogin($post['username'], $post['password'], $user_ip, true)) {
+        if (!$auth->login($post['username'], $post['password'], $user_ip, true, false)) {
             FatUtility::dieJsonError($auth->getError());
         }
         $user = User::getByEmail($post['username']);
@@ -64,10 +65,14 @@ class GuestUserController extends MyAppController
             if (!$twoFactorAuth->send2FactorAuthCode($user)) {
                 FatUtility::dieJsonError($auth->getError());
             }  
-            FatUtility::dieJsonSuccess([
-                'twoFactorEnabled'  => $user['user_2fa_enabled'],
-            ]);
-            
+            if (!$twoFactorAuth->isVerified) {
+                $_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] = $user['user_id'];
+                FatUtility::dieJsonSuccess([
+                    'twoFactorEnabled'  => $user['user_2fa_enabled'],
+                    'userId'            => $user['user_id'],
+                    'rememberMe'        => FatUtility::int($post['remember_me']),
+                ]); 
+            }  
         }
         if (!$auth->setUserSession($post['username'], $user_ip, $user)) {
             FatUtility::dieJsonError($auth->getError());
@@ -166,17 +171,25 @@ class GuestUserController extends MyAppController
     /**
      * Render Two Factor Authentication Form
      */
-    public function twoFactorAuthForm() 
+    public function twoFactorAuthForm(int $userId) 
     {
+        if (empty($userId) && $_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $userId) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
         $post = FatApp::getPostedData();
         $auth = new UserAuth();
-        if (!$auth->validateLogin($post['username'], $post['password'], MyUtility::getUserIp(), true)) {
-            FatUtility::dieJsonError($auth->getError());
+        $user = User::getById($userId);
+        if (!$user) {
+            FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
         }
-        $user = User::getByEmail($post['username']);
+        if ($user['user_active'] != AppConstant::YES) {
+            FatUtility::dieJsonError(Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE'));
+        }  
+        if($user['user_2fa_enabled'] != AppConstant::YES) {
+            FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
+        }
         $frm = $this->getTwoFactorAuthForm();
-        $frm->fill(['user_id' => $user['user_id']]);
-        $this->set('userId', $user['user_id']);
+        $frm->fill(['user_id' => $user['user_id'], 'remember_me' => $post['remember_me']]);
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'guest-user/two-factor-form.php');
     }
@@ -196,6 +209,9 @@ class GuestUserController extends MyAppController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }       
+        if($_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $post['user_id']) {
+            FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
+        }
         $codeArr = [
             $post['digit_1'], 
             $post['digit_2'], 
@@ -206,24 +222,23 @@ class GuestUserController extends MyAppController
         ];
         $authCode = implode('',$codeArr); 
         $user = User::getById($post['user_id']);
-       
         if (!$user) {
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
         }
-        
-        if (empty($user['user_active'])) {
+        if ($user['user_active'] != AppConstant::YES) {
             FatUtility::dieJsonError(Label::getLabel('ERR_YOUR_ACCOUNT_IS_INACTIVE'));
         }       
-      
         $authentication = new TwoFactorAuth($post['user_id']);
         if (!$authentication->setup($authCode)) {
             FatUtility::dieJsonError($authentication->getError());
         }
-        echo "<pre>";print_r($user);exit;
         $auth = new UserAuth();
-        if (!$auth->setUserSession($user['username'], MyUtility::getUserIp(), $user)) {
+        if (!$auth->setUserSession($user['user_email'], MyUtility::getUserIp(), $user)) {
             FatUtility::dieJsonError($auth->getError());
         }
+        if (FatUtility::int($post['remember_me']) == AppConstant::YES) {
+            UserAuth::setAuthTokenUser(UserAuth::getLoggedUserId());
+        }  
         $_SESSION[AppConstant::SEARCH_SESSION] = FatApp::getPostedData();
         FatUtility::dieJsonSuccess(Label::getLabel("MSG_LOGIN_SUCCESSFULL"));
     }
@@ -652,6 +667,7 @@ class GuestUserController extends MyAppController
         $fld6->requirements()->setRequired();
         $fld6->requirements()->setCustomErrorMessage('');
         $frm->addHiddenField('', 'user_id');
+        $frm->addHiddenField('', 'remember_me');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_VALIDATE'));
         $resendText = Label::getLabel('LBL_Didnt_Get_The_Code?_{link}');
         $resendText = str_replace("{link}", '<p><a href="javascript:void(0)" id="btn_resend_otp">' . Label::getLabel('LBL_RESEND_OTP') . '</a><p> in <span id="countdowntimer"></span></p></p>', $resendText);

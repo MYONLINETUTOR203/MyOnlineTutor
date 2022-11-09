@@ -11,6 +11,8 @@ class TwoFactorAuth extends MyAppModel
     const DB_TBL = 'tbl_two_factor_auths';
     const DB_TBL_PREFIX = 'usauth_';
 
+    public $isVerified = false;
+
     public function __construct(int $userId = 0)
     {
         parent::__construct(static::DB_TBL, 'usauth_user_id', $userId);
@@ -72,7 +74,6 @@ class TwoFactorAuth extends MyAppModel
         $srch->addCondition('usauth_user_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('usauth_otp', '=', $code);
         $srch->addCondition('usauth_browser', '=', MyUtility::getUserAgent());
-        $srch->addCondition('usauth_ip', '=', MyUtility::getUserIp());
         $srch->addCondition('usauth_expiry', '>=', date('Y-m-d H:i:s'));
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -88,7 +89,6 @@ class TwoFactorAuth extends MyAppModel
         $srch = new SearchBase(static::DB_TBL, 'usauth');
         $srch->addCondition('usauth_user_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('usauth_browser', '=', MyUtility::getUserAgent());
-        $srch->addCondition('usauth_ip', '=', MyUtility::getUserIp());
         $srch->addCondition('usauth_status', '=', AppConstant::ACTIVE);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -108,23 +108,15 @@ class TwoFactorAuth extends MyAppModel
     public function removeCode(): bool
     {
         if (!FatApp::getDb()->deleteRecords(static::DB_TBL,
-                        ['smt' => 'usauth_user_id = ?', 'vals' => [$this->getMainTableRecordId()]])) {
+                        ['smt' => 'usauth_user_id = ? AND usauth_browser = ? AND usauth_status = ?',
+                         'vals' => [$this->getMainTableRecordId(), MyUtility::getUserAgent(), AppConstant::INACTIVE]])) {
             $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;
     }
 
-    public function checkUserVerified(int $userId)
-    {
-        if (!$this->isVerified($userId)) {
-            $this->error = $this->getError();
-            return false;
-        }
-        return true;    
-    }
-
-     
+    
     /**
      * Send Two Factor Authentication Code Email
      * 
@@ -145,6 +137,7 @@ class TwoFactorAuth extends MyAppModel
     public function send2FactorAuthCode(array $user) 
     {
         if ($this->isVerified()) {
+            $this->isVerified = true;
             return true;
         }
         if (!$this->removeCode()) {
@@ -156,6 +149,7 @@ class TwoFactorAuth extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+       
         if (!$this->sendTwoFactorAuthenticationEmail($user, $auth_code)) {
             $this->error = $this->getError();
             return false;
@@ -166,6 +160,7 @@ class TwoFactorAuth extends MyAppModel
     public function setup(int $authCode)
     {
         if ($this->isVerified()) {
+            $this->isVerified = true;
             return true;
         }
         if (!$this->validateCode($authCode)) {
@@ -184,6 +179,15 @@ class TwoFactorAuth extends MyAppModel
         $record = new TableRecord(TwoFactorAuth::DB_TBL);
         $record->assignValues(['usauth_status' => AppConstant::ACTIVE]);
         if (!$record->update(['smt' => 'usauth_user_id = ?', 'vals' => [$this->getMainTableRecordId()]])) {
+            return false;
+        }
+        return true;
+    }
+
+    public function removeAllCodes() 
+    {
+        if (!FatApp::getDb()->deleteRecords(TwoFactorAuth::DB_TBL, ['smt' => 'usauth_user_id = ?', 'vals' => [$this->getMainTableRecordId()]])) {
+            $this->error = FatApp::getDb()->getError();
             return false;
         }
         return true;

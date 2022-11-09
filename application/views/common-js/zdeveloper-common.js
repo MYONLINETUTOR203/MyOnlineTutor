@@ -201,7 +201,7 @@ $(document).ready(function () {
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), data, function (res) {
             if (res.twoFactorEnabled) {
-                twoFactorAuthForm(data);
+                twoFactorAuthForm(res.userId, res.rememberMe);
                 return;
             } else {
                 window.location.reload();
@@ -226,8 +226,8 @@ $(document).ready(function () {
             }, 1000);
         });
     };
-    twoFactorAuthForm = function (data) {
-        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorAuthForm'), data, function (response) {
+    twoFactorAuthForm = function (userId, rememberMe = 0) {
+        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorAuthForm', [userId]), {remember_me: rememberMe}, function (response) {
             $.facebox(response);
         });
     };

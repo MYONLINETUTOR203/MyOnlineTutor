@@ -47,7 +47,6 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
 		color: #000;
 		margin: 0 2px;
 	}
-
 </style>
 <section class="section section--gray section--page">
     <div class="container container--fixed">
@@ -59,7 +58,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                     </div>
                     <div class="box__body -padding-40 div-login-form">
                         <div class="prompt">
-                            Enter the code generated on your mobile device below to log in!
+                            <?php echo Label::getLabel('LBL_ENTER_CODE_SENT_ON_YOUR_MAIL_TO_LOGIN_IN'); ?>
                         </div>
                         <?php
                             echo $frm->getFormTag(); 
@@ -70,6 +69,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                             echo $frm->getFieldHtml('digit_5'); 
                             echo $frm->getFieldHtml('digit_6'); 
                             echo $frm->getFieldHtml('user_id'); 
+                            echo $frm->getFieldHtml('remember_me'); 
                         ?>
                             <span class="-gap"></span><span class="-gap"></span>
                         
@@ -95,7 +95,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
     var uid = '<?php echo $userFld->value; ?>';
 
     $(document).ready(function(){
-    let timerOn = true;
+        let timerOn = true;
         resendTwoFactorAuthenticationCode = function (userId, ele) {
             fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
             $(ele).removeAttr('onclick');
