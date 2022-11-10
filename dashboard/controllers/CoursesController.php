@@ -119,7 +119,11 @@ class CoursesController extends DashboardController
         $this->set('courseId', $courseId);
         $this->set('siteLangId', $this->siteLangId);
         $this->set("includeEditor", true);
-        $this->_template->addJs(['js/jquery.tagit.js', 'js/jquery.ui.touch-punch.min.js']);
+        $this->_template->addJs([
+            'js/jquery.tagit.js',
+            'js/jquery.ui.touch-punch.min.js',
+            'attach-quizzes/page-js/index.js'
+        ]);
         $this->_template->render();
     }
 
@@ -532,6 +536,11 @@ class CoursesController extends DashboardController
         $frm = $this->getSettingForm($offerCetificate);
         $frm->fill($data);
         $this->set('frm', $frm);
+
+        /* get quiz detail */
+        $data = QuizLinked::getQuizzes([$courseId], AppConstant::COURSE);
+        $this->set('quiz', current($data));
+
         $this->set('offerCetificate', $offerCetificate);
         $this->set('courseId', $courseId);
         $this->_template->render(false, false);
@@ -548,6 +557,17 @@ class CoursesController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
+        if ($post['course_certificate'] == AppConstant::YES && $post['course_certificate_type'] < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
+        }
+        // if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUTAION) {
+        //     /* get quiz detail */
+        //     $data = QuizLinked::getQuizzes([$post['course_id']], AppConstant::COURSE);
+        //     $data = current($data);
+        //     if (empty($data)) {
+        //         FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_A_QUIZ'));
+        //     }
+        // }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->setupSettings($post)) {
             FatUtility::dieJsonError($course->getError());
@@ -831,15 +851,37 @@ class CoursesController extends DashboardController
         if ($offerCetificate == true) {
             $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
             $fld->requirements()->setRequired();
+
         } else {
             $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
         }
         $types = Certificate::getTypes();
         unset($types[Certificate::TYPE_QUIZ_EVALUATION]);
-        $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
-        /* $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
-        $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
-        $fld->requirements()->setRequired(); */
+        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
+
+        
+        $fld = $frm->addHiddenField(Label::getLabel('LBL_QUIZ'), 'course_quiz_id');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setRequired(false);
+        $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_ATTACH_A_QUIZ'));
+        $reqFld = new FormFieldRequirement('course_quiz_id', '');
+        $reqFld->setRequired(true);
+        $notReqFld = new FormFieldRequirement('course_quiz_id', '');
+        $notReqFld->setRequired(false);
+
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Certificate::TYPE_COURSE_EVALUTAION,
+            'eq',
+            'course_quiz_id',
+            $reqFld
+        );
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Certificate::TYPE_COURSE_EVALUTAION,
+            'ne',
+            'course_quiz_id',
+            $notReqFld
+        );
+
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_save', Label::getLabel('LBL_SAVE'));

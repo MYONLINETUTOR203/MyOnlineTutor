@@ -534,8 +534,6 @@ class Course extends MyAppModel
         $tagsList = explode(',', $data['course_tags']);
         $langData = [
             'course_id' => $this->getMainTableRecordId(),
-            /* 'course_welcome' => $data['course_welcome'],
-              'course_congrats' => $data['course_congrats'], */
             'course_srchtags' => json_encode($tagsList),
         ];
         if (!$this->setupLangData($langData)) {
@@ -543,6 +541,16 @@ class Course extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+
+        if ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUTAION) {
+            $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
+            if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quiz_id']])) {
+                $db->rollbackTransaction();
+                $this->error = $quiz->getError();
+                return false;
+            }
+        }
+
         if (!$db->commitTransaction()) {
             $this->error = $db->getError();
             return false;

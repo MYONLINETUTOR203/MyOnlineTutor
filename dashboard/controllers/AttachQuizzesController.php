@@ -81,6 +81,9 @@ class AttachQuizzesController extends DashboardController
         /* get quizzes list */
         $srch = new QuizSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $srch->applyPrimaryConditions();
+        if ($post['record_type'] == AppConstant::COURSE) {
+            $srch->addCondition('quiz_type', '=', Quiz::TYPE_AUTO_GRADED);
+        }
         $srch->applySearchConditions($post);
         if (count($quizzes) > 0) {
             $srch->addCondition('quiz_id', 'NOT IN', $quizzes);
@@ -134,6 +137,7 @@ class AttachQuizzesController extends DashboardController
         if (!$quiz->setup($post['quilin_record_id'], $post['quilin_record_type'], $post['quilin_quiz_id'])) {
             FatUtility::dieJsonError($quiz->getError());
         }
+
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_QUIZZES_ATTACHED_SUCCESSFULLY'));
     }
     

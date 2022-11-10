@@ -48,11 +48,17 @@ $(function () {
             $.facebox(response, 'facebox-large');
         });
     };
-    removeQuiz = function (id, obj) {
+    removeQuiz = function (id) {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
+            if ($('.course-setting-js').length > 0) {
+                $('.attachedQuizJs').remove();
+                $('.attachQuizLinkJs').show();
+                return;
+            }
+
             $('.quizRow' + id).remove();
             $('.noRecordJS').hide();
             if ($('.quizRowJs').length == 0) {
@@ -73,5 +79,12 @@ $(function () {
             $('.userListJs').removeClass('is-active').removeClass('is-expanded').hide();
             $('.userListJs' + id).addClass('is-active').addClass('is-expanded').show();
         }
+    };
+    setQuiz = function (id, obj) {
+        $('.quizTitleJs').text($(obj).data('title'));
+        $('input[name="course_quiz_id"]').val(id);
+        $('.attachedQuizJs').show();
+        $('.attachQuizLinkJs').hide();
+        $.facebox.close();
     };
 });

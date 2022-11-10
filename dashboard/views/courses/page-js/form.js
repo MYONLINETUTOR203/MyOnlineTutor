@@ -1,4 +1,5 @@
 var lectureId;
+var TYPE_COURSE_EVALUTAION;
 $(function () {
     generalForm = function () {
         fcom.ajax(fcom.makeUrl('Courses', 'generalForm', [courseId]), '', function (res) {
@@ -393,11 +394,23 @@ $(function () {
     getCertificates = function () {
         if ($("input[name='course_certificate']:checked").val() == 1) {
             $('.certTypeJs').show();
+            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": true }');
         } else {
-            $('.certTypeJs').hide();
-            $("select[name='course_certificate_type']").val('');
+            $('.certTypeJs, .quizSectionJs').hide();
+            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": false }').val('');
         }
     }
+    showQuizSection = function (val) {
+        if (val == 3) {
+            $('.quizSectionJs').show();
+        } else {
+            $('.quizSectionJs').hide();
+        }
+    };
+    removeAttachedQuiz = function () {
+        $('.attachedQuizJs').hide();
+        $('.attachQuizLinkJs').show();
+    };
 });
 $(document).ready(function(){
     $('body').on('input', 'input[type="text"], textarea', function () {
