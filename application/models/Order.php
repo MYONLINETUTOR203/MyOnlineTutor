@@ -726,6 +726,12 @@ class Order extends MyAppModel
                 $this->error = $progress->getError();
                 return false;
             }
+
+            $quiz = new QuizLinked(0, $this->userId);
+            if (!$quiz->bindUserQuiz($record['ordcrs_course_id'], AppConstant::COURSE)) {
+                $this->error = $quiz->getError();
+                return false;
+            }
         }
         return true;
     }

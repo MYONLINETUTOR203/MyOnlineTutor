@@ -155,6 +155,16 @@ class QuizLinked extends MyAppModel
             }
             $quizzesData[$quiz['quiz_id']] = $data + ['quilin_id' => $quizLink->getId()];
             $quizLinkedIds[] = $quizLink->getId();
+
+            if ($recordType == AppConstant::COURSE) {
+                $course = new Course($recordId);
+                $course->setFldValue('course_quilin_id', $quizLink->getId());
+                if (!$course->save()) {
+                    $db->rollbackTransaction();
+                    $this->error = $course->getError();
+                    return false;
+                }
+            }
         }
         /* setup user quizzes */
         if (!$this->setupUserQuizzes($recordId, $recordType, $quizLinkedIds)) {

@@ -14,6 +14,8 @@ $tagFld = $frm->getField('course_tags');
 $tagFld->addFieldTagAttribute('id', "tagsinput");
 $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_COURSE_TAGS'));
 ($frm->getField('btn_approval'))->setFieldTagAttribute('onclick', 'submitForReview();');
+$quizId = $frm->getField('course_quilin_id');
+$quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
 ?>
 <?php echo $frm->getFormTag(); ?>
 <div class="page-layout">
@@ -87,7 +89,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                     </div>
                                 </div>
                             </div>
-                            <div class="row quizSectionJs" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUTAION) ? 'block' : 'none'; ?>">
+                            <div class="row quizSectionJs" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
@@ -106,7 +108,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                                             <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
                                                         </svg>
                                                         <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
-                                                        <?php echo $frm->getFieldHtml('course_quiz_id'); ?>
+                                                        <?php echo $quizId->getHtml(); ?>
                                                     </a>
                                                 </div>
                                             </label>

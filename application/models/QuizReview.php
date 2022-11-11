@@ -219,9 +219,9 @@ class QuizReview extends MyAppModel
                 $this->error = $quiz->getError();
                 return false;
             }
+            $this->sendQuizEvaluationSubmissionNotification();
         }
         $db->commitTransaction();
-        $this->sendQuizEvaluationSubmissionNotification();
         return true;
     }
 
@@ -254,7 +254,7 @@ class QuizReview extends MyAppModel
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
             $sessionTitle = $sessionData['grpcls_title'];
-        } else {
+        } elseif ($data['quilin_record_type'] == AppConstant::LESSON) {
             $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
             $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
             $srch->joinTable(
@@ -275,6 +275,13 @@ class QuizReview extends MyAppModel
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
                 Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
             );
+        } else {
+            $srch = new CourseSearch($this->langId, 0, 0);
+            $srch->setPageSize(1);
+            $srch->addCondition('course.course_id', '=', $data['quilin_record_id']);
+            $srch->addFld('course_title');
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['course_title'];
         }
 
         $srch = new SearchBase(User::DB_TBL);

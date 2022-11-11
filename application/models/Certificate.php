@@ -12,7 +12,7 @@ class Certificate extends MyAppModel
 
     const TYPE_QUIZ_EVALUATION = 1;
     const TYPE_COURSE_COMPLETION = 2;
-    const TYPE_COURSE_EVALUTAION = 3;
+    const TYPE_COURSE_EVALUATION = 3;
     
     private $id;
     private $code;
@@ -46,7 +46,7 @@ class Certificate extends MyAppModel
         $arr = [
             static::TYPE_QUIZ_EVALUATION => Label::getLabel('LBL_QUIZ_EVALUATION'),
             static::TYPE_COURSE_COMPLETION => Label::getLabel('LBL_COURSE_COMPLETION'),
-            static::TYPE_COURSE_EVALUTAION => Label::getLabel('LBL_COURSE_EVALUATION')
+            static::TYPE_COURSE_EVALUATION => Label::getLabel('LBL_COURSE_EVALUATION')
         ];
         return AppConstant::returArrValue($arr, $key);
     }

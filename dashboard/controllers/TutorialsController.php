@@ -85,6 +85,15 @@ class TutorialsController extends DashboardController
         $progress = new CourseProgress($progressId);
         $lectureStats = $progress->getLectureStats($sections);
         
+        /* get quiz */
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_quilin_id', '=', $course['course_quilin_id']);
+        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quizat_user_id', '=', $this->siteUserId);
+        $srch->addMultipleFields(['quizat_id', 'quilin_title']);
+        $this->set('quiz', FatApp::getDb()->fetch($srch->getResultSet()));
+
         $this->sets([
             'course' => $course,
             'sections' => $sections,
@@ -530,6 +539,12 @@ class TutorialsController extends DashboardController
             'post' => $post,
             'courseId' => $courseId,
         ]);
+        $this->_template->render(false, false);
+    }
+
+    public function quiz()
+    {
+        $this->set('quizId', FatApp::getPostedData('id'));
         $this->_template->render(false, false);
     }
 

@@ -159,10 +159,34 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                                                 ?>
                                             </div>
                                         </div>
-                                    </div><?php
-                                        }
-                                    }
+                                    </div>
+                                <?php } ?>
+                            <?php } ?>
+                            <?php if (!empty($quiz)) { ?>
+                                <div class="toggle-control  quizListJs">
+                                    <div class="">
+                                        <h6>
+                                            <a href="javascript:void(0);" onclick="openQuiz('<?php echo $quiz['quizat_id'] ?>');">
+                                                <?php
+                                                echo Label::getLabel('LBL_QUIZ') . ': ';
+                                                echo $quiz['quilin_title'];
+                                                ?>
+                                            </a>
+                                        </h6>
+                                        <?php /*
+                                        <p>
+                                            <span class="completedLecture<?php echo $section['section_id'] ?>">
+                                                <?php echo isset($lectureStats[$section['section_id']]) ? count($lectureStats[$section['section_id']]) : 0; ?>
+                                            </span>
+                                            <?php
+                                            echo ' / ' . $section['section_lectures'];
+                                            $duration = YouTube::convertDuration($section['section_duration']);
+                                            echo !empty($duration) ? ' | ' . $duration : '';
                                             ?>
+                                        </p> */ ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         </div>
                     </sidebar>
                     <!-- ] -->

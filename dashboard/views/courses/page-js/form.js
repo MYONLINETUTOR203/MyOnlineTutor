@@ -1,5 +1,4 @@
 var lectureId;
-var TYPE_COURSE_EVALUTAION;
 $(function () {
     generalForm = function () {
         fcom.ajax(fcom.makeUrl('Courses', 'generalForm', [courseId]), '', function (res) {
@@ -168,7 +167,7 @@ $(function () {
         if (criteria.course_sections == 1 && criteria.course_lectures == 1) {
             $('.curriculum-js').removeClass('is-progress').addClass('is-completed');
         }
-        if (criteria.course_tags == 1) {
+        if (criteria.course_tags == 1 && criteria.course_quiz == 1) {
             $('.course-setting-js').removeClass('is-progress').addClass('is-completed');
         }
         if (criteria.course_is_eligible == true) {
@@ -409,6 +408,7 @@ $(function () {
     };
     removeAttachedQuiz = function () {
         $('.attachedQuizJs').hide();
+        $('input[name="course_quilin_id"]').val('');
         $('.attachQuizLinkJs').show();
     };
 });

@@ -496,7 +496,7 @@ class CoursesController extends DashboardController
         }
         /* validate course id */
         if (!$courseData = Course::getAttributesById($courseId, [
-            'course_id', 'course_certificate', 'course_certificate_type'
+            'course_id', 'course_certificate', 'course_certificate_type', 'course_quilin_id'
         ])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
@@ -508,7 +508,8 @@ class CoursesController extends DashboardController
         $data = [
             'course_id' => $courseId,
             'course_certificate' => $courseData['course_certificate'],
-            'course_certificate_type' => $courseData['course_certificate_type']
+            'course_certificate_type' => $courseData['course_certificate_type'],
+            'course_quilin_id' => $courseData['course_quilin_id']
         ];
         /* get form data from lang table */
         $srch = new SearchBase(Course::DB_TBL_LANG);
@@ -560,14 +561,9 @@ class CoursesController extends DashboardController
         if ($post['course_certificate'] == AppConstant::YES && $post['course_certificate_type'] < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
         }
-        // if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUTAION) {
-        //     /* get quiz detail */
-        //     $data = QuizLinked::getQuizzes([$post['course_id']], AppConstant::COURSE);
-        //     $data = current($data);
-        //     if (empty($data)) {
-        //         FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_A_QUIZ'));
-        //     }
-        // }
+        if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_QUIZ'));
+        }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->setupSettings($post)) {
             FatUtility::dieJsonError($course->getError());
@@ -860,25 +856,25 @@ class CoursesController extends DashboardController
         $typeFld = $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
 
         
-        $fld = $frm->addHiddenField(Label::getLabel('LBL_QUIZ'), 'course_quiz_id');
+        $fld = $frm->addHiddenField(Label::getLabel('LBL_QUIZ'), 'course_quilin_id');
         $fld->requirements()->setInt();
         $fld->requirements()->setRequired(false);
         $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_ATTACH_A_QUIZ'));
-        $reqFld = new FormFieldRequirement('course_quiz_id', '');
+        $reqFld = new FormFieldRequirement('course_quilin_id', '');
         $reqFld->setRequired(true);
-        $notReqFld = new FormFieldRequirement('course_quiz_id', '');
+        $notReqFld = new FormFieldRequirement('course_quilin_id', '');
         $notReqFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Certificate::TYPE_COURSE_EVALUTAION,
+            Certificate::TYPE_COURSE_EVALUATION,
             'eq',
-            'course_quiz_id',
+            'course_quilin_id',
             $reqFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Certificate::TYPE_COURSE_EVALUTAION,
+            Certificate::TYPE_COURSE_EVALUATION,
             'ne',
-            'course_quiz_id',
+            'course_quilin_id',
             $notReqFld
         );
 

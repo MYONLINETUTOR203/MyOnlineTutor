@@ -222,4 +222,9 @@ $(function () {
         });
         loadLecture(lectureId);
     };
+    openQuiz = function (id) {
+        fcom.ajax(fcom.makeUrl('Tutorials', 'quiz'), { id }, function (res) {
+            $('.videoContentJs').html(res);
+        });
+    };
 });

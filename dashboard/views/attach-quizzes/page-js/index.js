@@ -53,12 +53,6 @@ $(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('AttachQuizzes', 'delete'), { id }, function (response) {
-            if ($('.course-setting-js').length > 0) {
-                $('.attachedQuizJs').remove();
-                $('.attachQuizLinkJs').show();
-                return;
-            }
-
             $('.quizRow' + id).remove();
             $('.noRecordJS').hide();
             if ($('.quizRowJs').length == 0) {
@@ -82,7 +76,7 @@ $(function () {
     };
     setQuiz = function (id, obj) {
         $('.quizTitleJs').text($(obj).data('title'));
-        $('input[name="course_quiz_id"]').val(id);
+        $('input[name="course_quilin_id"]').val(id);
         $('.attachedQuizJs').show();
         $('.attachQuizLinkJs').hide();
         $.facebox.close();
