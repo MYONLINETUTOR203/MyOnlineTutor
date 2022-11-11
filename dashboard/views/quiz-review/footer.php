@@ -1,18 +1,20 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <!-- [ FOOTER ========= -->
-<footer class="footer">
-    <div class="container">
-        <p>
-            <?php
-            if (MyUtility::isDemoUrl()) {
-                echo CommonHelper::replaceStringData(Label::getLabel('LBL_COPYRIGHT_TEXT'), ['{YEAR}' => '&copy; ' . date("Y"), '{PRODUCT}' => '<a target="_blank"  href="https://yo-coach.com">Yo!Coach</a>', '{OWNER}' => '<a target="_blank"  class="underline color-primary" href="https://www.fatbit.com/">FATbit Technologies</a>']);
-            } else {
-                echo Label::getLabel('LBL_COPYRIGHT') . ' &copy; ' . date("Y ") . FatApp::getConfig("CONF_WEBSITE_NAME_" . $siteLangId, FatUtility::VAR_STRING);
-            }
-            ?>
-        </p>
-    </div>
-</footer>
+<?php if (!$courseQuiz) { ?>
+    <footer class="footer">
+        <div class="container">
+            <p>
+                <?php
+                if (MyUtility::isDemoUrl()) {
+                    echo CommonHelper::replaceStringData(Label::getLabel('LBL_COPYRIGHT_TEXT'), ['{YEAR}' => '&copy; ' . date("Y"), '{PRODUCT}' => '<a target="_blank"  href="https://yo-coach.com">Yo!Coach</a>', '{OWNER}' => '<a target="_blank"  class="underline color-primary" href="https://www.fatbit.com/">FATbit Technologies</a>']);
+                } else {
+                    echo Label::getLabel('LBL_COPYRIGHT') . ' &copy; ' . date("Y ") . FatApp::getConfig("CONF_WEBSITE_NAME_" . $siteLangId, FatUtility::VAR_STRING);
+                }
+                ?>
+            </p>
+        </div>
+    </footer>
+<?php } ?>
 <!-- ] -->
 </page>
 <!-- Custom Loader -->

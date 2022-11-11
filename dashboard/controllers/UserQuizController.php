@@ -61,6 +61,7 @@ class UserQuizController extends DashboardController
         $this->set('data', $data);
         $attempt = new QuizAttempt(0, $data['quizat_user_id']);
         $this->set('attempts', $attempt->getAttemptCount($data['quizat_quilin_id']));
+        $this->set('courseQuiz', ($data['quilin_record_type'] === AppConstant::COURSE));
         $this->_template->render();
     }
 
@@ -122,8 +123,11 @@ class UserQuizController extends DashboardController
             $this->redirect($data);
         }
 
-        $this->set('data', $data);
-        $this->set('attemptId', $id);
+        $this->sets([
+            'data' => $data,
+            'attemptId' =>  $id,
+            'courseQuiz' =>  ($data['quilin_record_type'] === AppConstant::COURSE)
+        ]);
 
         $this->_template->addJs('js/app.timer.js');
         $this->_template->render();
@@ -330,6 +334,7 @@ class UserQuizController extends DashboardController
             'attemptId' => $id,
             'canRetake' => $quiz->canRetake(),
             'canDownloadCertificate' => $quiz->canDownloadCertificate(),
+            'courseQuiz' => ($data['quilin_record_type'] === AppConstant::COURSE)
         ]);
         $this->_template->render();
     }

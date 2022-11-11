@@ -1,5 +1,6 @@
 <?php defined('SYSTEM_INIT') or die('Invalid Usage.'); ?>
 <!-- [ FOOTER ========= -->
+<?php if (!$courseQuiz) { ?>
 <footer class="footer">
     <div class="container">
         <p>
@@ -13,6 +14,7 @@
         </p>
     </div>
 </footer>
+<?php } ?>
 <!-- ] -->
 </page>
 <!-- Custom Loader -->

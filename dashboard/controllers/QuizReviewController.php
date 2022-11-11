@@ -45,6 +45,7 @@ class QuizReviewController extends DashboardController
 
         $attempt = new QuizAttempt(0, $data['quizat_user_id']);
         $this->set('attempts', $attempt->getAttemptCount($data['quizat_quilin_id']));
+        $this->set('courseQuiz', ($data['quilin_record_type'] === AppConstant::COURSE));
         $this->_template->render();
     }
 
@@ -82,6 +83,7 @@ class QuizReviewController extends DashboardController
             $this->set('user', User::getAttributesById($data['quizat_user_id'], ['user_first_name', 'user_last_name']));
         }
         $this->set('data', $quiz->get());
+        $this->set('courseQuiz', ($data['quilin_record_type'] === AppConstant::COURSE));
         $this->_template->render();
     }
 

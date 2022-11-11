@@ -225,6 +225,7 @@ $(function () {
     openQuiz = function (id) {
         fcom.ajax(fcom.makeUrl('Tutorials', 'quiz'), { id }, function (res) {
             $('.videoContentJs').html(res);
+            resizeIframe(50);
         });
     };
 });
