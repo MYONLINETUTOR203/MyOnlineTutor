@@ -393,6 +393,7 @@ $(document).ready(function () {
             };
             reader.readAsDataURL(input.files[0]);
         }
+        input.value = '';
     };
     getLangProfileInfoForm = function (id) {
         fcom.ajax(fcom.makeUrl('Account', 'userLangForm', [id]), '', function (response) {
