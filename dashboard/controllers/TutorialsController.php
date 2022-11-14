@@ -86,13 +86,7 @@ class TutorialsController extends DashboardController
         $lectureStats = $progress->getLectureStats($sections);
         
         /* get quiz */
-        $srch = new SearchBase(QuizAttempt::DB_TBL);
-        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
-        $srch->addCondition('quizat_quilin_id', '=', $course['course_quilin_id']);
-        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
-        $srch->addCondition('quizat_user_id', '=', $this->siteUserId);
-        $srch->addMultipleFields(['quizat_id', 'quilin_title']);
-        $this->set('quiz', FatApp::getDb()->fetch($srch->getResultSet()));
+        $this->set('quiz', $courseObj->getQuiz($course['course_quilin_id'])); 
 
         $this->sets([
             'course' => $course,
@@ -148,8 +142,10 @@ class TutorialsController extends DashboardController
         if (!$progress->setCurrentLecture($lectureId)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNABLE_TO_RENDER_NEXT_LECTURE._PLEASE_TRY_AGAIN'));
         }
+
         /* get previous and next lectures */
         $lectureIds = $progress->getNextPrevLectures();
+
         /* get lecture content */
         $srch = new LectureSearch($this->siteLangId);
         $srch->applyPrimaryConditions();
@@ -157,17 +153,27 @@ class TutorialsController extends DashboardController
         $srch->addCondition('lecture.lecture_id', 'IN', [$lectureId, $lectureIds['next'], $lectureIds['previous']]);
         $lectures = $srch->fetchAndFormat();
         $lecture = isset($lectures[$lectureId]) ? $lectures[$lectureId] : [];
+
+        /* get quiz id */
+        $quizLinkId = 0;
+        if ($lecture && !isset($lectures[$lectureIds['next']])) {
+            $quizLinkId = Course::getAttributesById($lecture['lecture_course_id'], 'course_quilin_id');
+        }
+
         /* get lecture resources */
         $resources = [];
         if (!empty($lecture)) {
             $lectureObj = new Lecture($lecture['lecture_id']);
             $resources = $lectureObj->getResources();
         }
+
         /* get lecture video */
         $resource = new Lecture($lectureId);
         $video = $resource->getMedia(Lecture::TYPE_RESOURCE_EXTERNAL_URL);
+
         /* get progress data */
         $progData = CourseProgress::getAttributesById($progressId, ['crspro_covered', 'crspro_progress']);
+
         $this->sets([
             'lecture' => $lecture,
             'previousLecture' => isset($lectures[$lectureIds['previous']]) ? $lectures[$lectureIds['previous']] : [],
@@ -176,6 +182,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'progData' => $progData,
             'video' => $video,
+            'quizLinkId' => $quizLinkId,
         ]);
         $this->_template->render(false, false, 'tutorials/get-lecture.php');
     }
@@ -542,9 +549,37 @@ class TutorialsController extends DashboardController
         $this->_template->render(false, false);
     }
 
-    public function quiz()
+    public function getQuizDetail()
     {
-        $this->set('quizId', FatApp::getPostedData('id'));
+        $quizLinkId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($quizLinkId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $courseObj = new Course(0, $this->siteUserId, 0, 0);
+        $quiz = $courseObj->getQuiz($quizLinkId);
+        if (!$quiz) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
+        }
+        $this->set('quiz', $quiz);
+
+        /* get last lecture id */
+        $srch = new SearchBase(Lecture::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('lecture_id');
+        $srch->addCondition('lecture_course_id', '=', $quiz['quilin_record_id']);
+        $srch->addOrder('lecture_order', 'DESC');
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $lecture = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->set('lectureId', $lecture['lecture_id']);
+
+        $this->_template->render(false, false);
+    }
+
+    public function getQuiz()
+    {
+        $quizId = FatApp::getPostedData('id');
+        $this->set('quizId', $quizId);
         $this->_template->render(false, false);
     }
 

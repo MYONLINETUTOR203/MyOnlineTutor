@@ -65,11 +65,11 @@ if ($lecture) {
                 $('.getPrevJs').attr('last-record', 1);
             }
         });
-    </script><?php
-            } else { ?>
+    </script>
+<?php } else { ?>
     <script>
         $(document).ready(function() {
             $('.getNextJs').attr('last-record', 1);
         });
-    </script> <?php
-            }
+    </script>
+<?php }

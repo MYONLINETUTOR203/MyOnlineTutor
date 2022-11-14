@@ -3,6 +3,15 @@ var notes = false;
 var lecture = false;
 var reviews = false;
 $(function () {
+    setupLayout = function (type = 'lecture') {
+        $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
+        $('.sidebarPanelJs').css({ 'display': '' });
+        $('.tutorialTabsJs ul li').removeClass('is-active').show();
+        $('.crsDetailTabJs').parent().addClass('is-active');
+        $('.lectureDetailJs, .tabsPanelJs').show();
+        $('.quizTitleJs, .lecTitleJs').hide();
+        (type == 'quiz') ? $('.quizTitleJs').show() : $('.lecTitleJs').show();
+    };
     loadLecture = function (lectureId) {
         if (lecture == false || lectureId > 0) {
             var progressId = $('#progressId').val();
@@ -13,11 +22,7 @@ $(function () {
                 lecture = true;
             });
         }
-        $('.lectureDetailJs, .notesJs, .reviewsJs, .tutorInfoJs').hide();
-        $('.sidebarPanelJs').css({'display': ''});
-        $('.tutorialTabsJs ul li').removeClass('is-active');
-        $('.crsDetailTabJs').parent().addClass('is-active');
-        $('.lectureDetailJs, .tabsPanelJs').show();
+        setupLayout();
     };
     getVideo = function (lectureId) {
         var progressId = $('#progressId').val();
@@ -39,10 +44,16 @@ $(function () {
         fcom.updateWithAjax(fcom.makeUrl('Tutorials', 'getLecture', [next]), {
             'progress_id': progressId,
         }, function (res) {
-            lecture = false;
             if (lectureCompleted == 1) {
                 markComplete(res.previous_lecture_id, 1);
             }
+
+            if (res.next_lecture_id == 0 && $('.quizListJs').length > 0) {
+                $('.quizListJs .quizLectureJs').click();
+                return;
+            }
+
+            lecture = false;
             loadLecture(res.next_lecture_id);
             setProgress();
         });
@@ -91,7 +102,7 @@ $(function () {
             lbl = lbl.replace("{percent}", res.progress);
             $('.progressPercent').html(lbl);
             $('#progressBarJs').prop('style', "--percent:" + parseInt(res.progress));
-            if (res.is_completed == true) {
+            if (res.is_completed == true && $('.quizListJs').length == 0) {
                 window.location = fcom.makeUrl('Tutorials', 'completed', [progressId]);
             }
         });
@@ -223,7 +234,18 @@ $(function () {
         loadLecture(lectureId);
     };
     openQuiz = function (id) {
-        fcom.ajax(fcom.makeUrl('Tutorials', 'quiz'), { id }, function (res) {
+        fcom.ajax(fcom.makeUrl('Tutorials', 'getQuizDetail'), { id }, function (res) {
+            $('.lectureDetailJs').html(res);
+            $('.lectureTitleJs').text($('.quizListJs .lectureName').text());
+            $('.lecturesListJs .lecture, .sectionListJs').removeClass('is-active');
+            $('.quizListJs').addClass('is-active');
+            $('.lecturesListJs').parent().hide();
+            setupLayout('quiz');
+            $('.crsNotesJs').hide();
+        });
+    };
+    getQuiz = function (id) {
+        fcom.ajax(fcom.makeUrl('Tutorials', 'getQuiz'), { id }, function (res) {
             $('.videoContentJs').html(res);
             resizeIframe(50);
         });

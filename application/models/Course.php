@@ -1178,4 +1178,14 @@ class Course extends MyAppModel
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
+    public function getQuiz(int $quilinId)
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_quilin_id', '=', $quilinId);
+        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quizat_user_id', '=', $this->userId);
+        $srch->addMultipleFields(['quizat_id', 'quilin_title', 'quilin_detail', 'quilin_record_id']);
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
 }
