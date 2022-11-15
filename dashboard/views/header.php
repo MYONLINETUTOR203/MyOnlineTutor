@@ -56,9 +56,9 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
         <?php } if (FatApp::getConfig('CONF_ENABLE_PWA', FatUtility::VAR_BOOLEAN, false)) { ?>
             <link rel="manifest" href="<?php echo MyUtility::makeUrl('Pwa', '', [], CONF_WEBROOT_FRONTEND); ?>">
             <script>
-                if ("serviceWorker" in navigator) {
-                    navigator.serviceWorker.register("<?php echo CONF_WEBROOT_FRONTEND; ?>sw.js");
-                }
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("<?php echo CONF_WEBROOT_FRONTEND; ?>sw.js");
+            }
             </script>
         <?php } ?>
         <?php echo Common::setThemeColorStyle(true); ?>
@@ -193,7 +193,7 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                                     <div class="profile__meta d-flex align-items-center">
                                         <div class="profile__media margin-right-4">
                                             <div class="avtar" data-title="<?php echo CommonHelper::getFirstChar($siteUser['user_first_name']); ?>">
-                                                <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $siteUserId, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '" alt="' . $siteUser['user_first_name'] . '" />'; ?>
+                                                <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $siteUserId, Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '?t=' . time() . '" alt="' . $siteUser['user_first_name'] . '" />'; ?>
                                             </div>
                                         </div>
                                         <div class="profile__details">
