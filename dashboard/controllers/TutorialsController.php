@@ -341,10 +341,22 @@ class TutorialsController extends DashboardController
         if (!$data['crspro_completed']) {
             FatUtility::exitWithErrorCode(404);
         }
-        $ordcrs = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$order = $ordcrs->getOrderCourseById()) {
+        
+        $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('ordcrs.ordcrs_id', '=', $data['crspro_ordcrs_id']);
+        $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+        $srch->addMultipleFields([
+            'ordcrs.ordcrs_id', 'ordcrs.ordcrs_course_id', 'ordcrs.ordcrs_certificate_number', 'orders.order_user_id',
+            'course_quilin_id', 'course.course_id', 'course_certificate', 'course_certificate_type', 'ordcrs_status',
+            'crspro_completed'
+        ]);
+        $order = $srch->fetchAndFormat(true);
+        $order = current($order);
+        if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
+
         /* fetch course details */
         $courseObj = new Course($order['ordcrs_course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course = $courseObj->get()) {
@@ -354,6 +366,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'progress' => $data,
             'course' => $course,
+            'order' => $order,
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name'])
         ]);
         $this->_template->addJs('js/jquery.barrating.min.js');

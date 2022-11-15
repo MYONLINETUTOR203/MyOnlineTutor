@@ -51,6 +51,10 @@
                                         $controller = "GroupClasses";
                                         $sessionType = Label::getLabel('LBL_CLASS');
                                         $slug = $session['grpcls_slug'];
+                                    } elseif ($data['quilin_record_type'] == AppConstant::COURSE) {
+                                        $controller = "Courses";
+                                        $sessionType = Label::getLabel('LBL_COURSE');
+                                        $slug = $session['course_slug'];
                                     }
                                     ?>
                                     <a href="<?php echo MyUtility::makeUrl($controller, 'view', [$slug], CONF_WEBROOT_FRONTEND); ?>">

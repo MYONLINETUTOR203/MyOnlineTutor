@@ -409,6 +409,10 @@ class QuizAttempt extends MyAppModel
      */
     public function canDownloadCertificate()
     {
+        if ($this->quiz['quilin_record_type'] == AppConstant::COURSE) {
+            $this->error = Label::getLabel('LBL_CERTIFICATE_NOT_AVAILABLE');
+            return false;
+        }
         if (
             $this->quiz['quilin_certificate'] == AppConstant::NO ||
             $this->quiz['quizat_evaluation'] == static::EVALUATION_PENDING
@@ -717,5 +721,20 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         return true;
+    }
+
+    public static function getQuizzes(array $quizLinkIds, int $userId)
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_quilin_id', 'IN', $quizLinkIds);
+        $srch->addCondition('quizat_active', '=', AppConstant::YES);
+        $srch->addCondition('quizat_user_id', '=', $userId);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields([
+            'quilin_record_id', 'quizat_evaluation', 'quilin_certificate', 'quizat_status', 'quizat_id',
+            'quizat_certificate_number'
+        ]);
+        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_record_id');
     }
 }

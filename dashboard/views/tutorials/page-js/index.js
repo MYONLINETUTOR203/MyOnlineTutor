@@ -250,4 +250,8 @@ $(function () {
             resizeIframe(50);
         });
     };
+    finishQuiz = function () {
+        var progressId = $('#progressId').val();
+        window.location = fcom.makeUrl('Tutorials', 'completed', [progressId]);
+    }
 });

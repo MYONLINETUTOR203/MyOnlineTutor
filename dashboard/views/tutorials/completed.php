@@ -41,7 +41,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                         </svg>
                         <?php echo Label::getLabel('LBL_GO_BACK_TO_COURSE_LISTING'); ?>
                     </a>
-                    <?php if ($course['course_certificate'] == AppConstant::YES) { ?>
+                    <?php if ($order['can_download_certificate'] == true) { ?>
                         <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$progressId], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1">
                             <svg class="icon icon--png icon--small margin-right-2">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
