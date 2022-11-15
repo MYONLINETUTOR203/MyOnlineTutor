@@ -15,6 +15,8 @@ if (!$canEdit || $frmType == Configurations::FORM_MEDIA) {
 $tbid = isset($tabId) ? $tabId : 'tabs_' . $frmType;
 switch ($frmType) {
     case Configurations::FORM_OPTIONS:
+        $fld = $frm->getField('CONF_GROUP_CLASS_DURATION');
+        $fld->setWrapperAttribute('class', 'form__list--check');
         $registrationApproval = $frm->getField('CONF_ADMIN_APPROVAL_REGISTRATION');
         $registrationApproval->setFieldTagAttribute('id', 'registrationApproval');
         $registrationApproval->setFieldTagAttribute('class', 'registration-js');
