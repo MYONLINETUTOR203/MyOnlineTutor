@@ -103,16 +103,16 @@ class PwaController extends AdminBaseController
         $fld->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Description') . '</small>';
         $fld = $frm->addFileUpload(Label::getLabel('PWALBL_App_Icon'), 'icon', ['accept' => 'image/png']);
         $fld->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_App_Icon') . '</small>';
-        $frm->addHTML('', 'icon_img', '');
-        $frm->addFileUpload(Label::getLabel('PWALBL_Splash_Icon'), 'splash_icon', ['accept' => 'image/png'])
-            ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Spash_Icon') . '</small>';
-        $frm->addHTML('', 'splash_icon_img', '');
+        $fld->attachField($frm->addHTML('', 'icon_img', ''));
+        $fld = $frm->addFileUpload(Label::getLabel('PWALBL_Splash_Icon'), 'splash_icon', ['accept' => 'image/png']);
+        $fld->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Spash_Icon') . '</small>';
+        $fld->attachField($frm->addHTML('', 'splash_icon_img', ''));
         $frm->addRequiredField(Label::getLabel('PWALBL_Background_Color'), 'pwa_settings[background_color]')
-            ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Background_color') . '</small>';
+                ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Background_color') . '</small>';
         $frm->addRequiredField(Label::getLabel('PWALBL_Theme_Color'), 'pwa_settings[theme_color]')
-            ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Theme_Color') . '</small>';
+                ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Theme_Color') . '</small>';
         $frm->addRequiredField(Label::getLabel('PWALBL_Start_Page'), 'pwa_settings[start_url]')
-            ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Start_Page') . '</small>';
+                ->htmlAfterField = '<small>' . Label::getLabel('HTMLAFTER_PWA_Start_Page') . '</small>';
         $orientation = ['portrait' => Label::getLabel('PWALBL_PORTRAIT'), 'landscape' => Label::getLabel('PWALBL_LANDSCAPE')];
         $fld = $frm->addSelectBox(Label::getLabel('PWALBL_Orientation'), 'pwa_settings[orientation]', $orientation, '', [], '');
         $fld->requirements()->setRequired();
@@ -138,4 +138,5 @@ class PwaController extends AdminBaseController
             'browser' => Label::getLabel('PWALBL_BROWSER')
         ];
     }
+
 }
