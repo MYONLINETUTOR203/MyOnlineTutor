@@ -3,6 +3,8 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $frm->setFormTagAttribute('class', 'form');
 $frm->developerTags['colClassPrefix'] = 'col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('remember_me');
+$fld->setWrapperAttribute('class', 'set-remember');
 $fldPassword = $frm->getField('password');
 $fldPassword->changeCaption('');
 $fldPassword->captionWrapper = [

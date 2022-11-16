@@ -38,6 +38,7 @@ class SaleStat extends FatModel
             $record = new TableRecord(static::DB_TBL);
             $record->assignValues($sale);
             if (!$record->addNew([], $sale)) {
+                $db->rollbackTransaction();
                 $this->error = $record->getError();
                 return false;
             }
@@ -50,6 +51,7 @@ class SaleStat extends FatModel
         $record = new TableRecord(Configurations::DB_TBL);
         $record->setFldValue('conf_val', date('Y-m-d'));
         if (!$record->update(['smt' => 'conf_name = ?', 'vals' => ['CONF_SALES_REPORT_GENERATED_DATE']])) {
+            $db->rollbackTransaction();
             $this->error = $record->getError();
             return false;
         }

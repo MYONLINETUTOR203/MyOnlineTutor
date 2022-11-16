@@ -148,6 +148,7 @@ var isRuningTeacherQualificationFormAjax = false;
             };
             reader.readAsDataURL(input.files[0]);
         }
+        input.value = '';
     };
     sumbmitProfileImage = function () {
         if (cropObj) {

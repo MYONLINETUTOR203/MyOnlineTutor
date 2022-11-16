@@ -5,6 +5,8 @@ $frm->setFormTagAttribute('name', 'signinFrmPopUp');
 $frm->setFormTagAttribute('id', 'signinFrmPopUp');
 $frm->developerTags['colClassPrefix'] = 'col-sm-';
 $frm->developerTags['fld_default_col'] = 12;
+$fld = $frm->getField('remember_me');
+$fld->setWrapperAttribute('class','set-remember');
 $fldPassword = $frm->getField('password');
 $fldPassword->changeCaption('');
 $fldPassword->captionWrapper = [

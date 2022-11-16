@@ -3761,6 +3761,10 @@ body.sort-active {
   .section--upcoming-class .slider--onethird .slick-prev {
     left: -4%; } }
 
+@media (min-width: 1199px) {
+  .section .container--narrow {
+    width: 92%; } }
+
 .box.box--narrow .field_label {
   display: block;
   width: 100%; }
