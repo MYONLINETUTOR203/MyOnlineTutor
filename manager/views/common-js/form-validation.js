@@ -276,10 +276,10 @@
                 /* $('#'+this.settings.summaryElementId).html(''); */
             }
             var obj = this,
-                field = obj.field,
-                errorClass = "errorlist",
-                errorlist = $(document.createElement("ul")).addClass(errorClass).addClass(clname),
-                types = {};
+                    field = obj.field,
+                    errorClass = "errorlist",
+                    errorlist = $(document.createElement("ul")).addClass(errorClass).addClass(clname),
+                    types = {};
             if (jQuery(field).attr('data-fatreq')) {
                 var s = eval('[' + jQuery(field).attr('data-fatreq') + ']');
                 types = s[0];
@@ -369,14 +369,13 @@
                         break;
                     case 3:
                         if (field.attr('type') && field.attr('type').toLowerCase() === 'checkbox') {
-                            /* field.parent().after(errorlist.empty()); */
                             if (field.parents('.form__list--check').length > 0) {
-                                field.parents('.form__list--check').before(errorlist.empty());
+                                field.parents('.form__list--check').find('ul').after(errorlist.empty());
                             } else {
-                                field.parent().before(errorlist.empty());
+                                field.parent().find('ul').after(errorlist.empty());
                             }
                         } else {
-                            field.after(errorlist.empty());
+                            field.find('ul').after(errorlist.empty());
                         }
                         break;
                     case 0:
@@ -387,7 +386,7 @@
                         alert(errors[error]);
                         return;
                     } else {
-                        var li = $(document.createElement('li')).append($(document.createElement('a')).html(errors[error]).attr({ 'href': 'javascript:void(0);' }).bind('click', function () {
+                        var li = $(document.createElement('li')).append($(document.createElement('a')).html(errors[error]).attr({'href': 'javascript:void(0);'}).bind('click', function () {
                             $(field).focus();
                         }));
                         if (this.settings.errordisplay == 1) {
@@ -457,7 +456,7 @@
         var entered = fld.val();
         $.ajax({
             url: fcom.makeUrl('checkunique', 'check'), type: 'POST', dataType: 'json',
-            data: { 'val': entered, 'tbl': tbl, 'tbl_fld': tbl_fld, 'tbl_key': tbl_key, 'key_val': key_fld.val(), 'constraints': constraints },
+            data: {'val': entered, 'tbl': tbl, 'tbl_fld': tbl_fld, 'tbl_key': tbl_key, 'key_val': key_fld.val(), 'constraints': constraints},
             success: function (ans) {
                 fld.removeClass('field-processing');
                 $(fld).attr('data-mbsunichk', 1);

@@ -1676,5 +1676,9 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 ALTER TABLE `tbl_courses` ADD `course_certificate_type` TINYINT(4) NOT NULL AFTER `course_certificate`; 
 UPDATE `tbl_courses` SET `course_certificate_type` = '2';
 
+
 ALTER TABLE `tbl_courses` ADD `course_quilin_id` INT NOT NULL AFTER `course_certificate_type`; 
 UPDATE `tbl_configurations` SET `conf_val` = '[\"course_sections\",\"course_lectures\",\"course_welcome\",\"course_congrats\",\"course_tags\",\"course_currency_id\",\"course_price\",\"course_image\",\"course_preview_video\",\"courses_intended_learners\", \"course_quiz\"]' WHERE `tbl_configurations`.`conf_name` = 'CONF_COURSE_APPROVAL_ELIGIBILITY_CRITERIA';
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.8.20221116' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+

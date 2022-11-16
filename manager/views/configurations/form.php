@@ -1,6 +1,6 @@
 <?php
 defined('SYSTEM_INIT') or die('Invalid Usage.');
-$frm->setFormTagAttribute('class', 'web_form layout--' . $formLayout);
+$frm->setFormTagAttribute('class', 'web_form form_horizontal layout--' . $formLayout);
 $frm->developerTags['colClassPrefix'] = 'col-md-';
 $frm->developerTags['fld_default_col'] = '12';
 if ($lang_id > 0) {
@@ -15,6 +15,8 @@ if (!$canEdit || $frmType == Configurations::FORM_MEDIA) {
 $tbid = isset($tabId) ? $tabId : 'tabs_' . $frmType;
 switch ($frmType) {
     case Configurations::FORM_OPTIONS:
+        $fld = $frm->getField('CONF_GROUP_CLASS_DURATION');
+        $fld->setWrapperAttribute('class', 'form__list--check');
         $registrationApproval = $frm->getField('CONF_ADMIN_APPROVAL_REGISTRATION');
         $registrationApproval->setFieldTagAttribute('id', 'registrationApproval');
         $registrationApproval->setFieldTagAttribute('class', 'registration-js');

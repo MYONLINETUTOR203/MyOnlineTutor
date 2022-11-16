@@ -16,14 +16,10 @@ if (!$canEdit) {
     $submitBtn = $frm->getField('btn_submit');
     $frm->removeField($submitBtn);
 }
-$frm->setFormTagAttribute('class', 'web_form');
+$frm->setFormTagAttribute('class', 'web_form form_horizontal');
 $frm->developerTags = ['colClassPrefix' => 'col-md-', 'fld_default_col' => 12];
 $frm->getField('pwa_settings[background_color]')->overrideFldType('color');
 $frm->getField('pwa_settings[theme_color]')->overrideFldType('color');
-$frm->getField('icon')->developerTags['col'] = 6;
-$frm->getField('icon_img')->developerTags['col'] = 6;
-$frm->getField('splash_icon')->developerTags['col'] = 6;
-$frm->getField('splash_icon_img')->developerTags['col'] = 6;
 $frm->setFormTagAttribute('onsubmit', 'pwaSetup(this); return(false);');
 ?>
 <div class='page'>

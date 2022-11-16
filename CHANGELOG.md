@@ -1,5 +1,24 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.8.20221116
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+	#068333 - Order type for courses is not showing correct.
+	#068282 - Certificate form buttons are not coming properly when changing English to Arabic language
+	#068281 - Certificate form fields are not coming properly when changing Arabic to English language
+	#068245 - Notices are coming when adding lecture video and youtube data api key is wrong
+	#068244 - Processing loader is coming twice when adding/editing course notes
+	#068243 - The same detail page link is coming if the two courses name is same
+	#068040 - Stop to show the loader when selecting a category
+	#067831 - If entering 3.33 price in "price till" field then courses with 3.33 price are not coming
+	#067038 - Deactivate/delete course category/subcategory/language should be handled properly for drafted and submitted for approval courses
+	#066272 - Course price is coming 0 when entering rupee value less than 79(conversion value)
+
 ## TV-4.1.7.20221028
 
 Features: N/A
