@@ -59,7 +59,6 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError($auth->getError());
         }
         $user = User::getByEmail($post['username']);
-        $loginUser = true;
         if ($user['user_2fa_enabled'] == AppConstant::YES) {
             $twoFactorAuth = new TwoFactorAuth($user['user_id']);
             if (!$twoFactorAuth->send2FactorAuthCode($user)) {
@@ -209,7 +208,7 @@ class GuestUserController extends MyAppController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }       
-        if($_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $post['user_id']) {
+        if(isset($_SESSION[AppConstant::TWO_FACTOR_AUTH_ID]) && $_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $post['user_id']) {
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
         }
         $codeArr = [
