@@ -28,14 +28,12 @@ class QuizReviewController extends DashboardController
     public function index(int $id)
     {
         if ($id < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+            FatUtility::dieWithError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
         if (!$quiz->validate()) {
-            Message::addErrorMessage($quiz->getError());
-            $controller = ($this->siteUserType == User::LEARNER) ? 'Learner' : 'Teacher';
-            FatApp::redirectUser(MyUtility::makeUrl($controller));
+            FatUtility::dieWithError($quiz->getError());
         }
         $data = $quiz->get();
         if ($this->siteUserType == User::TEACHER) {
@@ -74,9 +72,7 @@ class QuizReviewController extends DashboardController
     {
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
         if (!$quiz->validate()) {
-            Message::addErrorMessage($quiz->getError());
-            $controller = ($this->siteUserType == User::LEARNER) ? 'Learner' : 'Teacher';
-            FatApp::redirectUser(MyUtility::makeUrl($controller));
+            FatUtility::dieWithError($quiz->getError());
         }
         $data = $quiz->get();
         if ($this->siteUserType == User::TEACHER) {

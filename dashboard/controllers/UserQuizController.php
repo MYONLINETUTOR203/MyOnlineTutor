@@ -36,8 +36,7 @@ class UserQuizController extends DashboardController
             FatUtility::exitWithErrorCode(404);
         }
         if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
-            Message::addErrorMessage(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
-            $this->redirect($data);
+            FatUtility::dieWithError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
 
         if ($data['quizat_status'] == QuizAttempt::STATUS_IN_PROGRESS) {
@@ -46,19 +45,13 @@ class UserQuizController extends DashboardController
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
-        $redirect = false;
         if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
-            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
-            $redirect = true;
+            FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
         } elseif (
             $data['quilin_record_type'] != AppConstant::COURSE &&
             strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])
         ) {
-            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
-            $redirect = true;
-        }
-        if ($redirect == true) {
-            $this->redirect($data);
+            FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
         }
 
         $this->set('data', $data);
@@ -106,26 +99,19 @@ class UserQuizController extends DashboardController
             FatApp::redirectUser(MyUtility::generateUrl('UserQuiz', 'completed', [$id]));
         }
 
-        $redirect = false;
         $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
         if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
-            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
-            $redirect = true;
+            FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
         } elseif ($data['quilin_duration'] > 0 && strtotime(date('Y-m-d H:i:s')) > $endtime) {
             if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
-                Message::addErrorMessage($quiz->getError());
-                $redirect = true;
+                FatUtility::dieWithError($quiz->getError());
             }
             Message::addErrorMessage(Label::getLabel('LBL_QUIZ_DURATION_IS_OVER'));
             FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
         } elseif ($data['quilin_duration'] == 0 && $data['quilin_record_type'] != AppConstant::COURSE && strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
-            Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
-            $redirect = true;
+            FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
         }
-        if ($redirect == true) {
-            $this->redirect($data);
-        }
-
+        
         $this->sets([
             'data' => $data,
             'attemptId' =>  $id,
@@ -320,24 +306,42 @@ class UserQuizController extends DashboardController
     public function completed(int $id)
     {
         $quiz = new QuizAttempt($id, $this->siteUserId);
-        $error = '';
         if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
-            Message::addErrorMessage($quiz->getError());
-            $this->redirect();
+            FatUtility::dieWithError($quiz->getError());
         }
         $data = $quiz->get();
         if ($data['quizat_active'] == AppConstant::NO) {
-            Message::addErrorMessage($error);
-            $this->redirect();
+            FatUtility::dieWithError(Label::getLabel('LBL_INVALID_ACCESS'));
+        }
+
+        /* check course status */
+        $courseStatus = 0;
+        if ($data['quilin_record_type'] == AppConstant::COURSE) {
+            $srch = new SearchBase(OrderCourse::DB_TBL, 'ordcrs');
+            $srch->joinTable(Order::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_order_id = orders.order_id', 'orders');
+            $srch->joinTable(CourseProgress::DB_TBL, 'INNER JOIN', 'ordcrs.ordcrs_id = crspro.crspro_ordcrs_id', 'crspro');
+            $srch->addCondition('orders.order_user_id', '=', $data['quizat_user_id']);
+            $srch->addCondition('ordcrs.ordcrs_course_id', '=', $data['quilin_record_id']);
+            $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+            $srch->addCondition('orders.order_status', '=', Order::STATUS_COMPLETED);
+            $srch->addCondition('orders.order_payment_status', '=', Order::ISPAID);
+            $srch->doNotCalculateRecords();
+            $srch->setPageSize(1);
+            $srch->addFld('crspro_status');
+            if ($order = FatApp::getDb()->fetch($srch->getResultSet())) {
+                $courseStatus = $order['crspro_status'];
+            }
         }
 
         $this->sets([
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
             'data' => $data,
             'attemptId' => $id,
+            'order' => $order,
             'canRetake' => $quiz->canRetake(),
             'canDownloadCertificate' => $quiz->canDownloadCertificate(),
-            'courseQuiz' => ($data['quilin_record_type'] === AppConstant::COURSE)
+            'courseQuiz' => ($data['quilin_record_type'] === AppConstant::COURSE),
+            'courseStatus' => ($courseStatus === CourseProgress::COMPLETED)
         ]);
         $this->_template->render();
     }
@@ -431,23 +435,5 @@ class UserQuizController extends DashboardController
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         $frm->addButton('', 'btn_skip', Label::getLabel('LBL_SKIP'));
         return $frm;
-    }
-
-    /**
-     * Redirect user according to the session type
-     *
-     * @param array $data
-     * @return string
-     */
-    private function redirect(array $data = [])
-    {
-        if (!empty($data)) {
-            if ($data['quilin_record_type'] == AppConstant::LESSON) {
-                FatApp::redirectUser(MyUtility::makeUrl('Lessons'));
-            } elseif ($data['quilin_record_type'] == AppConstant::GCLASS) {
-                FatApp::redirectUser(MyUtility::makeUrl('Classes'));
-            }
-        }
-        FatApp::redirectUser(MyUtility::makeUrl('Learner'));
     }
 }

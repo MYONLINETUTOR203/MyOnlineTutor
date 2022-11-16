@@ -160,7 +160,7 @@
                 <?php } ?>
                 <?php if (count($attemptedQues) != $question['qulinqu_order']) { ?>
                     <div class="box-actions__cell box-actions__cell-right">
-                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
                     </div>
                 <?php } ?>
             </div>

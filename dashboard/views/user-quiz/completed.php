@@ -105,7 +105,7 @@ $showStats = true;
                     </a>
                 <?php } ?>
                 <?php if ($data['quilin_record_type'] == AppConstant::COURSE) { ?>
-                    <?php if ($data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
+                    <?php if ($courseStatus == true && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
                         <a href="javascript:void(0);" onclick="parent.finishQuiz();" class="btn btn--primary-bordered margin-1 btn--sm-block">
                             <?php echo Label::getLabel('LBL_PROCEED'); ?>
                         </a>
