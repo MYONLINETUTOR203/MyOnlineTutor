@@ -285,6 +285,18 @@ class AccountController extends DashboardController
             $db->rollbackTransaction();
             FatUtility::dieJsonError($userSetting->getError());
         }
+        if ($this->siteUser['user_2fa_enabled'] != $post['user_2fa_enabled']) {
+            if ($post['user_2fa_enabled'] != AppConstant::YES) {
+                $twoFactorAuth = new TwoFactorAuth($this->siteUserId);
+                if (!$twoFactorAuth->removeAllCodes()) {
+                    FatUtility::dieJsonError($twoFactorAuth->getError());
+                }
+            } else {
+                if (!UserAuth::clearAllAuthTokensUser($this->siteUserId))    {
+                    FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
+                }
+            }
+        }
         $db->commitTransaction();
         if (!empty($post['user_timezone'])) {
             MyUtility::setSiteTimezone($post['user_timezone'], true);
@@ -411,6 +423,8 @@ class AccountController extends DashboardController
             }
         }
         $fld = $frm->addSelectBox(Label::getLabel('LBL_NOTIFICATION_LANGUAGE'), 'user_lang_id', Language::getAllNames(), '', [], Label::getLabel('LBL_SELECT'));
+        $frm->addCheckBox(Label::getLabel('LBL_ENABLE_TWO_FACTOR_AUTHENTICATION'), 'user_2fa_enabled', AppConstant::YES, [], true, AppConstant::NO);
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_SITE_LANGUAGE'), 'user_lang_id', Language::getAllNames(), '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         $frm->addButton('', 'btn_next', Label::getLabel('LBL_NEXT'));
