@@ -62,11 +62,23 @@ class TutorialsController extends DashboardController
             'crspro_progress',
             'crspro_completed',
         ]);
-        $order = new OrderCourse($progressData['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$data = $order->getOrderCourseById()) {
+
+        $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('ordcrs.ordcrs_id', '=', $progressData['crspro_ordcrs_id']);
+        $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+        $srch->addMultipleFields([
+            'ordcrs.ordcrs_id', 'ordcrs.ordcrs_course_id', 'ordcrs.ordcrs_certificate_number', 'orders.order_user_id',
+            'course_quilin_id', 'course.course_id', 'course_certificate', 'course_certificate_type', 'ordcrs_status',
+            'crspro_completed'
+        ]);
+        $order = $srch->fetchAndFormat(true);
+        $order = current($order);
+        if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
-        $courseId = $data['ordcrs_course_id'];
+        
+        $courseId = $order['ordcrs_course_id'];
         /* fetch course details */
         $courseObj = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course = $courseObj->get()) {
@@ -90,6 +102,7 @@ class TutorialsController extends DashboardController
 
         $this->sets([
             'course' => $course,
+            'canDownloadCertificate' => $order['can_download_certificate'],
             'sections' => $sections,
             'progress' => $progressData,
             'progressId' => $progressId,
@@ -366,7 +379,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'progress' => $data,
             'course' => $course,
-            'order' => $order,
+            'canDownloadCertificate' => $order['can_download_certificate'],
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name'])
         ]);
         $this->_template->addJs('js/jquery.barrating.min.js');

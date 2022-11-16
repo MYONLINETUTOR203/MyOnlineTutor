@@ -77,7 +77,7 @@ class QuizAttempt extends MyAppModel
         if (!$this->validate(QuizAttempt::STATUS_PENDING)) {
             return false;
         }
-        if (strtotime(date('Y-m-d H:i:s')) >= strtotime($this->quiz['quilin_validity'])) {
+        if ($this->quiz['quilin_record_type'] != AppConstant::COURSE && strtotime(date('Y-m-d H:i:s')) >= strtotime($this->quiz['quilin_validity'])) {
             $this->error = Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
@@ -387,7 +387,7 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_RETAKE_NOT_ALLOWED');
             return false;
         }
-        if (strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
+        if ($this->quiz['quilin_record_type'] != AppConstant::COURSE && strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
             $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
@@ -723,6 +723,13 @@ class QuizAttempt extends MyAppModel
         return true;
     }
 
+    /**
+     * Get Quizzes
+     *
+     * @param array $quizLinkIds
+     * @param int $userId
+     * @return array
+     */
     public static function getQuizzes(array $quizLinkIds, int $userId)
     {
         $srch = new SearchBase(static::DB_TBL);

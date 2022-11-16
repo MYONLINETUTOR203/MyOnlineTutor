@@ -50,7 +50,10 @@ class UserQuizController extends DashboardController
         if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
             Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
             $redirect = true;
-        } elseif (strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
+        } elseif (
+            $data['quilin_record_type'] != AppConstant::COURSE &&
+            strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])
+        ) {
             Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
             $redirect = true;
         }
@@ -115,7 +118,7 @@ class UserQuizController extends DashboardController
             }
             Message::addErrorMessage(Label::getLabel('LBL_QUIZ_DURATION_IS_OVER'));
             FatApp::redirectUser(MyUtility::makeUrl('UserQuiz', 'completed', [$id]));
-        } elseif ($data['quilin_duration'] == 0 && strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
+        } elseif ($data['quilin_duration'] == 0 && $data['quilin_record_type'] != AppConstant::COURSE && strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
             Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
             $redirect = true;
         }
@@ -376,6 +379,11 @@ class UserQuizController extends DashboardController
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
     }
 
+    /**
+     * Get time to reset timer
+     *
+     * @return json
+     */
     public function getTime()
     {
         $endTime = FatApp::getPostedData('time');

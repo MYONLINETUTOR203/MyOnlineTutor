@@ -8,6 +8,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
     'siteUserType' => $siteUserType,
     'course' => $course,
     'controllerName' => $controllerName,
+    'canDownloadCertificate' => $canDownloadCertificate,
     'action' => $actionName
 ]);
 ?>

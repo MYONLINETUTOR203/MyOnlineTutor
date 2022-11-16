@@ -8,7 +8,8 @@ echo $this->includeTemplate('tutorials/head-section.php', [
     'siteUserType' => $siteUserType,
     'course' => $course,
     'controllerName' => $controllerName,
-    'action' => $actionName
+    'action' => $actionName,
+    'canDownloadCertificate' => $canDownloadCertificate,
 ]);
 ?>
 <div class="body">
@@ -41,7 +42,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                         </svg>
                         <?php echo Label::getLabel('LBL_GO_BACK_TO_COURSE_LISTING'); ?>
                     </a>
-                    <?php if ($order['can_download_certificate'] == true) { ?>
+                    <?php if ($canDownloadCertificate == true) { ?>
                         <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$progressId], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1">
                             <svg class="icon icon--png icon--small margin-right-2">
                                 <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>
