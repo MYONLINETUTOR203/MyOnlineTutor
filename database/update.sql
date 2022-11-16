@@ -1332,3 +1332,5 @@ ALTER TABLE `tbl_order_courses` CHANGE `ordcrs_amount` `ordcrs_amount` DECIMAL(2
 
 
 UPDATE `tbl_language_labels` SET `label_caption` = 'Course Purchased' WHERE `label_key` = 'LBL_COURSE_PURCHASED';
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.8.20221116' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
