@@ -92,28 +92,40 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                             <div class="row quizSectionJs" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
                                 <div class="col-md-12">
                                     <div class="field-set">
-                                        <div class="caption-wraper">
-                                            <label class="field_label">
-                                                <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
-                                                    <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
-                                                    <a href="javascript:void(0);" class="margin-1 is-hover" onclick="removeAttachedQuiz();">
-                                                        <svg class="icon icon--issue icon--small">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#close'; ?>"></use>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                                <div class="attachQuizLinkJs" style="display:<?php echo !empty($quiz) ? 'none' : 'block' ?>;">
-                                                    <a href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
-                                                        <svg class="icon icon--issue icon--small">
+                                        <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
+
+                                            <span class="attachment margin-bottom-8">
+                                                <span class="attachment-item">
+                                                    <span class="attachment-item__media">
+                                                        <svg class="icon icon--attachment icon--small">
                                                             <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
                                                         </svg>
-                                                        <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
-                                                        <?php echo $quizId->getHtml(); ?>
-                                                    </a>
-                                                </div>
-                                            </label>
+                                                    </span>
+                                                    <div class="attachment-item__content">
+                                                        <span class="attachment-item__title">
+                                                            <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <a href="javascript:void(0);" class="attachment-item__close margin-left-3" onclick="removeAttachedQuiz();"></a>
+                                                </span>
+                                           </span>
+                                            
+                                            
+                                        </div>
+                                        <div class="attachQuizLinkJs" style="display:<?php echo !empty($quiz) ? 'none' : 'block' ?>;">
+                                            <a class="d-inline-flex align-items-center margin-bottom-8" href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
+                                                <svg class="icon icon--issue icon--small margin-right-2">
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                                </svg>
+                                                <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                                <?php echo $quizId->getHtml(); ?>
+                                            </a>
                                         </div>
                                     </div>
+                                           
+                                      
+                                   
                                 </div>
                             </div>
                             <div class="row">

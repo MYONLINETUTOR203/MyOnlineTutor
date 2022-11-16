@@ -9,6 +9,7 @@ body {
   z-index: 11; }
   @media (min-width: 576px) {
     .header {
+      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
 
@@ -250,6 +251,7 @@ p {
 
 @media (min-width: 1199px) {
   .flex-layout__sticky {
+    position: -webkit-sticky;
     position: sticky;
     top: 6rem; } }
 

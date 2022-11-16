@@ -634,6 +634,7 @@ ul {
         -ms-flex-pack: justify;
             justify-content: space-between;
     background-color: #fff;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -696,6 +697,7 @@ ul {
             justify-content: space-between;
     position: relative;
     background-color: #fff;
+    position: -webkit-sticky;
     position: sticky; }
     .box--checkout .box-foot .btn {
       width: 120px;
@@ -8454,6 +8456,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
       border-top-right-radius: var(--radius-0);
       border-bottom-right-radius: var(--radius-0); }
   .table--styled th {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1; }
@@ -8493,6 +8496,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
           box-shadow: 0 1px 0 0 var(--color-gray-200); }
 
 .table--sticky th {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background-color: var(--colors-white);
@@ -12155,6 +12159,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
 
 .fc .fc-scrollgrid-section-sticky > * {
   background: var(--fc-page-bg-color, #fff);
+  position: -webkit-sticky;
   position: sticky;
   z-index: 2; }
 
@@ -12169,6 +12174,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
   margin-bottom: -1px; }
 
 .fc-sticky {
+  position: -webkit-sticky;
   position: sticky; }
 
 .fc .fc-view-harness {
@@ -12895,6 +12901,7 @@ body[dir="rtl"] .slick-arrow.slick-next:before {
   border-right: 0; }
 
 .fc .fc-list-sticky .fc-list-day > * {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background: var(--fc-page-bg-color, #fff); }
