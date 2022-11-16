@@ -104,13 +104,21 @@ $showStats = true;
                         <?php echo Label::getLabel('LBL_CHECK_ANSWERS'); ?>
                     </a>
                 <?php } ?>
-                <?php $controller = ($data['quilin_record_type'] == AppConstant::LESSON) ? 'Lessons' : 'Classes' ?>
-                <a href="<?php echo MyUtility::makeUrl($controller) ?>" class="btn btn--primary-bordered margin-1 btn--sm-block">
-                    <svg class="icon icon--png icon--small margin-right-2">
-                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#arrow-back"></use>
-                    </svg>
-                    <?php echo Label::getLabel('LBL_GO_TO_QUIZZES'); ?>
-                </a>
+                <?php if ($data['quilin_record_type'] == AppConstant::COURSE) { ?>
+                    <?php if ($courseStatus == true && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PASSED) { ?>
+                        <a href="javascript:void(0);" onclick="parent.finishQuiz();" class="btn btn--primary-bordered margin-1 btn--sm-block">
+                            <?php echo Label::getLabel('LBL_PROCEED'); ?>
+                        </a>
+                    <?php } ?>
+                <?php } else { ?>
+                    <?php $controller = ($data['quilin_record_type'] == AppConstant::LESSON) ? 'Lessons' : 'Classes'; ?>
+                    <a href="<?php echo MyUtility::makeUrl($controller); ?>" class="btn btn--primary-bordered margin-1 btn--sm-block">
+                        <svg class="icon icon--png icon--small margin-right-2">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#arrow-back"></use>
+                        </svg>
+                        <?php echo Label::getLabel('LBL_GO_TO_QUIZZES'); ?>
+                    </a>
+                <?php } ?>
                 <?php if ($canDownloadCertificate == true) { ?>
                     <a href="<?php echo MyUtility::makeUrl('UserQuiz', 'downloadCertificate', [$data['quizat_id']], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--primary margin-1 btn--sm-block">
                         <svg class="icon icon--png icon--small margin-right-2">

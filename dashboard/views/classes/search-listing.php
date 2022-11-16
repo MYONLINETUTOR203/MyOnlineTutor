@@ -116,7 +116,7 @@ if (count($allClasses) == 0) {
                                 <?php if ($siteUserType == User::LEARNER) { ?>
                                     <div class="profile-meta__media">
                                         <span class="avtar" data-title="<?php echo CommonHelper::getFirstChar($class['teacher_first_name']); ?>">
-                                            <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $class['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '" alt="' . $class['teacher_first_name'] . '" />'; ?>
+                                            <?php echo '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $class['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '?t=' . time() . '" alt="' . $class['teacher_first_name'] . '" />'; ?>
                                         </span>
                                     </div>
                                     <div class="profile-meta__details">

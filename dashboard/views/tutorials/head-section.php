@@ -48,7 +48,7 @@ $websiteName = FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility:
                                 <p class="margin-bottom-5 bold-600">
                                     <?php echo Label::getLabel('LBL_CONGRATULATIONS!_YOUR_COURSE_HAS_BEEN_SUCCESSFULLY_COMPLETED'); ?>
                                 </p>
-                                <?php if ($course['course_certificate'] == AppConstant::YES) { ?>
+                                <?php if ($canDownloadCertificate == true) { ?>
                                     <a href="<?php echo MyUtility::makeUrl('Certificates', 'index', [$progressId], CONF_WEBROOT_DASHBOARD); ?>" class="btn btn--secondary margin-left-4">
                                         <svg class="icon icon--small margin-right-2">
                                             <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD; ?>images/sprite.svg#download-icon"></use>

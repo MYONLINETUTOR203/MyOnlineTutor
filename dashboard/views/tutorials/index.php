@@ -8,6 +8,7 @@ echo $this->includeTemplate('tutorials/head-section.php', [
     'siteUserType' => $siteUserType,
     'course' => $course,
     'controllerName' => $controllerName,
+    'canDownloadCertificate' => $canDownloadCertificate,
     'action' => $actionName
 ]);
 ?>
@@ -46,18 +47,25 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                             <?php echo Label::getLabel('LBL_COURSE_LECTURES'); ?>
                                         </a>
                                     </li>
-                                    <li class="is-active">
-                                        <a href="javascript:void(0);" class="crsDetailTabJs" onclick="loadLecture(0);">
-                                            <?php echo Label::getLabel('LBL_LECTURE_DETAIL'); ?>
+                                    <li class="is-active crsLectureJs">
+                                        <a href="javascript:void(0);" class="crsDetailTabJs lecTitleJs" onclick="loadLecture(0);">
+                                            <span class="">
+                                                <?php echo Label::getLabel('LBL_LECTURE_DETAIL'); ?>
+                                            </span>
+                                        </a>
+                                        <a href="javascript:void(0);" class="crsDetailTabJs quizTitleJs" onclick="openQuiz('<?php echo $course['course_quilin_id'] ?>');">
+                                            <span class="quizTitleJs" style="display:none;">
+                                                <?php echo Label::getLabel('LBL_QUIZ_DETAIL'); ?>
+                                            </span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li class="crsNotesJs">
                                         <a href="javascript:void(0);" onclick="getNotes('<?php echo $progress['crspro_ordcrs_id']; ?>');">
                                             <?php echo Label::getLabel('LBL_NOTES'); ?>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);" onclick="getReviews();">
+                                        <a href="javascript:void(0);" class="crsReviewJs" onclick="getReviews();">
                                             <?php echo Label::getLabel('LBL_REVIEWS') . ' (' . $course['course_reviews'] . ')'; ?>
                                         </a>
                                     </li>
@@ -159,10 +167,21 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                                                 ?>
                                             </div>
                                         </div>
-                                    </div><?php
-                                        }
-                                    }
+                                    </div>
+                                <?php } ?>
+                            <?php } ?>
+                            <?php if (!empty($quiz)) { ?>
+                                <div class="toggle-control control-group-js quizListJs">
+                                    <div class="toggle-control__action control-trigger-js">
+                                        <h6 onclick="openQuiz('<?php echo $course['course_quilin_id'] ?>');" class="lectureName quizLectureJs">
+                                            <?php
+                                            echo Label::getLabel('LBL_QUIZ') . ': ';
+                                            echo $quiz['quilin_title'];
                                             ?>
+                                        </h6>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         </div>
                     </sidebar>
                     <!-- ] -->

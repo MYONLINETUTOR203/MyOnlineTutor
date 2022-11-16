@@ -31,39 +31,48 @@ class QuizLinked extends MyAppModel
      */
     public function validateRecordId(int $recordId, int $recordType)
     {
-        if ($recordType == AppConstant::LESSON) {
-            $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
-            $srch->applyPrimaryConditions();
-            $srch->addCondition('ordles_id', '=', $recordId);
-            $srch->addMultipleFields([
-                'ordles_id', 'learner.user_first_name AS learner_first_name',
-                'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
-                'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
-            ]);
-            $srch->setPageSize(1);
-            $srch->doNotCalculateRecords();
-            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
-                $this->error = Label::getLabel('LBL_INVALID_LESSON');
-                return false;
-            }
-        }
-        if ($recordType == AppConstant::GCLASS) {
-            $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
-            $srch->applyPrimaryConditions();
-            $srch->addCondition('grpcls_id', '=', $recordId);
-            $srch->addMultipleFields([
-                'ordcls_id', 'learner.user_first_name AS learner_first_name',
-                'learner.user_last_name AS learner_last_name', 'teacher.user_first_name as teacher_first_name',
-                'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
-            ]);
-            $srch->setPageSize(1);
-            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
-                $this->error = Label::getLabel('LBL_INVALID_CLASS');
-                return false;
-            }
-        }
-        if ($recordType == AppConstant::COURSE) {
-            return true;
+        switch ($recordType) {
+            case AppConstant::LESSON:
+                $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
+                $srch->applyPrimaryConditions();
+                $srch->addCondition('ordles_id', '=', $recordId);
+                $srch->addMultipleFields('ordles_id');
+                $srch->setPageSize(1);
+                $srch->doNotCalculateRecords();
+                if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+                    $this->error = Label::getLabel('LBL_INVALID_LESSON');
+                    return false;
+                }
+                break;
+            case AppConstant::GCLASS:
+                $srch = new ClassSearch($this->langId, $this->userId, $this->userType);
+                $srch->applyPrimaryConditions();
+                $srch->addCondition('grpcls_id', '=', $recordId);
+                $srch->addFld('grpcls_id');
+                $srch->setPageSize(1);
+                if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+                    $this->error = Label::getLabel('LBL_INVALID_CLASS');
+                    return false;
+                }
+                break;
+            case AppConstant::COURSE:
+                $srch = new CourseSearch($this->langId, $this->userId, $this->userType);
+                $srch->applyPrimaryConditions();
+                $srch->addCondition('course.course_id', '=', $recordId);
+                $srch->addFld('course.course_id');
+                $srch->setPageSize(1);
+                if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+                    $this->error = Label::getLabel('LBL_INVALID_COURSE');
+                    return false;
+                }
+
+                $data = $this->getQuizzes([$recordId], $recordType);
+                $data = current($data);
+                if ( ($data['quiz_count'] ?? 0) > 0) {
+                    $this->error = Label::getLabel('LBL_ONLY_ONE_QUIZ_ATTACHMENT_IS_ALLOWED');
+                    return false;
+                }
+                break;
         }
         return true;
     }
@@ -146,6 +155,16 @@ class QuizLinked extends MyAppModel
             }
             $quizzesData[$quiz['quiz_id']] = $data + ['quilin_id' => $quizLink->getId()];
             $quizLinkedIds[] = $quizLink->getId();
+
+            if ($recordType == AppConstant::COURSE) {
+                $course = new Course($recordId);
+                $course->setFldValue('course_quilin_id', $quizLink->getId());
+                if (!$course->save()) {
+                    $db->rollbackTransaction();
+                    $this->error = $course->getError();
+                    return false;
+                }
+            }
         }
         /* setup user quizzes */
         if (!$this->setupUserQuizzes($recordId, $recordType, $quizLinkedIds)) {
@@ -183,7 +202,7 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quilin.quilin_record_type', '=', $type);
         $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count']);
+        $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count', 'quilin_id', 'quilin_title']);
         $srch->addGroupBy('quilin_record_id');
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_record_id');
     }
@@ -377,12 +396,10 @@ class QuizLinked extends MyAppModel
             'quatqu_scored'
         ]);
         $srch->addOrder('qulinqu_order', 'ASC');
-        // pr($srch->getQuery());
         $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
         if (empty($attemptedQues)) {
             return [];
         }
-        // pr($attemptedQues);
         foreach ($attemptedQues as $key => $question) {
             $question['quatqu_answer'] = $question['quatqu_answer'] ? json_decode($question['quatqu_answer'], true) : [];
             $question['is_correct'] = '';
@@ -425,7 +442,7 @@ class QuizLinked extends MyAppModel
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
             $sessionTitle = $sessionData['grpcls_title'];
-        } else {
+        } elseif ($data['quilin_record_type'] == AppConstant::LESSON) {
             $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
             $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
             $srch->joinTable(
@@ -446,6 +463,13 @@ class QuizLinked extends MyAppModel
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
                 Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
             );
+        } else {
+            $srch = new CourseSearch($this->langId, 0, 0);
+            $srch->setPageSize(1);
+            $srch->addCondition('course.course_id', '=', $data['quilin_record_id']);
+            $srch->addFld('course_title');
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['course_title'];
         }
 
 
@@ -503,7 +527,7 @@ class QuizLinked extends MyAppModel
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
             $sessionTitle = $sessionData['grpcls_title'];
-        } else {
+        } elseif ($record['quilin_record_type'] == AppConstant::LESSON) {
             $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
             $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
             $srch->joinTable(
@@ -524,6 +548,13 @@ class QuizLinked extends MyAppModel
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
                 Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
             );
+        } else {
+            $srch = new CourseSearch($this->langId, 0, 0);
+            $srch->setPageSize(1);
+            $srch->addCondition('course.course_id', '=', $record['quilin_record_id']);
+            $srch->addFld('course_title');
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['course_title'];
         }
 
         $linkedIds = array_column($data, 'quilin_id');

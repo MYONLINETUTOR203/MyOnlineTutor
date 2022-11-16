@@ -125,6 +125,8 @@ class OrderCourseSearch extends YocoachSearch
             'course.course_lectures' => 'course_lectures',
             'course.course_duration' => 'course_duration',
             'course.course_certificate' => 'course_certificate',
+            'course.course_certificate_type' => 'course_certificate_type',
+            'course.course_quilin_id' => 'course_quilin_id',
             'course.course_cate_id' => 'course_cate_id',
             'course.course_subcate_id' => 'course_subcate_id',
             'course.course_slug' => 'course_slug',
@@ -161,40 +163,57 @@ class OrderCourseSearch extends YocoachSearch
     /**
      * Fetch And Format
      *
+     * @param bool $isSingle
      * @return array
      */
-    public function fetchAndFormat(): array
+    public function fetchAndFormat(bool $isSingle = false): array
     {
         $rows = FatApp::getDb()->fetchAll($this->getResultSet(), 'ordcrs_id');
         if (count($rows) == 0) {
             return [];
         }
-        $ordcrsIds = array_keys($rows);
-        $cancelReqs = [];
-        if (count($ordcrsIds) > 0) {
+
+        if ($isSingle == false) {
+            $ordcrsIds = array_keys($rows);
+            $cancelReqs = [];
             /* get cancellation request data */
-            $srch = new SearchBase(Course::DB_TBL_REFUND_REQUEST);
-            $srch->addDirectCondition('corere_ordcrs_id IN (' . implode(', ', $ordcrsIds) . ')');
-            $srch->doNotCalculateRecords();
-            $srch->doNotLimitRecords();
-            $srch->addMultipleFields(['corere_ordcrs_id', 'corere_id', 'corere_status']);
-            $cancelReqs = FatApp::getDb()->fetchAll($srch->getResultSet(), 'corere_ordcrs_id');
-        }
-        $categoryIds = array_merge(array_column($rows, 'course_cate_id'), array_column($rows, 'course_subcate_id'));
-        $categories = CourseSearch::getCategoryNames($this->langId, array_unique($categoryIds));
-        foreach ($rows as $key => $row) {
-            $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
-            $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
-            if (isset($cancelReqs[$row['ordcrs_id']])) {
-                $row['corere_status'] = $cancelReqs[$row['ordcrs_id']]['corere_status'];
+            if (count($ordcrsIds) > 0) {
+                $srch = new SearchBase(Course::DB_TBL_REFUND_REQUEST);
+                $srch->addDirectCondition('corere_ordcrs_id IN (' . implode(', ', $ordcrsIds) . ')');
+                $srch->doNotCalculateRecords();
+                $srch->doNotLimitRecords();
+                $srch->addMultipleFields(['corere_ordcrs_id', 'corere_id', 'corere_status']);
+                $cancelReqs = FatApp::getDb()->fetchAll($srch->getResultSet(), 'corere_ordcrs_id');
             }
-            $row['can_view_course'] = $this->canView($row);
-            $row['can_edit_course'] = false;
-            $row['can_delete_course'] = false;
-            $row['can_cancel_course'] = $this->canCancel($row);
-            $row['can_rate_course'] = $this->canRate($row, $this->userType);
-            $row['can_retake_course'] = $this->canRetake($row);
-            $row['can_download_certificate'] = $this->canDownloadCertificate($row);
+
+            /* get categories */
+            $categoryIds = array_merge(array_column($rows, 'course_cate_id'), array_column($rows, 'course_subcate_id'));
+            $categories = CourseSearch::getCategoryNames($this->langId, array_unique($categoryIds));
+        }
+
+        /* get quizzes details */
+        $quizLinkIds = array_column($rows, 'course_quilin_id');
+        $quizzes = QuizAttempt::getQuizzes(array_unique($quizLinkIds), $this->userId);
+
+        foreach ($rows as $key => $row) {
+            if ($isSingle == false) {
+                $row['cate_name'] = array_key_exists($row['course_cate_id'], $categories) ? $categories[$row['course_cate_id']] : '';
+                $row['subcate_name'] = array_key_exists($row['course_subcate_id'], $categories) ? $categories[$row['course_subcate_id']] : '';
+                if (isset($cancelReqs[$row['ordcrs_id']])) {
+                    $row['corere_status'] = $cancelReqs[$row['ordcrs_id']]['corere_status'];
+                }
+
+                $row['can_view_course'] = $this->canView($row);
+                $row['can_edit_course'] = false;
+                $row['can_delete_course'] = false;
+                $row['can_cancel_course'] = $this->canCancel($row);
+                $row['can_rate_course'] = $this->canRate($row, $this->userType);
+                $row['can_retake_course'] = $this->canRetake($row);
+            }
+            if (isset($quizzes[$row['course_id']])) {
+                $row = array_merge($row, $quizzes[$row['course_id']]);
+            }
+            $row['can_download_certificate'] = static::canDownloadCertificate($row);
             $rows[$key] = $row;
         }
         return $rows;
@@ -300,6 +319,20 @@ class OrderCourseSearch extends YocoachSearch
         }
         if ($certificate['course_certificate'] == AppConstant::NO) {
             return false;
+        }
+        if ($certificate['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
+            if ($certificate['course_quilin_id'] == 0) {
+                return false;
+            }
+            if ($certificate['quizat_status'] != QuizAttempt::STATUS_COMPLETED) {
+                return false;
+            }
+            if ($certificate['quilin_certificate'] == AppConstant::NO) {
+                return false;
+            }
+            if ($certificate['quizat_evaluation'] != QuizAttempt::EVALUATION_PASSED) {
+                return false;
+            }
         }
         if ($certificate['ordcrs_status'] != OrderCourse::COMPLETED) {
             return false;

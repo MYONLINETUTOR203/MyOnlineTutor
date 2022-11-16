@@ -48,7 +48,7 @@ $(function () {
             $.facebox(response, 'facebox-large');
         });
     };
-    removeQuiz = function (id, obj) {
+    removeQuiz = function (id) {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
@@ -73,5 +73,12 @@ $(function () {
             $('.userListJs').removeClass('is-active').removeClass('is-expanded').hide();
             $('.userListJs' + id).addClass('is-active').addClass('is-expanded').show();
         }
+    };
+    setQuiz = function (id, obj) {
+        $('.quizTitleJs').text($(obj).data('title'));
+        $('input[name="course_quilin_id"]').val(id);
+        $('.attachedQuizJs').show();
+        $('.attachQuizLinkJs').hide();
+        $.facebox.close();
     };
 });

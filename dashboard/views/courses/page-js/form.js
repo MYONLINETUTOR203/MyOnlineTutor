@@ -167,7 +167,7 @@ $(function () {
         if (criteria.course_sections == 1 && criteria.course_lectures == 1) {
             $('.curriculum-js').removeClass('is-progress').addClass('is-completed');
         }
-        if (criteria.course_tags == 1) {
+        if (criteria.course_tags == 1 && criteria.course_quiz == 1) {
             $('.course-setting-js').removeClass('is-progress').addClass('is-completed');
         }
         if (criteria.course_is_eligible == true) {
@@ -390,6 +390,27 @@ $(function () {
             });
         }
     }
+    getCertificates = function () {
+        if ($("input[name='course_certificate']:checked").val() == 1) {
+            $('.certTypeJs').show();
+            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": true }');
+        } else {
+            $('.certTypeJs, .quizSectionJs').hide();
+            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": false }').val('');
+        }
+    }
+    showQuizSection = function (val) {
+        if (val == 3) {
+            $('.quizSectionJs').show();
+        } else {
+            $('.quizSectionJs').hide();
+        }
+    };
+    removeAttachedQuiz = function () {
+        $('.attachedQuizJs').hide();
+        $('input[name="course_quilin_id"]').val('');
+        $('.attachQuizLinkJs').show();
+    };
 });
 $(document).ready(function(){
     $('body').on('input', 'input[type="text"], textarea', function () {

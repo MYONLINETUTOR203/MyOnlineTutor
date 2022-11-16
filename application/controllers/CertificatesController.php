@@ -121,7 +121,7 @@ class CertificatesController extends MyAppController
                 $session['grpcls_slug'] = GroupClass::getAttributesById($session['grpcls_parent'], 'grpcls_slug');
             }
             $session = $session + $learner;
-        } else {
+        } elseif ($data['quilin_record_type'] == AppConstant::LESSON) {
             $srch = new LessonSearch($this->siteLangId, 0, 0);
             $srch->joinTable(User::DB_TBL_STAT, 'INNER JOIN', 'testat.testat_user_id = teacher.user_id', 'testat');
             $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
@@ -147,6 +147,28 @@ class CertificatesController extends MyAppController
                 ],
                 $title
             );
+        } elseif ($data['quilin_record_type'] == AppConstant::COURSE) {
+            $srch = new SearchBase(QuizAttempt::DB_TBL);
+            $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+            $srch->joinTable(User::DB_TBL_STAT, 'INNER JOIN', 'testat.testat_user_id = quilin_user_id', 'testat');
+            $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'quilin_record_id = crs.course_id', 'crs');
+            $srch->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = crs.course_id', 'crsdetail');
+            $srch->addCondition('crs.course_id', '=', $data['quilin_record_id']);
+            $srch->setPageSize(1);
+            $srch->doNotCalculateRecords();
+            $srch->addMultipleFields([
+                'crsdetail.course_title as session_title', 'course_slug', 'testat.testat_ratings',
+                'testat.testat_reviewes'
+            ]);
+            $session = FatApp::getDb()->fetch($srch->getResultSet());
+            $learner = User::getAttributesById($data['quizat_user_id'], [
+                'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+            ]);
+            $teacher = User::getAttributesById($data['quilin_user_id'], [
+                'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name',
+                'user_username as teacher_username'
+            ]);
+            $session = $session + $learner + $teacher;
         }
 
         $this->sets([

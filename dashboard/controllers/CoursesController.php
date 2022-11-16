@@ -119,7 +119,11 @@ class CoursesController extends DashboardController
         $this->set('courseId', $courseId);
         $this->set('siteLangId', $this->siteLangId);
         $this->set("includeEditor", true);
-        $this->_template->addJs(['js/jquery.tagit.js', 'js/jquery.ui.touch-punch.min.js']);
+        $this->_template->addJs([
+            'js/jquery.tagit.js',
+            'js/jquery.ui.touch-punch.min.js',
+            'attach-quizzes/page-js/index.js'
+        ]);
         $this->_template->render();
     }
 
@@ -491,7 +495,9 @@ class CoursesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /* validate course id */
-        if (!$courseData = Course::getAttributesById($courseId, ['course_id', 'course_certificate'])) {
+        if (!$courseData = Course::getAttributesById($courseId, [
+            'course_id', 'course_certificate', 'course_certificate_type', 'course_quilin_id'
+        ])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
@@ -501,7 +507,9 @@ class CoursesController extends DashboardController
         /* create form data */
         $data = [
             'course_id' => $courseId,
-            'course_certificate' => $courseData['course_certificate']
+            'course_certificate' => $courseData['course_certificate'],
+            'course_certificate_type' => $courseData['course_certificate_type'],
+            'course_quilin_id' => $courseData['course_quilin_id']
         ];
         /* get form data from lang table */
         $srch = new SearchBase(Course::DB_TBL_LANG);
@@ -529,6 +537,11 @@ class CoursesController extends DashboardController
         $frm = $this->getSettingForm($offerCetificate);
         $frm->fill($data);
         $this->set('frm', $frm);
+
+        /* get quiz detail */
+        $data = QuizLinked::getQuizzes([$courseId], AppConstant::COURSE);
+        $this->set('quiz', current($data));
+
         $this->set('offerCetificate', $offerCetificate);
         $this->set('courseId', $courseId);
         $this->_template->render(false, false);
@@ -544,6 +557,12 @@ class CoursesController extends DashboardController
         $frm = $this->getSettingForm();
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        if ($post['course_certificate'] == AppConstant::YES && $post['course_certificate_type'] < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
+        }
+        if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_QUIZ'));
         }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->setupSettings($post)) {
@@ -828,12 +847,37 @@ class CoursesController extends DashboardController
         if ($offerCetificate == true) {
             $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
             $fld->requirements()->setRequired();
+
         } else {
             $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
         }
-        /* $frm->addTextArea(Label::getLabel('LBL_WELCOME_MESSAGE'), 'course_welcome')->requirements()->setRequired();
-        $fld = $frm->addTextArea(Label::getLabel('LBL_CONGRATULATIONS_MESSAGE'), 'course_congrats');
-        $fld->requirements()->setRequired(); */
+        $types = Certificate::getTypes();
+        unset($types[Certificate::TYPE_QUIZ_EVALUATION]);
+        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
+
+        
+        $fld = $frm->addHiddenField(Label::getLabel('LBL_QUIZ'), 'course_quilin_id');
+        $fld->requirements()->setInt();
+        $fld->requirements()->setRequired(false);
+        $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_ATTACH_A_QUIZ'));
+        $reqFld = new FormFieldRequirement('course_quilin_id', '');
+        $reqFld->setRequired(true);
+        $notReqFld = new FormFieldRequirement('course_quilin_id', '');
+        $notReqFld->setRequired(false);
+
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Certificate::TYPE_COURSE_EVALUATION,
+            'eq',
+            'course_quilin_id',
+            $reqFld
+        );
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Certificate::TYPE_COURSE_EVALUATION,
+            'ne',
+            'course_quilin_id',
+            $notReqFld
+        );
+
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
         $frm->addSubmitButton('', 'btn_save', Label::getLabel('LBL_SAVE'));

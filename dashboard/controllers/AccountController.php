@@ -408,7 +408,7 @@ class AccountController extends DashboardController
                 $frm->addCheckBox(Label::getLabel('LBL_ENABLE_TRIAL_LESSON'), 'user_trial_enabled', AppConstant::YES, [], true, AppConstant::NO);
             }
         }
-        $fld = $frm->addSelectBox(Label::getLabel('LBL_SITE_LANGUAGE'), 'user_lang_id', Language::getAllNames(), '', [], Label::getLabel('LBL_SELECT'));
+        $fld = $frm->addSelectBox(Label::getLabel('LBL_NOTIFICATION_LANGUAGE'), 'user_lang_id', Language::getAllNames(), '', [], Label::getLabel('LBL_SELECT'));
         $fld->requirements()->setRequired();
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE'));
         $frm->addButton('', 'btn_next', Label::getLabel('LBL_NEXT'));

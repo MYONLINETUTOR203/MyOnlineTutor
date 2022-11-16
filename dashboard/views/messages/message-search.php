@@ -20,7 +20,7 @@ $userTimeZone = MyUtility::getSiteTimezone();
 $senderImage = '';
 $senderName = $otherUserDetail['user_first_name'] . ' ' . $otherUserDetail['user_last_name'];
 if (!empty($userImage)) {
-    $senderImage = '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', array(Afile::TYPE_USER_PROFILE_IMAGE, $otherUserDetail['user_id'], Afile::SIZE_SMALL), CONF_WEBROOT_FRONT_URL),CONF_DEF_CACHE_TIME, '.jpg') . '" alt="' . $senderName . '" />';
+    $senderImage = '<img src="' . FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', array(Afile::TYPE_USER_PROFILE_IMAGE, $otherUserDetail['user_id'], Afile::SIZE_SMALL), CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '?t=' . time() . '" alt="' . $senderName . '" />';
 }
 if ($page == 1) {
     ?>
@@ -74,7 +74,8 @@ if ($page == 1) {
                         <div class="chat__message">
                             <?php
                             if (isset($attachmentsList[$row['message_id']])) {
-                                echo nl2br($row['message_text']); ?>
+                                echo nl2br($row['message_text']);
+                                ?>
                                 <div class="chat-attachment">
                                     <div class="chat-attachment__item">
                                         <div class="chat-attachment__media">
@@ -84,7 +85,7 @@ if ($page == 1) {
                                             ?>
                                         </div>
                                         <div class="chat-attachment__content">
-                                            <?php echo $attachmentData['file_name'] ?>
+        <?php echo $attachmentData['file_name'] ?>
                                         </div>
                                         <div class="chat-attachment__actions">
                                             <a target="_blank" href="<?php echo MyUtility::makeUrl('Messages', 'downloadAttachment', [$attachmentData['file_id']]); ?>" class="btn btn--small btn--transparent btn--equal color-black chat-attachment__trigger">
@@ -121,15 +122,15 @@ if ($page == 1) {
                     </div>
                 </div>
             <?php } ?>
-            <?php if ($page == 1) { ?>
+<?php if ($page == 1) { ?>
             </div>
         </div>
-        <?php if (empty($otherUserDetail['user_deleted'])) { ?>
+            <?php if (empty($otherUserDetail['user_deleted'])) { ?>
             <div class="chat-room__footer">
-                <?php echo $frm->getFormTag(); ?>
+        <?php echo $frm->getFormTag(); ?>
                 <div class="chat-form">
                     <div class="chat-form__item">
-                        <?php echo $messageBox->getHTML(); ?>
+        <?php echo $messageBox->getHTML(); ?>
                         <div id = "selectedFilesList"></div>
                     </div>
                     <div class="chat-form__actions">
@@ -137,19 +138,19 @@ if ($page == 1) {
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon--attachment color-black" title="<?php echo Label::getLabel('LBL_Send_Message'); ?>">
                                 <path d="M14.828 7.757l-5.656 5.657a1 1 0 1 0 1.414 1.414l5.657-5.656A3 3 0 1 0 12 4.929l-5.657 5.657a5 5 0 1 0 7.071 7.07L19.071 12l1.414 1.414-5.657 5.657a7 7 0 1 1-9.9-9.9l5.658-5.656a5 5 0 0 1 7.07 7.07L12 16.244A3 3 0 1 1 7.757 12l5.657-5.657 1.414 1.414z"/>
                             </svg>
-                            <?php echo $frm->getFieldHtml('message_file'); ?>
+        <?php echo $frm->getFieldHtml('message_file'); ?>
                         </div>
                         <div class="send-button">
                             <svg class="icon icon--arrow icon--small color-white" title="<?php echo Label::getLabel('LBL_SEND_MESSAGE'); ?>">
                                 <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#up-arrow'; ?>"></use>
                             </svg>
                             <?php echo $frm->getFieldHtml('message_thread_id'); ?>
-                            <?php echo $frm->getFieldHtml('btn_submit'); ?>
+        <?php echo $frm->getFieldHtml('btn_submit'); ?>
                         </div>
                     </div>
                 </div>
                 </form>
-                <?php echo $frm->getExternalJS(); ?>
+        <?php echo $frm->getExternalJS(); ?>
                 <small class="style-italic margin-top-3 d-flex">
                     <svg class="icon icon--arrow icon--small margin-right-2" title="Send Message" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z"></path></svg>
                     <strong class="margin-right-1"><?php echo Label::getLabel('LBL_Note:'); ?></strong> 
@@ -162,7 +163,7 @@ if ($page == 1) {
                     ?>
                 </small>
             </div>
-        <?php } ?>
+    <?php } ?>
     </div>
     <script>
         var page = 1;

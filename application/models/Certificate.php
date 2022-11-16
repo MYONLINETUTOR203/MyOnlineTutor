@@ -10,28 +10,45 @@ class Certificate extends MyAppModel
 {
     const CERTIFICATE_NO_PREFIX = 'YC_';
 
-    const TYPE_COURSE = 1;
-    const TYPE_QUIZ = 2;
+    const TYPE_QUIZ_EVALUATION = 1;
+    const TYPE_COURSE_COMPLETION = 2;
+    const TYPE_COURSE_EVALUATION = 3;
     
     private $id;
-    private $type;
+    private $code;
     private $userId;
     private $langId;
 
     /**
      * Initialize certificate
      *
-     * @param int $id
-     * @param int $type
-     * @param int $userId
-     * @param int $langId
+     * @param int    $id
+     * @param string $code
+     * @param int    $userId
+     * @param int    $langId
      */
-    public function __construct(int $id = 0, int $type = self::TYPE_QUIZ, int $userId = 0, int $langId = 0)
+    public function __construct(int $id = 0, string $code, int $userId = 0, int $langId = 0)
     {
+        $this->id = $id;
+        $this->code = $code;
         $this->userId = $userId;
         $this->langId = $langId;
-        $this->id = $id;
-        $this->type = $type;
+    }
+
+    /**
+     * Get Types
+     *
+     * @param int $key
+     * @return string|array
+     */
+    public static function getTypes(int $key = null)
+    {
+        $arr = [
+            static::TYPE_QUIZ_EVALUATION => Label::getLabel('LBL_QUIZ_EVALUATION'),
+            static::TYPE_COURSE_COMPLETION => Label::getLabel('LBL_COURSE_COMPLETION'),
+            static::TYPE_COURSE_EVALUATION => Label::getLabel('LBL_COURSE_EVALUATION')
+        ];
+        return AppConstant::returArrValue($arr, $key);
     }
 
     /**
@@ -45,16 +62,17 @@ class Certificate extends MyAppModel
         if (!$content = $this->setupTemplate($content)) {
             return false;
         }
-        if (!$this->setupId()) {
-            return false;
-        }
         if (!$data = $this->getData()) {
             return false;
         }
+        $data['certificate_number'] = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
         if (!$content = $this->formatContent($content, $data)) {
             return false;
         }
         if (!$this->create($content)) {
+            return false;
+        }
+        if (!$this->setupId($data['certificate_number'])) {
             return false;
         }
         if (!$this->setupMetaTags($data)) {
@@ -91,18 +109,16 @@ class Certificate extends MyAppModel
      *
      * @return bool
      */
-    public function setupId()
+    public function setupId($certificateNumber)
     {
-        /* generate certificate */
-        $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
-        if ($this->type == static::TYPE_QUIZ) {
+        if ($this->code == 'evaluation_certificate' || $this->code == 'course_evaluation_certificate') {
             $quiz = new QuizAttempt($this->id);
             $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
             if (!$quiz->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
                 return false;
             }
-        } elseif ($this->type == static::TYPE_COURSE) {
+        } elseif ($this->code == 'course_completion_certificate') {
             $course = new OrderCourse($this->id);
             $course->setFldValue('ordcrs_certificate_number', $certificateNumber);
             if (!$course->save()) {
@@ -124,12 +140,8 @@ class Certificate extends MyAppModel
      */
     private function setupTemplate(string $content)
     {
-        $code = 'course_completion_certificate';
-        if ($this->type == static::TYPE_QUIZ) {
-            $code = 'evaluation_certificate';
-        }
         $srch = CertificateTemplate::getSearchObject($this->langId);
-        $srch->addCondition('certpl_code', '=', $code);
+        $srch->addCondition('certpl_code', '=', $this->code);
         if (!$template = FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_CERTIFICATE_TEMPLATE_NOT_FOUND');
             return false;
@@ -194,7 +206,8 @@ class Certificate extends MyAppModel
      */
     public function formatContent(string $content, array $data)
     {
-        if ($this->type == static::TYPE_QUIZ) {
+        $title = '';
+        if ($this->code == 'evaluation_certificate') {
             $title = htmlentities(stripslashes(utf8_encode($data['quilin_title'])), ENT_QUOTES);
         } else {
             $title = htmlentities(stripslashes(utf8_encode($data['course_title'])), ENT_QUOTES);
@@ -211,19 +224,21 @@ class Certificate extends MyAppModel
                 '{course-language}',
                 '{course-completed-date}',
                 '{course-duration}',
-                '{quiz-score}'
+                '{quiz-score}',
+                '{course-score}',
             ],
             [
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 '<b>' . ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']) . '</b>',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
-                isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated']) : '',
-                '<b>' . (($this->type == static::TYPE_QUIZ) ? $data['quizat_certificate_number'] : $data['cert_number']) . '</b>',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date']) : '',
+                '<b>' . $data['certificate_number'] . '</b>',
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
-                isset($data['crspro_completed']) ? MyDate::formatDate($data['crspro_completed']) : '',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date']) : '',
                 isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : '',
+                isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
                 isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
             ],
             $content
@@ -271,14 +286,11 @@ class Certificate extends MyAppModel
      */
     private function getData()
     {
-        switch ($this->type) {
-            case static::TYPE_COURSE:
+        switch ($this->code) {
+            case 'course_completion_certificate':
                 $srch = new OrderCourseSearch($this->langId, $this->userId, 0);
                 $srch->joinTable(
-                    CourseLanguage::DB_TBL,
-                    'INNER JOIN',
-                    'clang.clang_id = course.course_clang_id',
-                    'clang'
+                    CourseLanguage::DB_TBL, 'INNER JOIN', 'clang.clang_id = course.course_clang_id', 'clang'
                 );
                 $srch->joinTable(
                     CourseLanguage::DB_TBL_LANG,
@@ -289,20 +301,44 @@ class Certificate extends MyAppModel
                 $srch->applyPrimaryConditions();
                 $srch->addSearchListingFields();
                 $srch->addMultipleFields([
-                    'crspro_completed',
-                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
-                    'learner.user_lang_id',
-                    'ordcrs_certificate_number AS cert_number',
-                    'course_duration',
-                    'ordcrs_course_id',
-                    'order_user_id'
+                    'crspro_completed as completed_date', 'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
+                    'learner.user_lang_id', 'ordcrs_certificate_number AS cert_number', 'course_duration',
+                    'ordcrs_course_id', 'order_user_id'
                 ]);
                 $srch->addCondition('ordcrs_id', '=', $this->id);
                 $data = FatApp::getDb()->fetch($srch->getResultSet());
                 break;
-            case static::TYPE_QUIZ:
+            case 'course_evaluation_certificate':
+                $srch = new SearchBase(QuizAttempt::DB_TBL);
+                $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+                $srch->joinTable(Course::DB_TBL, 'INNER JOIN', 'quilin_record_id = crs.course_id', 'crs');
+                $srch->joinTable(Course::DB_TBL_LANG, 'INNER JOIN', 'crsdetail.course_id = crs.course_id', 'crsdetail');
+                $srch->joinTable(CourseLanguage::DB_TBL, 'INNER JOIN', 'clang_id = crs.course_clang_id', 'clang');
+                $srch->joinTable(
+                    CourseLanguage::DB_TBL_LANG,
+                    'LEFT JOIN',
+                    'clang.clang_id = clanglang.clanglang_clang_id AND clanglang.clanglang_lang_id = ' . $this->langId,
+                    'clanglang'
+                );
+                $srch->addMultipleFields([
+                    'crsdetail.course_title', 'quizat_updated as completed_date', 'quizat_scored',
+                    'quizat_certificate_number', 'quizat_user_id', 'quilin_user_id', 'quizat_id',
+                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name'
+                ]);
+                $srch->addCondition('quizat_id', '=', $this->id);
+                $data = FatApp::getDb()->fetch($srch->getResultSet());
+                $learner = User::getAttributesById($data['quizat_user_id'], [
+                    'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+                ]);
+                $teacher = User::getAttributesById($data['quilin_user_id'], [
+                    'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name'
+                ]);
+                $data = $data + $learner + $teacher;
+                break;
+            case 'evaluation_certificate':
                 $quiz = new QuizAttempt($this->id);
                 $data = $quiz->getById();
+                $data['completed_date'] = $data['quizat_updated'];
                 $learner = User::getAttributesById($data['quizat_user_id'], [
                     'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
                 ]);
@@ -365,32 +401,34 @@ class Certificate extends MyAppModel
      */
     private function setupMetaTags(array $data)
     {
-        if ($this->type == static::TYPE_QUIZ) {
-            /* get user name */
-            $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
-            $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
-            $action = 'evaluation';
-            $recordId = $data['quizat_id'];
-            $type = MetaTag::META_GROUP_QUIZ_CERTIFICATE;
-        } elseif ($this->type == static::TYPE_COURSE) {
-            /* get course details */
-            $srch = new SearchBase(Course::DB_TBL_LANG);
-            $srch->addCondition('course_id', '=', $data['ordcrs_course_id']);
-            $srch->doNotCalculateRecords();
-            $srch->setPageSize(1);
-            $srch->addFld('course_title');
-            $course = FatApp::getDb()->fetch($srch->getResultSet());
-
-            /* get user name */
-            $username = User::getAttributesById($data['order_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
-            $content = $course['course_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
-            
-            $action = 'view';
-            $recordId = $data['ordcrs_id'];
-            $type = MetaTag::META_GROUP_COURSE_CERTIFICATE;
-        } else {
-            $this->error = Label::getLabel('LBL_INVALID_TYPE');
-            return false;
+        switch ($this->code) {
+            case 'evaluation_certificate':
+                /* get user name */
+                $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+                $content = $data['quilin_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+                $action = 'evaluation';
+                $recordId = $data['quizat_id'];
+                $type = MetaTag::META_GROUP_QUIZ_CERTIFICATE;
+                break;
+            case 'course_evaluation_certificate':
+                /* get user name */
+                $username = User::getAttributesById($data['quizat_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+                $content = $data['course_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+                $action = 'evaluation';
+                $recordId = $data['quizat_id'];
+                $type = MetaTag::META_GROUP_COURSE_EVALUATION_CERTIFICATE;
+                break;
+            case 'course_completion_certificate':
+                /* get user name */
+                $username = User::getAttributesById($data['order_user_id'], "CONCAT(user_first_name, ' ', user_last_name)");
+                $content = $data['course_title'] . ' | ' . ucwords($username) . ' | ' . FatApp::getConfig('CONF_WEBSITE_NAME_' . $this->langId);
+                $action = 'view';
+                $recordId = $data['ordcrs_id'];
+                $type = MetaTag::META_GROUP_COURSE_CERTIFICATE;
+                break;
+            default:
+                $this->error = Label::getLabel('LBL_INVALID_TYPE');
+                return false;
         }
 
         $meta = new MetaTag();

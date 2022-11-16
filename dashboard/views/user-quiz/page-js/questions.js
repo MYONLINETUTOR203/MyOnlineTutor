@@ -62,4 +62,8 @@ $(function () {
             $('#countdowntimerJs').refreshTimer();
         });
     };
+    goToPage = function (page) {
+        parent.location.reload();
+    };
+    resizeIframe(50);
 });

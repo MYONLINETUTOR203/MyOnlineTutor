@@ -116,7 +116,7 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                             <div class="profile-meta">
                                 <div class="profile-meta__media">
                                     <span class="avtar" data-title="<?php echo CommonHelper::getFirstChar($lesson['first_name']); ?>">
-                                        <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $lesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
+                                        <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $lesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg') . '?t=' . time(); ?>" />
                                     </span>
                                 </div>
                                 <div class="profile-meta__details">

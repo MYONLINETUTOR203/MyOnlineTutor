@@ -4,6 +4,7 @@ $frm->setFormTagAttribute('onsubmit', 'searchQuizzes(this, 1); return(false);');
 $frm->setFormTagAttribute('class', 'form form--small');
 $keyword = $frm->getField('keyword');
 $type = $frm->getField('quiz_type');
+$recType = $frm->getField('record_type');
 $status = $frm->getField('quiz_status');
 $active = $frm->getField('quiz_active');
 $btnClear = $frm->getField('btn_clear');
@@ -37,63 +38,63 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
         </div>
         <div class="qsearch-target-js" style="display:none;">
             <div class="form-search margin-top-6">
-              
-                    <?php echo $frm->getFormTag(); ?>
-                    <div class="row">
-                        <div class="col-lg-4 col-sm-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php echo $keyword->getCaption(); ?>
-                                        <?php if ($keyword->requirement->isRequired()) { ?>
-                                            <span class="spn_must_field">*</span>
-                                        <?php } ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $keyword->getHtml(); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="col-lg-4 col-sm-12">
-                            <div class="field-set">
-                                <div class="caption-wraper">
-                                    <label class="field_label">
-                                        <?php echo $type->getCaption(); ?>
-                                        <?php if ($type->requirement->isRequired()) { ?>
-                                            <span class="spn_must_field">*</span>
-                                        <?php } ?>
-                                    </label>
-                                </div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $type->getHtml(); ?>
-                                    </div>
-                                </div>
+                <?php echo $frm->getFormTag(); ?>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="field-set">
+                            <div class="caption-wraper">
+                                <label class="field_label">
+                                    <?php echo $keyword->getCaption(); ?>
+                                    <?php if ($keyword->requirement->isRequired()) { ?>
+                                        <span class="spn_must_field">*</span>
+                                    <?php } ?>
+                                </label>
                             </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-4  form-buttons-group">
-                            <div class="field-set">
-                                <div class="caption-wraper"><label class="field_label"></label></div>
-                                <div class="field-wraper">
-                                    <div class="field_cover">
-                                        <?php echo $frm->getFieldHtml('pageno'); ?>
-                                        <?php echo $frm->getFieldHtml('pagesize'); ?>
-                                        <?php echo $frm->getFieldHtml('record_id'); ?>
-                                        <?php echo $frm->getFieldHtml('record_type'); ?>
-                                        <?php echo $frm->getFieldHtml('btn_submit'); ?>
-                                        <?php echo $frm->getFieldHtml('btn_clear'); ?>
-                                    </div>
+                            <div class="field-wraper">
+                                <div class="field_cover">
+                                    <?php echo $keyword->getHtml(); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    </form>
-                    <?php echo $frm->getExternalJS(); ?>
-              
+
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="field-set">
+                            <div class="caption-wraper">
+                                <label class="field_label">
+                                    <?php echo $type->getCaption(); ?>
+                                    <?php if ($type->requirement->isRequired()) { ?>
+                                        <span class="spn_must_field">*</span>
+                                    <?php } ?>
+                                </label>
+                            </div>
+                            <div class="field-wraper">
+                                <div class="field_cover">
+                                    <?php echo $type->getHtml(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4  form-buttons-group">
+                        <div class="field-set">
+                            <div class="caption-wraper"><label class="field_label"></label></div>
+                            <div class="field-wraper">
+                                <div class="field_cover">
+                                    <?php echo $frm->getFieldHtml('pageno'); ?>
+                                    <?php echo $frm->getFieldHtml('pagesize'); ?>
+                                    <?php echo $frm->getFieldHtml('record_id'); ?>
+                                    <?php echo $frm->getFieldHtml('record_type'); ?>
+                                    <?php echo $frm->getFieldHtml('btn_submit'); ?>
+                                    <?php echo $frm->getFieldHtml('btn_clear'); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+                <?php echo $frm->getExternalJS(); ?>
+
             </div>
         </div>
     </div>
@@ -103,9 +104,14 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
             <table class="table table--responsive table--aligned-middle table--bordered" id="quiz-listing">
                 <thead>
                     <tr class="title-row">
-                        <th></th>
-                        <th><?php echo $titleLbl = Label::getLabel('LBL_TITLE'); ?></th>
-                        <th><?php echo $typeLbl = Label::getLabel('LBL_TYPE'); ?></th>
+                        <?php if ($recType->value != AppConstant::COURSE) { ?>
+                            <th></th>
+                        <?php } ?>
+                        <th><?php echo Label::getLabel('LBL_TITLE'); ?></th>
+                        <th><?php echo Label::getLabel('LBL_TYPE'); ?></th>
+                        <?php if ($recType->value == AppConstant::COURSE) { ?>
+                            <th><?php echo Label::getLabel('LBL_ACTION'); ?></th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,8 +119,8 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
             </table>
             <?php
             echo $quizFrm->getFieldHtml('quilin_record_id');
-            echo $quizFrm->getFieldHtml('quilin_record_type');
             echo $quizFrm->getFieldHtml('quilin_user_id');
+            echo $quizFrm->getFieldHtml('quilin_record_type');
             ?>
             </form>
             <?php echo $quizFrm->getExternalJS(); ?>
@@ -128,7 +134,7 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
 </div>
 
 <script type="text/javascript">
-    $(".qsearch-toggle-js").click(function () {
+    $(".qsearch-toggle-js").click(function() {
         $(".qsearch-target-js").slideToggle();
     });
 </script>

@@ -160,7 +160,7 @@
                 <?php } ?>
                 <?php if (count($attemptedQues) != $question['qulinqu_order']) { ?>
                     <div class="box-actions__cell box-actions__cell-right">
-                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
                     </div>
                 <?php } ?>
             </div>
@@ -233,7 +233,7 @@
                 <?php if ($siteUserType == User::TEACHER && $question['qulinqu_type'] == Question::TYPE_MANUAL && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) { ?>
                     <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="submitAndFinish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
                 <?php } else { ?>
-                    <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
+                    <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>');">
                 <?php } ?>
             </div>
         </div>

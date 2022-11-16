@@ -19,9 +19,9 @@ $(function () {
     getByQuesId = function (id, quesId) {
         getQuestion(id, 0, quesId);
     };
-    finish = function (id, type) {
+    finish = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('QuizReview', 'finish'), { 'id': id }, function (res) {
-            window.location = fcom.makeUrl(type);
+            window.location = fcom.makeUrl('QuizReview', 'index', [id]);
         });
     };
     submitAndFinish = function (id, type) {

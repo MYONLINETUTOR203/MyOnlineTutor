@@ -33,21 +33,43 @@ class CertificatesController extends DashboardController
         if (empty($data['crspro_completed'])) {
             FatUtility::exitWithErrorCode(404);
         }
-        $ordcrs = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$ordcrsData = $ordcrs->getOrderCourseById()) {
+
+        $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('ordcrs.ordcrs_id', '=', $data['crspro_ordcrs_id']);
+        $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+        $srch->addMultipleFields([
+            'ordcrs.ordcrs_id', 'ordcrs.ordcrs_course_id', 'orders.order_user_id', 'ordcrs.ordcrs_certificate_number',
+            'course_quilin_id', 'course.course_id', 'course_certificate', 'course_certificate_type', 'ordcrs_status',
+            'crspro_completed'
+        ]);
+        $ordcrsData = $srch->fetchAndFormat(true);
+        $ordcrsData = current($ordcrsData);
+        if (empty($ordcrsData)) {
             FatUtility::exitWithErrorCode(404);
         }
+
         /* return if course do not offer certificate */
-        if (Course::getAttributesById($ordcrsData['ordcrs_course_id'], 'course_certificate') == AppConstant::NO) {
+        if ($ordcrsData['can_download_certificate'] === false) {
             FatUtility::exitWithErrorCode(404);
         }
+
+        $code = 'course_completion_certificate';
+        $id = $ordcrsData['ordcrs_id'];
+        $certificateNo = $ordcrsData['ordcrs_certificate_number'];
+        if ($ordcrsData['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
+            $certificateNo = $ordcrsData['quizat_certificate_number'];
+            $code = 'course_evaluation_certificate';
+            $id = $ordcrsData['quizat_id'];
+        }
+
         /* check if certificate already generated */
-        if (empty($ordcrsData['ordcrs_certificate_number'])) {
+        if (empty($certificateNo)) {
             /* get certificate html */
-            $content = $this->getContent(Certificate::TYPE_COURSE);
+            $content = $this->getContent();
             $cert = new Certificate(
-                $ordcrsData['ordcrs_id'],
-                Certificate::TYPE_COURSE,
+                $id,
+                $code,
                 $this->siteUserId,
                 $this->siteUserType
             );
@@ -55,8 +77,10 @@ class CertificatesController extends DashboardController
                 FatUtility::dieWithError($cert->getError());
             }
         }
+
+        $action = ($ordcrsData['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) ? 'evaluation' : 'view';
         FatApp::redirectUser(
-            MyUtility::makeUrl('Certificates', 'view', [$data['crspro_ordcrs_id']], CONF_WEBROOT_FRONTEND)
+            MyUtility::makeUrl('Certificates', $action, [$id], CONF_WEBROOT_FRONTEND)
         );
     }
 
@@ -67,7 +91,7 @@ class CertificatesController extends DashboardController
      */
     public function quiz(int $id)
     {
-        if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ) {
+        if ($id < 0 || $_SESSION['certificate_type'] != Certificate::TYPE_QUIZ_EVALUATION) {
             FatUtility::exitWithErrorCode(404);
         }
         $quiz = new QuizAttempt($id, $this->siteUserId);
@@ -88,7 +112,7 @@ class CertificatesController extends DashboardController
             $content = $this->getContent();
 
             /* generate */
-            $cert = new Certificate($id, Certificate::TYPE_QUIZ, $this->siteUserId, $this->siteLangId);
+            $cert = new Certificate($id, 'evaluation_certificate', $this->siteUserId, $this->siteLangId);
             if (!$cert->generate($content)) {
                 FatUtility::dieWithError($cert->getError());
             }

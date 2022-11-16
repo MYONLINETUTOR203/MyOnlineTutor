@@ -525,6 +525,7 @@ class Course extends MyAppModel
         }
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_certificate', $data['course_certificate']);
+        $this->setFldValue('course_certificate_type', $data['course_certificate_type']);
         if (!$this->save()) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
@@ -533,8 +534,6 @@ class Course extends MyAppModel
         $tagsList = explode(',', $data['course_tags']);
         $langData = [
             'course_id' => $this->getMainTableRecordId(),
-            /* 'course_welcome' => $data['course_welcome'],
-              'course_congrats' => $data['course_congrats'], */
             'course_srchtags' => json_encode($tagsList),
         ];
         if (!$this->setupLangData($langData)) {
@@ -542,9 +541,51 @@ class Course extends MyAppModel
             $this->error = $this->getError();
             return false;
         }
+
+        if (!$this->setupQuiz($data)) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
         if (!$db->commitTransaction()) {
             $this->error = $db->getError();
             return false;
+        }
+        return true;
+    }
+
+    /**
+     * Setup quiz if attached
+     *
+     * @param array $data
+     * @return bool
+     */
+    private function setupQuiz(array $data)
+    {
+        $quizLinked = QuizLinked::getQuizzes([$this->getMainTableRecordId()], AppConstant::COURSE);
+        $quizLinked = current($quizLinked);
+        if ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
+            if (empty($quizLinked)) {
+                $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
+                if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
+                    $this->error = $quiz->getError();
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (!empty($quizLinked)) {
+            $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
+            if (!$quiz->delete()) {
+                $this->error = $quiz->getError();
+                return false;
+            }
+
+            $this->setFldValue('course_quilin_id', 0);
+            if (!$this->save()) {
+                $this->error = $this->getError();
+                return false;
+            }
         }
         return true;
     }
@@ -638,6 +679,7 @@ class Course extends MyAppModel
         $courseId = $this->getMainTableRecordId();
         $criteria = json_decode(FatApp::getConfig('CONF_COURSE_APPROVAL_ELIGIBILITY_CRITERIA'));
         $criteria = array_fill_keys($criteria, 0);
+
         /* get course curriculum and price tabs data */
         $srch = new CourseSearch(0, $this->userId, $this->userType);
         $srch->joinTable(Category::DB_TBL, 'LEFT JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');
@@ -649,7 +691,12 @@ class Course extends MyAppModel
             'IF(course_type = ' . Course::TYPE_FREE . ' OR course_price > 0, 1, 0) as course_price',
             'IF(cate.cate_deleted IS NULL AND cate.cate_status = ' . AppConstant::ACTIVE . ', 1, 0) course_cate',
             'IF(course.course_subcate_id > 0 AND (subcate.cate_deleted IS NOT NULL OR subcate.cate_status = ' . AppConstant::INACTIVE . '), 0, 1) course_subcate',
-            'IF(clang.clang_deleted IS NULL AND clang.clang_active = ' . AppConstant::ACTIVE . ', 1, 0) course_clang'
+            'IF(clang.clang_deleted IS NULL AND clang.clang_active = ' . AppConstant::ACTIVE . ', 1, 0) course_clang',
+            'IF(
+                (course_certificate =' . AppConstant::YES . ' AND course_certificate_type = ' . Certificate::TYPE_COURSE_EVALUATION . ' AND course_quilin_id < 1) OR 
+                (course_certificate =' . AppConstant::YES . ' AND course_certificate_type = 0)
+                , 0, 1
+            ) AS course_quiz'
         ]);
         $srch->addCondition('course.course_id', '=', $courseId);
         $srch->setPageSize(1);
@@ -671,6 +718,7 @@ class Course extends MyAppModel
         if (($courseData && $courseData['course_sections'] > 0) && ($sections && $sections['sections_count'] > 0)) {
             $criteria['course_sections'] = 0;
         }
+
         /* get course lang data */
         $srch = new SearchBase(Course::DB_TBL_LANG);
         $srch->doNotCalculateRecords();
@@ -678,8 +726,6 @@ class Course extends MyAppModel
         $srch->addCondition('course_id', '=', $courseId);
         $srch->addMultipleFields([
             'IF(course_id IS NULL, 0, 1) as course_lang',
-            /* 'IF(course_welcome IS NULL, 0, 1) as course_welcome',
-              'IF(course_congrats IS NULL, 0, 1) as course_congrats', */
             '1 as course_welcome',
             '1 as course_congrats',
             'IF(course_srchtags IS NULL, 0, 1) as course_tags',
@@ -687,6 +733,7 @@ class Course extends MyAppModel
         if ($courseLang = FatApp::getDb()->fetch($srch->getResultSet())) {
             $criteria = array_merge($criteria, $courseLang);
         }
+
         /* get course intended learners data */
         $srch = new SearchBase(IntendedLearner::DB_TBL);
         $srch->doNotCalculateRecords();
@@ -694,13 +741,14 @@ class Course extends MyAppModel
         $srch->addCondition('coinle_course_id', '=', $courseId);
         $srch->addFld('coinle_id');
         $criteria['courses_intended_learners'] = (FatApp::getDb()->fetch($srch->getResultSet())) ? 1 : 0;
+
         /* get course image and video */
         $afile = new Afile(Afile::TYPE_COURSE_IMAGE);
         $criteria['course_image'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
         $afile = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
         $criteria['course_preview_video'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
-        $criteria['course_is_eligible'] = true;
 
+        $criteria['course_is_eligible'] = true;
         if (!empty(array_search(0, $criteria))) {
             $criteria['course_is_eligible'] = false;
         }
@@ -913,7 +961,8 @@ class Course extends MyAppModel
             'course.course_currency_id',
             'course.course_price',
             'course_duration',
-            'course_srchtags'
+            'course_srchtags',
+            'course_quilin_id'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();
@@ -1129,4 +1178,14 @@ class Course extends MyAppModel
         return FatApp::getDb()->fetch($srch->getResultSet());
     }
 
+    public function getQuiz(int $quilinId)
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_quilin_id', '=', $quilinId);
+        $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('quizat_user_id', '=', $this->userId);
+        $srch->addMultipleFields(['quizat_id', 'quilin_title', 'quilin_detail', 'quilin_record_id']);
+        return FatApp::getDb()->fetch($srch->getResultSet());
+    }
 }

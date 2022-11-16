@@ -62,11 +62,23 @@ class TutorialsController extends DashboardController
             'crspro_progress',
             'crspro_completed',
         ]);
-        $order = new OrderCourse($progressData['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$data = $order->getOrderCourseById()) {
+
+        $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('ordcrs.ordcrs_id', '=', $progressData['crspro_ordcrs_id']);
+        $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+        $srch->addMultipleFields([
+            'ordcrs.ordcrs_id', 'ordcrs.ordcrs_course_id', 'ordcrs.ordcrs_certificate_number', 'orders.order_user_id',
+            'course_quilin_id', 'course.course_id', 'course_certificate', 'course_certificate_type', 'ordcrs_status',
+            'crspro_completed'
+        ]);
+        $order = $srch->fetchAndFormat(true);
+        $order = current($order);
+        if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
-        $courseId = $data['ordcrs_course_id'];
+        
+        $courseId = $order['ordcrs_course_id'];
         /* fetch course details */
         $courseObj = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course = $courseObj->get()) {
@@ -85,8 +97,12 @@ class TutorialsController extends DashboardController
         $progress = new CourseProgress($progressId);
         $lectureStats = $progress->getLectureStats($sections);
         
+        /* get quiz */
+        $this->set('quiz', $courseObj->getQuiz($course['course_quilin_id'])); 
+
         $this->sets([
             'course' => $course,
+            'canDownloadCertificate' => $order['can_download_certificate'],
             'sections' => $sections,
             'progress' => $progressData,
             'progressId' => $progressId,
@@ -139,8 +155,10 @@ class TutorialsController extends DashboardController
         if (!$progress->setCurrentLecture($lectureId)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNABLE_TO_RENDER_NEXT_LECTURE._PLEASE_TRY_AGAIN'));
         }
+
         /* get previous and next lectures */
         $lectureIds = $progress->getNextPrevLectures();
+
         /* get lecture content */
         $srch = new LectureSearch($this->siteLangId);
         $srch->applyPrimaryConditions();
@@ -148,17 +166,27 @@ class TutorialsController extends DashboardController
         $srch->addCondition('lecture.lecture_id', 'IN', [$lectureId, $lectureIds['next'], $lectureIds['previous']]);
         $lectures = $srch->fetchAndFormat();
         $lecture = isset($lectures[$lectureId]) ? $lectures[$lectureId] : [];
+
+        /* get quiz id */
+        $quizLinkId = 0;
+        if ($lecture && !isset($lectures[$lectureIds['next']])) {
+            $quizLinkId = Course::getAttributesById($lecture['lecture_course_id'], 'course_quilin_id');
+        }
+
         /* get lecture resources */
         $resources = [];
         if (!empty($lecture)) {
             $lectureObj = new Lecture($lecture['lecture_id']);
             $resources = $lectureObj->getResources();
         }
+
         /* get lecture video */
         $resource = new Lecture($lectureId);
         $video = $resource->getMedia(Lecture::TYPE_RESOURCE_EXTERNAL_URL);
+
         /* get progress data */
         $progData = CourseProgress::getAttributesById($progressId, ['crspro_covered', 'crspro_progress']);
+
         $this->sets([
             'lecture' => $lecture,
             'previousLecture' => isset($lectures[$lectureIds['previous']]) ? $lectures[$lectureIds['previous']] : [],
@@ -167,6 +195,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'progData' => $progData,
             'video' => $video,
+            'quizLinkId' => $quizLinkId,
         ]);
         $this->_template->render(false, false, 'tutorials/get-lecture.php');
     }
@@ -325,10 +354,22 @@ class TutorialsController extends DashboardController
         if (!$data['crspro_completed']) {
             FatUtility::exitWithErrorCode(404);
         }
-        $ordcrs = new OrderCourse($data['crspro_ordcrs_id'], $this->siteUserId);
-        if (!$order = $ordcrs->getOrderCourseById()) {
+        
+        $srch = new OrderCourseSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->applyPrimaryConditions();
+        $srch->addCondition('ordcrs.ordcrs_id', '=', $data['crspro_ordcrs_id']);
+        $srch->addCondition('ordcrs.ordcrs_status', '!=', OrderCourse::CANCELLED);
+        $srch->addMultipleFields([
+            'ordcrs.ordcrs_id', 'ordcrs.ordcrs_course_id', 'ordcrs.ordcrs_certificate_number', 'orders.order_user_id',
+            'course_quilin_id', 'course.course_id', 'course_certificate', 'course_certificate_type', 'ordcrs_status',
+            'crspro_completed'
+        ]);
+        $order = $srch->fetchAndFormat(true);
+        $order = current($order);
+        if (empty($order)) {
             FatUtility::exitWithErrorCode(404);
         }
+
         /* fetch course details */
         $courseObj = new Course($order['ordcrs_course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course = $courseObj->get()) {
@@ -338,6 +379,7 @@ class TutorialsController extends DashboardController
             'progressId' => $progressId,
             'progress' => $data,
             'course' => $course,
+            'canDownloadCertificate' => $order['can_download_certificate'],
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name'])
         ]);
         $this->_template->addJs('js/jquery.barrating.min.js');
@@ -530,6 +572,40 @@ class TutorialsController extends DashboardController
             'post' => $post,
             'courseId' => $courseId,
         ]);
+        $this->_template->render(false, false);
+    }
+
+    public function getQuizDetail()
+    {
+        $quizLinkId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        if ($quizLinkId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $courseObj = new Course(0, $this->siteUserId, 0, 0);
+        $quiz = $courseObj->getQuiz($quizLinkId);
+        if (!$quiz) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
+        }
+        $this->set('quiz', $quiz);
+
+        /* get last lecture id */
+        $srch = new SearchBase(Lecture::DB_TBL);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('lecture_id');
+        $srch->addCondition('lecture_course_id', '=', $quiz['quilin_record_id']);
+        $srch->addOrder('lecture_order', 'DESC');
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $lecture = FatApp::getDb()->fetch($srch->getResultSet());
+        $this->set('lectureId', $lecture['lecture_id']);
+
+        $this->_template->render(false, false);
+    }
+
+    public function getQuiz()
+    {
+        $quizId = FatApp::getPostedData('id');
+        $this->set('quizId', $quizId);
         $this->_template->render(false, false);
     }
 

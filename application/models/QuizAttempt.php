@@ -77,7 +77,7 @@ class QuizAttempt extends MyAppModel
         if (!$this->validate(QuizAttempt::STATUS_PENDING)) {
             return false;
         }
-        if (strtotime(date('Y-m-d H:i:s')) >= strtotime($this->quiz['quilin_validity'])) {
+        if ($this->quiz['quilin_record_type'] != AppConstant::COURSE && strtotime(date('Y-m-d H:i:s')) >= strtotime($this->quiz['quilin_validity'])) {
             $this->error = Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
@@ -387,7 +387,7 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_RETAKE_NOT_ALLOWED');
             return false;
         }
-        if (strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
+        if ($this->quiz['quilin_record_type'] != AppConstant::COURSE && strtotime($this->quiz['quilin_validity']) - strtotime(date('Y-m-d H:i:s')) < 0) {
             $this->error = Label::getLabel('LBL_RETAKE_ON_EXPIRED_QUIZ_IS_NOT_ALLOWED');
             return false;
         }
@@ -409,6 +409,10 @@ class QuizAttempt extends MyAppModel
      */
     public function canDownloadCertificate()
     {
+        if ($this->quiz['quilin_record_type'] == AppConstant::COURSE) {
+            $this->error = Label::getLabel('LBL_CERTIFICATE_NOT_AVAILABLE');
+            return false;
+        }
         if (
             $this->quiz['quilin_certificate'] == AppConstant::NO ||
             $this->quiz['quizat_evaluation'] == static::EVALUATION_PENDING
@@ -555,7 +559,7 @@ class QuizAttempt extends MyAppModel
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
             $sessionTitle = $sessionData['grpcls_title'];
-        } else {
+        } elseif ($data['quilin_record_type'] == AppConstant::LESSON) {
             $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
             $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
             $srch->joinTable(
@@ -576,6 +580,13 @@ class QuizAttempt extends MyAppModel
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
                 Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
             );
+        } else {
+            $srch = new CourseSearch($this->langId, 0, 0);
+            $srch->setPageSize(1);
+            $srch->addCondition('course.course_id', '=', $data['quilin_record_id']);
+            $srch->addFld('course_title');
+            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionTitle = $sessionData['course_title'];
         }
 
         $srch = new SearchBase(User::DB_TBL);
@@ -710,5 +721,27 @@ class QuizAttempt extends MyAppModel
             return false;
         }
         return true;
+    }
+
+    /**
+     * Get Quizzes
+     *
+     * @param array $quizLinkIds
+     * @param int $userId
+     * @return array
+     */
+    public static function getQuizzes(array $quizLinkIds, int $userId)
+    {
+        $srch = new SearchBase(static::DB_TBL);
+        $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
+        $srch->addCondition('quizat_quilin_id', 'IN', $quizLinkIds);
+        $srch->addCondition('quizat_active', '=', AppConstant::YES);
+        $srch->addCondition('quizat_user_id', '=', $userId);
+        $srch->doNotCalculateRecords();
+        $srch->addMultipleFields([
+            'quilin_record_id', 'quizat_evaluation', 'quilin_certificate', 'quizat_status', 'quizat_id',
+            'quizat_certificate_number'
+        ]);
+        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_record_id');
     }
 }

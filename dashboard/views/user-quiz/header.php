@@ -78,6 +78,7 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
     ?>
     <page class="page">
         <!-- [ HEADER ========= -->
+        <?php if (!$courseQuiz) { ?>
         <header class="header nav-down">
             <div class="header-primary d-sm-flex justify-content-sm-between align-items-sm-center">
                 <div class="header-primary__right order-sm-2">
@@ -135,4 +136,5 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
 
             </div>
         </header>
+        <?php } ?>
         <!-- ] -->

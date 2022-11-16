@@ -5,16 +5,17 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'frmCourses');
 $frm->setFormTagAttribute('onsubmit', 'setupSettings(this); return false;');
 $certFld = $frm->getField('course_certificate');
-/* $welcomeFld = $frm->getField('course_welcome');
-$welcomeFld->setFieldTagAttribute('class', 'field-count__wrap');
-$welcomeFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_WELCOME_MESSAGE'));
-$congrFld = $frm->getField('course_congrats');
-$congrFld->setFieldTagAttribute('class', 'field-count__wrap');
-$congrFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CONGRATULATION_MESSAGE')); */
+$typeFld = $frm->getField('course_certificate_type');
+$typeFld->addFieldTagAttribute('onchange', 'showQuizSection(this.value);');
+if ($certFld->value == AppConstant::YES) {
+    $typeFld->requirements()->setRequired();
+}
 $tagFld = $frm->getField('course_tags');
 $tagFld->addFieldTagAttribute('id', "tagsinput");
 $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_COURSE_TAGS'));
 ($frm->getField('btn_approval'))->setFieldTagAttribute('onclick', 'submitForReview();');
+$quizId = $frm->getField('course_quilin_id');
+$quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
 ?>
 <?php echo $frm->getFormTag(); ?>
 <div class="page-layout">
@@ -54,7 +55,7 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                                             <li>
                                                                 <label>
                                                                     <span class="radio">
-                                                                        <input type="radio" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' onchange="updatePriceForm(this.value);" name="course_certificate" value="<?php echo $val; ?>">
+                                                                        <input type="radio" onchange="getCertificates();" <?php echo ($selected == $val) ? 'checked="checked"' : '' ?> data-fatreq='{"required":true}' name="course_certificate" value="<?php echo $val; ?>">
                                                                         <i class="input-helper"></i>
                                                                     </span>
                                                                     <?php echo $option; ?>
@@ -71,46 +72,50 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
                                 echo $certFld->getHtml();
                             }
                             ?>
-                            <?php /*<div class="row">
+                            <div class="row certTypeJs" style="display:<?php echo ($certFld->value == AppConstant::YES) ? 'block' : 'none'; ?>">
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label">
-                                                <?php echo $welcomeFld->getCaption(); ?>
+                                                <?php echo $typeFld->getCaption(); ?>
                                                 <span class="spn_must_field">*</span>
                                             </label>
                                         </div>
                                         <div class="field-wraper">
-                                            <?php
-                                            $maxLength = 300;
-                                            $strLen = $maxLength - strlen($welcomeFld->value); ?>
-                                            <div class="field_cover field-count" data-length="<?php echo $maxLength ?>" field-count="<?php echo $strLen; ?>">
-                                                <?php echo $welcomeFld->getHtml(); ?>
+                                            <div class="field_cover">
+                                                <?php echo $typeFld->getHtml(); ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row quizSectionJs" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="caption-wraper">
                                             <label class="field_label">
-                                                <?php echo $congrFld->getCaption(); ?>
-                                                <span class="spn_must_field">*</span>
+                                                <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
+                                                    <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
+                                                    <a href="javascript:void(0);" class="margin-1 is-hover" onclick="removeAttachedQuiz();">
+                                                        <svg class="icon icon--issue icon--small">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#close'; ?>"></use>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div class="attachQuizLinkJs" style="display:<?php echo !empty($quiz) ? 'none' : 'block' ?>;">
+                                                    <a href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
+                                                        <svg class="icon icon--issue icon--small">
+                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                                        </svg>
+                                                        <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                                        <?php echo $quizId->getHtml(); ?>
+                                                    </a>
+                                                </div>
                                             </label>
-                                        </div>
-                                        <div class="field-wraper">
-                                            <?php
-                                            $maxLength = 300;
-                                            $strLen = $maxLength - strlen($congrFld->value); ?>
-                                            <div class="field_cover field-count" data-length="<?php echo $maxLength ?>" field-count="<?php echo $strLen; ?>">
-                                                <?php echo $congrFld->getHtml(); ?>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> */ ?>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">
@@ -139,11 +144,9 @@ $tagFld->setFieldTagAttribute('placeholder', Label::getLabel('LBL_INSERT_YOUR_CO
 </form>
 <?php echo $frm->getExternalJS(); ?>
 <script>
-    var TYPE_FREE = "<?php echo Course::TYPE_FREE; ?>";
-    var TYPE_PAID = "<?php echo Course::TYPE_PAID; ?>";
     $(document).ready(function() {
         $('input[name="course_tags"]').tagit({
-            caseSensitive : false, 
+            caseSensitive: false,
             allowDuplicates: false,
             allowSpaces: true,
         });

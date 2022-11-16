@@ -1431,3 +1431,11 @@ $card: 'card';
     }
    
 }
+
+.section{
+    & .container--narrow{
+        @media(min-width: theme('breakpoints.xl','value')){
+            &{width: 92%}
+        }
+    }
+}

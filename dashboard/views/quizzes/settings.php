@@ -140,7 +140,7 @@ $submitFld = $frm->getField('btn_submit');
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
@@ -170,6 +170,17 @@ $submitFld = $frm->getField('btn_submit');
                                                 echo $cartificateFld->getHtml();
                                             } ?>
                                         </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="field-set">
+                                <div class="field-wraper">
+                                    <div class="field_cover heading-5">
+                                        <small><?php echo Label::getLabel('LBL_QUIZ_SETTINGS_NOTE'); ?></small>
                                     </div>
                                 </div>
                             </div>
