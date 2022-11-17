@@ -429,19 +429,22 @@ class CoursesController extends DashboardController
         if (!$course->canEditCourse()) {
             FatUtility::dieJsonError($course->getError());
         }
-        /* validate currency */
-        $currencyId = FatUtility::int($post['course_currency_id']);
-        if ($currencyId > 0 && Currency::getAttributesById($currencyId, 'currency_active') == AppConstant::INACTIVE) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_CURRENCY_NOT_AVAILABLE'));
-        }
+
         $price = 0;
-        if ($post['course_price'] > 0) {
-            $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
-        }
-        if ($price < 1) {
-            $label = Label::getLabel('LBL_COURSE_PRICE_LESS_THAN_1_{currency}');
-            $label = str_replace('{currency}', MyUtility::getSystemCurrency()['currency_code'], $label);
-            FatUtility::dieJsonError($label);
+        if ($post['course_type'] == Course::TYPE_PAID) {
+            /* validate currency */
+            $currencyId = FatUtility::int($post['course_currency_id']);
+            if ($currencyId > 0 && Currency::getAttributesById($currencyId, 'currency_active') == AppConstant::INACTIVE) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_CURRENCY_NOT_AVAILABLE'));
+            }
+            if ($post['course_price'] > 0) {
+                $price = CourseUtility::convertToSystemCurrency($post['course_price'], $post['course_currency_id']);
+            }
+            if ($price < 1) {
+                $label = Label::getLabel('LBL_COURSE_PRICE_CANNOT_BE_LESS_THAN_1_{currency}');
+                $label = str_replace('{currency}', MyUtility::getSystemCurrency()['currency_code'], $label);
+                FatUtility::dieJsonError($label);
+            }
         }
         $course->assignValues([
             'course_type' => $post['course_type'],
