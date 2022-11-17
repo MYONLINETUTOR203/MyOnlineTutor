@@ -156,8 +156,7 @@ class TeachersController extends MyAppController
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
             'js/fullcalendar-luxon-global.min.js',
-            'js/fateventcalendar.js',
-            'js/app.timer.js'
+            'js/fateventcalendar.js'
         ]);
         $this->_template->render();
     }

@@ -41,7 +41,6 @@ class HomeController extends MyAppController
         ]);
         $class = new GroupClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $this->set('classes', $class->getUpcomingClasses());
-        $this->_template->addJs(['js/app.timer.js']);
         $this->_template->render();
     }
 

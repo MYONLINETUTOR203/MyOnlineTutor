@@ -165,13 +165,6 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 ?>
 <script>
     $(document).ready(function () {
-        $('.countdowntimer').each(function (i) {
-            $("#" + $(this).attr('id')).appTimer();
-        });
-    });
-</script>
-<script>
-    $(document).ready(function () {
         $('.yocaoch-timer').each(function (i) {
             var recordId = $(this).attr('id');
             $('#' + recordId).yocoachTimer({
