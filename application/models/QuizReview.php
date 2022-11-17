@@ -219,9 +219,9 @@ class QuizReview extends MyAppModel
                 $this->error = $quiz->getError();
                 return false;
             }
+            $this->sendQuizEvaluationSubmissionNotification();
         }
         $db->commitTransaction();
-        $this->sendQuizEvaluationSubmissionNotification();
         return true;
     }
 
