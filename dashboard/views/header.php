@@ -219,11 +219,6 @@ $stickyDemoHeader = MyUtility::isDemoUrl() ? 'sticky-demo-header' : '';
                                         <small class="color-black"><?php echo Label::getLabel($loggedAs); ?></small>
                                     </div>
                                 </div>
-                                <div class="profile__details">
-                                    <h6 class="profile__title"><?php echo $siteUser['user_first_name'] . ' ' . $siteUser['user_last_name']; ?></h6>
-                                    <?php $loggedAs = ($siteUserType == User::TEACHER) ? 'LBL_LOGGED_IN_AS_A_TEACHER' : 'LBL_LOGGED_IN_AS_A_LEARNER'; ?>
-                                    <small class="color-black"><?php echo Label::getLabel($loggedAs); ?></small>
-                                </div>
                             </a>
                             <div id="profile-target" class="profile__target">
                                 <div class="profile__target-details">

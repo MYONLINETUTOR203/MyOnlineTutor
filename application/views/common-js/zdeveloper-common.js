@@ -200,7 +200,12 @@ $(document).ready(function () {
             data += '&' + fcom.frmData(document.frmSearchPaging);
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup'), data, function (res) {
-            window.location.reload();
+            if (res.twoFactorEnabled) {
+                twoFactorAuthForm(res.userId, res.rememberMe);
+                return;
+            } else {
+                window.location.reload();
+            }
         });
     };
     signupForm = function () {
@@ -221,6 +226,22 @@ $(document).ready(function () {
             }, 1000);
         });
     };
+    twoFactorAuthForm = function (userId, rememberMe = 0) {
+        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorAuthForm', [userId]), {remember_me: rememberMe}, function (response) {
+            $.facebox(response);
+        });
+    };
+
+    setupTwoFactor = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'setupTwoFactor'), fcom.frmData(frm), function (response) {
+            $.facebox.close();
+            window.location.reload();
+        });
+    };
+
     toggleHeaderCurrencyLanguageForDevices = function () {
         $('.nav__item-settings-js').click(function () {
             $(this).toggleClass("is-active");

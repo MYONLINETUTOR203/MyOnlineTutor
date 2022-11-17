@@ -69,6 +69,7 @@ class AppConstant
     const VIEW_SHORT = 3;
     const VIEW_DASHBOARD_LISTING = 4;
     const SEARCH_SESSION = 'SEARCH_SESSION';
+    const TWO_FACTOR_AUTH_ID = 'TWO_FACTOR_AUTH_ID';
 
     /**
      * Return Array Value

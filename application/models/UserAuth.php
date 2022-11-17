@@ -27,7 +27,7 @@ class UserAuth extends FatModel
      * @param string $userip
      * @return bool
      */
-    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true): bool
+    public function login(string $username, string $password = null, string $userip = null, bool $enypass = true, bool $setSession = true): bool
     {
         if (empty($username) || ($enypass && empty($password))) {
             $this->error = Label::getLabel('ERR_INVALID_CERDENTIALS');
@@ -58,6 +58,9 @@ class UserAuth extends FatModel
             $this->error = Label::getLabel('ERR_YOUR_VERIFICATION_PENDING_{link}');
             $this->error = str_replace("{link}", '<a href="javascript:void(0)" onclick="resendVerificationLink(' . "'" . $username . "'" . ')">' . Label::getLabel('LBL_CLICK_HERE') . '</a>', $this->error);
             return false;
+        }
+        if (!$setSession) {
+            return true;
         }
         if (!$this->setUserSession($username, $userip, $user)) {
             $this->error = Label::getLabel('ERR_SOMETHING_WENT_WRONT_TRY_AGAIN');
@@ -766,5 +769,18 @@ class UserAuth extends FatModel
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_LOGIN'));
         return $frm;
     }
+
+    public static function clearAllAuthTokensUser(int $userId)
+    {
+        $query = ['smt' => 'usrtok_user_id = ?', 'vals' => [$userId]];
+        if (!FatApp::getDb()->deleteRecords(static::DB_TBL_USER_AUTH,$query)) {
+            return false;
+        }
+        MyUtility::setCookie(static::COOKIES_ELEMENT, '', time() - 3600, CONF_WEBROOT_FRONTEND);
+        return true;
+    }
+
+
+  
 
 }
