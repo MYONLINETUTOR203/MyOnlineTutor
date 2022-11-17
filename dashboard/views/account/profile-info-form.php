@@ -28,6 +28,7 @@ $countryField = $profileFrm->getField('user_country_id');
 $timeZoneField = $profileFrm->getField('user_timezone');
 $bookingBeforeField = $profileFrm->getField('user_book_before');
 $freeTrialField = $profileFrm->getField('user_trial_enabled');
+$user2faField = $profileFrm->getField('user_2fa_enabled');
 $siteLangField = $profileFrm->getField('user_lang_id');
 $nextButton = $profileFrm->getField('btn_next');
 $nextButton->addFieldTagAttribute('onClick', 'setupProfileInfo(this.form, true); return(false);');
@@ -313,6 +314,32 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
                                     </div>
                                 </div>
                             <?php } ?>
+                            <?php if ($user2faField) { ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label"> <?php echo $user2faField->getCaption(); ?>
+                                                    <?php if ($user2faField->requirement->isRequired()) { ?>
+                                                        <span class="spn_must_field">*</span>
+                                                    <?php } ?>
+                                                </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <label class="switch-group d-flex align-items-center justify-content-between">
+                                                        <span class="switch-group__label user-2fa-status-js"><?php echo ($user2faField->checked) ? Label::getLabel('LBL_Active') : Label::getLabel('LBL_In-active'); ?></span>
+                                                        <span class="switch switch--small">
+                                                            <input class="switch__label" type="<?php echo $user2faField->fldType; ?>" name="<?php echo $user2faField->getName(); ?>" value="<?php echo $user2faField->value; ?>" <?php echo ($user2faField->checked) ? 'checked' : ''; ?>>
+                                                                <i class="switch__handle bg-green"></i>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
 
                             <div class="row submit-row">
                                 <div class="col-sm-auto">
@@ -366,6 +393,10 @@ if (MyUtility::getLayoutDirection() == 'rtl') {
         $('input[name="user_trial_enabled"]').on('change', function () {
             let status = ($(this).is(':checked')) ? statusActive : statusInActive;
             $('.free-trial-status-js').text(status);
+        });
+        $('input[name="user_2fa_enabled"]').on('change', function () {
+            let status = ($(this).is(':checked')) ? statusActive : statusInActive;
+            $('.user-2fa-status-js').text(status);
         });
     });
 </script>

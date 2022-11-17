@@ -253,3 +253,22 @@
         padding-bottom: theme('padding.1');
     }
 }
+
+
+
+
+.auth-screen{text-align: center;margin: 1rem 0 2rem;
+    #btn_resend_otp{text-decoration: underline; color: theme('color.primary'); font-weight: theme('font.weight.medium');}
+    #countdowntimer{color: theme('color.secondary'); font-weight: theme('font.weight.bold');}
+}
+.digit-group{display: flex; flex-wrap: wrap;width: 100%; margin: 2rem 0;
+    & input[type="text"]{flex: 1; margin: 0.2rem;  height: 50px!important; text-align: center;font-size: 1.4rem;
+        &:focus{border-color: theme('color.primary'); box-shadow: none!important;}
+    }
+}
+
+.auth-msg{
+    &{display: flex; justify-content: center;
+        & p{margin:0 0.2rem 0; line-height: 1;}
+    }
+}

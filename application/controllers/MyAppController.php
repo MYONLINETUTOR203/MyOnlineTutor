@@ -111,7 +111,9 @@ class MyAppController extends FatController
     private function setLoggedUser()
     {
         $this->siteUserType = User::LEARNER;
-        $this->siteUser = User::getDetail(UserAuth::getLoggedUserId());
+        if(UserAuth::isUserLogged()) {
+            $this->siteUser = User::getDetail(UserAuth::getLoggedUserId());
+        }
         if (empty($this->siteUser)) {
             UserAuth::logout();
             $this->siteUser = [];
