@@ -499,7 +499,7 @@ p {
     position: relative;
     min-height: 60px;
     cursor: pointer; }
-    .toggle-control__action:after {
+    .toggle-control__action:not(:only-child):after {
       position: absolute;
       left: var(--margin-6);
       top: var(--margin-6);
@@ -512,8 +512,10 @@ p {
       -webkit-transform: rotate(45deg);
           -ms-transform: rotate(45deg);
               transform: rotate(45deg); }
-    .toggle-control__action h6 {
+    .toggle-control__action:not(:only-child) h6 {
       margin: 0 0 8px; }
+    .toggle-control__action h6 {
+      margin: 0 0; }
       @media (max-width: 1199px) {
         .toggle-control__action h6 {
           font-size: 13px; } }

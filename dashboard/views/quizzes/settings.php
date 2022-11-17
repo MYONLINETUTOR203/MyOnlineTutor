@@ -177,13 +177,7 @@ $submitFld = $frm->getField('btn_submit');
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="field-set">
-                                <div class="field-wraper">
-                                    <div class="field_cover heading-5">
-                                        <small><?php echo Label::getLabel('LBL_QUIZ_SETTINGS_NOTE'); ?></small>
-                                    </div>
-                                </div>
-                            </div>
+                            <p class="color-third style-italic bold-600 font-small"><?php echo Label::getLabel('LBL_QUIZ_SETTINGS_NOTE'); ?></p>
                         </div>
                     </div>
                     <?php echo $frm->getFieldHtml('quiz_id'); ?>

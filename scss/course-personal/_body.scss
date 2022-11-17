@@ -164,9 +164,12 @@ $toggle-control: 'toggle-control';
     }
 
     &__action{padding: theme('padding.5'); padding-#{theme('direction.right','value')}: theme('padding.12'); position: relative; min-height: 60px; cursor: pointer;
-        &:after{position: absolute; #{theme('direction.right','value')}: theme('margin.6'); top: theme('margin.6'); content: ""; pointer-events: none; width:8px; height: 8px;
-             border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg);}
-             & h6{margin: 0 0 8px;
+        &:not(:only-child){
+                &:after{position: absolute; #{theme('direction.right','value')}: theme('margin.6'); top: theme('margin.6'); content: ""; pointer-events: none; width:8px; height: 8px;
+                border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg);}
+                & h6{margin: 0 0 8px;}
+            }
+             & h6{margin: 0 0 ;
                 @media(max-width: theme('breakpoints.xl','value')){
                     &{font-size: 13px;}
                 }

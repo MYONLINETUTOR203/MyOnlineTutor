@@ -95,7 +95,7 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                                         <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
 
                                             <span class="attachment margin-bottom-8">
-                                                <span class="attachment-item">
+                                                <span class="attachment-item margin-bottom-3">
                                                     <span class="attachment-item__media">
                                                         <svg class="icon icon--attachment icon--small">
                                                             <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
