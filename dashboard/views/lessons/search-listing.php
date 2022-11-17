@@ -36,7 +36,7 @@ $subscriptionLabel = Order::getTypeArr(Order::TYPE_SUBSCR);
                                     </div>
                                     <div class="timer__content">
                                         <?php if ($lesson['ordles_starttime_unix'] > $lesson['ordles_currenttime_unix']) { ?>
-                                            <div class="timer__controls countdowntimer timer-js" id="countdowntimer-<?php echo $lesson['ordles_id']; ?>" remainingTime="<?php echo $lesson['ordles_remaining_unix']; ?>">00:00:00:00</div>
+                                            <div class="timer__controls yocaoch-timer" id="<?php echo $siteUserType . '_' . $lesson['ordles_id']; ?>" timestamp="<?php echo $lesson['ordles_lesson_starttime_utc']; ?>">00:00:00:00</div>
                                         <?php } if (!empty($lesson['ordles_lesson_time_info'])) { ?>
                                             <span class="color-red"><?php echo Label::getLabel($lesson['ordles_lesson_time_info']); ?></span>
                                         <?php } ?>
@@ -153,8 +153,12 @@ if ($post['view'] != AppConstant::VIEW_DASHBOARD_LISTING) {
 ?>
 <script>
     $(document).ready(function () {
-        $('.countdowntimer').each(function (i) {
-            $("#" + $(this).attr('id')).appTimer();
-        });
+        $('.yocaoch-timer').each(function (i) {
+            var recordId = $(this).attr('id');
+            $('#' + recordId).yocoachTimer({
+                recordId: recordId,
+                recordType: 'LESSON'
+            });
+        })
     });
 </script>

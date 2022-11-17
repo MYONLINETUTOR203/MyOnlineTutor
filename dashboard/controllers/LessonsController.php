@@ -38,8 +38,9 @@ class LessonsController extends DashboardController
         ]);
         $this->_template->addJs([
             'js/jquery.datetimepicker.js',
-            'js/app.timer.js',
             'js/jquery.barrating.min.js',
+            'js/jquery.cookie.js',
+            'js/app.timer.js',
             'js/moment.min.js',
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
@@ -164,6 +165,7 @@ class LessonsController extends DashboardController
             'issues/page-js/common.js',
             'lessons/page-js/common.js',
             'js/jquery.barrating.min.js',
+            'js/jquery.cookie.js',
             'js/app.timer.js',
             'js/moment.min.js',
             'js/fullcalendar-luxon.min.js',
@@ -496,41 +498,42 @@ class LessonsController extends DashboardController
      */
     public function checkLessonStatus($lessonId = 0)
     {
+        $fields = ['ordles_teacher_starttime', 'ordles_lesson_endtime', 'ordles_status', 'ordles_student_starttime'];
         $srch = new LessonSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $srch->addCondition('ordles_id', '=', FatUtility::int($lessonId));
         $srch->applyPrimaryConditions();
         $srch->addSearchDetailFields();
-        $srch->addMultipleFields([
-            'ordles_teacher_starttime', 'ordles_lesson_endtime', 'ordles_status',
-            'ordles_student_starttime', 'ordles_student_endtime'
-        ]);
+        $srch->addMultipleFields($fields);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         $lesson = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($lesson)) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST_PLEASE_REFRESH_PAGE'));
         }
-        $msg = '';
-        switch ($lesson['ordles_status']) {
-            case Lesson::SCHEDULED:
-                if (User::LEARNER == $this->siteUserType && strtotime($lesson['ordles_lesson_endtime']) > time()) {
-                    if (!empty($lesson['ordles_teacher_starttime']) && empty($lesson['ordles_student_starttime'])) {
-                        $msg = 'LBL_TEACHER_JOINED_THE_LESSSON_YOU_CAN_JOIN_THIS_LESSON_NOW';
-                    }
-                }
-                break;
-            case Lesson::COMPLETED:
-                $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_TEACHER_END_THE_LESSON' : 'LBL_LEARNER_END_THE_LESSON';
-                break;
-            case Lesson::CANCELLED:
-                $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_LESSON_CANCELLED_BY_TEACHER' : 'LBL_LESSON_CANCELLED_BY_LEARNER';
-                break;
-            case Lesson::UNSCHEDULED:
-                $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_UNSCHEDULED_BY_TEACHER' : 'LBL_UNSCHEDULED_BY_LEARNER';
-                break;
+        $status = $lesson['ordles_status'];
+        if (Lesson::SCHEDULED == $status && User::TEACHER == $this->siteUserType) {
+            if (empty($lesson['ordles_teacher_starttime']) && strtotime($lesson['ordles_lesson_endtime']) > time()) {
+                FatUtility::dieJsonSuccess(['lessonStatus' => $status, 'msg' => Label::getLabel('LBL_PLEASE_JOIN_LESSON_AND_START_LESSON')]);
+            } elseif (!empty($lesson['ordles_teacher_starttime']) && strtotime($lesson['ordles_lesson_endtime']) < time()) {
+                FatUtility::dieJsonError(['lessonStatus' => $status, 'msg' => Label::getLabel('LBL_TIME_IS_OVER_PLEASE_END_THE_LESSON')]);
+            }
+        } elseif (Lesson::SCHEDULED == $status && User::LEARNER == $this->siteUserType) {
+            if (empty($lesson['ordles_student_starttime']) && !empty($lesson['ordles_teacher_starttime']) && strtotime($lesson['ordles_lesson_endtime']) > time()) {
+                FatUtility::dieJsonSuccess(['lessonStatus' => $status, 'msg' => Label::getLabel('LBL_TEACHER_HAS_JOINED_PLEASE_JOIN_LESSON')]);
+            } elseif (!empty($lesson['ordles_student_starttime']) && empty($lesson['ordles_student_endtime']) && strtotime($lesson['ordles_lesson_endtime']) < time()) {
+                FatUtility::dieJsonError(['lessonStatus' => $status, 'msg' => Label::getLabel('LBL_TIME_IS_OVER_LESSON_WILL_BE_ENDED_SOON')]);
+            }
+        } elseif (Lesson::COMPLETED == $status) {
+            $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_TEACHER_HAS_ENDED_THE_LESSON' : 'LBL_LEARNER_HAS_ENDED_THE_LESSON';
+            FatUtility::dieJsonError(['msg' => Label::getLabel($msg), 'lessonStatus' => $status]);
+        } elseif (Lesson::CANCELLED == $status) {
+            $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_TEACHER_HAS_CANCELLED_THE_LESSON' : 'LBL_LEARNER_HAS_CANCELLED_THE_LESSON';
+            FatUtility::dieJsonError(['msg' => Label::getLabel($msg), 'lessonStatus' => $status]);
+        } elseif (Lesson::UNSCHEDULED == $status) {
+            $msg = (User::LEARNER == $this->siteUserType) ? 'LBL_TEACHER_HAS_UNSCHEDULED_THE_LESSON' : 'LBL_LEARNER_HAS_UNSCHEDULED_THE_LESSON';
+            FatUtility::dieJsonError(['msg' => Label::getLabel($msg), 'lessonStatus' => $status]);
         }
-        $msg = (!empty($msg)) ? Label::getLabel($msg) : '';
-        FatUtility::dieJsonSuccess(['msg' => $msg, 'ordles_status' => $lesson['ordles_status']]);
+        FatUtility::dieJsonSuccess(['msg' => '', 'lessonStatus' => $status]);
     }
 
     /**

@@ -19,7 +19,7 @@ class TeacherController extends DashboardController
         MyUtility::setUserType(User::TEACHER);
         parent::__construct($action);
     }
-    
+
     /**
      * Teacher Search Form
      */
@@ -40,7 +40,7 @@ class TeacherController extends DashboardController
         ]);
         $this->_template->addJs([
             'js/moment.min.js', 'js/fullcalendar-luxon.min.js',
-            'js/fateventcalendar.js', 'js/app.timer.js',
+            'js/fateventcalendar.js', 'js/jquery.cookie.js', 'js/app.timer.js',
             'js/fullcalendar.min.js', 'js/fullcalendar-luxon-global.min.js',
         ]);
         $this->_template->render();
@@ -558,8 +558,8 @@ class TeacherController extends DashboardController
     {
         $teacherId = $this->siteUserId;
         $teachLangPriceQuery = 'DELETE ' . UserTeachLanguage::DB_TBL . ', ustelgpr FROM ' .
-            UserTeachLanguage::DB_TBL . ' LEFT JOIN ' . TeachLangPrice::DB_TBL .
-            ' ustelgpr ON ustelgpr.ustelgpr_utlang_id = utlang_id WHERE utlang_user_id = ' . $teacherId;
+                UserTeachLanguage::DB_TBL . ' LEFT JOIN ' . TeachLangPrice::DB_TBL .
+                ' ustelgpr ON ustelgpr.ustelgpr_utlang_id = utlang_id WHERE utlang_user_id = ' . $teacherId;
         if (!empty($langIds)) {
             $langIds = implode(',', $langIds);
             $teachLangPriceQuery .= ' and utlang_tlang_id NOT IN (' . $langIds . ')';
@@ -621,8 +621,6 @@ class TeacherController extends DashboardController
         $frm->addButton('', 'btn_next', Label::getLabel('LBL_NEXT'));
         return $frm;
     }
-
-
 
     /**
      * Get User Teach Lang Data
@@ -709,4 +707,5 @@ class TeacherController extends DashboardController
         $availability = new Availability($this->siteUserId);
         FatUtility::dieJsonSuccess(['data' => $availability->getAvailability($start, $end)]);
     }
+
 }

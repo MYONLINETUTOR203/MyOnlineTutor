@@ -41,6 +41,7 @@ class LearnerController extends DashboardController
             'lessons/page-js/common.js',
             'plans/page-js/common.js',
             'js/moment.min.js',
+            'js/jquery.cookie.js',
             'js/app.timer.js',
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
@@ -86,9 +87,9 @@ class LearnerController extends DashboardController
             $message = Label::getLabel('LBL_ADDED_TO_FAVOURITES');
         } else {
             if (!$db->deleteRecords(User::DB_TBL_TEACHER_FAVORITE, [
-                'smt' => 'uft_user_id = ? AND uft_teacher_id = ?',
-                'vals' => [$this->siteUserId, $teacherId]
-            ])) {
+                        'smt' => 'uft_user_id = ? AND uft_teacher_id = ?',
+                        'vals' => [$this->siteUserId, $teacherId]
+                    ])) {
                 $message = Label::getLabel('LBL_PLEASE_CONTACT_SUPPORT');
             }
             $action = 'R';
@@ -155,4 +156,5 @@ class LearnerController extends DashboardController
         $frm->addHiddenField('', 'view', AppConstant::VIEW_DASHBOARD_LISTING);
         return $frm;
     }
+
 }

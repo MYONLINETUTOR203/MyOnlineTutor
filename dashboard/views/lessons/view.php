@@ -23,11 +23,10 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
     var lessonStatus = <?php echo FatUtility::int($lesson['ordles_status']); ?>;
     var lessonId = <?php echo FatUtility::int($lesson['ordles_id']); ?>;
     var ordles_currenttime_unix = <?php echo FatUtility::int($lesson['ordles_currenttime_unix']); ?>;
-    var ordles_starttime_unix = <?php echo FatUtility::int($lesson['ordles_starttime_unix']); ?>;
-    var ordles_endtime_unix = <?php echo FatUtility::int($lesson['ordles_endtime_unix']); ?>;
+    var ordles_starttime_unix = <?php echo FatUtility::int($lesson['ordles_lesson_starttime_utc']); ?>;
+    var ordles_endtime_unix = <?php echo FatUtility::int($lesson['ordles_lesson_endtime_utc']); ?>;
     var joinTime = '<?php echo $joinTime; ?>';
     var canJoin = <?php echo FatUtility::int($lesson['canJoin']); ?>;
-    var eneTimeMsg = "<?php echo CommonHelper::htmlEntitiesDecode(Label::getLabel('LBL_LESSON_ENDTIME_MSG')); ?>";
     var endLessonConfirmMsg = "<?php echo CommonHelper::htmlEntitiesDecode(Label::getLabel('LBL_END_LESSON_CONFIRM_MSG')); ?>";
 </script>
 <!-- [ PAGE ========= -->
@@ -76,9 +75,9 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                 </div>
                 <div class="col-xl-4 col-lg-4 col-sm-12">
                     <div class="session-infobar__action">
-                        <?php if ($lesson['ordles_status'] == Lesson::SCHEDULED && $lesson['ordles_endtime_unix'] > $lesson['ordles_currenttime_unix'] && $lesson['ordles_starttime_unix'] < $lesson['ordles_currenttime_unix']) { ?>
+                        <?php if ($lesson['ordles_status'] == Lesson::SCHEDULED && $lesson['ordles_endtime_unix'] > $lesson['ordles_currenttime_unix'] && $lesson['ordles_starttime_unix'] <= $lesson['ordles_currenttime_unix']) { ?>
                             <?php $endTimer = true; ?>
-                            <span class="btn btn--live" id="end_lesson_timer" remainingTime="<?php echo $lesson['ordles_endtime_remaining_unix'] ?>"  endTime="<?php echo $lesson['ordles_endtime_unix']; ?>"> 00:00:00:00 </span>
+                            <span class="btn btn--live" id="lessonEndTimer" timestamp="<?php echo $lesson['ordles_lesson_endtime_utc'] ?>"> 00:00:00:00 </span>
                         <?php } ?>
                         <button class="btn bg-red end_lesson_now <?php echo (!$lesson['canEnd']) ? 'd-none' : ''; ?> " id="endL" onclick="endLesson(<?php echo $lesson['ordles_id']; ?>);"><?php echo Label::getLabel('LBL_End_Lesson'); ?></button>
                         <?php if ($lesson['canCancelLesson']) { ?>
@@ -132,7 +131,7 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
                         <?php $startTimer = true; ?>
                         <div class="start-lesson-timer timer">
                             <h5 class="timer-title"><?php echo Label::getLabel('LBL_STARTS_IN'); ?></h5>
-                            <div class="countdown-timer size_lg" id="start_lesson_timer" remainingTime="<?php echo $lesson['ordles_remaining_unix']; ?>">00:00:00:00</div>
+                            <div class="countdown-timer size_lg" id="lessonStartTimer" timestamp="<?php echo $lesson['ordles_lesson_starttime_utc']; ?>">00:00:00:00</div>
                         </div>
                     <?php } ?>
                 </div>
@@ -143,19 +142,21 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
 <!-- ] -->
 <script>
     $(document).ready(function () {
-        var slowEndMsg = true;
 <?php if ($startTimer) { ?>
-            $("#start_lesson_timer").appTimer(function () {
-                window.location.reload();
+            $("#lessonStartTimer").yocoachTimer({
+                recordId: lessonId,
+                recordType: 'LESSON',
+                callback: function () {
+                    window.location.reload();
+                }
             });
 <?php } ?>
 <?php if ($endTimer) { ?>
-            $("#end_lesson_timer").appTimer(function () {
-                $("#end_lesson_timer,.join-btns").addClass('d-none');
-                if (slowEndMsg) {
-                    slowEndMsg = false;
-                    fcom.warning(eneTimeMsg);
-                    reloadPage(15000);
+            $("#lessonEndTimer").yocoachTimer({
+                recordId: lessonId,
+                recordType: 'LESSON',
+                callback: function () {
+                    $(".join-btns").addClass('d-none');
                 }
             });
             checkLessonStatus(lessonId, lessonStatus);
