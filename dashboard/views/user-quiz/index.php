@@ -45,14 +45,14 @@
                         </div>
                         <div class="repeat-element">
                             <div class="repeat-element__title">
-                                <?php echo Label::getLabel('LBL_ATTEMPTS'); ?>
+                                <?php echo Label::getLabel('LBL_ATTEMPTS_AVAILABLE'); ?>
                             </div>
                             <div class="repeat-element__content">
                                 <?php
                                 $label = Label::getLabel('LBL_{attempts}/{total}');
                                 echo str_replace(
                                     ['{attempts}', '{total}'],
-                                    [$attempts, $data['quilin_attempts']],
+                                    [($data['quilin_attempts'] - $attempts), $data['quilin_attempts']],
                                     $label
                                 );
                                 ?>
