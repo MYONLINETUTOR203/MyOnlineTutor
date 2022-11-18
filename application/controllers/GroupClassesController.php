@@ -29,7 +29,6 @@ class GroupClassesController extends MyAppController
         $frm->fill(FatApp::getPostedData() + $searchSession);
         unset($_SESSION[AppConstant::SEARCH_SESSION]);
         $this->set('srchFrm', $frm);
-        $this->_template->addJs(['js/app.timer.js']);
         $this->_template->render();
     }
 

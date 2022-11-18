@@ -32,7 +32,7 @@ if (count($allClasses) == 0) {
                                 <div class="timer__media"><span><svg class="icon icon--clock icon--small"><use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use></svg></span></div>
                                 <div class="timer__content">
                                     <?php if ($class['grpcls_starttime_unix'] > $class['grpcls_currenttime_unix']) { ?>
-                                        <div class="timer__controls countdowntimer timer-js" id="countdowntimer-<?php echo $classId; ?>" remainingTime="<?php echo $class['grpcls_remaining_unix']; ?>">00:00:00:00</div>
+                                        <div class="timer__controls yocaoch-timer" id="<?php echo $siteUserType . '_' . $classId; ?>" timestamp="<?php echo $class['grpcls_start_datetime_utc']; ?>">00:00:00:00</div>
                                     <?php } if (empty($class['grpcls_booked_seats']) && $class['grpcls_starttime_unix'] < $class['grpcls_currenttime_unix']) { ?>
                                         <span class="color-red"><?php echo Label::getLabel('LBL_NO_ONE_HAS_BOOKED'); ?></span>
                                     <?php } elseif (!empty($class['class_time_info'])) { ?>
@@ -165,8 +165,12 @@ $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
 ?>
 <script>
     $(document).ready(function () {
-        $('.countdowntimer').each(function (i) {
-            $("#" + $(this).attr('id')).appTimer();
-        });
+        $('.yocaoch-timer').each(function (i) {
+            var recordId = $(this).attr('id');
+            $('#' + recordId).yocoachTimer({
+                recordId: recordId,
+                recordType: 'CLASS'
+            });
+        })
     });
 </script>

@@ -59,13 +59,6 @@
             $this->includeTemplate('_partial/pagination.php', $pagingArr, false);
             ?>
         </div>
-        <script>
-            $(document).ready(function () {
-                $('.countdowntimer-js').each(function (i) {
-                    $("#" + $(this).attr('id')).appTimer();
-                });
-            });
-        </script>
     </div>
 <?php } else { ?>
     <div class="page-listing__body">

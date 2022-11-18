@@ -18,10 +18,10 @@ function isJson(str) {
 function reloadPage(time) {
     if (time && time > 0) {
         setTimeout(() => {
-            location.reload();
+            window.location.reload();
         }, time);
     } else {
-        location.reload();
+        window.location.reload();
     }
 }
 cancel = function () {
