@@ -55,7 +55,7 @@
                     <div class="answer-view margin-bottom-10">
                         <p>
                             <strong><?php echo Label::getLabel('LBL_ANSWER:') ?></strong>
-                            <?php echo !empty($answers) ? $answers : Label::getLabel('LBL_NA') ?>
+                            <?php echo !empty($answers) ? nl2br($answers) : Label::getLabel('LBL_NA') ?>
                         </p>
                         <?php if ($siteUserType == User::TEACHER) { ?>
                             <div class="margin-top-10">
