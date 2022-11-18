@@ -280,7 +280,8 @@ class Lecture extends MyAppModel
             'resrc_type',
             'lecsrc_id',
             'lecsrc_lecture_id',
-            'lecsrc_created'
+            'lecsrc_created',
+            'resrc_id'
         ]);
         $srch->addCondition('resrc.resrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
