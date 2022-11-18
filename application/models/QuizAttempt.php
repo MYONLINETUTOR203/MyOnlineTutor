@@ -565,12 +565,16 @@ class QuizAttempt extends MyAppModel
                 'tlanglang'
             );
             $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
+                'ordles_type'
             ]);
             $srch->setPageSize(1);
             $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            }
             $sessionTitle = str_replace(
                 ['{teach-lang}', '{n}'],
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
