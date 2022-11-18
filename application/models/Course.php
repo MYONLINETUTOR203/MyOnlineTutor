@@ -355,6 +355,12 @@ class Course extends MyAppModel
                 $db->rollbackTransaction();
                 return false;
             }
+            $course = new Course($orderData['course_id']);
+            if (!$course->setStudentCount()) {
+                $this->error = $course->getError();
+                $db->rollbackTransaction();
+                return false;
+            }
         }
         $request['corere_remark'] = $data['corere_comment'];
         $request = array_merge($request, $refundData);
@@ -873,6 +879,7 @@ class Course extends MyAppModel
         $srch->addFld('COUNT(ordcrs_order_id) AS course_students');
         $srch->addCondition('ordcrs_course_id', '=', $this->getMainTableRecordId());
         $srch->addCondition('order_payment_status', '=', Order::ISPAID);
+        $srch->addCondition('ordcrs_status', '!=', OrderCourse::CANCELLED);
         $row = FatApp::getDb()->fetch($srch->getResultSet());
         /* update student count */
         $this->assignValues($row);
