@@ -100,6 +100,7 @@ class CourseRatingReview extends MyAppModel
             return false;
         }
         if ($defaultStatus == static::STATUS_APPROVED) {
+            (new TeacherStat($this->teacherId))->setRatingReviewCount();
             (new Course($recordId))->setRatingReviewCount();
         }
         return true;
