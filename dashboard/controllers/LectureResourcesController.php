@@ -97,6 +97,9 @@ class LectureResourcesController extends DashboardController
         }
         if ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_LIBRARY) {
             $resources = FatApp::getPostedData('resources');
+            if (empty($resources) || count($resources) < 1) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_RESOURCES_FROM_THE_LIST'));
+            }
             foreach ($resources as $resource) {
                 $lecture = new Lecture($post['lecsrc_lecture_id']);
                 if (!$lecture->setupResources(
