@@ -390,7 +390,8 @@ class QuizLinked extends MyAppModel
                 $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
 
                 $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
-                if (count($question['qulinqu_answer']) == count($answered)) {
+                $wrongAnswered = array_diff($question['quatqu_answer'], $question['qulinqu_answer']);
+                if (count($question['qulinqu_answer']) == count($answered) && count($wrongAnswered) < 1) {
                     $question['is_correct'] = AppConstant::YES;
                 } else {
                     $question['is_correct'] = AppConstant::NO;
