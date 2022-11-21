@@ -569,12 +569,16 @@ class QuizAttempt extends MyAppModel
                 'tlanglang'
             );
             $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
+                'ordles_type'
             ]);
             $srch->setPageSize(1);
             $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            }
             $sessionTitle = str_replace(
                 ['{teach-lang}', '{n}'],
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
@@ -635,16 +639,28 @@ class QuizAttempt extends MyAppModel
             $this->error = Label::getLabel('LBL_AN_ERROR_OCCURRED');
             return false;
         }
+
         $answers = json_decode($ques['qulinqu_answer'], true);
-        $marksPerAnswer = $ques['qulinqu_marks'] / count($answers);
-
         $submittedAnswers = json_decode($data['quatqu_answer'], true);
-        $wrongAnswers = array_diff($submittedAnswers, $answers);
-        $correctAnswers = array_intersect($answers, $submittedAnswers);
+        $wrongAnswers = count(array_diff($submittedAnswers, $answers));
+        
+        if ($ques['qulinqu_type'] == Question::TYPE_MULTIPLE) {
+            $answerOptions = json_decode($ques['qulinqu_options'], true);
+            $marksPerAnswer = $ques['qulinqu_marks'] / count($answerOptions);
+            $correctAnswers = array_intersect($answers, $submittedAnswers);
+            $missedCorrectAnswers = count(array_diff($answers, $correctAnswers));
+            $incorrectAnswers = count($answerOptions) - count($answers);
 
-        $correctAnswers = count($correctAnswers) - count($wrongAnswers);
-        $correctAnswers = ($correctAnswers > 0) ? $correctAnswers : 0;
-        $answeredScore = $marksPerAnswer * $correctAnswers;
+            /*
+            * Formula for MCQ score calculation
+            * ((Selected Correct Answers - Selected Incorrect Answers - Not Selected Correct Answers) + 
+            * (Incorrect Answers - Selected Incorrect Answers)) * Price Per Answer
+            */
+            $answeredScore = ((count($correctAnswers) - $wrongAnswers - $missedCorrectAnswers) + ($incorrectAnswers - $wrongAnswers)) * $marksPerAnswer;
+            $answeredScore = ($answeredScore < 1) ? 0 : $answeredScore;
+        } else {
+            $answeredScore = ($wrongAnswers > 0) ? 0 : $ques['qulinqu_marks'];
+        }
 
         $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $assignValues = [
