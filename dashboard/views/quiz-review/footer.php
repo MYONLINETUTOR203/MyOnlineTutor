@@ -18,7 +18,7 @@
 <!-- ] -->
 </page>
 <!-- Custom Loader -->
-<div id="app-alert" class="alert-position alert-position--top-right">
+<div id="app-alert" class="alert-position alert-position--top-right fadeInDown animated">
     <alert role="alert" class="alert">
         <alert-icon class="alert__icon"></alert-icon>
         <alert-message class="alert__message">
