@@ -26,7 +26,8 @@ class QuestionsController extends AdminBaseController
      */
     public function index()
     {
-        $frm = $this->getSearchForm();
+        $cateId = FatApp::getQueryStringData('ques_cate_id') ?? 0;
+        $frm = $this->getSearchForm($cateId);
         $frm->fill(FatApp::getQueryStringData());
         $this->sets([
             "frmSearch" => $frm,
@@ -129,16 +130,22 @@ class QuestionsController extends AdminBaseController
     /**
      * Get User Search Form
      *
-     * @return Form
+     * @param int $cateId
+     * @return \Form
      */
-    private function getSearchForm(): Form
+    private function getSearchForm(int $cateId = 0): Form
     {
-        $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
-
         $frm = new Form('frmQuesSearch');
         $frm->addTextBox(Label::getLabel('LBL_TITLE'), 'keyword', '', ['id' => 'keyword', 'autocomplete' => 'off']);
+
+        $categoryList = Category::getCategoriesByParentId($this->siteLangId, 0, Category::TYPE_QUESTION, false);
         $frm->addSelectBox(Label::getLabel('LBL_CATEGORY'), 'ques_cate_id', $categoryList);
-        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', []);
+        $subcategories = [];
+        if ($cateId > 0) {
+            $subcategories = Category::getCategoriesByParentId($this->siteLangId, $cateId, Category::TYPE_QUESTION);
+        }
+        $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', $subcategories, '', [], Label::getLabel('LBL_SELECT'));
+
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['id' => 'teacher', 'autocomplete' => 'off']);
         $fld = $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $fld->requirements()->setIntPositive();

@@ -337,7 +337,7 @@ class UserQuizController extends DashboardController
             'user' => User::getAttributesById($this->siteUserId, ['user_first_name', 'user_last_name']),
             'data' => $data,
             'attemptId' => $id,
-            'order' => $order,
+            'order' => ($order) ?? [],
             'canRetake' => $quiz->canRetake(),
             'canDownloadCertificate' => $quiz->canDownloadCertificate(),
             'courseQuiz' => ($data['quilin_record_type'] === AppConstant::COURSE),

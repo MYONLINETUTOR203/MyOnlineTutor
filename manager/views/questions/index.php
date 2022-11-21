@@ -8,8 +8,8 @@ $submitBtn = $frmSearch->getField('btn_submit');
 $submitBtn->developerTags['col'] = 6;
 $fld = $frmSearch->getField('btn_clear');
 $fld->addFieldTagAttribute('onclick', 'clearSearch()');
-$fld = $frmSearch->getField('ques_cate_id');
-$fld->addFieldTagAttribute('onchange', 'getSubcategories(this.value)');
+$catefld = $frmSearch->getField('ques_cate_id');
+$catefld->addFieldTagAttribute('onchange', 'getSubcategories(this.value)');
 
 $subcatefld = $frmSearch->getField('ques_subcate_id');
 $subcatefld->addFieldTagAttribute('id', 'subCategories')
@@ -50,11 +50,8 @@ $subcatefld->addFieldTagAttribute('id', 'subCategories')
     </div>
 </div>
 <script>
-    var catId = "<?php echo isset($params['ques_cate_id']) ? $params['ques_cate_id'] : 0 ?>";
-    if (catId > 0) {
-        getSubcategories(catId, '<?php echo !empty($subcatefld->value) ? $subcatefld->value : 0; ?>');
-    }
     $(document).ready(function() {
+        var catId = "<?php echo !empty($catefld->value) ? $catefld->value : 0; ?>";
         if (catId > 0) {
             $('.section.searchform_filter .sectionhead').click();
         }
