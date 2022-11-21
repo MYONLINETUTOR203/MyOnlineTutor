@@ -34,18 +34,16 @@
                                 </div>
                             </div>
                         <?php } ?>
-                        <?php if ($data['quilin_duration'] > 0) { ?>
-                            <div class="repeat-element">
-                                <div class="repeat-element__title">
-                                    <?php echo Label::getLabel('LBL_TIME_SPENT'); ?>
-                                </div>
-                                <div class="repeat-element__content">
-                                    <?php
-                                    echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
-                                    ?>
-                                </div>
+                        <div class="repeat-element">
+                            <div class="repeat-element__title">
+                                <?php echo Label::getLabel('LBL_TIME_SPENT'); ?>
                             </div>
-                        <?php } ?>
+                            <div class="repeat-element__content">
+                                <?php
+                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                                ?>
+                            </div>
+                        </div>
                         <div class="repeat-element">
                             <div class="repeat-element__title">
                                 <?php echo Label::getLabel('LBL_ATTEMPTS') ?>
