@@ -125,7 +125,7 @@ class UserQuizController extends DashboardController
         $this->set('data', $data);
         $this->set('attemptId', $id);
 
-        $this->_template->addJs('js/app.timer.js');
+        $this->_template->addJs(['js/app.timer.js', 'js/jquery.cookie.js']);
         $this->_template->render();
     }
 
@@ -369,14 +369,6 @@ class UserQuizController extends DashboardController
         }
         $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ;
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
-    }
-
-    public function getTime()
-    {
-        $endTime = FatApp::getPostedData('time');
-        FatUtility::dieJsonSuccess([
-            'time' => ($endTime - strtotime(date('Y-m-d H:i:s')))
-        ]);
     }
 
     /**

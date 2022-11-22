@@ -38,9 +38,8 @@
                                     <div class="timer__content">
                                         <?php
                                         $endtime = $data['quilin_duration'] + strtotime($data['quizat_started']);
-                                        $timer = $endtime - strtotime(date('Y-m-d H:i:s'));
                                         ?>
-                                        <div class="timer__controls countdowntimer timer-js" endtime="<?php echo $endtime; ?>" id="countdowntimerJs" remainingtime="<?php echo $timer; ?>">00:00:00:00</div>
+                                        <span class="timer__controls" id="quizTimer" timestamp="<?php echo $endtime; ?>"> 00:00:00:00 </span>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -56,9 +55,16 @@
 <script>
     $(document).ready(function() {
         view('<?php echo $attemptId; ?>');
-    });
 
-    $('#countdowntimerJs').appTimer(function() {
-        window.location.reload();
+        $('#quizTimer').yocoachTimer({
+            recordId: <?php echo $attemptId; ?>,
+            recordType: 'QUIZ',
+            callback: function() {
+                window.location.reload();
+            },
+            notify: function() {
+                $.appalert("<?php echo Label::getLabel('LBL_FEW_SECONDS_LEFT._PLEASE_KEEP_YOUR_ANSWERS_SAVED') ?>", 'danger');
+            }
+        });
     });
 </script>
