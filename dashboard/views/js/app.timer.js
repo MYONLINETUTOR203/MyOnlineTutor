@@ -7,7 +7,8 @@
                 recordId: options.recordId,
                 recordType: options.recordType,
                 starttime: $(timer).attr('timestamp'),
-                callback: false
+                callback: false,
+                notify: false
             }, options);
             $.cookie(timer.getKey(), timer.settings.starttime);
         };
@@ -24,6 +25,11 @@
                         timer.settings.callback();
                     }
                     return;
+                }
+                if (timer.settings.notify) {
+                    if (remainingTime == 30) {
+                        timer.settings.notify();
+                    }
                 }
                 var days = Math.floor(remainingTime / (60 * 60 * 24));
                 var divisor_for_hours = remainingTime % (60 * 60 * 24);

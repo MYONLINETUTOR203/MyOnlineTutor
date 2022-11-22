@@ -132,7 +132,8 @@ class QuestionsController extends DashboardController
             'optionsFrm' => $this->getOptionsForm($type),
             'frm' => $frm,
             'options' => $options,
-            'answers' => $answers
+            'answers' => $answers,
+            'quizType' => $quizType,
         ]);
         $this->_template->render(false, false);
     }
@@ -290,6 +291,7 @@ class QuestionsController extends DashboardController
         );
 
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
+        $frm->addButton(Label::getLabel('LBL_BACK'), 'btn_back', Label::getLabel('LBL_BACK'));
         $frm->addSubmitButton('', 'submit', Label::getLabel('LBL_SAVE'));
         return $frm;
     }

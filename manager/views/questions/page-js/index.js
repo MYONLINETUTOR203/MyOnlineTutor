@@ -54,7 +54,7 @@ $(document).ready(function () {
         id = (id == '') ? 0 : id;
         fcom.ajax(fcom.makeUrl('Questions', 'getSubcategories', [id, selectedId]), '', function (res) {
             $("#subCategories").html(res);
-        }, { async : false });
+        }, { async: false, process: false });
     };
 
     view = function (quesId) {

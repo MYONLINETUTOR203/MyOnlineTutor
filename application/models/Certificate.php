@@ -13,7 +13,7 @@ class Certificate extends MyAppModel
     const TYPE_QUIZ_EVALUATION = 1;
     const TYPE_COURSE_COMPLETION = 2;
     const TYPE_COURSE_EVALUATION = 3;
-    
+
     private $id;
     private $code;
     private $userId;
@@ -113,7 +113,7 @@ class Certificate extends MyAppModel
     {
         if ($this->code == 'evaluation_certificate' || $this->code == 'course_evaluation_certificate') {
             $quiz = new QuizAttempt($this->id);
-            $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
+            $quiz->setFldValue('quizat_certificate_number', $certificateNumber);
             if (!$quiz->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
                 return false;
@@ -369,7 +369,7 @@ class Certificate extends MyAppModel
             'course_title' => 'English Language Learning - Beginners',
             'course_clang_name' => 'English',
             'cert_number' => 'YC_h34uwh9e72w',
-            'quizat_certificate_number' => 'YC_h34uwh9e72w',
+            'certificate_number' => 'YC_h34uwh9e72w',
             'completed_date' => date('Y-m-d'),
             'quiz_duration' => 900,
             'course_duration' => 900,

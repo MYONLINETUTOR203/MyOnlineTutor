@@ -118,7 +118,7 @@ class UserQuizController extends DashboardController
             'courseQuiz' =>  ($data['quilin_record_type'] === AppConstant::COURSE)
         ]);
 
-        $this->_template->addJs('js/app.timer.js');
+        $this->_template->addJs(['js/app.timer.js', 'js/jquery.cookie.js']);
         $this->_template->render();
     }
 
@@ -381,19 +381,6 @@ class UserQuizController extends DashboardController
         }
         $_SESSION['certificate_type'] = Certificate::TYPE_QUIZ_EVALUATION;
         FatApp::redirectUser(MyUtility::makeUrl('Certificates', 'quiz', [$id]));
-    }
-
-    /**
-     * Get time to reset timer
-     *
-     * @return json
-     */
-    public function getTime()
-    {
-        $endTime = FatApp::getPostedData('time');
-        FatUtility::dieJsonSuccess([
-            'time' => ($endTime - strtotime(date('Y-m-d H:i:s')))
-        ]);
     }
 
     /**

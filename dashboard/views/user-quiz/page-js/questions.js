@@ -46,7 +46,6 @@ $(function () {
     };
     saveAndFinish = function () {
         if (!confirm(langLbl.confirmQuizComplete)) {
-            resetTimer();
             return;
         }
         var frm = document.frmQuiz;
@@ -54,16 +53,4 @@ $(function () {
             window.location = fcom.makeUrl('UserQuiz', 'completed', [res.id]);
         });
     };
-    resetTimer = function () {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'getTime'), {
-            'time': $('#countdowntimerJs').attr('endtime')
-        }, function (res) {
-            $('#countdowntimerJs').attr('remainingtime', res.time);
-            $('#countdowntimerJs').refreshTimer();
-        });
-    };
-    goToPage = function (page) {
-        parent.location.reload();
-    };
-    resizeIframe(50);
 });
