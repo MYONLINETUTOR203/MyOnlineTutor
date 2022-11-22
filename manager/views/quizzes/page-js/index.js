@@ -40,7 +40,7 @@ $(document).ready(function () {
     view = function (id) {
         fcom.ajax(fcom.makeUrl('Quizzes', 'view', [id]), '', function (res) {
             $.facebox(res, 'fbminwidth facebox-medium');
-            resizeIframe(50);
+            resizeIframe(100);
         });
     };
     questions = function (id) {

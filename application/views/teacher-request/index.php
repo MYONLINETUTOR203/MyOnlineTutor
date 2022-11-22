@@ -14,7 +14,7 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
 <section class="section section-full">
     <div class="slideshow full-view-banner">
         <picture class="hero-img">
-            <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('image', 'show', [Afile::TYPE_APPLY_TO_TEACH_BANNER, 0, Afile::SIZE_LARGE], CONF_WEBROOT_URL),CONF_DEF_CACHE_TIME, '.jpg'); ?>" alt="">
+            <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('image', 'show', [Afile::TYPE_APPLY_TO_TEACH_BANNER, 0, Afile::SIZE_LARGE], CONF_WEBROOT_URL), CONF_DEF_CACHE_TIME, '.jpg'); ?>" alt="">
         </picture>
     </div>
     <div class="slideshow-content">
@@ -113,7 +113,7 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
                                 <h5><?php echo $ques['faq_title']; ?></h5>
                             </a>
                             <div class="faq-answer faq__target faq__target-js">
-                                <iframe srcdoc="<?php echo $ques['faq_description']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
+                                <iframe srcdoc="<?php echo $ques['faq_description']; ?>" style="border:none;width: 100%;height: 35px;" ></iframe>
                             </div>
                         </div>
                     <?php } ?>
@@ -124,7 +124,7 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
     <?php $this->includeTemplate('_partial/contact-us-section.php', ['siteLangId' => $siteLangId]); ?>
 <?php } ?>
 <script>
-    $(".faq__trigger-js").click(function(e) {
+    $(".faq__trigger-js").click(function (e) {
         e.preventDefault();
         if ($(this).parents('.faq-group-js').hasClass('is-active')) {
             $(this).siblings('.faq__target-js').slideUp();
@@ -135,7 +135,9 @@ $submitBtn->setFieldTagAttribute('class', 'btn btn--secondary btn--large btn--bl
             $('.faq__target-js').slideUp();
             $(this).siblings('.faq__target-js').slideDown(0);
         }
-        var height = $(this).siblings('.faq__target-js').children('iframe').contents().height() + 40;
-        $(this).siblings('.faq__target-js').css('height', height + 'px');
+        $iframe = $(this).siblings('.faq__target-js').children('iframe');
+        height = $iframe.contents().height();
+        $iframe.css({height: height + 'px'});
+        $(this).siblings('.faq__target-js').css('height', height + 35 + 'px');
     });
 </script>

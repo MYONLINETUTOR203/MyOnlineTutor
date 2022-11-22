@@ -32,7 +32,7 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
                                     : <strong>
-                                        <iframe srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
+                                        <iframe srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none;width: 100%;height: 35px;"></iframe>
                                     </strong>
                                 </div>
                             </div>
@@ -199,3 +199,15 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
         </div>
     </div>
 </section>
+<script>
+    $("iframe").on("load", function() {
+        let head = $("iframe").contents().find("body");
+        let css = '<style>';
+        css += 'html {scrollbar-width:thin;}';
+        css += '*::-webkit-scrollbar {width: 8 px;}';
+        css += '*::-webkit-scrollbar-track {background-color: rgba(0, 0, 0, 0.06);border-radius: 0;}';
+        css += '*::-webkit-scrollbar-thumb {background-color: rgba(0, 0, 0, 0.2);border-radius: 0;}';
+        css += '</style>';
+        $(head).append(css);
+    });
+</script>

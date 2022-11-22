@@ -18,10 +18,10 @@ function isJson(str) {
 function reloadPage(time) {
     if (time && time > 0) {
         setTimeout(() => {
-            location.reload();
+            window.location.reload();
         }, time);
     } else {
-        location.reload();
+        window.location.reload();
     }
 }
 cancel = function () {
@@ -448,8 +448,10 @@ function bindDatetimePicker(selector) {
 function resizeIframe(time = 0)
 {
     setTimeout(function () {
-        var height = $('.editorContentJs').find('iframe').contents().height() + 40;
-        $('.editorContentJs').css('height', height + 'px');
+        var $iframe = $('.editorContentJs').find('iframe');
+        var height = $iframe.contents().height();
+        $iframe.css({ height: height + 'px' });
+        $('.editorContentJs').css('height', height + 35 + 'px');
     }, time);
 }
 $(document).ready(function () {

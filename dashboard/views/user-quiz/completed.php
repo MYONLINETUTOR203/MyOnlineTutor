@@ -78,16 +78,14 @@ $showStats = true;
                         <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT:'); ?>
                         <strong><?php echo MyUtility::formatPercent($data['quizat_scored']); ?></strong>
                     </span>
-                    <?php if ($data['quilin_duration'] > 0) { ?>
-                        <span class="inline-meta__item">
-                            <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
-                            <strong>
-                                <?php
-                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
-                                ?>
-                            </strong>
-                        </span>
-                    <?php } ?>
+                    <span class="inline-meta__item">
+                        <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
+                        <strong>
+                            <?php
+                            echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                            ?>
+                        </strong>
+                    </span>
                 </div>
             <?php } ?>
             <div class="d-sm-flex justify-content-center margin-top-4">

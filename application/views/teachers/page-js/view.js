@@ -39,10 +39,6 @@ $("document").ready(function () {
         $('div[data-lang-id="' + $(this).val() + '"]').show();
         $($('div[data-lang-id="' + $(this).val() + '"]')).slick('setPosition');
     });
-
-    $('.countdowntimer').each(function (i) {
-        $("#" + $(this).attr('id')).appTimer();
-    });
     $('select[name="orderBy"]').change(function () {
         var frm = document.frmReviewSearch;
         $(frm.page).val(1);
