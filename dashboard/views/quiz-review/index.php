@@ -10,7 +10,7 @@
                         </h4>
                     </hgroup>
                     <div class="check-list margin-bottom-10 editorContentJs">
-                        <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
+                        <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 35px;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
                         <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) { ?>

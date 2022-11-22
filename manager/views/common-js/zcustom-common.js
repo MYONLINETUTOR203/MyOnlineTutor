@@ -211,8 +211,13 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
 }
 function resizeIframe(time = 0) {
     setTimeout(function () {
-        var height = $('.editorContentJs').find('iframe').contents().height() + 40;
-        $('.editorContentJs').css('height', height + 'px');
+        var $iframe = $('.editorContentJs').find('iframe');
+        var height = $iframe.contents().height();
+        $iframe.css({ height: height + 'px' });
+        $('.editorContentJs').css('height', height + 35 + 'px');
+        if ($('#facebox').length > 0) {
+            fcom.resetFaceboxHeight();
+        }
     }, time);
 }
 (function () {
