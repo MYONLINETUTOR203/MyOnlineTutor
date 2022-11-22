@@ -11,7 +11,7 @@ class Certificate extends MyAppModel
     const CERTIFICATE_NO_PREFIX = 'YC_';
 
     const TYPE_QUIZ = 1;
-    
+
     private $id;
     private $code;
     private $userId;
@@ -44,16 +44,17 @@ class Certificate extends MyAppModel
         if (!$content = $this->setupTemplate($content)) {
             return false;
         }
-        if (!$this->setupId()) {
-            return false;
-        }
         if (!$data = $this->getData()) {
             return false;
         }
+        $data['certificate_number'] = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
         if (!$content = $this->formatContent($content, $data)) {
             return false;
         }
         if (!$this->create($content)) {
+            return false;
+        }
+        if (!$this->setupId($data['certificate_number'])) {
             return false;
         }
         if (!$this->setupMetaTags($data)) {
@@ -90,19 +91,17 @@ class Certificate extends MyAppModel
      *
      * @return bool
      */
-    public function setupId()
+    public function setupId($certificateNumber)
     {
-        /* generate certificate */
-        $certificateNumber = Certificate::CERTIFICATE_NO_PREFIX . uniqid();
         if ($this->code == 'evaluation_certificate') {
             $quiz = new QuizAttempt($this->id);
-            $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
+            $quiz->setFldValue('quizat_certificate_number', $certificateNumber);
             if (!$quiz->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
                 return false;
             }
         } elseif ($this->code == 'course_completion_certificate') {
-            $course = new Course($this->id);
+            $course = new OrderCourse($this->id);
             $course->setFldValue('ordcrs_certificate_number', $certificateNumber);
             if (!$course->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
@@ -213,12 +212,12 @@ class Certificate extends MyAppModel
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 '<b>' . ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']) . '</b>',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
-                isset($data['quizat_updated']) ? MyDate::formatDate($data['quizat_updated'], 'Y-m-d') : '',
-                '<b>' . (($this->code == 'evaluation_certificate') ? $data['quizat_certificate_number'] : $data['cert_number']) . '</b>',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date'], 'Y-m-d') : '',
+                '<b>' . $data['certificate_number'] . '</b>',
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
-                isset($data['crspro_completed']) ? MyDate::formatDate($data['crspro_completed'], 'Y-m-d') : '',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date'], 'Y-m-d') : '',
                 isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : '',
                 isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
             ],
@@ -285,11 +284,9 @@ class Certificate extends MyAppModel
                 $srch->applyPrimaryConditions();
                 $srch->addSearchListingFields();
                 $srch->addMultipleFields([
-                    'crspro_completed',
-                    'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
-                    'learner.user_lang_id',
-                    'ordcrs_certificate_number AS cert_number',
-                    'course_duration'
+                    'crspro_completed as completed_date', 'IFNULL(clanglang.clang_name, clang.clang_identifier) AS course_clang_name',
+                    'learner.user_lang_id', 'ordcrs_certificate_number AS cert_number', 'course_duration',
+                    'ordcrs_course_id', 'order_user_id'
                 ]);
                 $srch->addCondition('ordcrs_id', '=', $this->id);
                 $data = FatApp::getDb()->fetch($srch->getResultSet());
@@ -297,6 +294,7 @@ class Certificate extends MyAppModel
             case 'evaluation_certificate':
                 $quiz = new QuizAttempt($this->id);
                 $data = $quiz->getById();
+                $data['completed_date'] = $data['quizat_updated'];
                 $learner = User::getAttributesById($data['quizat_user_id'], [
                     'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
                 ]);
@@ -327,9 +325,8 @@ class Certificate extends MyAppModel
             'course_title' => 'English Language Learning - Beginners',
             'course_clang_name' => 'English',
             'cert_number' => 'YC_h34uwh9e72w',
-            'quizat_certificate_number' => 'YC_h34uwh9e72w',
-            'quizat_updated' => date('Y-m-d'),
-            'crspro_completed' => date('Y-m-d'),
+            'certificate_number' => 'YC_h34uwh9e72w',
+            'completed_date' => date('Y-m-d'),
             'quiz_duration' => 900,
             'course_duration' => 900,
             'quizat_scored' => 85,
