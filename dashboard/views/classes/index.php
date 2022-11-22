@@ -71,7 +71,7 @@ $frm->getField('btn_clear')->addFieldTagAttribute('onClick', 'clearSearch();');
                                         <?php echo Label::getLabel('LBL_WITH'); ?>
                                         <div class="avtar-meta display-inline">
                                             <span class="avtar avtar--xsmall display-inline margin-right-2" data-title="<?php echo CommonHelper::getFirstChar($upcomingClass['teacher_first_name']); ?>">
-                                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $upcomingClass['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL),CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
+                                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $upcomingClass['grpcls_teacher_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
                                             </span>
                                             <?php echo $upcomingClass['teacher_first_name'] . ' ' . $upcomingClass['teacher_last_name']; ?>
                                         </div>
@@ -91,7 +91,7 @@ $frm->getField('btn_clear')->addFieldTagAttribute('onClick', 'clearSearch();');
                                             <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
                                         </svg></span></div>
                                 <div class="timer__content">
-                                    <div class="timer__controls timer-js style colorDefinition size_sm" id="upcoming-timer" remainingTime="<?php echo $upcomingClass['grpcls_remaining_unix']; ?>">00:00:00:00</div>
+                                    <div class="timer__controls timer-js style colorDefinition size_sm" id="classStartTimer" timestamp="<?php echo $upcomingClass['grpcls_start_datetime_utc']; ?>">00:00:00:00</div>
                                 </div>
                             </div>
                             <a href="<?php echo MyUtility::makeUrl('Classes', 'view', [$classId]); ?>" class="btn bg-secondary"><?php echo Label::getLabel('LBL_ENTER_CLASSROOM') ?></a>
@@ -244,6 +244,8 @@ $frm->getField('btn_clear')->addFieldTagAttribute('onClick', 'clearSearch();');
     <script>
         $(document).ready(function () {
             search(document.frmClassSearch);
-<?php echo empty($upcomingClass) ? '' : '$("#upcoming-timer").appTimer();'; ?>
+<?php if (!empty($upcomingClass)) { ?>
+                $("#classStartTimer").yocoachTimer({recordId: '<?php echo $classId; ?>', recordType: 'CLASS'});
+<?php } ?>
         });
     </script>

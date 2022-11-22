@@ -168,6 +168,8 @@ class ClassSearch extends YocoachSearch
         foreach ($rows as $key => $row) {
             $row['teacher_country'] = $countries[$row['teacher_country_id']] ?? '';
             $row['grpcls_currenttime_unix'] = $currentTimeUnix;
+            $row['grpcls_start_datetime_utc'] = strtotime($row['grpcls_start_datetime']);
+            $row['grpcls_end_datetime_utc'] = strtotime($row['grpcls_end_datetime']);
             $row['grpcls_start_datetime'] = MyDate::formatDate($row['grpcls_start_datetime']);
             $row['grpcls_end_datetime'] = MyDate::formatDate($row['grpcls_end_datetime']);
             $row['grpcls_starttime_unix'] = strtotime($row['grpcls_start_datetime']);

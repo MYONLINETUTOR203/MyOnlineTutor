@@ -18,10 +18,10 @@ function isJson(str) {
 function reloadPage(time) {
     if (time && time > 0) {
         setTimeout(() => {
-            location.reload();
+            window.location.reload();
         }, time);
     } else {
-        location.reload();
+        window.location.reload();
     }
 }
 cancel = function () {
@@ -46,7 +46,7 @@ sendMessage = function (frm) {
     var formData = new FormData(frm);
     fcom.ajaxMultipart(fcom.makeUrl('Messages', 'sendMessage', [], confWebRootUrl), formData, function (data) {
         window.location.href = fcom.makeUrl('Messages', '', [], confWebRootUrl);
-    }, { fOutMode: 'json' });
+    }, {fOutMode: 'json'});
     return false;
 };
 
@@ -60,7 +60,7 @@ getBadgeCount = function () {
             let messages = (response.messages >= 100) ? '100+' : response.messages;
             $('.message-badge').attr('data-count', messages);
         }
-    }, { process: false });
+    }, {process: false});
 };
 acceptAllCookies = function () {
     fcom.updateWithAjax(fcom.makeUrl('CookieConsent', 'acceptAll', [], confFrontEndUrl), '', function (res) {
@@ -318,7 +318,7 @@ $(document).ready(function () {
         });
     };
     setSiteLanguage = function (langId) {
-        var data = { langId: langId, url: window.location.pathname };
+        var data = {langId: langId, url: window.location.pathname};
         fcom.updateWithAjax(fcom.makeUrl('CookieConsent', 'setSiteLanguage', [], confFrontEndUrl), data, function (res) {
             window.location.href = res.url;
         });
@@ -405,7 +405,7 @@ function bindDatetimePicker(selector) {
     var lastValue = dayNames[6];
     dayNames.pop();
     dayNames.unshift(lastValue);
-    $.fn.datetimepicker.defaults.i18n = { '': { months: monthNames.longName, dayOfWeek: dayNames } };
+    $.fn.datetimepicker.defaults.i18n = {'': {months: monthNames.longName, dayOfWeek: dayNames}};
     $(selector).datetimepicker({
         step: 15, lang: '',
         format: 'Y-m-d H:i:00',

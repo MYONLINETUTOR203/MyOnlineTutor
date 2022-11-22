@@ -25,8 +25,6 @@
                 <?php
                 $frmSearch->setFormTagAttribute('onsubmit', 'search(this); return(false);');
                 $frmSearch->setFormTagAttribute('class', 'web_form');
-                $submitBtn = $frmSearch->getField('btn_submit');
-                $submitBtn->developerTags['col'] = 6;
                 echo $frmSearch->getFormHtml();
                 ?>    
             </div>

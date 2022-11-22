@@ -131,7 +131,7 @@
                 <div class="col-xl-4 col-lg-4 col-sm-12">
                     <div class="session-infobar__action">
                         <?php if ($class['showEndTimer']) { ?>
-                            <span class="btn btn--live" id="end_class_timer" remainingTime="<?php echo $class['grpcls_endtime_remaining_unix']; ?>"> 00:00:00:00 </span>
+                            <span class="btn btn--live" id="classEndTimer" timestamp="<?php echo $class['grpcls_end_datetime_utc']; ?>"> 00:00:00:00 </span>
                         <?php } ?>
                         <button class="btn bg-red end_lesson_now <?php echo (!$class['canEnd']) ? 'd-none' : ''; ?> " id="endClass" onclick="endMeeting(<?php echo $classId; ?>);"><?php echo Label::getLabel('LBL_END_LESSON'); ?></button>
                         <?php if ($class['canCancelClass']) { ?>
@@ -184,13 +184,13 @@
                                 <div class="-gap-10"></div>
                                 <a href="javascript:void(0);" class="btn btn--secondary btn--large" onclick="joinMeeting('<?php echo $classId; ?>', true);"><?php echo Label::getLabel('LBL_JOIN_FROM_ZOOM_APP'); ?></a>
                             <?php } else { ?>
-                                <a href="javascript:void(0);" class="btn btn--secondary btn--large" onclick="joinMeeting('<?php echo $classId; ?>', false);"><?php echo Label::getLabel('LBL_JOIN_LESSON'); ?></a>
+                                <a href="javascript:void(0);" class="btn btn--secondary btn--large" onclick="joinMeeting('<?php echo $classId; ?>', false);"><?php echo Label::getLabel('LBL_JOIN_CLASS'); ?></a>
                             <?php } ?>
                         </div>
                     <?php } elseif ($class['showTimer']) { ?>
                         <div class="start-lesson-timer timer">
                             <h5 class="timer-title"><?php echo Label::getLabel('LBL_STARTS_IN'); ?></h5>
-                            <div class="countdown-timer size_lg" id="start_class_timer" remainingTime="<?php echo $class['grpcls_remaining_unix']; ?>">00:00:00:00</div>
+                            <div class="countdown-timer size_lg" id="classStartTimer" timestamp="<?php echo $class['grpcls_start_datetime_utc']; ?>">00:00:00:00</div>
                         </div>
                     <?php } ?>
                 </div>
@@ -199,24 +199,29 @@
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        var showEndTimeMsg = true;
+    $(document).ready(function () {
         <?php if ($class['showTimer']) { ?>
-            $('#start_class_timer').appTimer(function() {
-                window.location.reload();
+            $("#classStartTimer").yocoachTimer({
+                recordId: ordclsId,
+                recordType: 'CLASS',
+                callback: function () {
+                    window.location.reload();
+                }
             });
         <?php } ?>
         <?php if ($class['showEndTimer']) { ?>
-            $("#end_class_timer").appTimer(function() {
-                $("#end_class_timer,.join-btns").addClass('d-none');
-                if (showEndTimeMsg) {
-                    showEndTimeMsg = false;
-                    fcom.warning(eneTimeMsg);
-                    reloadPage(15000);
+            $("#classEndTimer").yocoachTimer({
+                recordId: ordclsId,
+                recordType: 'CLASS',
+                callback: function () {
+                    $(".join-btns").addClass('d-none');
                 }
             });
             <?php if ($siteUserType == User::LEARNER) { ?>
-                checkClassStatus(classId, ordClsStatus);
+                    checkClassStatus(ordclsId, ordClsStatus);
+            <?php } if ($siteUserType == User::TEACHER) { ?>
+                    console.log('hre');
+                    checkClassStatus(ordclsId, grpClsStatus);
             <?php } ?>
         <?php } ?>
     });
