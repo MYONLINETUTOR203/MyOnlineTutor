@@ -30,10 +30,12 @@ class QuizReview extends MyAppModel
      */
     public function start()
     {
-        $this->setFldValue('quizat_qulinqu_id', 0);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
+        if ($this->userType == User::TEACHER) {
+            $this->setFldValue('quizat_qulinqu_id', 0);
+            if (!$this->save()) {
+                $this->error = $this->getError();
+                return false;
+            }
         }
         if (!$this->validate()) {
             $this->error = $this->getError();
@@ -72,12 +74,16 @@ class QuizReview extends MyAppModel
         }
 
         /* setup question id */
+        if ($this->userType == User::LEARNER) {
+            $_SESSION['current_ques_id'] = $data['quizat_qulinqu_id'];
+            return true;
+        }
+
         $this->assignValues($data);
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
         }
-
         return true;
     }
 
@@ -143,6 +149,14 @@ class QuizReview extends MyAppModel
             return false;
         }
 
+        if ($this->userType == User::LEARNER) {
+            if (!isset($_SESSION['current_ques_id'])) {
+                $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
+                return false;
+            }
+            $data['quizat_qulinqu_id'] = $_SESSION['current_ques_id'];
+        }
+
         $this->quiz = $data;
         return true;
     }
@@ -177,11 +191,6 @@ class QuizReview extends MyAppModel
 
         /* calculations */
         $quiz = new QuizAttempt($data['quizat_id']);
-        if (!$quiz->setupQuizProgress()) {
-            $db->rollbackTransaction();
-            return false;
-        }
-
         if (!$quiz->setupQuizProgress()) {
             $db->rollbackTransaction();
             return false;
