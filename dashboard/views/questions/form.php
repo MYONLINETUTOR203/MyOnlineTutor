@@ -22,9 +22,9 @@ $addOptionsFld->setFieldTagAttribute('onclick', 'addOptions();');
 $submitButton = $frm->getField('submit');
 ?>
 <div class="facebox-panel">
-<div class="facebox-panel__head">
-    <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
-</div>
+    <div class="facebox-panel__head">
+        <h4><?php echo Label::getLabel('LBL_ADD_QUESTION'); ?></h4>
+    </div>
     <div class="facebox-panel__body">
         <?php echo $frm->getFormTag(); ?>
         <?php echo $frm->getFieldHTML('ques_id'); ?>
@@ -207,7 +207,18 @@ $submitButton = $frm->getField('submit');
                 <div class="field-set margin-bottom-0">
                     <div class="field-wraper">
                         <div class="field_cover">
-                            <?php echo $submitButton->getHtml(); ?>
+                            <div>
+                                <?php
+                                if ($quizType > 0) {
+                                    $btn = $frm->getField('btn_back');
+                                    $btn->addFieldTagAttribute('onclick', "$('.addQuesJs').click();");
+                                    echo $btn->getHtml();
+                                }
+                                ?>
+                            </div>
+                            <div>
+                                <?php echo $submitButton->getHtml(); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
