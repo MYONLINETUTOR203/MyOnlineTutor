@@ -220,9 +220,15 @@ class Quiz extends MyAppModel
         $db = FatApp::getDb();
         $db->startTransaction();
 
+        $quizType = Quiz::getAttributesById($this->getMainTableRecordId(), 'quiz_type');
         /* validate question ids */
         $srch = new SearchBase(Question::DB_TBL);
         $srch->addCondition('ques_id', 'IN', $questions);
+        if ($quizType == Quiz::TYPE_NON_GRADED) {
+            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
+        } else {
+            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
+        }
         $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('ques_user_id', '=', $this->userId);
