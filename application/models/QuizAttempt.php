@@ -448,8 +448,9 @@ class QuizAttempt extends MyAppModel
         $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $cond1 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity < "' . date('Y-m-d H:i:s') . '"';
-        $cond2 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
-        $cond3 = 'quilin_duration = 0 AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        // $cond2 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
+        $cond2 = 'quilin_duration = 0 AND quizat_started != "0000-00-00 00:00:00" AND quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
+        $cond3 = 'quilin_duration = 0 AND quizat_started = "0000-00-00 00:00:00" AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
         $srch->addDirectCondition('((' . $cond1 . ') OR (' . $cond2 . ') OR (' . $cond3 . '))');
 
         $srch->addMultipleFields([
