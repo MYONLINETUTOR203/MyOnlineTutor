@@ -462,3 +462,4 @@ INSERT INTO `tbl_email_templates` (`etpl_code`, `etpl_lang_id`, `etpl_name`, `et
 ALTER TABLE `tbl_two_factor_auths` DROP PRIMARY KEY;
 ALTER TABLE `tbl_two_factor_auths` ADD `usauth_id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`usauth_id`);
 
+ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 

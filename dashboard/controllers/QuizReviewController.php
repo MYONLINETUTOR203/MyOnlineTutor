@@ -132,7 +132,8 @@ class QuizReviewController extends DashboardController
             $frm->fill([
                 'quatqu_id' => ($currentQues['quatqu_id'] ?? ''),
                 'quizat_id' => $id,
-                'quatqu_scored' => floatval($currentQues['quatqu_scored']) ?? ''
+                'quatqu_scored' => floatval($currentQues['quatqu_scored']) ?? '',
+                'quatqu_comment' => $currentQues['quatqu_comment']
             ]);
             $this->set('frm', $frm);
         }
@@ -285,6 +286,8 @@ class QuizReviewController extends DashboardController
         if ($marks > 0) {
             $fld->requirements()->setRange(0, $marks);
         }
+        $fld = $frm->addTextBox(Label::getLabel('LBL_COMMENT'), 'quatqu_comment');
+        $fld->requirements()->setLength(0, 255);
         $frm->addHiddenField('', 'quatqu_id');
         $frm->addHiddenField('', 'quizat_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SUBMIT'));

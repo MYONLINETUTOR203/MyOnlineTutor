@@ -374,15 +374,13 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields([
             'quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order', 'qulinqu_answer', 'qulinqu_type',
-            'quatqu_scored'
+            'quatqu_scored', 'quatqu_comment'
         ]);
         $srch->addOrder('qulinqu_order', 'ASC');
-        // pr($srch->getQuery());
         $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
         if (empty($attemptedQues)) {
             return [];
         }
-        // pr($attemptedQues);
         foreach ($attemptedQues as $key => $question) {
             $question['quatqu_answer'] = $question['quatqu_answer'] ? json_decode($question['quatqu_answer'], true) : [];
             $question['is_correct'] = '';
