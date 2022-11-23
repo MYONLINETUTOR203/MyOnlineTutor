@@ -44,7 +44,7 @@ class CertificatesController extends DashboardController
         /* check if certificate already generated */
         if (empty($ordcrsData['ordcrs_certificate_number'])) {
             /* get certificate html */
-            $content = $this->getContent();
+            $content = $this->getContent('course_completion_certificate');
             $cert = new Certificate(
                 $ordcrsData['ordcrs_id'],
                 'course_completion_certificate',
@@ -85,7 +85,7 @@ class CertificatesController extends DashboardController
         /* check if certificate already generated */
         if (empty($data['quizat_certificate_number'])) {
             /* get content */
-            $content = $this->getContent();
+            $content = $this->getContent('evaluation_certificate');
 
             /* generate */
             $cert = new Certificate($id, 'evaluation_certificate', $this->siteUserId, $this->siteLangId);
@@ -99,13 +99,23 @@ class CertificatesController extends DashboardController
     /**
      * Get html content for certificate
      *
+     * @param string $code
      * @return string
      */
-    private function getContent()
+    private function getContent(string $code)
     {
+        $srch = new SearchBase(CertificateTemplate::DB_TBL);
+        $srch->addCondition('certpl_code', '=', $code);
+        $srch->addCondition('certpl_lang_id', '=', $this->siteLangId);
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $srch->addFld('certpl_id');
+        $template = FatApp::getDb()->fetch($srch->getResultSet());
+
+
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
-        $backgroundImg = $afile->getFile(0, false);
+        $backgroundImg = $afile->getFile($template['certpl_id'], false);
         if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
             $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
         } else {
