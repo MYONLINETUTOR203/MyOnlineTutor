@@ -194,20 +194,24 @@ class CertificatesController extends AdminBaseController
         }
 
         $file = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE);
-        if (!$file->saveFile($_FILES['certpl_image'], 0, true)) {
+        if (!$file->saveFile($_FILES['certpl_image'], $post['certpl_id'], true)) {
             FatUtility::dieJsonError($file->getError());
         }
 
         FatUtility::dieJsonSuccess([
             'imgUrl' => MyUtility::makeUrl('image', 'show', [
-                    Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0,
-                    Afile::SIZE_LARGE
+                    Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, $post['certpl_id'], Afile::SIZE_LARGE
                 ]) . '?time=' . time(),
             'msg' => Label::getLabel('MSG_FILES_UPLOADED_SUCCESSFULLY')
         ]);
     }
 
-    public function generate($id)
+    /**
+     * Generate Preview
+     *
+     * @param int $id
+     */
+    public function generate(int $id)
     {
         $template = CertificateTemplate::getAttributesById($id, ['certpl_code', 'certpl_lang_id']);
         if (empty($template)) {
@@ -215,7 +219,7 @@ class CertificatesController extends AdminBaseController
         }
         $langId = $template['certpl_lang_id'];
         $cert = new Certificate(0, $template['certpl_code'], 0, $langId);
-        $content = $this->getContent($langId);
+        $content = $this->getContent($id, $langId);
 
         if (!$cert->generatePreview($content)) {
             FatUtility::dieWithError($cert->getError());
@@ -223,11 +227,18 @@ class CertificatesController extends AdminBaseController
         FatUtility::dieWithError(Label::getLabel('LBL_UNABLE_TO_GENERATE_CERTIFICATE'));
     }
 
-    private function getContent($langId)
+    /**
+     * Get Html Content
+     *
+     * @param int $id
+     * @param int $langId
+     * @return string
+     */
+    private function getContent(int $id, int $langId)
     {
         /* get background and logo images */
         $afile = new Afile(Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0);
-        $backgroundImg = $afile->getFile(0, false);
+        $backgroundImg = $afile->getFile($id, false);
         if (!isset($backgroundImg['file_path']) || !file_exists(CONF_UPLOADS_PATH . $backgroundImg['file_path'])) {
             $backgroundImg = CONF_INSTALLATION_PATH . 'public/images/noimage.jpg';
         } else {
@@ -252,6 +263,7 @@ class CertificatesController extends AdminBaseController
     /**
      * Get Form
      *
+     * @param int $langId
      * @return Form
      */
     private function getForm(int $langId = 0): Form
