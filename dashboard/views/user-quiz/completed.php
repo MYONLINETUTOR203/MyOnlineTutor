@@ -118,6 +118,13 @@ $showStats = true;
                     </a>
                 <?php } ?>
             </div>
+            <?php if ($canRetake == true && $canDownloadCertificate == true) { ?>
+                <div class="d-sm-flex justify-content-center margin-top-10">
+                    <small>
+                        <?php echo Label::getLabel('LBL_NOTE:_RETAKE_WILL_NOT_BE_ALLOWED_ONCE_THE_CERTIFICATE_IS_DOWNLOADED.'); ?>
+                    </small>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>
