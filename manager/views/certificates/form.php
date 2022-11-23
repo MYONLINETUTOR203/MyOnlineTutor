@@ -17,6 +17,8 @@ $fld = $frm->getField('btn_preview');
 $fld->setFieldTagAttribute('onclick', 'setupAndPreview();');
 $fld = $frm->getField('btn_reset');
 $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
+
+$fldId = $frm->getField('certpl_id');
 ?>
 <div class='page'>
     <div class='fixed_container'>
@@ -106,7 +108,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                                 <div class="layout--<?php echo $layoutDir; ?>">
                                                     <div class="certificate certificateJs">
                                                         <div class="certificate-media certificateMediaJs">
-                                                            <img src="<?php echo MyUtility::makeUrl('image', 'show', [Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, 0, Afile::SIZE_LARGE]) . '?time=' . time() ?>">
+                                                            <img src="<?php echo MyUtility::makeUrl('image', 'show', [Afile::TYPE_CERTIFICATE_BACKGROUND_IMAGE, $fldId->value, Afile::SIZE_LARGE]) . '?time=' . time() ?>">
                                                         </div>
                                                         <div class="certificate-content">
                                                             <h1 class="certificate-title contentHeadingJs" contenteditable="true">
@@ -191,7 +193,7 @@ $fld->setFieldTagAttribute('onclick', 'resetToDefault()');
                                         </div>
                                     </div>
                                     <?php echo $frm->getFieldHtml('certpl_code'); ?>
-                                    <?php echo $frm->getFieldHtml('certpl_id'); ?>
+                                    <?php echo $fldId->getHtml(); ?>
                                     <?php echo $frm->getFieldHtml('catelang_id'); ?>
                                     </form>
                                     <?php echo $frm->getExternalJs(); ?>
