@@ -66,7 +66,7 @@ class CertificatesController extends DashboardController
         /* check if certificate already generated */
         if (empty($certificateNo)) {
             /* get certificate html */
-            $content = $this->getContent('course_completion_certificate');
+            $content = $this->getContent($code);
             $cert = new Certificate(
                 $id,
                 $code,

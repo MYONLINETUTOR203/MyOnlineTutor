@@ -36,7 +36,7 @@ class QuizLinked extends MyAppModel
                 $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
                 $srch->applyPrimaryConditions();
                 $srch->addCondition('ordles_id', '=', $recordId);
-                $srch->addMultipleFields('ordles_id');
+                $srch->addFld('ordles_id');
                 $srch->setPageSize(1);
                 $srch->doNotCalculateRecords();
                 if (!FatApp::getDb()->fetch($srch->getResultSet())) {
