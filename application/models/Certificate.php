@@ -13,7 +13,7 @@ class Certificate extends MyAppModel
     const TYPE_QUIZ_EVALUATION = 1;
     const TYPE_COURSE_COMPLETION = 2;
     const TYPE_COURSE_EVALUATION = 3;
-    
+
     private $id;
     private $code;
     private $userId;
@@ -113,7 +113,7 @@ class Certificate extends MyAppModel
     {
         if ($this->code == 'evaluation_certificate' || $this->code == 'course_evaluation_certificate') {
             $quiz = new QuizAttempt($this->id);
-            $quiz->setFldValue('quizat_certificate_number', $certificateNumber) ;
+            $quiz->setFldValue('quizat_certificate_number', $certificateNumber);
             if (!$quiz->save()) {
                 $this->error = Label::getLabel('LBL_AN_ERROR_HAS_OCCURRED_WHILE_GENERATING_CERTIFICATE!');
                 return false;
@@ -181,6 +181,7 @@ class Certificate extends MyAppModel
             'mirrorMargins' => 0,
             'autoLangToFont' => true,
             'autoScriptToLang' => true,
+            'tempDir' => CONF_INSTALLATION_PATH . 'public/cache'
         ]);
         $mpdf->SetDirectionality(Language::getAttributesById($this->langId, 'language_direction'));
         $mpdf->WriteHTML($content);
@@ -231,12 +232,12 @@ class Certificate extends MyAppModel
                 ucwords($data['learner_first_name'] . ' ' . $data['learner_last_name']),
                 '<b>' . ucwords($data['teacher_first_name'] . ' ' . $data['teacher_last_name']) . '</b>',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
-                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date']) : '',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date'], 'Y-m-d') : '',
                 '<b>' . $data['certificate_number'] . '</b>',
                 isset($data['quiz_duration']) ? MyUtility::convertDuration($data['quiz_duration'], true, true, true) : '',
                 '<span class=\"courseNameJs\">' . $title . '</span>',
                 isset($data['course_clang_name']) ? $data['course_clang_name'] : '',
-                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date']) : '',
+                isset($data['completed_date']) ? MyDate::formatDate($data['completed_date'], 'Y-m-d') : '',
                 isset($data['course_duration']) ? MyUtility::convertDuration($data['course_duration'], true, true, true) : '',
                 isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
                 isset($data['quizat_scored']) ? MyUtility::formatPercent($data['quizat_scored']) : '',
@@ -369,9 +370,8 @@ class Certificate extends MyAppModel
             'course_title' => 'English Language Learning - Beginners',
             'course_clang_name' => 'English',
             'cert_number' => 'YC_h34uwh9e72w',
-            'quizat_certificate_number' => 'YC_h34uwh9e72w',
-            'quizat_updated' => date('Y-m-d H:i:s'),
-            'crspro_completed' => date('Y-m-d H:i:s'),
+            'certificate_number' => 'YC_h34uwh9e72w',
+            'completed_date' => date('Y-m-d'),
             'quiz_duration' => 900,
             'course_duration' => 900,
             'quizat_scored' => 85,

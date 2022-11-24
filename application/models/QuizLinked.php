@@ -36,7 +36,7 @@ class QuizLinked extends MyAppModel
                 $srch = new LessonSearch($this->langId, $this->userId, $this->userType);
                 $srch->applyPrimaryConditions();
                 $srch->addCondition('ordles_id', '=', $recordId);
-                $srch->addMultipleFields('ordles_id');
+                $srch->addFld('ordles_id');
                 $srch->setPageSize(1);
                 $srch->doNotCalculateRecords();
                 if (!FatApp::getDb()->fetch($srch->getResultSet())) {
@@ -393,7 +393,7 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields([
             'quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order', 'qulinqu_answer', 'qulinqu_type',
-            'quatqu_scored'
+            'quatqu_scored', 'quatqu_comment'
         ]);
         $srch->addOrder('qulinqu_order', 'ASC');
         $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');

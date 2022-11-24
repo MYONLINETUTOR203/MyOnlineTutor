@@ -62,9 +62,11 @@ $(document).ready(function () {
         searchByFilters();
     };
     onkeyupCategory = function () {
-        $('.categorySelectJs li').hide();
+        $('.categOptParentJS').hide();
         var keyword = ($('input[name="category"]').val()).toLowerCase();
-        $('.categorySelectJs li .categorySelectOptJs:contains("' + keyword + '")').parent().parent().show();
+        $('.categorySelectJs li').each(function () {
+            $(this).find('.categorySelectOptJs:contains("' + keyword + '")').parents('.categOptParentJS').show();
+        });
     };
     clearCategorySearch = function (close = 0) {
         $('input[name="course_cate_id[]"]').prop('checked', false);

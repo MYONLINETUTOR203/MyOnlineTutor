@@ -31,6 +31,10 @@ class QuizReviewController extends DashboardController
             FatUtility::dieWithError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
 
+        if ($this->siteUserType == User::LEARNER) {
+            $_SESSION['current_ques_id'] = 0;
+        }
+
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
         if (!$quiz->validate()) {
             FatUtility::dieWithError($quiz->getError());
@@ -126,7 +130,8 @@ class QuizReviewController extends DashboardController
             $frm->fill([
                 'quatqu_id' => ($currentQues['quatqu_id'] ?? ''),
                 'quizat_id' => $id,
-                'quatqu_scored' => floatval($currentQues['quatqu_scored']) ?? ''
+                'quatqu_scored' => floatval($currentQues['quatqu_scored']) ?? '',
+                'quatqu_comment' => $currentQues['quatqu_comment']
             ]);
             $this->set('frm', $frm);
         }
@@ -178,9 +183,13 @@ class QuizReviewController extends DashboardController
         }
 
         if ($quesId > 0) {
-            $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
-            if (!$quiz->save()) {
-                FatUtility::dieJsonError($quiz->getError());
+            if ($this->siteUserType == User::LEARNER) {
+                $_SESSION['current_ques_id'] = $quesId;
+            } else {
+                $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
+                if (!$quiz->save()) {
+                    FatUtility::dieJsonError($quiz->getError());
+                }
             }
         } else {
             if (!$quiz->setQuestion($next)) {
@@ -203,10 +212,16 @@ class QuizReviewController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
+
+        $msg = Label::getLabel('LBL_REVIEW_FINISHED_SUCCESSFULLY');
+        if ($this->siteUserType == User::LEARNER) {
+            $_SESSION['current_ques_id'] = 0;
+            FatUtility::dieJsonSuccess($msg);
+        }
+        
         if (!$quiz->setupEvaluation($submit)) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $msg = Label::getLabel('LBL_REVIEW_FINISHED_SUCCESSFULLY');
         if ($submit == AppConstant::YES) {
             $msg = Label::getLabel('LBL_EVALUATION_SUBMITTED_SUCCESSFULLY');
         }
@@ -220,6 +235,9 @@ class QuizReviewController extends DashboardController
      */
     public function setup()
     {
+        if ($this->siteUserType == User::LEARNER) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
         $post = FatApp::getPostedData();
         /* validate question id */
         $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
@@ -266,6 +284,8 @@ class QuizReviewController extends DashboardController
         if ($marks > 0) {
             $fld->requirements()->setRange(0, $marks);
         }
+        $fld = $frm->addTextBox(Label::getLabel('LBL_COMMENT'), 'quatqu_comment');
+        $fld->requirements()->setLength(0, 255);
         $frm->addHiddenField('', 'quatqu_id');
         $frm->addHiddenField('', 'quizat_id');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SUBMIT'));

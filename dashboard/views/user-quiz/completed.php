@@ -78,16 +78,14 @@ $showStats = true;
                         <?php echo Label::getLabel('LBL_ACHIEVED_PERCENT:'); ?>
                         <strong><?php echo MyUtility::formatPercent($data['quizat_scored']); ?></strong>
                     </span>
-                    <?php if ($data['quilin_duration'] > 0) { ?>
-                        <span class="inline-meta__item">
-                            <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
-                            <strong>
-                                <?php
-                                echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
-                                ?>
-                            </strong>
-                        </span>
-                    <?php } ?>
+                    <span class="inline-meta__item">
+                        <?php echo Label::getLabel('LBL_TIME_SPENT:'); ?>
+                        <strong>
+                            <?php
+                            echo MyUtility::convertDuration(strtotime($data['quizat_updated']) - strtotime($data['quizat_started']), true, true, true);
+                            ?>
+                        </strong>
+                    </span>
                 </div>
             <?php } ?>
             <div class="d-sm-flex justify-content-center margin-top-4">
@@ -128,6 +126,23 @@ $showStats = true;
                     </a>
                 <?php } ?>
             </div>
+            <?php if ($canRetake == true && $canDownloadCertificate == true) { ?>
+                <div class="option-hint">
+                    <span class="d-inline-flex align-items-center">
+                        <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
+                            <strong class="d-inline-flex align-items-center">
+                                <svg class="icon icon--dashboard margin-right-2 icon--small">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
+                                </svg>
+                                <?php echo Label::getLabel('LBL_NOTE:'); ?>
+                            </strong>
+                        </span>
+                        <span class="option-hint__content">
+                            <?php echo Label::getLabel('LBL_RETAKE_WILL_NOT_BE_ALLOWED_ONCE_THE_CERTIFICATE_IS_DOWNLOADED.'); ?>
+                        </span>
+                    </span>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>

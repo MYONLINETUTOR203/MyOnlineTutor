@@ -104,7 +104,7 @@ class LessonSearch extends YocoachSearch
             }
         } elseif (!empty($post['ordles_tlang'])) {
             $this->joinTable(TeachLanguage::DB_TBL_LANG, 'LEFT JOIN', 'tlanglang.tlanglang_tlang_id = '
-                . ' ordles.ordles_tlang_id AND tlanglang.tlanglang_lang_id = ' . $this->langId, 'tlanglang');
+                    . ' ordles.ordles_tlang_id AND tlanglang.tlanglang_lang_id = ' . $this->langId, 'tlanglang');
             $this->addCondition('tlanglang.tlang_name', 'LIKE', '%' . trim($post['ordles_tlang']) . '%');
         }
         if (!empty($post['ordles_teacher_id'])) {
@@ -188,6 +188,8 @@ class LessonSearch extends YocoachSearch
             $row['ordles_endtime_unix'] = null;
             $row['ordles_currenttime_unix'] = $currentTimeUnix;
             if (!is_null($row['ordles_lesson_starttime'])) {
+                $row['ordles_lesson_starttime_utc'] = strtotime($row['ordles_lesson_starttime']);
+                $row['ordles_lesson_endtime_utc'] = strtotime($row['ordles_lesson_endtime']);
                 $row['ordles_lesson_starttime'] = MyDate::formatDate($row['ordles_lesson_starttime']);
                 $row['ordles_lesson_endtime'] = MyDate::formatDate($row['ordles_lesson_endtime']);
                 $row['ordles_starttime_unix'] = strtotime($row['ordles_lesson_starttime']);
@@ -299,9 +301,9 @@ class LessonSearch extends YocoachSearch
     private function canRateLesson(array $lesson): bool
     {
         return (User::LEARNER == $this->userType &&
-            Lesson::COMPLETED == $lesson['ordles_status'] &&
-            AppConstant::NO == $lesson['ordles_reviewed'] &&
-            FatApp::getConfig('CONF_ALLOW_REVIEWS'));
+                Lesson::COMPLETED == $lesson['ordles_status'] &&
+                AppConstant::NO == $lesson['ordles_reviewed'] &&
+                FatApp::getConfig('CONF_ALLOW_REVIEWS'));
     }
 
     /**
@@ -318,12 +320,12 @@ class LessonSearch extends YocoachSearch
         }
         $reportTime = strtotime(" +" . $reportHours . " hour", $lesson['ordles_endtime_unix']);
         return (
-            ($lesson['ordles_status'] == Lesson::COMPLETED ||
+                ($lesson['ordles_status'] == Lesson::COMPLETED ||
                 ($lesson['ordles_status'] == Lesson::SCHEDULED &&
-                    empty($lesson['ordles_teacher_starttime']) && $lesson['ordles_currenttime_unix'] > $lesson['ordles_endtime_unix']
+                empty($lesson['ordles_teacher_starttime']) && $lesson['ordles_currenttime_unix'] > $lesson['ordles_endtime_unix']
                 )
-            ) &&
-            $reportTime > $lesson['ordles_currenttime_unix']);
+                ) &&
+                $reportTime > $lesson['ordles_currenttime_unix']);
     }
 
     /**
@@ -340,7 +342,7 @@ class LessonSearch extends YocoachSearch
         $duration = FatApp::getConfig('CONF_LESSON_CANCEL_DURATION');
         $startTime = strtotime(' -' . $duration . ' hours', $lesson['ordles_starttime_unix']);
         return (Lesson::UNSCHEDULED == $lesson['ordles_status'] ||
-            (Lesson::SCHEDULED == $lesson['ordles_status'] &&
+                (Lesson::SCHEDULED == $lesson['ordles_status'] &&
                 $lesson['ordles_currenttime_unix'] < $startTime));
     }
 
@@ -394,8 +396,8 @@ class LessonSearch extends YocoachSearch
     private function canJoin(array $lesson): bool
     {
         return ($lesson['ordles_status'] == Lesson::SCHEDULED &&
-            $lesson['ordles_endtime_unix'] > $lesson['ordles_currenttime_unix'] &&
-            $lesson['ordles_starttime_unix'] <= $lesson['ordles_currenttime_unix']);
+                $lesson['ordles_endtime_unix'] > $lesson['ordles_currenttime_unix'] &&
+                $lesson['ordles_starttime_unix'] <= $lesson['ordles_currenttime_unix']);
     }
 
     /**
@@ -555,4 +557,5 @@ class LessonSearch extends YocoachSearch
         }
         return $classes;
     }
+
 }

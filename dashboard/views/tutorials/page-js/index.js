@@ -28,7 +28,7 @@ $(function () {
         var progressId = $('#progressId').val();
         fcom.ajax(fcom.makeUrl('Tutorials', 'getVideo', [lectureId, progressId]), '', function (res) {
             $('.videoContentJs').html(res);
-        });
+        }, { 'process': false });
     };
     setCurrentLecture = function (lectureId) {
         $('.lecturesListJs .lecture, .sectionListJs').removeClass('is-active');
@@ -74,7 +74,7 @@ $(function () {
             var sectionId = $(obj).data('section');
             $('.completedLecture' + sectionId).text($(obj).parents('.lecturesListJs').find('input[type="checkbox"]:checked').length);
             setProgress();
-        });
+        }, { 'process': false });
     };
     $('.lecturesListJs input[type="checkbox"]').change(function () {
         var _obj = $(this);
@@ -105,7 +105,7 @@ $(function () {
             if (res.is_completed == true && $('.quizListJs').length == 0) {
                 window.location = fcom.makeUrl('Tutorials', 'completed', [progressId]);
             }
-        });
+        }, {'process': false});
     };
     if (currentLectureId > 0) {
         loadLecture(currentLectureId);

@@ -1,7 +1,7 @@
-/* global fcom, langLbl, COMPLETED, ACTIVE_MEETING_TOOL, ZOOM_APP, joinFromApp, LESSON_SPACE, COMET_CHAT_APP, COMETCHAT_APP_ID, chat_width, testTool, chat_height, addEmbedIframe */
+/* global fcom, langLbl, COMPLETED, joinFromApp, ATOM_CHAT, endLessonConfirmMsg, SCHEDULED */
 (function () {
     joinLesson = function (lessonId, joinFromApp) {
-        var data = { lessonId: lessonId, joinFromApp: joinFromApp };
+        var data = {lessonId: lessonId, joinFromApp: joinFromApp};
         fcom.ajax(fcom.makeUrl('Lessons', 'joinMeeting'), data, function (response) {
             var res = JSON.parse(response);
             var meToolCode = res.meeting.metool_code;
@@ -20,24 +20,23 @@
     };
     endLesson = function (lessonId) {
         if (confirm(endLessonConfirmMsg)) {
-            fcom.ajax(fcom.makeUrl('Lessons', 'endMeeting'), { lessonId: lessonId }, function (response) {
+            fcom.ajax(fcom.makeUrl('Lessons', 'endMeeting'), {lessonId: lessonId}, function (response) {
                 reloadPage(3000);
             });
         }
     };
-    checkLessonStatus = function (lessonId, currentStatus) {
-        if (typeof checkLessonStatusVar != "undefined") {
+    checkLessonStatus = function (lessonId, status) {
+        if (typeof statusInterval != "undefined") {
             return;
         }
-        checkLessonStatusVar = setInterval(function () {
-            fcom.ajax(fcom.makeUrl('Lessons', 'checkLessonStatus', [lessonId]), '', function (response) {
-                var res = JSON.parse(response);
-                if (currentStatus == SCHEDULED && res.ordles_status == COMPLETED) {
-                    clearInterval(checkLessonStatusVar);
+        statusInterval = setInterval(function () {
+            fcom.updateWithAjax(fcom.makeUrl('Lessons', 'checkLessonStatus', [lessonId]), '', function (res) {
+                if (status == SCHEDULED && res.lessonStatus == COMPLETED) {
+                    clearInterval(statusInterval);
                     reloadPage(5000);
                 }
-            },{process:false});
-        }, 15000);
+            }, {process: false});
+        }, 8000);
     };
     loadIframe = function (url) {
         $('.lessonBox').removeClass('sesson-window__content').addClass('session-window__frame').show();

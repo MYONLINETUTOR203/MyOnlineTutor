@@ -103,7 +103,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                     $options = $category->options;
                                                     if (count($options) > 0) {
                                                         foreach ($options as $id => $option) { ?>
-                                                            <li>
+                                                            <li class="categOptParentJS">
                                                                 <label class="select-option">
                                                                     <input class="select-option__input" type="checkbox" name="course_cate_id[]" <?php echo (in_array($id, $category->value)) ? "checked='checked'" : ''; ?> value="<?php echo $id; ?>">
                                                                     <span class="select-option__item categorySelectOptJs">
@@ -111,9 +111,9 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                     </span>
                                                                 </label>
                                                                 <?php if (count($option['sub_categories']) > 0) { ?>
-                                                                    <ul>
+                                                                    <ul class="categOptParentJS">
                                                                         <?php foreach ($option['sub_categories'] as $sid => $name) { ?>
-                                                                            <li>
+                                                                            <li class="categOptParentJS">
                                                                                 <label class="select-option">
                                                                                     <input class="select-option__input" type="checkbox" <?php echo (in_array($sid, $category->value)) ? "checked='checked'" : ''; ?> name="course_cate_id[]" value="<?php echo $sid; ?>">
                                                                                     <span class="select-option__item categorySelectOptJs">
@@ -250,7 +250,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                         foreach ($options as $id => $option) { ?>
                                                             <li>
                                                                 <label class="select-option">
-                                                                    <input class="select-option__input" type="radio" name="course_ratings" value="<?php echo $id; ?>"  <?php echo $id == $ratings->value ? 'checked' : ''; ?>>
+                                                                    <input class="select-option__input" type="radio" name="course_ratings" value="<?php echo $id; ?>" <?php echo $id == $ratings->value ? 'checked' : ''; ?>>
                                                                     <span class="select-option__item SelectOptJs">
                                                                         <span class="d-flex align-items-center">
                                                                             <svg class="rating__media">
@@ -344,7 +344,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                             foreach ($options as $id => $option) { ?>
                                                                                 <li>
                                                                                     <label class="select-option">
-                                                                                        <input class="select-option__input SelectOptJs" type="checkbox" name="course_level[]" value="<?php echo $id; ?>"  <?php echo in_array($id, $level->value) ? 'checked' : ''; ?>>
+                                                                                        <input class="select-option__input SelectOptJs" type="checkbox" name="course_level[]" value="<?php echo $id; ?>" <?php echo in_array($id, $level->value) ? 'checked' : ''; ?>>
                                                                                         <span class="select-option__item levelSelectOptJs">
                                                                                             <?php echo strtolower($option) ?>
                                                                                         </span>
@@ -406,7 +406,7 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
                                                                             foreach ($options as $id => $option) { ?>
                                                                                 <li>
                                                                                     <label class="select-option">
-                                                                                        <input class="select-option__input" type="checkbox" name="course_clang_id[]" value="<?php echo $id; ?>"  <?php echo in_array($id, $language->value) ? 'checked' : ''; ?>>
+                                                                                        <input class="select-option__input" type="checkbox" name="course_clang_id[]" value="<?php echo $id; ?>" <?php echo in_array($id, $language->value) ? 'checked' : ''; ?>>
                                                                                         <span class="select-option__item langSelectOptJs">
                                                                                             <?php echo strtolower($option) ?>
                                                                                         </span>

@@ -274,6 +274,7 @@ class CoursesController extends MyAppController
                 'lecture'
         );
         $srch->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultipleFields(['lecsrc_link', 'lecture.lecture_title', 'lecsrc_course_id', 'lecsrc_id', 'lecsrc_lecture_id']);
         $srch->doNotCalculateRecords();
         $srch1 = clone $srch;
@@ -290,6 +291,8 @@ class CoursesController extends MyAppController
                 'lecture'
         );
         $srch1->addFld('lecture_duration');
+        $srch1->addCondition('lecsrc.lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch1->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch1->addCondition('lecsrc_course_id', '=', $resource['lecsrc_course_id']);
         $srch1->addCondition('lecture_is_trial', '=', AppConstant::YES);
         $srch1->addCondition('lecsrc_type', '=', Lecture::TYPE_RESOURCE_EXTERNAL_URL);

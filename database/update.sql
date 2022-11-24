@@ -1659,5 +1659,10 @@ ALTER TABLE `tbl_two_factor_auths` DROP PRIMARY KEY;
 ALTER TABLE `tbl_two_factor_auths` ADD `usauth_id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`usauth_id`);
 
 
-UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.8.20221116' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 DELETE FROM `tbl_language_labels` WHERE `tbl_language_labels`.`label_key` = "LBL_COURSE_PRICE_LESS_THAN_1_{currency}";
+
+INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`) VALUES
+('LBL_CERTIFICATE_REPLACEMENT_VARS', 1, 'Replacement Vars');
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.9.20221118' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 

@@ -29,6 +29,7 @@ class ClassesController extends DashboardController
             'js/jquery.datetimepicker.js',
             'issues/page-js/common.js',
             'classes/page-js/common.js',
+            'js/jquery.cookie.js',
             'js/app.timer.js',
             'plans/page-js/common.js',
             'js/jquery.barrating.min.js',
@@ -141,6 +142,7 @@ class ClassesController extends DashboardController
             'flashcardEnabled' => $flashcardEnabled
         ]);
         $this->_template->addJs([
+            'js/jquery.cookie.js',
             'js/app.timer.js',
             'issues/page-js/common.js',
             'js/jquery.barrating.min.js',
@@ -220,7 +222,7 @@ class ClassesController extends DashboardController
             FatUtility::dieJsonError($classObj->getError());
         }
         if ($this->siteUserType == User::LEARNER && is_null($class['grpcls_teacher_starttime'])) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_LET_THE_TEACHER_START_LESSON'));
+            FatUtility::dieJsonError(Label::getLabel('LBL_LET_THE_TEACHER_START_CLASS'));
         }
         /* Initialize Meeting */
         $meetingObj = new Meeting($this->siteUserId, $this->siteUserType);
@@ -546,41 +548,35 @@ class ClassesController extends DashboardController
      */
     public function checkClassStatus($classId = 0)
     {
-        if ($this->siteUserType != User::LEARNER) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
-        }
+        $fields = ['ordcls_status', 'grpcls_status', 'grpcls_end_datetime', 'grpcls_teacher_starttime', 'ordcls_starttime'];
         $srch = new ClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $srch->addCondition('ordcls_id', '=', $classId);
         $srch->applyPrimaryConditions();
-        $srch->applySearchConditions(['ordcls_id' => $classId]);
-        $srch->addCondition('grpcls_status', 'IN', [GroupClass::SCHEDULED, GroupClass::COMPLETED]);
-        $srch->addMultipleFields([
-            'ordcls_status', 'grpcls_end_datetime',
-            'grpcls_status', 'grpcls_teacher_starttime', 'ordcls_starttime'
-        ]);
+        $srch->addMultipleFields($fields);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();
         $class = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($class)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST_PLEASE_REFRESH_PAGE'));
         }
-        $msg = '';
-        switch ($class['ordcls_status']) {
-            case OrderClass::SCHEDULED:
-                if (strtotime($class['grpcls_end_datetime']) > time()) {
-                    if (!empty($class['grpcls_teacher_starttime']) && empty($class['ordcls_starttime'])) {
-                        $msg = 'LBL_TEACHER_JOINED_THE_CLASS_YOU_CAN_JOIN_THIS_CLASS_NOW';
-                    }
-                }
-                break;
-            case OrderClass::COMPLETED:
-                $msg = 'LBL_TEACHER_END_THE_CLASS';
-                break;
-            case OrderClass::CANCELLED:
-                $msg = 'LBL_CLASS_CANCELLED_BY_LEARNER';
-                break;
+        $status = (User::TEACHER == $this->siteUserType) ? $class['grpcls_status'] : $class['ordcls_status'];
+        if (User::TEACHER == $this->siteUserType && GroupClass::SCHEDULED == $class['grpcls_status']) {
+            if (empty($class['grpcls_teacher_starttime']) && strtotime($class['grpcls_end_datetime']) > time()) {
+                FatUtility::dieJsonSuccess(['classStatus' => $status, 'msg' => Label::getLabel('LBL_PLEASE_JOIN_CLASS_AND_START_CLASS')]);
+            } elseif (!empty($class['grpcls_teacher_starttime']) && strtotime($class['grpcls_end_datetime']) < time()) {
+                FatUtility::dieJsonError(['classStatus' => $status, 'msg' => Label::getLabel('LBL_TIME_IS_OVER_PLEASE_END_THE_CLASS')]);
+            }
         }
-        $msg = (!empty($msg)) ? Label::getLabel($msg) : '';
-        FatUtility::dieJsonSuccess(['msg' => $msg, 'ordcls_status' => $class['ordcls_status']]);
+        if (
+                User::LEARNER == $this->siteUserType && !empty($class['grpcls_teacher_starttime']) &&
+                GroupClass::SCHEDULED == $class['grpcls_status'] && OrderClass::SCHEDULED == $class['ordcls_status']
+        ) {
+            if (empty($class['ordcls_starttime']) && strtotime($class['grpcls_end_datetime']) > time()) {
+                FatUtility::dieJsonSuccess(['classStatus' => $status, 'msg' => Label::getLabel('LBL_TEACHER_HAS_JOINED_PLEASE_JOIN_CLASS')]);
+            } elseif (!empty($class['ordcls_starttime']) && strtotime($class['grpcls_end_datetime']) < time())
+                FatUtility::dieJsonError(['classStatus' => $status, 'msg' => Label::getLabel('LBL_TIME_IS_OVER_CLASS_WILL_BE_ENDED_SOON')]);
+        }
+        FatUtility::dieJsonSuccess(['msg' => '', 'classStatus' => $status]);
     }
 
     /**
@@ -604,4 +600,5 @@ class ClassesController extends DashboardController
         }
         return $classe;
     }
+
 }

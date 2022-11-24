@@ -224,8 +224,10 @@ class Resource extends MyAppModel
 
         /* apply check for resources binded with courses */
         $srch = new SearchBase(Lecture::DB_TBL_LECTURE_RESOURCE);
+        $srch->joinTable(Lecture::DB_TBL, 'INNER JOIN', 'lecsrc_lecture_id = lecture_id');
         $srch->addCondition('lecsrc_resrc_id', '=', $resourceId);
         $srch->addCondition('lecsrc_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addCondition('lecture_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         if (FatApp::getDb()->fetch($srch->getResultSet())) {

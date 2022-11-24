@@ -33,7 +33,6 @@ class AttachQuizzesController extends DashboardController
         if ($recordId < 1 || !array_key_exists($recordType, AppConstant::getSessionTypes())) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_DATA_SENT'));
         }
-
         /* validate record id */
         $quizLinked = new QuizLinked(0, $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$quizLinked->validateRecordId($recordId, $recordType)) {

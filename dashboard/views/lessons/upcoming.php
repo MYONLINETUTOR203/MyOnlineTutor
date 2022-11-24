@@ -12,7 +12,7 @@ $upcomingLesson = current($allLessons);
                 <div class="infobar__media margin-right-5">
                     <div class="infobar__media-icon infobar__media-icon--vcamera ">
                         <svg class="icon icon--vcamera">
-                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#video-camera'; ?>"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#video-camera'; ?>"></use>
                         </svg>
                     </div>
                 </div>
@@ -22,7 +22,7 @@ $upcomingLesson = current($allLessons);
                         <?php echo Label::getLabel('LBL_WITH'); ?>
                         <div class="avtar-meta display-inline">
                             <span class="avtar avtar--xsmall display-inline margin-right-2" data-title="<?php echo CommonHelper::getFirstChar($upcomingLesson['first_name']); ?>">
-                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $upcomingLesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL),CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
+                                <img src="<?php echo FatCache::getCachedUrl(MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $upcomingLesson['user_id'], Afile::SIZE_SMALL], CONF_WEBROOT_FRONT_URL), CONF_DEF_CACHE_TIME, '.jpg'); ?>" />
                             </span>
                             <?php echo $upcomingLesson['first_name'] . ' ' . $upcomingLesson['last_name']; ?>
                         </div>
@@ -35,11 +35,11 @@ $upcomingLesson = current($allLessons);
                 <div class="timer margin-right-4">
                     <div class="timer__media">
                         <span><svg class="icon icon--clock icon--small">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
+                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#clock'; ?>"></use>
                             </svg></span>
                     </div>
                     <div class="timer__content">
-                        <div class="timer__controls timer-js style colorDefinition size_sm" id="upcoming-timer" remainingTime="<?php echo $upcomingLesson['ordles_remaining_unix']; ?>">00:00:00:00</div>
+                        <div class="timer__controls timer-js style colorDefinition size_sm" id="lessonStartTimer" timestamp="<?php echo $upcomingLesson['ordles_lesson_starttime_utc']; ?>">00:00:00:00</div>
                     </div>
                 </div>
                 <a href="<?php echo MyUtility::makeUrl('Lessons', 'view', [$upcomingLesson['ordles_id']]); ?>" class="btn bg-secondary"><?php echo Label::getLabel('LBL_ENTER_CLASSROOM') ?></a>
@@ -48,5 +48,8 @@ $upcomingLesson = current($allLessons);
     </div>
 </div>
 <script>
-    $("#upcoming-timer").appTimer();
+    $("#lessonStartTimer").yocoachTimer({
+        recordType: 'LESSON',
+        recordId: '<?php echo $upcomingLesson['ordles_id']; ?>'
+    });
 </script>

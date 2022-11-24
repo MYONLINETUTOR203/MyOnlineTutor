@@ -52,6 +52,6 @@ $(function () {
             if (subCategoryId > 0) {
                 $(target).val(subCategoryId);
             }
-        });
+        }, { process: false });
     };
 });
