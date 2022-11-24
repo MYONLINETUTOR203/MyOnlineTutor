@@ -174,6 +174,8 @@ class Section extends MyAppModel
         $srch->addFld('section_id');
         $srch->addCondition('section_course_id', '=', $courseId);
         $srch->addCondition('section_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addOrder('section_order = 0', 'ASC');
+        $srch->addOrder('section_order', 'ASC');
         $sectionIds = FatApp::getDb()->fetchAll($srch->getResultSet(), 'section_id');
         $sectionIds = array_keys($sectionIds);
         array_unshift($sectionIds, "");

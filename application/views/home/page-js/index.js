@@ -137,6 +137,7 @@ $("document").ready(function () {
             {breakpoint: 767, settings: {slidesToShow: 1, dots: true, arrows: false}},
         ]
     });
+
     toggleCourseFavorite = function (courseId, el) {
         var status = $(el).data('status');
         var data = 'course_id= ' + courseId + '&status=' + status;

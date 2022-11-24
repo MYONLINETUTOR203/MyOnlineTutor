@@ -1,5 +1,26 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.9.20221118
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+	#068622	User details section coming twice.
+	#068611	Student count is still coming in the course listing after course cancellation
+	#068608	Lecture attached resources should not come in the attach resource listing
+	#068589	Multiple processing loaders are coming in the course learning page when video lecture completed
+	#068587	Users is unable to search sub categories in the frontend courses listing
+	#068586	Sections order is getting reset after adding or editing a section
+	#068584	“Replacement variable” same label is used in the certificate and email template
+	#068579	The course by default approved review is not coming for the teacher anywhere
+	#068577	Teacher is unable to set course price as free
+	#068574	Teacher is unable to delete the resource attached with deleted lecture
+	#068573	Deleted lectures are also coming in the lecture preview popup
+	#068572	Warning is coming when clicking on attach resource button without choosing any file
+
 ## TV-4.1.8.20221116
 
 Features: N/A

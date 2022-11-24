@@ -213,6 +213,12 @@ class OrderCourse extends MyAppModel
                 $db->rollbackTransaction();
                 return false;
             }
+            $course = new Course($data['course_id']);
+            if (!$course->setStudentCount()) {
+                $this->error = $course->getError();
+                $db->rollbackTransaction();
+                return false;
+            }
             $request = [
                 'corere_remark' => '',
                 'corere_status' => Course::REFUND_APPROVED,

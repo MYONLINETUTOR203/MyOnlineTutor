@@ -97,6 +97,9 @@ class LectureResourcesController extends DashboardController
         }
         if ($post['lecsrc_type'] == Lecture::TYPE_RESOURCE_LIBRARY) {
             $resources = FatApp::getPostedData('resources');
+            if (empty($resources) || count($resources) < 1) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_RESOURCES_FROM_THE_LIST'));
+            }
             foreach ($resources as $resource) {
                 $lecture = new Lecture($post['lecsrc_lecture_id']);
                 if (!$lecture->setupResources(
@@ -237,11 +240,18 @@ class LectureResourcesController extends DashboardController
 
     public function search(int $lectureId)
     {
+        /* get already attached resources */
+        $attachedResources = (new Lecture($lectureId))->getResources();
+        $resourceIds = ($attachedResources) ? array_column($attachedResources, 'resrc_id') : [];
+        
         $post = FatApp::getPostedData();
         $srch = new ResourceSearch(0, 0, 0);
         $srch->applySearchConditions($post + ['user_id' => $this->siteUserId]);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
+        if (!empty($resourceIds)) {
+            $srch->addCondition('resrc_id', 'NOT IN', $resourceIds);
+        }
         $srch->addOrder('resrc_id', 'DESC');
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['page']);

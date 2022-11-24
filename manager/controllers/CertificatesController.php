@@ -290,7 +290,7 @@ class CertificatesController extends AdminBaseController
         $frm->addHtml(
             Label::getLabel('LBL_Replacement_Caption', $langId),
             'replacement_caption',
-            '<h3>' . Label::getLabel('LBL_Replacement_Vars', $langId) . '</h3>'
+            '<h3>' . Label::getLabel('LBL_CERTIFICATE_REPLACEMENT_VARS', $langId) . '</h3>'
         );
         $frm->addHtml(Label::getLabel('LBL_Replacement_Vars', $langId), 'certpl_vars', '');
 
