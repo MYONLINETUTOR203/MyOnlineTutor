@@ -123,3 +123,44 @@ Features:
 Updates: N/A
 
 Fixes: N/A
+
+## TV-1.4.0.20221124
+
+Features:
+
+    Task-102494 - Two Factor Authentication
+    Task-103483 - Quiz Linking with Course
+
+Updates: N/A
+
+Fixes:
+
+    #068620 - Show alert message before ending the quiz so that learner can save his quiz answers
+    #068619 - There is no option to come back to attach question listing without saving the question
+    #068618 - Quiz time spent is not coming if the quiz has no duration
+    #068617 - Stop processing loader when changing category values in the search filter
+    #068615 - Teachers have no option to add comments for the answers in case of non-graded quiz
+    #068612 - Background image of course completion and quiz evaluation certificates should be different
+    #068607 - Show help text that once the certificate is downloaded then he can not retake the quiz
+    #068591 - Course preview video is coming by default on the newly added course
+    #068551 - The non-timer in-progress quiz should get completed instead of cancelled
+    #068544 - A fatal error is coming in the course refund requests page
+    #068543 - Time should not come along with the course/quiz completion date
+    #068542 - Course duration variable is not coming in replacement variables of course completion certificate
+    #068541 - Teacher is unable to set course price as free
+    #068539 - Question subcategories are not coming on the basis of category
+    #068485 - Error message is not displaying when learner tries to retake quiz which certificate is downloaded
+    #068484 - Show "NA" if the manual question answer is not provided by the learner
+    #068483 - Processing and success message are not coming when teacher submits question marks
+    #068482 - The answer to the manual question is not coming in the format in which its added
+    #068481 - Error message is not displaying when learner tries to start removed quiz
+    #068480 - Quiz evaluation email is coming every time when teacher/learner clicks on the finish button in quiz review
+    #068479 - Teacher is able to add manual question to auto-graded quiz and vice versa
+    #068478 - The latest added questions should come on the top in quiz question listing
+    #068409 - Next and back buttons not working correctly if teacher and learner review same quiz simultaneously
+    #068408 - Multiple choice question number is coming in green color although some options are incorrect
+    #068407 - Free trial lesson detail is coming incorrect in related emails
+    #068166 - Quiz instructions should display properly everywhere
+    #068160 - Show the no. of attempts(5/5) on the user quiz page and quiz review page
+    #068124 - Multiple answers choice question marks calculation is not correct
+
