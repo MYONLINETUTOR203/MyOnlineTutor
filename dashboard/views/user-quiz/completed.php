@@ -126,6 +126,23 @@ $showStats = true;
                     </a>
                 <?php } ?>
             </div>
+            <?php if ($canRetake == true && $canDownloadCertificate == true) { ?>
+                <div class="option-hint">
+                    <span class="d-inline-flex align-items-center">
+                        <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
+                            <strong class="d-inline-flex align-items-center">
+                                <svg class="icon icon--dashboard margin-right-2 icon--small">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
+                                </svg>
+                                <?php echo Label::getLabel('LBL_NOTE:'); ?>
+                            </strong>
+                        </span>
+                        <span class="option-hint__content">
+                            <?php echo Label::getLabel('LBL_RETAKE_WILL_NOT_BE_ALLOWED_ONCE_THE_CERTIFICATE_IS_DOWNLOADED.'); ?>
+                        </span>
+                    </span>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>

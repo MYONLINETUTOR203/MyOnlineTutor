@@ -393,7 +393,7 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->addMultipleFields([
             'quatqu_id', 'quatqu_answer', 'qulinqu_id', 'qulinqu_order', 'qulinqu_answer', 'qulinqu_type',
-            'quatqu_scored'
+            'quatqu_scored', 'quatqu_comment'
         ]);
         $srch->addOrder('qulinqu_order', 'ASC');
         $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');

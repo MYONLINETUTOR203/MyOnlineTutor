@@ -448,19 +448,21 @@ class QuizAttempt extends MyAppModel
         $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quilin_id = quizat_quilin_id');
         $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'user_id = quizat_user_id');
         $srch->doNotCalculateRecords();
-        $srch->addCondition('quizat_status', '=', QuizAttempt::STATUS_IN_PROGRESS);
+        $cnd = $srch->addCondition('quizat_status', '=', QuizAttempt::STATUS_IN_PROGRESS);
+        $cnd->attachCondition('quizat_status', '=', QuizAttempt::STATUS_PENDING);
         $srch->addCondition('quizat_active', '=', AppConstant::ACTIVE);
         $srch->addCondition('quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $cond1 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity < "' . date('Y-m-d H:i:s') . '"';
-        $cond2 = 'quilin_duration > 0 AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND  quilin_validity >= "' . date('Y-m-d H:i:s') . '"';
-        $cond3 = 'quilin_duration = 0 AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $cond1 = 'quilin_duration > 0 AND quizat_started != "0000-00-00 00:00:00" AND DATE_ADD(quizat_started, INTERVAL quilin_duration SECOND) < "' . date('Y-m-d H:i:s') . '" AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $cond2 = 'quilin_duration = 0 AND quizat_started != "0000-00-00 00:00:00" AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+        $cond3 = 'quizat_started = "0000-00-00 00:00:00" AND quilin_validity < "' . date('Y-m-d H:i:s') . '"';
+
         $srch->addDirectCondition('((' . $cond1 . ') OR (' . $cond2 . ') OR (' . $cond3 . '))');
 
         $srch->addMultipleFields([
             'quizat_id',
             'quizat_user_id',
             'user_lang_id',
-            'IF(' . $cond2 . ', ' . QuizAttempt::STATUS_COMPLETED . ', ' . QuizAttempt::STATUS_CANCELED . ') as status'
+            'IF(' . $cond3 . ', ' . QuizAttempt::STATUS_CANCELED . ', ' . QuizAttempt::STATUS_COMPLETED . ') as status'
         ]);
 
         $srch->addOrder('quizat_id');
@@ -473,8 +475,7 @@ class QuizAttempt extends MyAppModel
                     $this->langId = $quiz['user_lang_id'];
                     $this->mainTableRecordId = $quiz['quizat_id'];
                     if (!$this->markComplete()) {
-                        echo $this->error = $this->getError();
-                        die;
+                        $this->error = $this->getError();
                         return false;
                     }
                 } else {

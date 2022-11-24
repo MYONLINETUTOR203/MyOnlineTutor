@@ -184,6 +184,7 @@ class QuizReview extends MyAppModel
         
         $record = new TableRecord(QuizAttempt::DB_TBL_QUESTIONS);
         $record->setFldValue('quatqu_scored', $data['quatqu_scored']);
+        $record->setFldValue('quatqu_comment', $data['quatqu_comment']);
         if (!$record->update(['smt' => 'quatqu_id = ?', 'vals' => [$data['quatqu_id']]])) {
             $this->error = $record->getError();
             return false;
