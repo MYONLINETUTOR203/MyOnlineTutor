@@ -124,7 +124,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                         </div>
                     </div>
                 </div>
-                <?php if ($questionData['ques_type'] != Question::TYPE_MANUAL) { ?>
+                <?php if ($questionData['ques_type'] != Question::TYPE_TEXT) { ?>
                     <div class="sectionhead">
                         <h4><?php echo Label::getLabel('LBL_OPTIONS') ?></h4>
                     </div>

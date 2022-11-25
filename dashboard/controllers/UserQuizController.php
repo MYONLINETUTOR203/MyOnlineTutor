@@ -179,7 +179,7 @@ class UserQuizController extends DashboardController
         if (!empty($attemptedQues[$currentQuesId]['quatqu_answer'])) {
             $answer = json_decode($attemptedQues[$currentQuesId]['quatqu_answer'], 0);
         }
-        if ($question['qulinqu_type'] == Question::TYPE_MANUAL) {
+        if ($question['qulinqu_type'] == Question::TYPE_TEXT) {
             $answer = $answer[0] ?? '';
         }
 
@@ -385,7 +385,7 @@ class UserQuizController extends DashboardController
         } elseif ($type == Question::TYPE_MULTIPLE) {
             $fld = $frm->addCheckBoxes('', 'ques_answer', []);
             $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_SELECT_ANSWER'));
-        } elseif ($type == Question::TYPE_MANUAL) {
+        } elseif ($type == Question::TYPE_TEXT) {
             $fld = $frm->addTextArea(Label::getLabel('LBL_ANSWER'), 'ques_answer');
         } else {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_QUESTION_TYPE'));

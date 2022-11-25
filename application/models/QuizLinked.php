@@ -384,7 +384,7 @@ class QuizLinked extends MyAppModel
         foreach ($attemptedQues as $key => $question) {
             $question['quatqu_answer'] = $question['quatqu_answer'] ? json_decode($question['quatqu_answer'], true) : [];
             $question['is_correct'] = '';
-            if ($question['qulinqu_type'] != Question::TYPE_MANUAL) {
+            if ($question['qulinqu_type'] != Question::TYPE_TEXT) {
                 $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
 
                 $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
@@ -689,7 +689,7 @@ class QuizLinked extends MyAppModel
                 $displayOrder = 1;
             }
             $opts = $quesOptions[$question['ques_id']] ?? [];
-            if ($question['ques_type'] != Question::TYPE_MANUAL && count($opts) < 1) {
+            if ($question['ques_type'] != Question::TYPE_TEXT && count($opts) < 1) {
                 $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
                 return false;
             }

@@ -124,7 +124,7 @@ class QuizReviewController extends DashboardController
             $answer = $currentQues['quatqu_answer'];
         }
 
-        if ($question['qulinqu_type'] == Question::TYPE_MANUAL) {
+        if ($question['qulinqu_type'] == Question::TYPE_TEXT) {
             $answer = $answer[0] ?? '';
 
             /* evaluation form for Manual quiz */

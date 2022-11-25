@@ -131,7 +131,7 @@ class QuizAttempt extends MyAppModel
 
         $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $answer = $data['ques_answer'];
-        if ($data['ques_type'] == Question::TYPE_MANUAL) {
+        if ($data['ques_type'] == Question::TYPE_TEXT) {
             $answer = [$data['ques_answer']];
         }
         $assignValues = [
@@ -146,7 +146,7 @@ class QuizAttempt extends MyAppModel
             return false;
         }
 
-        if ($question['qulinqu_type'] != Question::TYPE_MANUAL) {
+        if ($question['qulinqu_type'] != Question::TYPE_TEXT) {
             $assignValues['quatqu_id'] = empty($data['quatqu_id']) ? $quesAttempt->getId() : $data['quatqu_id'];
             if (!$this->setupQuesScore($assignValues)) {
                 $db->rollbackTransaction();

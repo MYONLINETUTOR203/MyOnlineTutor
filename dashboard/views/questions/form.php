@@ -157,7 +157,7 @@ $submitButton = $frm->getField('submit');
             </div>
         </div>
 
-        <div class="row options-container" style="<?php echo (empty($typeFld->value) || $typeFld->value == Question::TYPE_MANUAL) ? 'display: none;' : ''; ?>">
+        <div class="row options-container" style="<?php echo (empty($typeFld->value) || $typeFld->value == Question::TYPE_TEXT) ? 'display: none;' : ''; ?>">
             <div class="col-md-6">
                 <div class="field-set">
                     <div class="caption-wraper">
