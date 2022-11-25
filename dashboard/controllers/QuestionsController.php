@@ -147,7 +147,7 @@ class QuestionsController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id', 'ques_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        if ($post['ques_type'] != Question::TYPE_MANUAL) {
+        if ($post['ques_type'] != Question::TYPE_TEXT) {
             $optionFrm = $this->getOptionsForm($post['ques_type']);
             if (!$optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
                 FatUtility::dieJsonError(current($optionFrm->getValidationErrors()));
@@ -247,7 +247,7 @@ class QuestionsController extends DashboardController
         $frm->addHiddenField('', 'ques_id')->requirements()->setInt();
         $types = Question::getTypes();
         if ($quizType == Quiz::TYPE_AUTO_GRADED) {
-            unset($types[Question::TYPE_MANUAL]);
+            unset($types[Question::TYPE_TEXT]);
         } elseif ($quizType == Quiz::TYPE_NON_GRADED) {
             unset($types[Question::TYPE_MULTIPLE]);
             unset($types[Question::TYPE_SINGLE]);
@@ -278,13 +278,13 @@ class QuestionsController extends DashboardController
         $notReqCountFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_MANUAL,
+            Question::TYPE_TEXT,
             'ne',
             'ques_options_count',
             $reqCountFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_MANUAL,
+            Question::TYPE_TEXT,
             'eq',
             'ques_options_count',
             $notReqCountFld

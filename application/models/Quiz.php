@@ -225,9 +225,9 @@ class Quiz extends MyAppModel
         $srch = new SearchBase(Question::DB_TBL);
         $srch->addCondition('ques_id', 'IN', $questions);
         if ($quizType == Quiz::TYPE_NON_GRADED) {
-            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
+            $srch->addCondition('ques_type', '=', Question::TYPE_TEXT);
         } else {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
+            $srch->addCondition('ques_type', '!=', Question::TYPE_TEXT);
         }
         $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -497,9 +497,9 @@ class Quiz extends MyAppModel
         $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
         $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
         if (Quiz::TYPE_NON_GRADED == Quiz::getAttributesById($this->getMainTableRecordId(), 'quiz_type')) {
-            $srch->addCondition('ques_type', '=', Question::TYPE_MANUAL);
+            $srch->addCondition('ques_type', '=', Question::TYPE_TEXT);
         } else {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_MANUAL);
+            $srch->addCondition('ques_type', '!=', Question::TYPE_TEXT);
         }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');

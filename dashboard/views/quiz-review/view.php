@@ -9,7 +9,7 @@
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
         </div>
         <div class="box-view__body">
-            <?php if ($question['qulinqu_type'] != Question::TYPE_MANUAL && count($options) > 0) { ?>
+            <?php if ($question['qulinqu_type'] != Question::TYPE_TEXT && count($options) > 0) { ?>
                 <div class="option-list">
                     <?php
                     $type = ($question['qulinqu_type'] == Question::TYPE_SINGLE) ? 'radio' : 'checkbox';
@@ -246,7 +246,7 @@
             </div>
             <div class="box-actions form">
                 <?php $controller = ($data['quilin_record_type'] == AppConstant::GCLASS) ? 'Classes' : 'Lessons'; ?>
-                <?php if ($siteUserType == User::TEACHER && $question['qulinqu_type'] == Question::TYPE_MANUAL && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) { ?>
+                <?php if ($siteUserType == User::TEACHER && $question['qulinqu_type'] == Question::TYPE_TEXT && $data['quizat_evaluation'] == QuizAttempt::EVALUATION_PENDING) { ?>
                     <input type="button" value="<?php echo Label::getLabel('LBL_SUBMIT_&_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="submitAndFinish('<?php echo $data['quizat_id']; ?>', '<?php echo $controller; ?>');">
                 <?php } else { ?>
                     <input type="button" value="<?php echo Label::getLabel('LBL_FINISH') ?>" class="btn btn--bordered-primary btn--block" onclick="finish('<?php echo $data['quizat_id']; ?>');">
