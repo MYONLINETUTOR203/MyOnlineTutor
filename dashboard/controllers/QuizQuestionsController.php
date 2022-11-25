@@ -75,9 +75,9 @@ class QuizQuestionsController extends DashboardController
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
         if ($type == Quiz::TYPE_AUTO_GRADED) {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
         } else {
-            $srch->addCondition('ques_type', '=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         }
         $srch->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
         if (count($questions) > 0) {

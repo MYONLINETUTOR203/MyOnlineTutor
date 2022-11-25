@@ -225,9 +225,9 @@ class Quiz extends MyAppModel
         $srch = new SearchBase(Question::DB_TBL);
         $srch->addCondition('ques_id', 'IN', $questions);
         if ($quizType == Quiz::TYPE_NON_GRADED) {
-            $srch->addCondition('ques_type', '=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         } else {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', '=', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
         }
         $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);

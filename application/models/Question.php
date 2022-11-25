@@ -9,6 +9,7 @@ class Question extends MyAppModel
     public const TYPE_SINGLE = 1;
     public const TYPE_MULTIPLE = 2;
     public const TYPE_TEXT = 3;
+    public const TYPE_AUDIO = 4;
 
     private $userId;
 
@@ -36,6 +37,7 @@ class Question extends MyAppModel
             static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
             static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE_CHOICE'),
             static::TYPE_TEXT => Label::getLabel('LBL_TEXT'),
+            static::TYPE_AUDIO => Label::getLabel('LBL_AUDIO'),
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -196,7 +198,7 @@ class Question extends MyAppModel
         $db->startTransaction();
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
-        if ($data['ques_type'] == Question::TYPE_TEXT) {
+        if (in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
             $data['ques_options_count'] = 0;
         } else {
             if ($data['ques_options_count'] != count($data['queopt_title'])) {
@@ -248,7 +250,7 @@ class Question extends MyAppModel
             return false;
         }
         $ques_answers = [];
-        if ($data['ques_type'] != Question::TYPE_TEXT) {
+        if (!in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
             $i = 1;
             foreach ($data['queopt_title'] as $key => $value) {
                 $queopt = new TableRecord(Question::DB_TBL_OPTIONS);

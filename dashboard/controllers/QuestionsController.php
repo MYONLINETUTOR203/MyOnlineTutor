@@ -147,7 +147,7 @@ class QuestionsController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id', 'ques_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        if ($post['ques_type'] != Question::TYPE_TEXT) {
+        if (in_array($post['ques_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE])) {
             $optionFrm = $this->getOptionsForm($post['ques_type']);
             if (!$optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
                 FatUtility::dieJsonError(current($optionFrm->getValidationErrors()));
@@ -278,16 +278,16 @@ class QuestionsController extends DashboardController
         $notReqCountFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_TEXT,
-            'ne',
-            'ques_options_count',
-            $reqCountFld
+            Question::TYPE_SINGLE, 'eq', 'ques_options_count', $reqCountFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_TEXT,
-            'eq',
-            'ques_options_count',
-            $notReqCountFld
+            Question::TYPE_MULTIPLE, 'eq', 'ques_options_count', $reqCountFld
+        );
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Question::TYPE_TEXT, 'eq', 'ques_options_count', $notReqCountFld
+        );
+        $typeFld->requirements()->addOnChangerequirementUpdate(
+            Question::TYPE_AUDIO, 'eq', 'ques_options_count', $notReqCountFld
         );
 
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));

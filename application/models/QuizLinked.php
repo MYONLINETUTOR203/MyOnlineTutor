@@ -722,7 +722,7 @@ class QuizLinked extends MyAppModel
                 $displayOrder = 1;
             }
             $opts = $quesOptions[$question['ques_id']] ?? [];
-            if ($question['ques_type'] != Question::TYPE_TEXT && count($opts) < 1) {
+            if (in_array($question['ques_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]) && count($opts) < 1) {
                 $this->error = Label::getLabel('LBL_QUESTION_OPTIONS_ARE_NOT_AVAILABLE');
                 return false;
             }

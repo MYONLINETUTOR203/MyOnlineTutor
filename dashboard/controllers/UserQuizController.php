@@ -174,6 +174,8 @@ class UserQuizController extends DashboardController
         }
         if ($question['qulinqu_type'] == Question::TYPE_TEXT) {
             $answer = $answer[0] ?? '';
+        } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) {
+            $answer = '';
         }
 
         /* get question form */
@@ -399,6 +401,8 @@ class UserQuizController extends DashboardController
             $fld->requirements()->setCustomErrorMessage(Label::getLabel('LBL_PLEASE_SELECT_ANSWER'));
         } elseif ($type == Question::TYPE_TEXT) {
             $fld = $frm->addTextArea(Label::getLabel('LBL_ANSWER'), 'ques_answer');
+        } elseif ($type == Question::TYPE_AUDIO) {
+            $fld = $frm->addHiddenField(Label::getLabel('LBL_ANSWER'), 'ques_answer');
         } else {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_QUESTION_TYPE'));
         }
