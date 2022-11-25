@@ -27,7 +27,7 @@ $fld = $frm->getField('ques_answer');
         <div class="box-view__body">
             <div class="option-list">
                 <?php
-                if ($question['qulinqu_type'] != Question::TYPE_MANUAL && count($options) > 0) {
+                if ($question['qulinqu_type'] != Question::TYPE_TEXT && count($options) > 0) {
                     $type = ($question['qulinqu_type'] == Question::TYPE_SINGLE) ? 'radio' : 'checkbox';
                     foreach ($options as $option) {
                 ?>

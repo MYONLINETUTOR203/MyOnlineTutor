@@ -29,5 +29,5 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
         });
         var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
         var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
-        var TYPE_MANUAL = <?php echo Question::TYPE_MANUAL; ?>;
+        var TYPE_TEXT = <?php echo Question::TYPE_TEXT; ?>;
     </script>

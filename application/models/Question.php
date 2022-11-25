@@ -8,7 +8,7 @@ class Question extends MyAppModel
 
     public const TYPE_SINGLE = 1;
     public const TYPE_MULTIPLE = 2;
-    public const TYPE_MANUAL = 3;
+    public const TYPE_TEXT = 3;
 
     private $userId;
 
@@ -35,7 +35,7 @@ class Question extends MyAppModel
         $arr = [
             static::TYPE_SINGLE => Label::getLabel('LBL_SINGLE_CHOICE'),
             static::TYPE_MULTIPLE => Label::getLabel('LBL_MULTIPLE_CHOICE'),
-            static::TYPE_MANUAL => Label::getLabel('LBL_MANUAL'),
+            static::TYPE_TEXT => Label::getLabel('LBL_TEXT'),
         ];
         return AppConstant::returArrValue($arr, $key);
     }
@@ -174,8 +174,8 @@ class Question extends MyAppModel
                 return false;
             }
             if (
-                ($data['ques_type'] == Question::TYPE_MANUAL && $question['ques_type'] != Question::TYPE_MANUAL) ||
-                ($data['ques_type'] != Question::TYPE_MANUAL && $question['ques_type'] == Question::TYPE_MANUAL)
+                ($data['ques_type'] == Question::TYPE_TEXT && $question['ques_type'] != Question::TYPE_TEXT) ||
+                ($data['ques_type'] != Question::TYPE_TEXT && $question['ques_type'] == Question::TYPE_TEXT)
             ) {
                 $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
                 $srch->addCondition('quiz_user_id', '=', $this->userId);
@@ -196,7 +196,7 @@ class Question extends MyAppModel
         $db->startTransaction();
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
-        if ($data['ques_type'] == Question::TYPE_MANUAL) {
+        if ($data['ques_type'] == Question::TYPE_TEXT) {
             $data['ques_options_count'] = 0;
         } else {
             if ($data['ques_options_count'] != count($data['queopt_title'])) {
@@ -248,7 +248,7 @@ class Question extends MyAppModel
             return false;
         }
         $ques_answers = [];
-        if ($data['ques_type'] != Question::TYPE_MANUAL) {
+        if ($data['ques_type'] != Question::TYPE_TEXT) {
             $i = 1;
             foreach ($data['queopt_title'] as $key => $value) {
                 $queopt = new TableRecord(Question::DB_TBL_OPTIONS);
