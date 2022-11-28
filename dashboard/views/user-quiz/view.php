@@ -55,8 +55,11 @@ $fld = $frm->getField('ques_answer');
                             </span>
                         </label>
                     <?php } ?>
-                <?php } else { ?>
+                <?php } elseif ($question['qulinqu_type'] == Question::TYPE_TEXT) { ?>
                     <?php echo $fld->getHtml(); ?>
+                <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
+                    <audio controls playsinline autoplay noplaybackrate muted=false volume=1></audio>
+                    <input type="button" class="recordrtc" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>" >
                 <?php } ?>
             </div>
             <?php if (!empty($question['qulinqu_hint'])) { ?>
@@ -149,3 +152,6 @@ $fld = $frm->getField('ques_answer');
         </div>
     </div>
 </div>
+<script>
+    getPlayer();
+</script>

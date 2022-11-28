@@ -118,7 +118,9 @@ class UserQuizController extends DashboardController
             'courseQuiz' =>  ($data['quilin_record_type'] === AppConstant::COURSE)
         ]);
 
-        $this->_template->addJs(['js/app.timer.js', 'js/jquery.cookie.js']);
+        $this->_template->addJs([
+            'js/app.timer.js', 'js/jquery.cookie.js', 'js/RecordRTC.js', 'js/RecordDetectRTC.js', 'js/record.js'
+        ]);
         $this->_template->render();
     }
 
