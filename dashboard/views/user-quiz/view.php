@@ -58,14 +58,16 @@ $fld = $frm->getField('ques_answer');
                 <?php } elseif ($question['qulinqu_type'] == Question::TYPE_TEXT) { ?>
                     <?php echo $fld->getHtml(); ?>
                 <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
+
                     <div class="recordrtc">
                         <div class="audioRecorderJs -float-left mx-2">
-                            <audio controls playsinline autoplay noplaybackrate muted=false volume=1></audio>
-                            </div>
-                        <div class="audioRecordingJs -float-left mx-2" style="display:none;">
-                            </div>
-                        <input type="button" class="btnRecord" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                            <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1></audio>
                         </div>
+                        <div class="audioRecordingJs -float-left mx-2" style="display:none;">
+                        </div>
+                        <input type="button" name="recorder" class="btnRecord" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                        <?php echo $frm->getFieldHtml('audio_filename'); ?>
+                    </div>
                 <?php } ?>
             </div>
             <?php if (!empty($question['qulinqu_hint'])) { ?>
@@ -158,6 +160,8 @@ $fld = $frm->getField('ques_answer');
         </div>
     </div>
 </div>
-<script>
-    getPlayer();
-</script>
+<?php if ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
+    <script>
+        getPlayer();
+    </script>
+<?php } ?>

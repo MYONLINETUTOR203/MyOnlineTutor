@@ -31,7 +31,6 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
 }
 function captureAudio(config) {
     captureUserMedia({ audio: true }, function (audioStream) {
-        alert();
         recordingPlayer.srcObject = audioStream;
         config.onMediaCaptured(audioStream);
 
@@ -48,7 +47,7 @@ $(document).ready(function () {
 
         var button = this;
 
-        if (button.value === 'Stop Recording') {
+        if (button.value === langLbl.stopRecording) {
             button.disabled = true;
             button.disableStateWaiting = true;
             setTimeout(function () {
@@ -56,7 +55,7 @@ $(document).ready(function () {
                 button.disableStateWaiting = false;
             }, 2 * 1000);
 
-            button.value = 'Start Recording';
+            button.value = langLbl.startRecording;
 
             function stopStream() {
                 if (button.stream && button.stream.stop) {
@@ -71,7 +70,6 @@ $(document).ready(function () {
                             button.recordingEndedCallback(url);
                             stopStream();
                             recordedStream = button.recordRTC[0];
-                            // saveFile(button.recordRTC[0]);
                             return;
                         }
 
@@ -85,7 +83,6 @@ $(document).ready(function () {
                         button.recordingEndedCallback(url);
                         stopStream();
                         recordedStream = button.recordRTC;
-                        // saveFile(button.recordRTC);
                     });
                 }
             }
@@ -102,14 +99,14 @@ $(document).ready(function () {
                     button.mediaCapturedCallback();
                 }
 
-                button.value = 'Stop Recording';
+                button.value = langLbl.stopRecording;
                 button.disabled = false;
                 $(recordingPlayer).parent().css('display', 'block');
                 $(recordedPlayer).find('audio').remove();
                 $(recordedPlayer).css('display', 'none');
             },
             onMediaStopped: function () {
-                button.value = 'Start Recording';
+                button.value = langLbl.startRecording;
 
                 if (!button.disableStateWaiting) {
                     button.disabled = false;
@@ -152,7 +149,7 @@ $(document).ready(function () {
                 $(recordedPlayer).append(audio);
                 $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen");
                 $(recordedPlayer).css('display', 'block');
-
+                $('input[name="audio_filename"]').val(1);
                 /* if (audio.paused) audio.play();*/
 
                 audio.onended = function () {
@@ -188,92 +185,22 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
     navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
 }
 
-function saveFile(recordRTC) {
-    if (!recordRTC) return alert('No recording found.');
-    this.disabled = true;
 
-    var button = this;
-    uploadToServer(recordRTC, function (progress, fileURL) {
-        if (progress === 'ended') {
-            button.disabled = false;
-            button.value = 'Click to download from server';
-            return;
-        }
-        button.value = progress;
-    });
-    /* }; */
-}
-
-
-function uploadToServer(recordRTC, callback) {
-    var blob = recordRTC instanceof Blob ? recordRTC : recordRTC.blob;
+function appendRecordedFile(formData) {
+    if (!recordedStream) {
+        return formData;
+    }
+    var blob = recordedStream instanceof Blob ? recordedStream : recordedStream.blob;
     var fileType = blob.type.split('/')[0] || 'audio';
     var fileName = (Math.random() * 1000).toString().replace('.', '');
-
     if (fileType === 'audio') {
         fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
     } else {
         fileName += '.webm';
     }
 
-    // create FormData
-    var formData = new FormData();
-    formData.append(fileType + '-filename', fileName);
-    formData.append(fileType + '-blob', blob);
-
-    callback('Uploading ' + fileType + ' recording to server.');
-
-    // var upload_url = 'https://your-domain.com/files-uploader/';
-    var upload_url = 'save.php';
-
-    // var upload_directory = upload_url;
-    var upload_directory = 'uploads/';
-
-    makeXMLHttpRequest(upload_url, formData, function (progress) {
-        if (progress !== 'upload-ended') {
-            callback(progress);
-            return;
-        }
-
-        callback('ended', upload_directory + fileName);
-
-    });
-}
-
-function makeXMLHttpRequest(url, data, callback) {
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-            callback('upload-ended');
-        }
-    };
-
-    request.upload.onloadstart = function () {
-        callback('Upload started...');
-    };
-
-    request.upload.onprogress = function (event) {
-        callback('Upload Progress ' + Math.round(event.loaded / event.total * 100) + "%");
-    };
-
-    request.upload.onload = function () {
-        callback('progress-about-to-end');
-    };
-
-    request.upload.onload = function () {
-        callback('progress-ended');
-    };
-
-    request.upload.onerror = function (error) {
-        callback('Failed to upload to server');
-        console.error('XMLHttpRequest failed', error);
-    };
-
-    request.upload.onabort = function (error) {
-        callback('Upload aborted.');
-        console.error('XMLHttpRequest aborted', error);
-    };
-
-    request.open('POST', url);
-    request.send(data);
+    formData.append(fileType + '_filename', fileName);
+    var file = new File([blob], fileName);
+    formData.append(fileType + '_file', file);
+    return formData;
 }

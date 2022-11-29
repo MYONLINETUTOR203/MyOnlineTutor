@@ -115,7 +115,6 @@ class QuizAttempt extends MyAppModel
         if (!$this->validate(QuizAttempt::STATUS_IN_PROGRESS)) {
             return false;
         }
-
         $question = QuizLinked::getQuestionById($data['ques_id']);
         if (empty($question) || $data['ques_id'] != $this->quiz['quizat_qulinqu_id']) {
             $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
@@ -130,9 +129,12 @@ class QuizAttempt extends MyAppModel
         $db->startTransaction();
 
         $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
-        $answer = $data['ques_answer'];
-        if ($data['ques_type'] == Question::TYPE_TEXT) {
+        if ($data['ques_type'] == Question::TYPE_AUDIO) {
+            $answer = [];
+        } elseif ($data['ques_type'] == Question::TYPE_TEXT) {
             $answer = [$data['ques_answer']];
+        } else {
+            $answer = $data['ques_answer'];
         }
         $assignValues = [
             'quatqu_quizat_id' => $data['ques_attempt_id'],
@@ -145,21 +147,34 @@ class QuizAttempt extends MyAppModel
             $this->error = $quesAttempt->getError();
             return false;
         }
+        $quesId = empty($data['quatqu_id']) ? $quesAttempt->getId() : $data['quatqu_id'];
 
-        if ($question['qulinqu_type'] != Question::TYPE_TEXT) {
-            $assignValues['quatqu_id'] = empty($data['quatqu_id']) ? $quesAttempt->getId() : $data['quatqu_id'];
+        /* setup audio file */
+        if ($data['ques_type'] == Question::TYPE_AUDIO && !empty($data['audio_file']['name'])) {
+            $file = new Afile(Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO);
+            if (!$file->saveFile($data['audio_file'], $quesId, true)) {
+                $this->error = $file->getError();
+                $db->rollbackTransaction();
+                return false;
+            }
+        }
+
+        /* setup question scores */
+        if (in_array($question['qulinqu_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE])) {
+            $assignValues['quatqu_id'] = $quesId;
             if (!$this->setupQuesScore($assignValues)) {
                 $db->rollbackTransaction();
                 return false;
             }
         }
 
-        /* calculations */
+        /* setup quiz progress stats */
         if (!$this->setupQuizProgress()) {
             $db->rollbackTransaction();
             return false;
         }
 
+        /* setup next/prev question */
         if ($next == AppConstant::YES) {
             if (!$this->setQuestion(AppConstant::YES)) {
                 $db->rollbackTransaction();
@@ -644,7 +659,7 @@ class QuizAttempt extends MyAppModel
         $answers = json_decode($ques['qulinqu_answer'], true);
         $submittedAnswers = json_decode($data['quatqu_answer'], true);
         $wrongAnswers = count(array_diff($submittedAnswers, $answers));
-        
+
         if ($ques['qulinqu_type'] == Question::TYPE_MULTIPLE) {
             $answerOptions = json_decode($ques['qulinqu_options'], true);
             $marksPerAnswer = $ques['qulinqu_marks'] / count($answerOptions);

@@ -111,11 +111,11 @@ class UserQuizController extends DashboardController
         } elseif ($data['quilin_duration'] == 0 && $data['quilin_record_type'] != AppConstant::COURSE && strtotime(date('Y-m-d H:i:s')) >= strtotime($data['quilin_validity'])) {
             FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_EXPIRED_QUIZ_IS_NOT_ALLOWED'));
         }
-        
+
         $this->sets([
             'data' => $data,
             'attemptId' =>  $id,
-            'courseQuiz' =>  ($data['quilin_record_type'] === AppConstant::COURSE)
+            'courseQuiz' => ($data['quilin_record_type'] === AppConstant::COURSE)
         ]);
 
         $this->_template->addJs([
@@ -142,7 +142,7 @@ class UserQuizController extends DashboardController
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
-        
+
         /* validate logged in user */
         if ($data['quizat_user_id'] != $this->siteUserId) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
@@ -168,7 +168,7 @@ class UserQuizController extends DashboardController
         $attemptedQues = FatApp::getDb()->fetchAll($srch->getResultSet(), 'qulinqu_id');
 
         $answer = [];
-        $attemtQuesId = '';
+        $attemtQuesId = $filename = '';
         $currentQuesId = $data['quizat_qulinqu_id'];
         $attemtQuesId = $attemptedQues[$currentQuesId]['quatqu_id'];
         if (!empty($attemptedQues[$currentQuesId]['quatqu_answer'])) {
@@ -178,13 +178,19 @@ class UserQuizController extends DashboardController
             $answer = $answer[0] ?? '';
         } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) {
             $answer = '';
+            if ($attemtQuesId > 0) {
+                if ($file = (new Afile(Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO))->getFile($attemtQuesId)) {
+                    $filename = $file['file_name'];
+                    $this->set('file', MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO, $attemtQuesId], CONF_WEBROOT_FRONTEND) . '?time=' . time());
+                }
+            }
         }
 
         /* get question form */
         $frm = $this->getForm($question['qulinqu_type']);
         $frm->fill([
             'ques_id' => $data['quizat_qulinqu_id'], 'ques_attempt_id' => $id, 'quatqu_id' => $attemtQuesId,
-            'ques_type' => $question['qulinqu_type'], 'ques_answer' => $answer
+            'ques_type' => $question['qulinqu_type'], 'ques_answer' => $answer, 'audio_filename' => $filename
         ]);
 
         $this->sets([
@@ -240,7 +246,7 @@ class UserQuizController extends DashboardController
         if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
-        
+
         if ($quesId > 0) {
             $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
             if (!$quiz->save()) {
@@ -267,6 +273,7 @@ class UserQuizController extends DashboardController
         if (!$post = $frm->getFormDataFromArray($post, ['ques_answer'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
+        $post = $post + $_FILES;
         $quiz = new QuizAttempt($post['ques_attempt_id'], $this->siteUserId);
         if (!$quiz->setup($post, $next)) {
             FatUtility::dieJsonError($quiz->getError());
@@ -404,7 +411,7 @@ class UserQuizController extends DashboardController
         } elseif ($type == Question::TYPE_TEXT) {
             $fld = $frm->addTextArea(Label::getLabel('LBL_ANSWER'), 'ques_answer');
         } elseif ($type == Question::TYPE_AUDIO) {
-            $fld = $frm->addHiddenField(Label::getLabel('LBL_ANSWER'), 'ques_answer');
+            $fld = $frm->addHiddenField(Label::getLabel('LBL_ANSWER'), 'audio_filename');
         } else {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_QUESTION_TYPE'));
         }

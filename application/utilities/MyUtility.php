@@ -305,7 +305,7 @@ class MyUtility extends FatUtility
         $langId = empty($langId) ? self::$siteLangId : $langId;
         $srch = new SearchBase(Currency::DB_TBL, 'currency');
         $srch->joinTable(Currency::DB_TBL_LANG, 'LEFT JOIN', 'curlang.currencylang_currency_id = '
-                . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
+            . 'currency.currency_id AND curlang.currencylang_lang_id = ' . $langId, 'curlang');
         $srch->addCondition('currency.currency_active', '=', AppConstant::YES);
         $srch->addMultipleFields(['currency_id', 'currency_code', 'currency_name']);
         $srch->doNotCalculateRecords();
@@ -383,7 +383,8 @@ class MyUtility extends FatUtility
             'confirmBindedQuesRemoval' => Label::getLabel('LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION'),
             'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
             'confirmQuizReviewComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_SUBMIT_EVALUATION?'),
-            'confirmRetake' => Label::getLabel('LBL_IF_YOU_RETAKE,_THE_EXISTING_PROGRESS_WILL_BE_RESET._CONTINUE?')
+            'startRecording' => Label::getLabel('LBL_START_RECORDING'),
+            'stopRecording' => Label::getLabel('LBL_STOP_RECORDING')
         ];
         foreach ($siteLanguages as $val) {
             $jsVariables['language' . $val['language_id']] = $val['language_direction'];
@@ -795,5 +796,4 @@ class MyUtility extends FatUtility
         }
         return trim($slug, "-");
     }
-
 }

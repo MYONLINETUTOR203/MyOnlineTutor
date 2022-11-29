@@ -56,6 +56,7 @@ class Afile extends FatModel
     const TYPE_CERTIFICATE_LOGO = 61;
     const TYPE_COURSE_REQUEST_IMAGE = 62;
     const TYPE_COURSE_REQUEST_PREVIEW_VIDEO = 63;
+    const TYPE_QUIZ_ANSWER_TYPE_AUDIO = 64;
 
     /* Image Sizes */
     const SIZE_SMALL = 'SMALL';
@@ -211,9 +212,9 @@ class Afile extends FatModel
             $db->deleteRecords(static::DB_TBL, $stmt);
         }
         if (
-                MyUtility::isDemoUrl() == false &&
-                $unique && !empty($oldFile['file_path']) &&
-                file_exists(CONF_UPLOADS_PATH . $oldFile['file_path'])
+            MyUtility::isDemoUrl() == false &&
+            $unique && !empty($oldFile['file_path']) &&
+            file_exists(CONF_UPLOADS_PATH . $oldFile['file_path'])
         ) {
             unlink(CONF_UPLOADS_PATH . $oldFile['file_path']);
         }
@@ -541,12 +542,12 @@ class Afile extends FatModel
             trigger_error('S3 Settings not found.', E_USER_ERROR);
         }
         $client = S3Client::factory([
-                    'version' => 'latest',
-                    'region' => AWS_S3_REGION,
-                    'credentials' => [
-                        'key' => AWS_S3_KEY,
-                        'secret' => AWS_S3_SECRET
-                    ]
+            'version' => 'latest',
+            'region' => AWS_S3_REGION,
+            'credentials' => [
+                'key' => AWS_S3_KEY,
+                'secret' => AWS_S3_SECRET
+            ]
         ]);
         $client->registerStreamWrapper();
     }
@@ -584,6 +585,10 @@ class Afile extends FatModel
                 return 'application/zip';
             case 'mp4':
                 return 'video/mp4';
+            case 'webm':
+            case 'wav':
+            case 'ogg':
+                return 'video/webm';
             default:
                 return '';
         }
@@ -647,6 +652,8 @@ class Afile extends FatModel
                 return ['png', 'jpeg', 'jpg', 'gif'];
             case static::TYPE_COURSE_PREVIEW_VIDEO:
                 return ['mp4'];
+            case static::TYPE_QUIZ_ANSWER_TYPE_AUDIO:
+                return ['ogg', 'wav'];
             default:
                 return [];
         }
@@ -867,6 +874,7 @@ class Afile extends FatModel
                 static::SIZE_MEDIUM => [300, 300],
                 static::SIZE_LARGE => [2070, 1680]
             ],
+            static::TYPE_QUIZ_ANSWER_TYPE_AUDIO => [],
         ];
         if ($size === null) {
             return $arr[$this->type];
@@ -1026,7 +1034,7 @@ class Afile extends FatModel
         }
         echo $fileData;
     }
-    
+
     /**
      * Show Video
      *
