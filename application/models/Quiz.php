@@ -239,7 +239,7 @@ class Quiz extends MyAppModel
             $this->error = Label::getLabel('LBL_INVALID_DATA_SENT');
             return false;
         }
-        
+
         /* bind questions */
         $data = ['quique_quiz_id' => $this->getMainTableRecordId()];
         foreach ($questions as $quesId) {
@@ -254,7 +254,7 @@ class Quiz extends MyAppModel
             $db->rollbackTransaction();
             return false;
         }
-        
+
         if (!$this->updateCount()) {
             $db->rollbackTransaction();
             return false;
@@ -497,9 +497,9 @@ class Quiz extends MyAppModel
         $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
         $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
         if (Quiz::TYPE_NON_GRADED == Quiz::getAttributesById($this->getMainTableRecordId(), 'quiz_type')) {
-            $srch->addCondition('ques_type', '=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         } else {
-            $srch->addCondition('ques_type', '!=', Question::TYPE_TEXT);
+            $srch->addCondition('ques_type', '=', [Question::TYPE_MULTIPLE, Question::TYPE_SINGLE]);
         }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');

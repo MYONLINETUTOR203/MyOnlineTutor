@@ -68,7 +68,7 @@ class QuizLinked extends MyAppModel
 
                 $data = $this->getQuizzes([$recordId], $recordType);
                 $data = current($data);
-                if ( ($data['quiz_count'] ?? 0) > 0) {
+                if (($data['quiz_count'] ?? 0) > 0) {
                     $this->error = Label::getLabel('LBL_ONLY_ONE_QUIZ_ATTACHMENT_IS_ALLOWED');
                     return false;
                 }
@@ -95,7 +95,7 @@ class QuizLinked extends MyAppModel
         if (!$this->validateRecordId($recordId, $recordType)) {
             return false;
         }
-        
+
         $srch = new SearchBase(QuizLinked::DB_TBL);
         $srch->addCondition('quilin_record_id', '=', $recordId);
         $srch->addCondition('quilin_record_type', '=', $recordType);
@@ -403,7 +403,7 @@ class QuizLinked extends MyAppModel
         foreach ($attemptedQues as $key => $question) {
             $question['quatqu_answer'] = $question['quatqu_answer'] ? json_decode($question['quatqu_answer'], true) : [];
             $question['is_correct'] = '';
-            if ($question['qulinqu_type'] != Question::TYPE_TEXT) {
+            if (in_array($question['qulinqu_type'], [Question::TYPE_MULTIPLE, Question::TYPE_SINGLE])) {
                 $question['qulinqu_answer'] = json_decode($question['qulinqu_answer'], true);
 
                 $answered = array_intersect($question['qulinqu_answer'], $question['quatqu_answer']);
@@ -579,16 +579,16 @@ class QuizLinked extends MyAppModel
         $i = 1;
         foreach ($data as $quiz) {
             $html .= '<tr>' .
-            '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">{date_' . $i . '}</td>' .
-            '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link_' . $quiz['quilin_id'] . '}">{view}</a></td>' .
-            '</tr>';
+                '<td style="padding:10px;font-size:13px;border:1px solid #ddd; color:#333;">' . $quiz['quilin_title'] . '</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">' . $quiztypes[$quiz['quilin_type']] . '</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;">{date_' . $i . '}</td>' .
+                '<td style="padding:10px;font-size:13px; color:#333;border:1px solid #ddd;"><a style="color: {primary-color};" target="_blank" href="{link_' . $quiz['quilin_id'] . '}">{view}</a></td>' .
+                '</tr>';
             $dates['{date_' . $i . '}'] = $quiz['quilin_validity'];
             $i++;
         }
         $html .= '</tbody></table>';
-        
+
         foreach ($users as $user) {
             $list = $html;
             $timezone = $user['user_timezone'];
@@ -677,7 +677,7 @@ class QuizLinked extends MyAppModel
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -747,7 +747,7 @@ class QuizLinked extends MyAppModel
             $quizId = $question['quique_quiz_id'];
             $displayOrder++;
         }
-        
+
         return true;
     }
 }

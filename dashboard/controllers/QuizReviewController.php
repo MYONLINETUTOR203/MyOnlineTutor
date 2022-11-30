@@ -122,8 +122,14 @@ class QuizReviewController extends DashboardController
             $answer = $currentQues['quatqu_answer'];
         }
 
-        if ($question['qulinqu_type'] == Question::TYPE_TEXT) {
+        if (in_array($question['qulinqu_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
             $answer = $answer[0] ?? '';
+
+            if ($currentQues['quatqu_id'] > 0) {
+                if ((new Afile(Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO))->getFile($currentQues['quatqu_id'])) {
+                    $this->set('file', MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO, $currentQues['quatqu_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time());
+                }
+            }
 
             /* evaluation form for Manual quiz */
             $frm = $this->getForm($question['qulinqu_marks']);
@@ -218,7 +224,7 @@ class QuizReviewController extends DashboardController
             $_SESSION['current_ques_id'] = 0;
             FatUtility::dieJsonSuccess($msg);
         }
-        
+
         if (!$quiz->setupEvaluation($submit)) {
             FatUtility::dieJsonError($quiz->getError());
         }
