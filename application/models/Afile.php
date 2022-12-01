@@ -57,6 +57,7 @@ class Afile extends FatModel
     const TYPE_COURSE_REQUEST_IMAGE = 62;
     const TYPE_COURSE_REQUEST_PREVIEW_VIDEO = 63;
     const TYPE_QUIZ_ANSWER_TYPE_AUDIO = 64;
+    const TYPE_QUESTION_AUDIO = 65;
 
     /* Image Sizes */
     const SIZE_SMALL = 'SMALL';
@@ -587,8 +588,9 @@ class Afile extends FatModel
                 return 'video/mp4';
             case 'webm':
             case 'wav':
-            case 'ogg':
                 return 'video/webm';
+            case 'ogg':
+                return 'audio/ogg';
             default:
                 return '';
         }
@@ -653,6 +655,7 @@ class Afile extends FatModel
             case static::TYPE_COURSE_PREVIEW_VIDEO:
                 return ['mp4'];
             case static::TYPE_QUIZ_ANSWER_TYPE_AUDIO:
+            case static::TYPE_QUESTION_AUDIO:
                 return ['ogg', 'wav'];
             default:
                 return [];
@@ -875,6 +878,7 @@ class Afile extends FatModel
                 static::SIZE_LARGE => [2070, 1680]
             ],
             static::TYPE_QUIZ_ANSWER_TYPE_AUDIO => [],
+            static::TYPE_QUESTION_AUDIO => [],
         ];
         if ($size === null) {
             return $arr[$this->type];

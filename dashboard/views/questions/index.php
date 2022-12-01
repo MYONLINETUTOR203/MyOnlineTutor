@@ -141,4 +141,5 @@ $btnReset->addFieldTagAttribute('onclick', 'clearSearch()');
         var TYPE_SINGLE = <?php echo Question::TYPE_SINGLE; ?>;
         var TYPE_MULTIPLE = <?php echo Question::TYPE_MULTIPLE; ?>;
         var TYPE_TEXT = <?php echo Question::TYPE_TEXT; ?>;
+        var TYPE_AUDIO = <?php echo Question::TYPE_AUDIO; ?>;
     </script>

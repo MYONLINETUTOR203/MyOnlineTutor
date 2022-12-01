@@ -28,7 +28,9 @@ class QuestionsController extends DashboardController
     {
         $frm = QuestionSearch::getSearchForm($this->siteLangId);
         $this->set('frm', $frm);
-        $this->_template->addJs('questions/page-js/common.js');
+        $this->_template->addJs([
+            'questions/page-js/common.js', 'js/RecordRTC.js', 'js/RecordDetectRTC.js', 'js/record.js'
+        ]);
         $this->_template->render();
     }
 
@@ -125,6 +127,10 @@ class QuestionsController extends DashboardController
             $options = $quesObj->getOptions();
             $type = $question['ques_type'];
             $answers = json_decode($question['ques_answer']);
+
+            if ((new Afile(Afile::TYPE_QUESTION_AUDIO))->getFile($id)) {
+                $this->set('file', MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $id], CONF_WEBROOT_FRONTEND) . '?time=' . time());
+            }
         }
         $frm = $this->getForm($quizType);
         $frm->fill($question);
@@ -155,13 +161,36 @@ class QuestionsController extends DashboardController
             $post['answers'] = FatApp::getPostedData('ques_answer');
             $post['queopt_title'] = FatApp::getPostedData('queopt_title');
         }
-        
+
         $question = new Question($post['ques_id'], $this->siteUserId);
         unset($post['ques_id']);
+        $post = $post + $_FILES;
         if (!$question->setup($post)) {
             FatUtility::dieJsonError($question->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_SETUP_SUCCESSFUL'));
+    }
+
+    /**
+     * Remove attached recording
+     *
+     * @return json
+     */
+    public function removeRecording()
+    {
+        $quesId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
+        $question = new Question($quesId);
+        if (!$question = $question->getById()) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
+        }
+        if ($this->siteUserId != $question['ques_user_id']) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
+        }
+        $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
+        if (!$file->removeFile($quesId, true)) {
+            FatUtility::dieJsonError($file->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORDING_REMOVED_SUCCESSFULLY'));
     }
 
     /**
@@ -248,6 +277,7 @@ class QuestionsController extends DashboardController
         $types = Question::getTypes();
         if ($quizType == Quiz::TYPE_AUTO_GRADED) {
             unset($types[Question::TYPE_TEXT]);
+            unset($types[Question::TYPE_AUDIO]);
         } elseif ($quizType == Quiz::TYPE_NON_GRADED) {
             unset($types[Question::TYPE_MULTIPLE]);
             unset($types[Question::TYPE_SINGLE]);
@@ -278,17 +308,31 @@ class QuestionsController extends DashboardController
         $notReqCountFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_SINGLE, 'eq', 'ques_options_count', $reqCountFld
+            Question::TYPE_SINGLE,
+            'eq',
+            'ques_options_count',
+            $reqCountFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_MULTIPLE, 'eq', 'ques_options_count', $reqCountFld
+            Question::TYPE_MULTIPLE,
+            'eq',
+            'ques_options_count',
+            $reqCountFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_TEXT, 'eq', 'ques_options_count', $notReqCountFld
+            Question::TYPE_TEXT,
+            'eq',
+            'ques_options_count',
+            $notReqCountFld
         );
         $typeFld->requirements()->addOnChangerequirementUpdate(
-            Question::TYPE_AUDIO, 'eq', 'ques_options_count', $notReqCountFld
+            Question::TYPE_AUDIO,
+            'eq',
+            'ques_options_count',
+            $notReqCountFld
         );
+
+        $frm->addHiddenField(Label::getLabel('LBL_ANSWER'), 'audio_filename');
 
         $frm->addButton(Label::getLabel('LBL_ADD_OPTION'), 'add_options', Label::getLabel('LBL_ADD_OPTION'));
         $frm->addButton(Label::getLabel('LBL_BACK'), 'btn_back', Label::getLabel('LBL_BACK'));

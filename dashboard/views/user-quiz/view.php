@@ -61,7 +61,7 @@ $fld = $frm->getField('ques_answer');
 
                     <div class="recordrtc">
                         <div class="audioRecorderJs -float-left mx-2">
-                            <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1></audio>
+                            <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1 autoplay=false></audio>
                         </div>
                         <div class="audioRecordingJs -float-left mx-2" style="display:none;">
                         </div>

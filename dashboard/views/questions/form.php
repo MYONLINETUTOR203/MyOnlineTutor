@@ -20,6 +20,8 @@ $optionCount->setFieldTagAttribute('oninput', "this.value = !!this.value && Math
 $addOptionsFld = $frm->getField('add_options');
 $addOptionsFld->setFieldTagAttribute('onclick', 'addOptions();');
 $submitButton = $frm->getField('submit');
+$quesIdFld = $frm->getField('ques_id');
+
 ?>
 <div class="facebox-panel">
     <div class="facebox-panel__head">
@@ -27,7 +29,7 @@ $submitButton = $frm->getField('submit');
     </div>
     <div class="facebox-panel__body">
         <?php echo $frm->getFormTag(); ?>
-        <?php echo $frm->getFieldHTML('ques_id'); ?>
+        <?php echo $quesIdFld->getHTML(); ?>
         <div class="row">
             <div class="col-md-8">
                 <div class="field-set">
@@ -153,6 +155,20 @@ $submitButton = $frm->getField('submit');
                             <?php echo $hintFld->getHtml(); ?>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row recorderJs" style="display:<?php echo isset($file) ? 'block' : 'none' ?>;">
+            <div class="col-md-12">
+                <div class="recordrtc">
+                    <div class="audioRecorderJs -float-left mx-2">
+                        <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1 <?php echo (!isset($file)) ? "autoplay=0" : ''; ?>></audio>
+                    </div>
+                    <div class="audioRecordingJs -float-left mx-2" style="display:none;">
+                    </div>
+                    <input type="button" name="recorder" class="btnRecord" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                    <input type="button" name="remove" onclick="removeRecording('<?php echo $quesIdFld->value; ?>');" value="<?php echo Label::getLabel('LBL_REMOVE_RECORDING'); ?>">
+                    <?php echo $frm->getFieldHtml('audio_filename'); ?>
                 </div>
             </div>
         </div>

@@ -196,6 +196,7 @@ class Question extends MyAppModel
         }
         $db = FatApp::getDb();
         $db->startTransaction();
+
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
         if (in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
@@ -214,6 +215,15 @@ class Question extends MyAppModel
         if (!$this->save()) {
             $this->error = $this->getError();
             return false;
+        }
+        /* setup audio file */
+        if ($data['ques_type'] == Question::TYPE_AUDIO && !empty($data['audio_file']['name'])) {
+            $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
+            if (!$file->saveFile($data['audio_file'], $this->getMainTableRecordId(), true)) {
+                $this->error = $file->getError();
+                $db->rollbackTransaction();
+                return false;
+            }
         }
         if (!$this->setupOptions($data, $this->getMainTableRecordId())) {
             $db->rollbackTransaction();

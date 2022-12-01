@@ -10,11 +10,16 @@ $(function () {
     showOptions = function (type) {
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
             $('.options-container').show();
-            $('.more-container-js').empty();    
+            $('.more-container-js').empty();
+            $('.recorderJs').hide().find('input[name="audio_filename"]').val('');
         } else {
             $('.options-container').hide();
             $('.more-container-js').empty();
-        }   
+            if (type == TYPE_AUDIO) {
+                $('.recorderJs').show();
+                getPlayer();
+            }
+        }
     };
     addOptions = function () {
         var type = document.frmQuestion.ques_type.value;
@@ -34,15 +39,18 @@ $(function () {
         if (!$(frm).validate()) {
             return;
         }
-        var data = fcom.frmData(frm);
-        fcom.updateWithAjax(fcom.makeUrl('Questions', 'setup'), data, function (res) {
+        var data = new FormData(frm);
+        if ($('.recordrtc').length > 0) {
+            data = appendRecordedFile(data);
+        }
+        fcom.ajaxMultipart(fcom.makeUrl('Questions', 'setup'), data, function (res) {
             if (quizReq > 0) {
                 $('.addQuesJs').click();
             } else {
                 search(document.frmQuesSearch);
                 $.facebox.close();
             }
-        });
+        }, { fOutMode: 'json' });
     };
     getSubcategories = function (id, target, subCategoryId = 0) {
         id = (id == '') ? 0 : id;
@@ -53,5 +61,21 @@ $(function () {
                 $(target).val(subCategoryId);
             }
         }, { process: false });
+    };
+    removeRecording = function (id) {
+        if (id < 1) {
+            var audio = $('.audioRecorderJs audio');
+            $(audio).attr('src', '');
+            audio[0].pause();
+            audio[0].load();
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Questions', 'removeRecording'), { id }, function (res) {
+            $('input[name="remove"]').hide();
+            var audio = $('.audioRecorderJs audio');
+            $(audio).attr('src', '');
+            audio[0].pause();
+            audio[0].load();
+        });
     };
 });
