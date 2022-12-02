@@ -23,7 +23,7 @@ var button;
 })();
 function getPlayer() {
     recordingPlayer = document.querySelector('.audioRecorderJs audio');
-    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen";
+    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen autoplay";
     recordedPlayer = document.querySelector('.audioRecordingJs');
 }
 function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
@@ -43,19 +43,19 @@ function captureAudio(config) {
 }
 
 $(document).ready(function () {
-    $('body').on('click', '.btnRecord', function () {
+    $('body').on('click', '.btnRecordJs', function () {
 
         var button = this;
-
-        if (button.value === langLbl.stopRecording) {
-            button.disabled = true;
+        if ($(button).data('status') === langLbl.stopRecording) {
+            $(button).find('.btnStartJs').show();
+            $(button).find('.btnStopJs').hide();
             button.disableStateWaiting = true;
             setTimeout(function () {
                 button.disabled = false;
                 button.disableStateWaiting = false;
             }, 2 * 1000);
 
-            button.value = langLbl.startRecording;
+            $(button).data('status', langLbl.startRecording);
 
             function stopStream() {
                 if (button.stream && button.stream.stop) {
@@ -90,7 +90,9 @@ $(document).ready(function () {
             return;
         }
 
-        button.disabled = true;
+        $(button).find('.btnStartJs').hide();
+        $(button).find('.btnStopJs').show();
+
 
         var commonConfig = {
             onMediaCaptured: function (stream) {
@@ -99,14 +101,14 @@ $(document).ready(function () {
                     button.mediaCapturedCallback();
                 }
 
-                button.value = langLbl.stopRecording;
+                $(button).data('status', langLbl.stopRecording);
                 button.disabled = false;
                 $(recordingPlayer).parent().css('display', 'block');
                 $(recordedPlayer).find('audio').remove();
                 $(recordedPlayer).css('display', 'none');
             },
             onMediaStopped: function () {
-                button.value = langLbl.startRecording;
+                $(button).data('status', langLbl.startRecording);
 
                 if (!button.disableStateWaiting) {
                     button.disabled = false;
@@ -147,10 +149,9 @@ $(document).ready(function () {
                 audio.controls = true;
                 recordingPlayer.parentNode.style.display = 'none';
                 $(recordedPlayer).append(audio);
-                $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen");
+                $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen autoplay");
                 $(recordedPlayer).css('display', 'block');
                 $('input[name="audio_filename"]').val(1);
-                /* if (audio.paused) audio.play();*/
 
                 audio.onended = function () {
                     audio.pause();
@@ -167,6 +168,7 @@ $(document).ready(function () {
 
 
 function captureAudio(config) {
+
     captureUserMedia({ audio: true }, function (audioStream) {
         recordingPlayer.srcObject = audioStream;
 
@@ -203,4 +205,8 @@ function appendRecordedFile(formData) {
     var file = new File([blob], fileName);
     formData.append(fileType + '_file', file);
     return formData;
+}
+
+function removeRecordedFile() {
+    recordedStream = '';
 }

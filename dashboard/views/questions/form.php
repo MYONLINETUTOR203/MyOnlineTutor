@@ -160,14 +160,35 @@ $quesIdFld = $frm->getField('ques_id');
         </div>
         <div class="row recorderJs" style="display:<?php echo isset($file) ? 'block' : 'none' ?>;">
             <div class="col-md-12">
-                <div class="recordrtc">
+                <?php
+                $class = $src = '';
+                $autoplay = 'autoplay=0';
+                if (isset($file)) {
+                    $class = 'hasFile';
+                    $src = 'src="' . $file . '"';
+                    $autoplay = '';
+                }
+                ?>
+                <div class="recordrtc <?php echo $class; ?>">
                     <div class="audioRecorderJs -float-left mx-2">
-                        <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1 <?php echo (!isset($file)) ? "autoplay=0" : ''; ?>></audio>
+                        <audio style="" <?php echo $src; ?> controls playsinline noplaybackrate volume=1 <?php echo $autoplay; ?>></audio>
                     </div>
                     <div class="audioRecordingJs -float-left mx-2" style="display:none;">
                     </div>
-                    <input type="button" name="recorder" class="btnRecord" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
-                    <input type="button" name="remove" onclick="removeRecording('<?php echo $quesIdFld->value; ?>');" value="<?php echo Label::getLabel('LBL_REMOVE_RECORDING'); ?>">
+
+                    <div class="btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                        <svg class="icon icon--issue icon--small btnStartJs">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#play"></use>
+                        </svg>
+                        <svg class="icon icon--issue icon--small btnStopJs" style="display:none;">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#download"></use>
+                        </svg>
+                    </div>
+                    <div class="btnRemoveJs" onclick="removeRecording('<?php echo $quesIdFld->value; ?>');">
+                        <svg class="icon icon--issue icon--small">
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#trash"></use>
+                        </svg>
+                    </div>
                     <?php echo $frm->getFieldHtml('audio_filename'); ?>
                 </div>
             </div>

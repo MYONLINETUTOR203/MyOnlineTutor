@@ -73,7 +73,9 @@ class QuizzesController extends DashboardController
             "quizId" => $id,
             "includeEditor" => true
         ]);
-        $this->_template->addJs('questions/page-js/common.js');
+        $this->_template->addJs([
+            'questions/page-js/common.js', 'js/RecordRTC.js', 'js/RecordDetectRTC.js', 'js/record.js'
+        ]);
         $this->_template->render();
     }
 
@@ -140,7 +142,7 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        
+
         $srch = new QuizQuestionSearch($this->siteLangId, $this->siteUserId, User::TEACHER);
         $srch->addCondition('quique_quiz_id', '=', $id);
         $srch->applyPrimaryConditions();
@@ -178,7 +180,7 @@ class QuizzesController extends DashboardController
         if (!FatApp::getDb()->fetch($srch->getResultSet())) {
             $offerCertificate = false;
         }
-        
+
         $frm = $this->getSettingForm($offerCertificate);
         $frm->fill(['quiz_id' => $id]);
 
@@ -212,7 +214,7 @@ class QuizzesController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        
+
         if (!$quiz->setupSettings($post, $this->siteLangId)) {
             FatUtility::dieJsonError($quiz->getError());
         }
@@ -296,7 +298,7 @@ class QuizzesController extends DashboardController
     {
         $frm = new Form('frmSetting');
         $durationFld = $frm->addTextBox(Label::getLabel('LBL_DURATION_(IN_MINS)'), 'quiz_duration', '');
-        $durationFld ->requirements()->setIntPositive();
+        $durationFld->requirements()->setIntPositive();
         $durationFld->requirements()->setRange(0, 9999);
         $attempsFtd = $frm->addRequiredField(Label::getLabel('LBL_NO_OF_ATTEMPTS_ALLOWED'), 'quiz_attempts', '');
         $attempsFtd->requirements()->setInt();

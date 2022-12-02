@@ -63,19 +63,33 @@ $(function () {
         }, { process: false });
     };
     removeRecording = function (id) {
-        if (id < 1) {
-            var audio = $('.audioRecorderJs audio');
-            $(audio).attr('src', '');
-            audio[0].pause();
-            audio[0].load();
+        var hasFile = $('.recordrtc').hasClass('hasFile');
+        var recorderDiv = $('.audioRecorderJs audio');
+        var recordingDiv = $('.audioRecordingJs audio');
+        if (!hasFile && recordingDiv.length < 1) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('Questions', 'removeRecording'), { id }, function (res) {
-            $('input[name="remove"]').hide();
-            var audio = $('.audioRecorderJs audio');
-            $(audio).attr('src', '');
-            audio[0].pause();
-            audio[0].load();
-        });
+        if (!confirm(langLbl.confirmRemove)) {
+            return;
+        }
+        if (hasFile) {
+            fcom.updateWithAjax(fcom.makeUrl('Questions', 'removeRecording'), { id }, function (res) {
+                $(recorderDiv).attr('src', '').parent().show();
+                recorderDiv[0].pause();
+                recorderDiv[0].load();
+                recorderDiv[0].controlsList = "noplaybackrate nodownload nofullscreen autoplay";
+                $('.recordrtc').removeClass('hasFile');
+                $(recordingDiv).parent().hide();
+                $(recordingDiv).remove();
+                removeRecordedFile()
+            });
+        } else {
+            $(recorderDiv).attr('src', '').parent().show();
+            recorderDiv[0].pause();
+            recorderDiv[0].load();
+            $(recordingDiv).parent().hide();
+            $(recordingDiv).remove();
+            removeRecordedFile()
+        }
     };
 });

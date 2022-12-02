@@ -384,7 +384,8 @@ class MyUtility extends FatUtility
             'confirmQuizComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_MARK_QUIZ_COMPLETE?'),
             'confirmQuizReviewComplete' => Label::getLabel('LBL_ARE_YOU_SURE_YOU_WANT_TO_SUBMIT_EVALUATION?'),
             'startRecording' => Label::getLabel('LBL_START_RECORDING'),
-            'stopRecording' => Label::getLabel('LBL_STOP_RECORDING')
+            'stopRecording' => Label::getLabel('LBL_STOP_RECORDING'),
+            'removeRecording' => Label::getLabel('LBL_RECORDING_REMOVED_SUCCESSFULLY')
         ];
         foreach ($siteLanguages as $val) {
             $jsVariables['language' . $val['language_id']] = $val['language_direction'];

@@ -65,7 +65,7 @@ $fld = $frm->getField('ques_answer');
                         </div>
                         <div class="audioRecordingJs -float-left mx-2" style="display:none;">
                         </div>
-                        <input type="button" name="recorder" class="btnRecord" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                        <input type="button" name="recorder" class="btnRecordJs" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
                         <?php echo $frm->getFieldHtml('audio_filename'); ?>
                     </div>
                 <?php } ?>
