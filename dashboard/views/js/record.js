@@ -209,4 +209,12 @@ function appendRecordedFile(formData) {
 
 function removeRecordedFile() {
     recordedStream = '';
+    $(recordingPlayer).attr('src', '').parent().show();
+    recordingPlayer.pause();
+    recordingPlayer.load();
+    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen autoplay=false";
+    $('.recordrtc').removeClass('hasFile');
+    var recordedAudio = $(recordedPlayer).find('audio');
+    $(recordedAudio).parent().hide();
+    $(recordedAudio).remove();
 }

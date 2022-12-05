@@ -13,6 +13,7 @@ if (count($attemptedQues) == $question['qulinqu_order']) {
     $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic');
 }
 $fld = $frm->getField('ques_answer');
+$aqIdFld = $frm->getField('quatqu_id');
 ?>
 <div class="flex-layout__large">
     <?php echo $frm->getFormTag(); ?>
@@ -23,6 +24,11 @@ $fld = $frm->getField('ques_answer');
                 <?php echo str_replace('{number}', $question['qulinqu_order'], Label::getLabel('LBL_Q{number}.')) . ' ' . $question['qulinqu_title']; ?>
             </h4>
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
+            <?php if (isset($quesFile)) { ?>
+                <p>
+                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate nodownload volume=1 autoplay=false></audio>
+                </p>
+            <?php } ?>
         </div>
         <div class="box-view__body">
             <div class="option-list">
@@ -58,14 +64,33 @@ $fld = $frm->getField('ques_answer');
                 <?php } elseif ($question['qulinqu_type'] == Question::TYPE_TEXT) { ?>
                     <?php echo $fld->getHtml(); ?>
                 <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
-
-                    <div class="recordrtc">
+                    <?php
+                    $class = $src = '';
+                    if (isset($file)) {
+                        $class = 'hasFile';
+                        $src = 'src="' . $file . '"';
+                    }
+                    ?>
+                    <div class="recordrtc <?php echo $class; ?>">
                         <div class="audioRecorderJs -float-left mx-2">
-                            <audio <?php echo isset($file) ? 'src="' . $file . '"' : '' ?> controls playsinline noplaybackrate volume=1 autoplay=false></audio>
+                            <audio <?php echo $src; ?> controls playsinline noplaybackrate volume=1 autoplay=false></audio>
                         </div>
                         <div class="audioRecordingJs -float-left mx-2" style="display:none;">
                         </div>
-                        <input type="button" name="recorder" class="btnRecordJs" value="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+
+                        <div class="btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                            <svg class="icon icon--issue icon--small btnStartJs">
+                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#play"></use>
+                            </svg>
+                            <svg class="icon icon--issue icon--small btnStopJs" style="display:none;">
+                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#download"></use>
+                            </svg>
+                        </div>
+                        <div class="btnRemoveJs" onclick="removeRecording('<?php echo $data['quizat_id'] ?>', '<?php echo $aqIdFld->value; ?>');">
+                            <svg class="icon icon--issue icon--small">
+                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#trash"></use>
+                            </svg>
+                        </div>
                         <?php echo $frm->getFieldHtml('audio_filename'); ?>
                     </div>
                 <?php } ?>
@@ -102,7 +127,7 @@ $fld = $frm->getField('ques_answer');
                     echo $frm->getFieldHtml('ques_type');
                     echo $frm->getFieldHtml('ques_id');
                     echo $frm->getFieldHtml('ques_attempt_id');
-                    echo $frm->getFieldHtml('quatqu_id');
+                    echo $aqIdFld->getHtml();
                     echo $btnSubmit->getHtml();
                     ?>
                 </div>

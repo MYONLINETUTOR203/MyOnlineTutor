@@ -64,9 +64,7 @@ $(function () {
     };
     removeRecording = function (id) {
         var hasFile = $('.recordrtc').hasClass('hasFile');
-        var recorderDiv = $('.audioRecorderJs audio');
-        var recordingDiv = $('.audioRecordingJs audio');
-        if (!hasFile && recordingDiv.length < 1) {
+        if (!hasFile && $('.audioRecordingJs audio').length < 1) {
             return;
         }
         if (!confirm(langLbl.confirmRemove)) {
@@ -74,21 +72,9 @@ $(function () {
         }
         if (hasFile) {
             fcom.updateWithAjax(fcom.makeUrl('Questions', 'removeRecording'), { id }, function (res) {
-                $(recorderDiv).attr('src', '').parent().show();
-                recorderDiv[0].pause();
-                recorderDiv[0].load();
-                recorderDiv[0].controlsList = "noplaybackrate nodownload nofullscreen autoplay";
-                $('.recordrtc').removeClass('hasFile');
-                $(recordingDiv).parent().hide();
-                $(recordingDiv).remove();
                 removeRecordedFile()
             });
         } else {
-            $(recorderDiv).attr('src', '').parent().show();
-            recorderDiv[0].pause();
-            recorderDiv[0].load();
-            $(recordingDiv).parent().hide();
-            $(recordingDiv).remove();
             removeRecordedFile()
         }
     };

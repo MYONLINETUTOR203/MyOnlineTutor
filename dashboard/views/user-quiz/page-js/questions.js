@@ -57,4 +57,20 @@ $(function () {
             window.location = fcom.makeUrl('UserQuiz', 'completed', [res.id]);
         });
     };
+    removeRecording = function (id, qaId) {
+        var hasFile = $('.recordrtc').hasClass('hasFile');
+        if (!hasFile && $('.audioRecordingJs audio').length < 1) {
+            return;
+        }
+        if (!confirm(langLbl.confirmRemove)) {
+            return;
+        }
+        if (hasFile) {
+            fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'removeRecording'), { id, qaId }, function (res) {
+                removeRecordedFile();
+            });
+        } else {
+            removeRecordedFile();
+        }
+    };
 });
