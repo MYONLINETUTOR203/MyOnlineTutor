@@ -530,7 +530,8 @@ class CoursesController extends DashboardController
         }
         /* check certificate available or not */
         $srch = CertificateTemplate::getSearchObject($this->siteLangId);
-        $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
+        $cnd = $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
+        $cnd->attachCondition('certpl_code', '=', 'course_evaluation_certificate');
         $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
         $offerCetificate = false;
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
