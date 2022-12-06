@@ -86,7 +86,7 @@ class QuizLinked extends MyAppModel
         if (!$this->validateRecordId($recordId, $recordType)) {
             return false;
         }
-        
+
         $srch = new SearchBase(QuizLinked::DB_TBL);
         $srch->addCondition('quilin_record_id', '=', $recordId);
         $srch->addCondition('quilin_record_type', '=', $recordType);
@@ -97,6 +97,15 @@ class QuizLinked extends MyAppModel
         $srch->setPageSize(1);
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
             $this->error = Label::getLabel('LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST');
+            return false;
+        }
+
+        $db = FatApp::getDb();
+        $db->startTransaction();
+
+        /* added marks update because there may be marks changes at question level but not updated in quiz */
+        if (!(new Quiz(0, $this->userId))->updateMarks($quizzes)) {
+            $db->rollbackTransaction();
             return false;
         }
 
@@ -114,8 +123,6 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        $db = FatApp::getDb();
-        $db->startTransaction();
         $quizzesData = $quizLinkedIds = [];
         foreach ($quizList as $quiz) {
             $quizLink = new TableRecord(static::DB_TBL);
