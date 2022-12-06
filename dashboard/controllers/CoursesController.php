@@ -595,6 +595,25 @@ class CoursesController extends DashboardController
     }
 
     /**
+     * function to delete course
+     *
+     * @return json
+     */
+    public function removeQuiz()
+    {
+        $courseId = FatApp::getPostedData('courseId', FatUtility::VAR_INT, 0);
+        $quizLinkId = FatApp::getPostedData('quizLinkId', FatUtility::VAR_INT, 0);
+        if ($courseId < 1 || $quizLinkId < 1) {
+            FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
+        }
+        $course = new Course($courseId, $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        if (!$course->removeQuiz($quizLinkId)) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_REMOVED_SUCCESSFULLY'));
+    }
+
+    /**
      * Function to get eligibility status for all course steps.
      *
      * @param int $courseId

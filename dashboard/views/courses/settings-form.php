@@ -89,11 +89,10 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                                     </div>
                                 </div>
                             </div>
-                            <div class="row quizSectionJs" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
+                            <div class="row quizSectionJs <?php echo (!empty($quiz)) ? 'hasQuiz' : ''; ?>" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
                                 <div class="col-md-12">
                                     <div class="field-set">
                                         <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
-
                                             <span class="attachment margin-bottom-8">
                                                 <span class="attachment-item margin-bottom-3">
                                                     <span class="attachment-item__media">
@@ -106,12 +105,9 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                                                             <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
                                                         </span>
                                                     </div>
-                                                    
-                                                    <a href="javascript:void(0);" class="attachment-item__close margin-left-3" onclick="removeAttachedQuiz();"></a>
+                                                    <a href="javascript:void(0);" class="attachment-item__close margin-left-3" onclick="removeAttachedQuiz('<?php echo $quiz['quilin_id'] ?? 0; ?>');"></a>
                                                 </span>
-                                           </span>
-                                            
-                                            
+                                            </span>
                                         </div>
                                         <div class="attachQuizLinkJs" style="display:<?php echo !empty($quiz) ? 'none' : 'block' ?>;">
                                             <a class="d-inline-flex align-items-center margin-bottom-8" href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
@@ -123,9 +119,9 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                                             </a>
                                         </div>
                                     </div>
-                                           
-                                      
-                                   
+
+
+
                                 </div>
                             </div>
                             <div class="row">

@@ -295,13 +295,15 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        $this->sendQuizRemovedNotification($data);
+        if (in_array($data['quilin_record_type'], [AppConstant::GCLASS, AppConstant::LESSON])) {
+            $this->sendQuizRemovedNotification($data);
 
-        /* delete user quiz */
-        if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
-            $db->rollbackTransaction();
-            $this->error = $db->getError();
-            return false;
+            /* delete user quiz */
+            if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
+                $db->rollbackTransaction();
+                $this->error = $db->getError();
+                return false;
+            }
         }
 
         $db->commitTransaction();

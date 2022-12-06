@@ -597,6 +597,37 @@ class Course extends MyAppModel
     }
 
     /**
+     * Remove attached quiz
+     *
+     * @param int $quilinId
+     * @return bool
+     */
+    public function removeQuiz(int $quilinId)
+    {
+        if (!$this->canEditCourse()) {
+            return false;
+        }
+        if ($this->getMainTableRecordId() != QuizLinked::getAttributesById($quilinId, 'quilin_record_id')) {
+            $this->error = Label::getLabel('LBL_INVALID_QUIZ');
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $quiz = new QuizLinked($quilinId, $this->userId, $this->userType, $this->langId);
+        if (!$quiz->delete()) {
+            $this->error = $quiz->getError();
+            return false;
+        }
+        $this->setFldValue('course_quilin_id', 0);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
      * Function to remove course
      *
      * @return bool

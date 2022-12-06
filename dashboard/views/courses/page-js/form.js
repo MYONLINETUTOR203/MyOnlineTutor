@@ -406,10 +406,20 @@ $(function () {
             $('.quizSectionJs').hide();
         }
     };
-    removeAttachedQuiz = function () {
-        $('.attachedQuizJs').hide();
-        $('input[name="course_quilin_id"]').val('');
-        $('.attachQuizLinkJs').show();
+    removeAttachedQuiz = function (quizLinkId) {
+        if ($('.quizSectionJs').hasClass('hasQuiz')) {
+            fcom.updateWithAjax(fcom.makeUrl('Courses', 'removeQuiz'), { courseId, quizLinkId }, function (res) {
+                $('.attachedQuizJs').hide();
+                $('input[name="course_quilin_id"]').val('');
+                $('.attachQuizLinkJs').show();
+                $('.quizSectionJs').removeClass('hasQuiz');
+                getCourseEligibility();
+            });
+        } else {
+            $('.attachedQuizJs').hide();
+            $('input[name="course_quilin_id"]').val('');
+            $('.attachQuizLinkJs').show();
+        }
     };
 });
 $(document).ready(function(){
