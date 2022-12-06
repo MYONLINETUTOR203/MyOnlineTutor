@@ -327,9 +327,6 @@ class OrderCourseSearch extends YocoachSearch
             if ($certificate['quizat_status'] != QuizAttempt::STATUS_COMPLETED) {
                 return false;
             }
-            if ($certificate['quilin_certificate'] == AppConstant::NO) {
-                return false;
-            }
             if ($certificate['quizat_evaluation'] != QuizAttempt::EVALUATION_PASSED) {
                 return false;
             }
