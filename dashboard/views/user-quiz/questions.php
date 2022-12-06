@@ -63,7 +63,7 @@
                 window.location.reload();
             },
             notify: function() {
-                $.appalert("<?php echo Label::getLabel('LBL_FEW_SECONDS_LEFT._PLEASE_KEEP_YOUR_ANSWERS_SAVED') ?>", 'danger');
+                fcom.error("<?php echo Label::getLabel('LBL_FEW_SECONDS_LEFT._PLEASE_KEEP_YOUR_ANSWERS_SAVED') ?>");
             }
         });
     });
