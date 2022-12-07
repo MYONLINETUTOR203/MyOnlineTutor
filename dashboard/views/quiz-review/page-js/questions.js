@@ -11,9 +11,11 @@ $(function () {
         });
     };
     next = function (id) {
+        $('.btnNextJs').attr('disabled', 'disabled');
         getQuestion(id, 1);
     };
     previous = function (id) {
+        $('.btnPrevJs').attr('disabled', 'disabled');
         getQuestion(id, 0);
     };
     getByQuesId = function (id, quesId) {
