@@ -393,10 +393,10 @@ $(function () {
     getCertificates = function () {
         if ($("input[name='course_certificate']:checked").val() == 1) {
             $('.certTypeJs').show();
-            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": true }');
+            $("select[name='course_certificate_type'], input[name='course_quilin_id']").attr('data-fatreq', '{ "required": true }');
         } else {
             $('.certTypeJs, .quizSectionJs').hide();
-            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": false }').val('');
+            $("select[name='course_certificate_type'], input[name='course_quilin_id']").attr('data-fatreq', '{ "required": false }').val('');
         }
     }
     showQuizSection = function (val) {
