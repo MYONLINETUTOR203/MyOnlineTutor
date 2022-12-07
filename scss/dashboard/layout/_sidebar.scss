@@ -68,7 +68,7 @@ $sidebar: "sidebar";
 
     &__head{
         @media(max-width:theme('breakpoints.xl','value')){
-            display: flex;align-items: center; justify-content: space-between; position: relative;
+            display: flex;align-items: center; justify-content: space-between; position: relative; padding:theme('padding.4');
         }
     }
 
@@ -101,6 +101,9 @@ $logo: "logo";
     @media(max-width:theme('breakpoints.xl','value')){
         & {padding:0 theme('padding.6'); }
     }
+    @media(max-width:theme('breakpoints.sm','value')){
+        &{padding: 0;}
+    }
     @media(max-width:theme('breakpoints.xl','value')){
         & {
             & img{width: 100%;}
@@ -112,6 +115,9 @@ $profile: "profile";
 
 .#{$profile}{
 
+    @media(max-width:theme('breakpoints.xl','value')){
+        &{ padding: 0;}
+    }
     @media(max-width:theme('breakpoints.md','value')){
         &{position: static;}
     }
@@ -231,5 +237,12 @@ $menu-group: "menu-group";
     hr{
         margin-top: 1rem;
         margin-bottom: 1rem;
+    }
+}
+
+
+.lessons.view{
+    @media(max-width:theme('breakpoints.sm','value')){
+        & .logo{margin: 0 auto;}
     }
 }

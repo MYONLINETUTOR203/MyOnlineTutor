@@ -250,11 +250,19 @@ $session-resource: "session-resource";
 $sesson-window: "sesson-window";
 
 .#{&sesson-window} {
-    position: absolute;
-    #{theme('direction.left','value')}: 0;
-    #{theme('direction.right','value')}: 0;
-    top: 0;
-    bottom: 0;
+
+    @media (min-width:theme('breakpoints.sm','value')) {
+        position: absolute;
+        #{theme('direction.left','value')}: 0;
+        #{theme('direction.right','value')}: 0;
+        top: 0;
+        bottom: 0;
+    }
+    @media (max-width:theme('breakpoints.sm','value')) {
+        &{height: 100%;}
+    }
+
+   
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
@@ -296,13 +304,19 @@ $sesson-window: "sesson-window";
         }
     }
 
-    .session-window__frame{
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background-color: #fff;
+    @media (min-width:theme('breakpoints.sm','value')) {
+        .session-window__frame{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #fff;
+        }
+    }
+
+    @media (max-width:theme('breakpoints.sm','value')) {
+        .session-window__frame{height: 100%;}
     }
 
     iframe{
@@ -372,6 +386,11 @@ $session__body: "session__body";
             height: calc(100% - 150px);
         }
     }
+
+    @media (max-width:theme('breakpoints.sm','value')) {
+        &{height: 100vh;}
+    }
+
 }
 
 $sidebar--flashcard: "sidebar--flashcard";
