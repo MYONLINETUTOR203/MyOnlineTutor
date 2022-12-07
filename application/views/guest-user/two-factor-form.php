@@ -41,7 +41,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
     <div class="auth-screen">
         <hgroup>
             <h4 class="-border-title margin-bottom-2"><?php echo Label::getLabel('LBL_Verification_Code'); ?></h4>
-            <?php echo Label::getLabel('LBL_ENTER_CODE_SENT_ON_YOUR_MAIL_TO_LOGIN_IN'); ?>
+            <?php echo Label::getLabel('LBL_ENTER_CODE_SENT_ON_YOUR_MAIL_TO_LOGIN'); ?>
         </hgroup>
 
         <?php
