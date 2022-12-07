@@ -41,7 +41,7 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
 
                 <?php echo $frm->getFormTag(); ?>
                 <div class="row">
-                    <div class="col-lg-4 col-sm-12">
+                    <div class="col-lg-<?php echo ($recType->value != AppConstant::COURSE) ? '4' : '8' ?> col-sm-12">
                         <div class="field-set">
                             <div class="caption-wraper">
                                 <label class="field_label">
@@ -58,24 +58,25 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-4 col-sm-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label">
-                                    <?php echo $type->getCaption(); ?>
-                                    <?php if ($type->requirement->isRequired()) { ?>
-                                        <span class="spn_must_field">*</span>
-                                    <?php } ?>
-                                </label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $type->getHtml(); ?>
+                    <?php if ($recType->value != AppConstant::COURSE) { ?>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php echo $type->getCaption(); ?>
+                                        <?php if ($type->requirement->isRequired()) { ?>
+                                            <span class="spn_must_field">*</span>
+                                        <?php } ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $type->getHtml(); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php } ?>
                     <div class="col-lg-4 col-sm-4  form-buttons-group">
                         <div class="field-set">
                             <div class="caption-wraper"><label class="field_label"></label></div>
