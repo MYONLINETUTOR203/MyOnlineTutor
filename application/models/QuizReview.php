@@ -39,6 +39,7 @@ class QuizReview extends MyAppModel
         }
         if (!$this->validate()) {
             $this->error = $this->getError();
+            return false;
         }
         if (!$this->setQuestion()) {
             $this->error = $this->getError();
