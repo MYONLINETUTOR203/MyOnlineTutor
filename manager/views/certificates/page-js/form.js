@@ -27,7 +27,8 @@
         fcom.updateWithAjax(fcom.makeUrl('Certificates', 'setup'), data, function (t) {
             if (preview == 1) {
                 preview = 0;
-                window.open(fcom.makeUrl('Certificates', 'generate', [$('input[name="certpl_id"]').val()]), '_blank');
+                var time = (new Date()).getTime();
+                window.open(fcom.makeUrl('Certificates', 'generate', [$('input[name="certpl_id"]').val()]) + '?time=' + time, '_blank');
             }
         });
         return false;
