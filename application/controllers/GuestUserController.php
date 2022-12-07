@@ -175,8 +175,6 @@ class GuestUserController extends MyAppController
         if (empty($userId) && $_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $userId) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $post = FatApp::getPostedData();
-        $auth = new UserAuth();
         $user = User::getById($userId);
         if (!$user) {
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
@@ -188,7 +186,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
         }
         $frm = $this->getTwoFactorAuthForm();
-        $frm->fill(['user_id' => $user['user_id'], 'remember_me' => $post['remember_me']]);
+        $frm->fill(['user_id' => $user['user_id'], 'remember_me' => FatApp::getPostedData('remember_me', FatUtility::VAR_INT, 0)]);
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'guest-user/two-factor-form.php');
     }
