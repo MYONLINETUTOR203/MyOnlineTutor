@@ -97,7 +97,7 @@ class CertificatesController extends MyAppController
         if ($data['quizat_active'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }
-
+        $certificateDesc = Label::getLabel('LBL_QUIZ_CERTIFICATE_BOTTOM_TEXT');
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {
             $srch = new GroupClassSearch($this->siteLangId, 0, 0);
             $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
@@ -169,12 +169,14 @@ class CertificatesController extends MyAppController
                 'user_username as teacher_username'
             ]);
             $session = $session + $learner + $teacher;
+            $certificateDesc = Label::getLabel('LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT');
         }
 
         $this->sets([
             'id' => $attemptId,
             'data' => $data,
             'session' => $session,
+            'certificateDesc' => $certificateDesc,
         ]);
         $this->_template->render();
     }

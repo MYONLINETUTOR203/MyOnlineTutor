@@ -10,7 +10,7 @@
                     </object>
                 </div>
                 <div class="certificate-desc">
-                    <p class="font-small"><?php echo Label::getLabel('LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT'); ?></p>
+                    <p class="font-small"><?php echo $certificateDesc ?></p>
                 </div>
             </div>
             <div class="layout-flex__small">
