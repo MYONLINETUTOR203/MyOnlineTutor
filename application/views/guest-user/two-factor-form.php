@@ -55,11 +55,12 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
             echo $frm->getFieldHtml('digit_4');
             echo $frm->getFieldHtml('digit_5');
             echo $frm->getFieldHtml('digit_6');
-            echo $frm->getFieldHtml('user_id');
-            echo $frm->getFieldHtml('remember_me');
             ?>
         </div>
-
+        <?php
+        echo $frm->getFieldHtml('user_id');
+        echo $frm->getFieldHtml('remember_me');
+        ?>
 
         <div class="margin-bottom-4">
             <?php echo $frm->getFieldHtml('btn_submit'); ?>
@@ -97,35 +98,35 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                     return;
                 }
             });
-            $(this).on('keyup', function(e) {
-                var filledField = 0;
-                var parent = $($(this).parent());
-                if (e.keyCode === 8 || e.keyCode === 37) {
-                    var prev = parent.find('input#' + $(this).data('previous'));
-                    if (prev.length) {
-                        $(prev).select();
-                    }
-                } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
-                    var next = parent.find('input#' + $(this).data('next'));
-                    if (next.length) {
-                        $(next).select();
-                    } else {
-                        if (parent.data('autosubmit')) {
-                            parent.submit();
-                        }
+        });
+        $("body").on('keyup', '.digit-group input[type=text]', function (e) {
+            var filledField = 0;
+            var parent = $($(this).parent());
+            if (e.keyCode === 8 || e.keyCode === 37) {
+                var prev = parent.find('input#' + $(this).data('previous'));
+                if (prev.length) {
+                    $(prev).select();
+                }
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105) || e.keyCode === 39) {
+                var next = parent.find('input#' + $(this).data('next'));
+                if (next.length) {
+                    $(next).select();
+                } else {
+                    if (parent.data('autosubmit')) {
+                        parent.submit();
                     }
                 }
-                $('.digit-group').find('input[type="text"]').each(function() {
-                    if ($(this).val() != '') {
-                        filledField++;
-                    }
-                });
-                if (filledField == otpFieldNo) {
-                    $('#btn_submit').removeAttr('disabled').removeClass('btn--disabled');
-                } else {
-                    $('#btn_submit').attr('disabled', 'disabled').addClass('btn--disabled');
+            }
+            $('.digit-group').find('input[type="text"]').each(function() {
+                if ($(this).val() != '') {
+                    filledField++;
                 }
             });
+            if (filledField == otpFieldNo) {
+                $('#btn_submit').removeAttr('disabled').removeClass('btn--disabled');
+            } else {
+                $('#btn_submit').attr('disabled', 'disabled').addClass('btn--disabled');
+            }
         });
 
         timer(30);
