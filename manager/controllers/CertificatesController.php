@@ -137,11 +137,16 @@ class CertificatesController extends AdminBaseController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $certData = [];
-        if ($post['certpl_code'] == 'evaluation_certificate') {
-            $certData = json_decode(FatApp::getConfig('CONF_EVALUATION_CERTIFICATE_DEFAULT_CONTENT'), true);
-
-        } else {
-            $certData = json_decode(FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT'), true);
+        switch ($post['certpl_code']) {
+            case 'evaluation_certificate':
+                $certData = json_decode(FatApp::getConfig('CONF_EVALUATION_CERTIFICATE_DEFAULT_CONTENT'), true);
+                break;
+            case 'course_evaluation_certificate':
+                $certData = json_decode(FatApp::getConfig('CONF_COURSE_EVALUATION_CERTIFICATE_DEFAULT_CONTENT'), true);
+                break;
+            default:
+                $certData = json_decode(FatApp::getConfig('CONF_COURSE_CERTIFICATE_DEFAULT_CONTENT'), true);
+                break;
         }
         $certData['trainer'] = str_replace('{teacher-name}', '<b>{teacher-name}</b>', $certData['trainer']);
         $certData['certificate_number'] = str_replace('{certificate-number}', '<b>{certificate-number}</b>', $certData['certificate_number']);
