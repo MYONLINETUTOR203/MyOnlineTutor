@@ -136,16 +136,17 @@ class CertificatesController extends MyAppController
                 'testat.testat_reviewes',
                 'learner.user_first_name as learner_first_name',
                 'learner.user_last_name as learner_last_name',
+                'ordles_type'
             ]);
             $session = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($session['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $session['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            } else {
+                $session['ordles_tlang_name'] = TeachLanguage::getLangById($session['ordles_tlang_id'], $this->siteLangId);
+            }
             $title = Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson');
             $session['session_title'] = str_replace(
-                ['{teach-lang}', '{n}'],
-                [
-                    TeachLanguage::getLangById($session['ordles_tlang_id'], $this->siteLangId),
-                    $session['ordles_duration']
-                ],
-                $title
+                ['{teach-lang}', '{n}'], [$session['ordles_tlang_name'], $session['ordles_duration']], $title
             );
         }
 
