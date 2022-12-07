@@ -465,3 +465,4 @@ ALTER TABLE `tbl_two_factor_auths` ADD `usauth_id` INT NOT NULL AUTO_INCREMENT F
 ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_MANUAL';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';

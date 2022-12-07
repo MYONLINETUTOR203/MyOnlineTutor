@@ -87,19 +87,9 @@ class QuestionSearch extends YocoachSearch
         $categoryIds = array_unique($categoryIds);
         $categories = $this->getCategoryNames($this->langId, $categoryIds);
 
-        /* get binded questions status */
-        $srch = new SearchBase(Quiz::DB_TBL_QUIZ_QUESTIONS);
-        $srch->joinTable(Quiz::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id');
-        $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
-        $srch->addDirectCondition('quique_ques_id IN (' . implode(',', array_keys($rows)) . ')');
-        $srch->addMultipleFields(['quique_ques_id', 'quiz_id']);
-        $srch->doNotCalculateRecords();
-        $quizzes = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
-
         foreach ($rows as $key => $row) {
             $row['ques_cate_name'] = isset($categories[$row['ques_cate_id']]) ? $categories[$row['ques_cate_id']] : '';
             $row['ques_subcate_name'] = $categories[$row['ques_subcate_id']] ?? '';
-            $row['is_binded'] = array_key_exists($row['ques_id'], $quizzes) ? true : false;
             
             $rows[$key] = $row;
         }
