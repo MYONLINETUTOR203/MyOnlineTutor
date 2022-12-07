@@ -16,15 +16,7 @@
 <!-- ] -->
 </page>
 <!-- Custom Loader -->
-<div id="app-alert" class="alert-position alert-position--top-right">
-    <alert role="alert" class="alert">
-        <alert-icon class="alert__icon"></alert-icon>
-        <alert-message class="alert__message">
-            <p></p>
-        </alert-message>
-        <alert-close class="alert__close" onclick="$.appalert.close();"></alert-close>
-    </alert>
-</div>
+<div id="app-alert" class="alert-position alert-position--top-right fadeInDown animated"></div>
 <script>
     <?php if ($siteUserId > 0) { ?>
         setTimeout(getBadgeCount(), 1000);
