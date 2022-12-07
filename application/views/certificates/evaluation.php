@@ -29,14 +29,13 @@
                                 <p class="bold-600 color-black margin-bottom-1">
                                     <?php echo ucwords($session['learner_first_name'] . ' ' . $session['learner_last_name']) ?>
                                 </p>
-                                <span class="font-small"><?php //echo $order['country_name'] 
-                                                            ?></span>
+                                <span class="font-small"><?php echo $session['country_name'] ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="sidebox border-bottom padding-bottom-10">
-                    <div class="sidebox__head">
+                    <div class="sidebox__head border-top margin-top-5 padding-top-5">
                         <h5><?php echo Label::getLabel('LBL_QUIZ_DETAILS'); ?> </h5>
                     </div>
                     <div class="sidebox__body">
@@ -68,7 +67,10 @@
                                         ?>
                                     </a>
                                 </p>
-                                <div class="profile-meta d-flex align-items-center margin-top-5 border-top padding-top-5">
+                                <div class="course-tite__tutor border-top margin-top-5 padding-top-5">
+                                    <h5><?php echo Label::getLabel('LBL_TUTOR_DETAILS'); ?></h5>
+                                </div>
+                                <div class="profile-meta d-flex align-items-center padding-top-5">
                                     <div class="profile-meta__media margin-right-4">
                                         <span class="avtar avtar--small" data-title="<?php echo strtoupper($session['teacher_first_name'][0]); ?>">
                                             <img src="<?php echo MyUtility::makeUrl('Image', 'show', [Afile::TYPE_USER_PROFILE_IMAGE, $data['quilin_user_id'], 'SMALL'], CONF_WEBROOT_FRONTEND); ?>" alt="<?php echo ucwords($session['teacher_first_name'] . ' ' . $session['teacher_last_name']) ?>">
