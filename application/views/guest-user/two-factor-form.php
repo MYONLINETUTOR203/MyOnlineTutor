@@ -89,6 +89,14 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
         var otpFieldNo = $('.digit-group').find(':input[type=text]').length;
         $('.digit-group').find('input').each(function() {
             $(this).attr('maxlength', 1);
+            $(this).on('keypress', function(e) {
+                var regex = new RegExp("^[0-9]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+                if (!regex.test(key)) {
+                    e.preventDefault();
+                    return;
+                }
+            });
             $(this).on('keyup', function(e) {
                 var filledField = 0;
                 var parent = $($(this).parent());
@@ -117,14 +125,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                 } else {
                     $('#btn_submit').attr('disabled', 'disabled').addClass('btn--disabled');
                 }
-
             });
-            $(this).on('keydown', function(e) {
-                if ((e.keyCode >= 65 && e.keyCode <= 90)) {
-                    e.preventDefault();
-                    return;
-                }
-            })
         });
 
         timer(30);
