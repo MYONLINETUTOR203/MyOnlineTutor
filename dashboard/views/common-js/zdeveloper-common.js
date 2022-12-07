@@ -217,6 +217,26 @@ $(document).ready(function () {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'signinSetup', [], confFrontEndUrl), fcom.frmData(frm), function (res) {
+            if (res.twoFactorEnabled) {
+                twoFactorAuthForm(res.userId, res.rememberMe);
+                return;
+            } else {
+                window.location.reload();
+            }
+        });
+    };
+    twoFactorAuthForm = function (userId, rememberMe = 0) {
+        fcom.ajax(fcom.makeUrl('GuestUser', 'twoFactorAuthForm', [userId], confFrontEndUrl), { remember_me: rememberMe }, function (response) {
+            $.facebox(response);
+        });
+    };
+
+    setupTwoFactor = function (frm) {
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'setupTwoFactor', [], confFrontEndUrl), fcom.frmData(frm), function (response) {
+            $.facebox.close();
             window.location.reload();
         });
     };
