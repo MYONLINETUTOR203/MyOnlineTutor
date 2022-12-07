@@ -171,9 +171,9 @@ echo $this->includeTemplate('tutorials/head-section.php', [
                                 <?php } ?>
                             <?php } ?>
                             <?php if (!empty($quiz)) { ?>
-                                <div class="toggle-control control-group-js quizListJs">
+                                <div class="toggle-control control-group-js quizListJs" onclick="openQuiz('<?php echo $course['course_quilin_id'] ?>');">
                                     <div class="toggle-control__action control-trigger-js">
-                                        <h6 onclick="openQuiz('<?php echo $course['course_quilin_id'] ?>');" class="lectureName quizLectureJs">
+                                        <h6 class="lectureName quizLectureJs">
                                             <?php
                                             echo Label::getLabel('LBL_QUIZ') . ': ';
                                             echo $quiz['quilin_title'];

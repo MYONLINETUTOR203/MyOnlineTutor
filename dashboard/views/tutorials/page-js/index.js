@@ -49,7 +49,7 @@ $(function () {
             }
 
             if (res.next_lecture_id == 0 && $('.quizListJs').length > 0) {
-                $('.quizListJs .quizLectureJs').click();
+                $('.quizListJs').click();
                 return;
             }
 
