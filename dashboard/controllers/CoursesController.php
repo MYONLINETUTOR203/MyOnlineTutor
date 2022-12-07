@@ -559,11 +559,24 @@ class CoursesController extends DashboardController
     public function setupSettings()
     {
         $frm = $this->getSettingForm();
-        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_certificate_type'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
-        if ($post['course_certificate'] == AppConstant::YES && $post['course_certificate_type'] < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
+        if ($post['course_certificate'] == AppConstant::YES) {
+            if ($post['course_certificate_type'] < 1) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
+            } else {
+                $code = 'course_completion_certificate';
+                if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
+                    $code = 'course_evaluation_certificate';
+                }
+                $srch = CertificateTemplate::getSearchObject($this->siteLangId);
+                $srch->addCondition('certpl_code', '=', $code);
+                $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+                if (!FatApp::getDb()->fetch($srch->getResultSet())) {
+                    FatUtility::dieJsonError(Label::getLabel('LBL_CERTIFICATE_NOT_AVIALABLE'));
+                }
+            }
         }
         if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
             FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_QUIZ'));
