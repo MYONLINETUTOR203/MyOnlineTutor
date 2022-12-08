@@ -88,6 +88,7 @@ class QuizQuestionsController extends DashboardController
         ]);
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
+        $srch->addOrder('ques_id', 'DESC');
         $this->sets([
             'questions' => $srch->fetchAndFormat()
         ]);

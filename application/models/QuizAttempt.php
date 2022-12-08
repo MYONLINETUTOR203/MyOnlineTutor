@@ -541,11 +541,8 @@ class QuizAttempt extends MyAppModel
         $data = $this->getById();
         $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
-        $duration = Label::getLabel('LBL_NA');
-        if ($data['quilin_duration'] > 0) {
-            $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
-            $duration = MyUtility::convertDuration($duration, true, true, true);
-        }
+        $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+        $duration = MyUtility::convertDuration($duration, true, true, true);
 
         /* get session title */
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {

@@ -25,6 +25,7 @@ $(function () {
         if (!$(frm).validate()) {
             return;
         }
+        $('.btnNextJs').attr('disabled', 'disabled');
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndNext', [next]), fcom.frmData(frm), function (res) {
             view(res.id);
         });
@@ -35,6 +36,7 @@ $(function () {
         });
     };
     previous = function (id) {
+        $('.btnPrevJs').attr('disabled', 'disabled');
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
             view(id);
         });

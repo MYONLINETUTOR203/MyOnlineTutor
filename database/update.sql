@@ -1741,3 +1741,5 @@ ALTER TABLE `tbl_course_approval_requests` ADD `coapre_certificate_type` TINYINT
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
+

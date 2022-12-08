@@ -115,7 +115,7 @@ class CertificatesController extends MyAppController
             $srch->setPageSize(1);
             $session = FatApp::getDb()->fetch($srch->getResultSet());
             $learner = User::getAttributesById($data['quizat_user_id'], [
-                'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+                'user_first_name as learner_first_name', 'user_last_name as learner_last_name', 'user_country_id'
             ]);
             if ($session['grpcls_parent'] > 0) {
                 $session['grpcls_slug'] = GroupClass::getAttributesById($session['grpcls_parent'], 'grpcls_slug');
@@ -136,16 +136,18 @@ class CertificatesController extends MyAppController
                 'testat.testat_reviewes',
                 'learner.user_first_name as learner_first_name',
                 'learner.user_last_name as learner_last_name',
+                'ordles_type',
+                'learner.user_country_id'
             ]);
             $session = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($session['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $session['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            } else {
+                $session['ordles_tlang_name'] = TeachLanguage::getLangById($session['ordles_tlang_id'], $this->siteLangId);
+            }
             $title = Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson');
             $session['session_title'] = str_replace(
-                ['{teach-lang}', '{n}'],
-                [
-                    TeachLanguage::getLangById($session['ordles_tlang_id'], $this->siteLangId),
-                    $session['ordles_duration']
-                ],
-                $title
+                ['{teach-lang}', '{n}'], [$session['ordles_tlang_name'], $session['ordles_duration']], $title
             );
         } elseif ($data['quilin_record_type'] == AppConstant::COURSE) {
             $srch = new SearchBase(QuizAttempt::DB_TBL);
@@ -170,6 +172,17 @@ class CertificatesController extends MyAppController
             ]);
             $session = $session + $learner + $teacher;
             $certificateDesc = Label::getLabel('LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT');
+        }
+
+        /* get country name */
+        $srch = Country::getSearchObject(false, $this->siteLangId);
+        $srch->addCondition('country_id', '=', $session['user_country_id'] ?? 0);
+        $srch->addFld('IFNULL(c_l.country_name, c.country_identifier) AS country_name');
+        $srch->doNotCalculateRecords();
+        $srch->setPageSize(1);
+        $order['country_name'] = '';
+        if ($country = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $session['country_name'] = $country['country_name'];
         }
 
         $this->sets([

@@ -175,8 +175,6 @@ class GuestUserController extends MyAppController
         if (empty($userId) && $_SESSION[AppConstant::TWO_FACTOR_AUTH_ID] != $userId) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
-        $post = FatApp::getPostedData();
-        $auth = new UserAuth();
         $user = User::getById($userId);
         if (!$user) {
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
@@ -188,7 +186,7 @@ class GuestUserController extends MyAppController
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
         }
         $frm = $this->getTwoFactorAuthForm();
-        $frm->fill(['user_id' => $user['user_id'], 'remember_me' => $post['remember_me']]);
+        $frm->fill(['user_id' => $user['user_id'], 'remember_me' => FatApp::getPostedData('remember_me', FatUtility::VAR_INT, 0)]);
         $this->set('frm', $frm);
         $this->_template->render(false, false, 'guest-user/two-factor-form.php');
     }
@@ -199,12 +197,6 @@ class GuestUserController extends MyAppController
     public function setupTwoFactor() 
     {   
         $frm = $this->getTwoFactorAuthForm();
-        $fld1 = $frm->getField('digit_1');
-        $fld2 = $frm->getField('digit_2');
-        $fld3 = $frm->getField('digit_3');
-        $fld4 = $frm->getField('digit_4');
-        $fld5 = $frm->getField('digit_5');
-        $fld6 = $frm->getField('digit_6');
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }       
@@ -216,10 +208,10 @@ class GuestUserController extends MyAppController
             $post['digit_2'], 
             $post['digit_3'], 
             $post['digit_4'], 
-            $post['digit_5'], 
+            $post['digit_5'],
             $post['digit_6'], 
         ];
-        $authCode = implode('',$codeArr); 
+        $authCode = (int)implode('', $codeArr);
         $user = User::getById($post['user_id']);
         if (!$user) {
             FatUtility::dieJsonError(Label::getLabel('ERR_INVALID_REQUEST'));
@@ -642,7 +634,6 @@ class GuestUserController extends MyAppController
      * 
      * @param string $token
      * @param array $data
-     * @return boolean
      */ 
     private function getTwoFactorAuthForm()
     {
@@ -668,9 +659,6 @@ class GuestUserController extends MyAppController
         $frm->addHiddenField('', 'user_id');
         $frm->addHiddenField('', 'remember_me');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_VALIDATE'));
-        $resendText = Label::getLabel('LBL_Didnt_Get_The_Code?_{link}');
-        $resendText = str_replace("{link}", '<p><a href="javascript:void(0)" id="btn_resend_otp">' . Label::getLabel('LBL_RESEND_OTP') . '</a><p> in <span id="countdowntimer"></span></p></p>', $resendText);
-        $frm->addHTML('', 'resend_auth_code', $resendText);
         return $frm;
     }
 

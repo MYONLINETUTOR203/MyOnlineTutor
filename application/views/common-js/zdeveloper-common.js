@@ -236,7 +236,11 @@ $(document).ready(function () {
         if (!$(frm).validate()) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'setupTwoFactor'), fcom.frmData(frm), function (response) {
+        var data = fcom.frmData(frm);
+        if (document.frmSearchPaging) {
+            data += '&' + fcom.frmData(document.frmSearchPaging);
+        }
+        fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'setupTwoFactor'), data, function (response) {
             $.facebox.close();
             window.location.reload();
         });
