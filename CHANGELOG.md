@@ -1,5 +1,16 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.10.20221124
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+	#068754 - User cannot add class packages
+	#068741 - PDF not generating 
+
 ## TV-4.1.9.20221118
 
 Features: N/A
