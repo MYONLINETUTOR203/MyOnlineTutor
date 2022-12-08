@@ -184,6 +184,19 @@ $levels = Course::getCourseLevels();
                                                     </span>
                                                 </li>
                                             <?php } ?>
+                                            <?php if ($course['course_quilin_id'] > 0) { ?>
+                                                <li class="course-options__item">
+                                                    <span class="course-options__item-media">
+                                                        <svg class="icon icon--level">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL; ?>images/sprite.svg#">
+                                                        </use>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="course-options__item-label">
+                                                        <?php echo Label::getLabel('LBL_QUIZ_FOR_EVALUATION'); ?>
+                                                    </span>
+                                                </li>
+                                            <?php } ?>
                                         </ul>
                                     </div>
                                 </div>
