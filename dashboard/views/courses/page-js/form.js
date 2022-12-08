@@ -411,14 +411,12 @@ $(function () {
             fcom.updateWithAjax(fcom.makeUrl('Courses', 'removeQuiz'), { courseId, quizLinkId }, function (res) {
                 $('.attachedQuizJs').hide();
                 $('input[name="course_quilin_id"]').val('');
-                $('.attachQuizLinkJs').show();
                 $('.quizSectionJs').removeClass('hasQuiz');
                 getCourseEligibility();
             });
         } else {
             $('.attachedQuizJs').hide();
             $('input[name="course_quilin_id"]').val('');
-            $('.attachQuizLinkJs').show();
         }
     };
 });

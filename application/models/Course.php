@@ -570,26 +570,33 @@ class Course extends MyAppModel
     {
         $quizLinked = QuizLinked::getQuizzes([$this->getMainTableRecordId()], AppConstant::COURSE);
         $quizLinked = current($quizLinked);
-        if ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
-            if (empty($quizLinked)) {
-                $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
-                if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
+        /**
+         * Delete if quiz is attached but certificate type is changed OR
+         * if quiz is attached & type is same but new quiz is selected
+         */
+        if (!empty($quizLinked)) {
+            if (
+                ($data['course_certificate_type'] != Certificate::TYPE_COURSE_EVALUATION) ||
+                ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $data['course_quilin_id'] != $quizLinked['quilin_id'])
+            ) {
+                $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
+                if (!$quiz->delete()) {
                     $this->error = $quiz->getError();
                     return false;
                 }
-            }
-            return true;
-        }
-        if (!empty($quizLinked)) {
-            $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
-            if (!$quiz->delete()) {
-                $this->error = $quiz->getError();
-                return false;
-            }
 
-            $this->setFldValue('course_quilin_id', 0);
-            if (!$this->save()) {
-                $this->error = $this->getError();
+                $this->setFldValue('course_quilin_id', 0);
+                if (!$this->save()) {
+                    $this->error = $this->getError();
+                    return false;
+                }
+            }
+        }
+        /* attach quiz if not attached yet or received different quiz */
+        if (($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) && (empty($quizLinked) || $data['course_quilin_id'] != $quizLinked['quilin_id'])) {
+            $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
+            if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
+                $this->error = $quiz->getError();
                 return false;
             }
         }

@@ -78,7 +78,6 @@ $(function () {
         $('.quizTitleJs').text($(obj).data('title'));
         $('input[name="course_quilin_id"]').val(id);
         $('.attachedQuizJs').show();
-        $('.attachQuizLinkJs').hide();
         $.facebox.close();
     };
 });

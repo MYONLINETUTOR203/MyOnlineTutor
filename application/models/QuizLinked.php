@@ -65,13 +65,6 @@ class QuizLinked extends MyAppModel
                     $this->error = Label::getLabel('LBL_INVALID_COURSE');
                     return false;
                 }
-
-                $data = $this->getQuizzes([$recordId], $recordType);
-                $data = current($data);
-                if ( ($data['quiz_count'] ?? 0) > 0) {
-                    $this->error = Label::getLabel('LBL_ONLY_ONE_QUIZ_ATTACHMENT_IS_ALLOWED');
-                    return false;
-                }
                 break;
         }
         return true;
@@ -202,7 +195,9 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quilin.quilin_record_type', '=', $type);
         $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count', 'quilin_id', 'quilin_title']);
+        $srch->addMultipleFields([
+            'quilin_record_id', 'COUNT(*) as quiz_count', 'quilin_id', 'quilin_title', 'quilin_quiz_id'
+        ]);
         $srch->addGroupBy('quilin_record_id');
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_record_id');
     }
