@@ -44,9 +44,11 @@ $(function () {
             view(id);
         });
     };
-    saveAndFinish = function () {
-        if (!confirm(langLbl.confirmQuizComplete)) {
-            return;
+    saveAndFinish = function (prompt = true) {
+        if (prompt) {
+            if (!confirm(langLbl.confirmQuizComplete)) {
+                return;
+            }
         }
         var frm = document.frmQuiz;
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), fcom.frmData(frm), function (res) {
