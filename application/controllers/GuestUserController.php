@@ -659,9 +659,6 @@ class GuestUserController extends MyAppController
         $frm->addHiddenField('', 'user_id');
         $frm->addHiddenField('', 'remember_me');
         $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_VALIDATE'));
-        $resendText = Label::getLabel('LBL_Didn\'t_Get_The_Code?_{link}');
-        $resendText = str_replace("{link}", '<p><a href="javascript:void(0)" id="btn_resend_otp">' . Label::getLabel('LBL_RESEND_OTP') . '</a><p> in <span id="countdowntimer"></span></p></p>', $resendText);
-        $frm->addHTML('', 'resend_auth_code', $resendText);
         return $frm;
     }
 

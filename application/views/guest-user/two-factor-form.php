@@ -67,7 +67,14 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
         </div>
 
         <div class="auth-msg">
-            <?php echo $frm->getFieldHtml('resend_auth_code'); ?>
+            <?php
+            $resendText = Label::getLabel('LBL_Didn\'t_Get_The_Code?_{link}');
+            $resendText1 = str_replace("{link}", '<a href="javascript:void(0)" class="-link-underline link-color" onclick="resendOtp(\'' . $userFld->value . '\'); return false;">' . Label::getLabel('LBL_RESEND_OTP') . '</a>', $resendText);
+            $resendText2 = str_replace("{link}", Label::getLabel('LBL_RESEND_OTP_IN') . ' <span id="countdowntimer"></span>', $resendText);
+            ?>
+            <span class="resendOtpJs">
+                <?php echo $resendText2; ?>
+            </span>
         </div>
 
         </form>
@@ -81,9 +88,9 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
 
     $(document).ready(function() {
         let timerOn = true;
-        resendTwoFactorAuthenticationCode = function(userId, ele) {
+        resendOtp = function(userId) {
             fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
-            $(ele).removeAttr('onclick');
+            $('.resendOtpJs').html('<?php echo addslashes($resendText2) ?>');
             timer(30);
         };
 
@@ -99,7 +106,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
                 }
             });
         });
-        $("body").on('keyup', '.digit-group input[type=text]', function (e) {
+        $("body").on('keyup', '.digit-group input[type=text]', function(e) {
             var filledField = 0;
             var parent = $($(this).parent());
             if (e.keyCode === 8 || e.keyCode === 37) {
@@ -147,7 +154,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
             if (!timerOn) {
                 return;
             }
-            $('#btn_resend_otp').attr('onclick', "resendTwoFactorAuthenticationCode(" + uid + ", this); return false;");
+            $('.resendOtpJs').html('<?php echo addslashes($resendText1) ?>');
         }
     });
 </script>
