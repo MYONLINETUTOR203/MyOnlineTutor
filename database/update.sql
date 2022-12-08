@@ -1735,3 +1735,5 @@ INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `la
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT';
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire course was completed as validated by the student.');
 INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '2', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire course was completed as validated by the student.');
+
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_certificate_type` TINYINT(4) NOT NULL AFTER `coapre_certificate`, ADD `coapre_quilin_id` INT NOT NULL AFTER `coapre_certificate_type`; 

@@ -860,6 +860,8 @@ class Course extends MyAppModel
                 'coapre_clang_id' => $course['course_clang_id'],
                 'coapre_level' => $course['course_level'],
                 'coapre_certificate' => $course['course_certificate'],
+                'coapre_certificate_type' => $course['course_certificate_type'],
+                'coapre_quilin_id' => $course['course_quilin_id'],
                 'coapre_status' => static::REQUEST_PENDING,
                 'coapre_created' => date('Y-m-d H:i:s'),
                 'coapre_title' => $course['course_title'],
@@ -1000,7 +1002,8 @@ class Course extends MyAppModel
             'course.course_price',
             'course_duration',
             'course_srchtags',
-            'course_quilin_id'
+            'course_quilin_id',
+            'course_certificate_type'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();

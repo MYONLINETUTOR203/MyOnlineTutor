@@ -86,6 +86,8 @@ class CourseRequestSearch extends YocoachSearch
             'coapre.coapre_duration' => 'coapre_duration',
             'coapre.coapre_level' => 'coapre_level',
             'coapre.coapre_certificate' => 'coapre_certificate',
+            'coapre.coapre_certificate_type' => 'coapre_certificate_type',
+            'coapre.coapre_quilin_id' => 'coapre_quilin_id',
             'coapre.coapre_clang_id' => 'coapre_clang_id',
             'coapre.coapre_details' => 'coapre_details',
             'coapre.coapre_learners' => 'coapre_learners',

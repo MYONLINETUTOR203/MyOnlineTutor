@@ -38,13 +38,17 @@ class Certificate extends MyAppModel
     /**
      * Get Types
      *
-     * @return array
+     * @param int $key
+     * @param bool $active
+     * @return string|array
      */
-    public static function getTypes()
+    public static function getTypes(int $key = null, bool $active = true)
     {
         $arr = [];
         $srch = CertificateTemplate::getSearchObject(MyUtility::getSiteLangId());
-        $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        if ($active == true) {
+            $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        }
         $templates = FatApp::getDb()->fetchAll($srch->getResultSet());
         if ($templates) {
             foreach ($templates as $template) {
@@ -61,7 +65,7 @@ class Certificate extends MyAppModel
                 }
             }
         }
-        return $arr;
+        return AppConstant::returArrValue($arr, $key);
     }
 
     /**

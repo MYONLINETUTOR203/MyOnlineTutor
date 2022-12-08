@@ -182,9 +182,9 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_CERTIFICATE'); ?>
+                                        <?php echo Label::getLabel('LBL_RATINGS'); ?>
                                     </label>
-                                    : <strong><?php echo AppConstant::getYesNoArr()[$courseData['course_certificate']]; ?></strong>
+                                    : <strong><?php echo $courseData['course_ratings']; ?></strong>
                                 </div>
                             </div>
                         </div>
@@ -194,13 +194,41 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_RATINGS'); ?>
+                                        <?php echo Label::getLabel('LBL_CERTIFICATE'); ?>
                                     </label>
-                                    : <strong><?php echo $courseData['course_ratings']; ?></strong>
+                                    : <strong><?php echo AppConstant::getYesNoArr()[$courseData['course_certificate']]; ?></strong>
                                 </div>
                             </div>
                         </div>
+                        <?php if ($courseData['course_certificate_type'] > 0) { ?>
+                            <div class="col-md-6">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+
+                                        <label class="field_label">
+                                            <?php echo Label::getLabel('LBL_COURSE_CERTIFICATE_TYPE'); ?>
+                                        </label>
+                                        : <strong><?php echo Certificate::getTypes($courseData['course_certificate_type'], false); ?></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
+                    <?php if ($courseData['course_quilin_id'] > 0) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+
+                                        <label class="field_label">
+                                            <?php echo Label::getLabel('LBL_COURSE_QUIZ'); ?>
+                                        </label>
+                                        : <strong><?php echo CommonHelper::renderHtml($courseData['course_quiz_title']); ?></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
                 <div class="sectionhead">
                     <h4><?php echo Label::getLabel('LBL_OTHER_DETAILS') ?></h4>
@@ -217,7 +245,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="editor-content"><iframe srcdoc="<?php echo $courseData['course_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe></div>
+                            <div class="editor-content"><iframe srcdoc="<?php echo $courseData['course_details']; ?>" style="border:none;width: 100%;height: 100%;"></iframe></div>
                         </div>
                     </div>
                 </div>
@@ -226,7 +254,7 @@ $yesNoArr = AppConstant::getYesNoArr();
     </div>
 </section>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         resetEditorHeight();
     });
 </script>
