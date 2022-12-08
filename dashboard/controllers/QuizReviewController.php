@@ -270,7 +270,7 @@ class QuizReviewController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
 
-        FatUtility::dieJsonSuccess(Label::getLabel('LBL_SCORE_SETUP_SUCCESSFUL'));
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_REMARKS_SUBMITTED_SUCCESSFULLY'));
     }
 
     /**
