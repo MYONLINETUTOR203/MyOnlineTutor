@@ -64,7 +64,7 @@ $session: "session";
 .#{&session} {
     margin: 0 auto;
     position: relative;
-    height: 100vh;
+    
     max-width: 2000px;
     padding: theme('padding.3') theme('padding.10');
 
@@ -76,6 +76,11 @@ $session: "session";
             flex-direction: column-reverse;
         }
     }
+
+    @media (min-width:theme('breakpoints.sm','value')) {
+        height: 100vh;
+    }
+
 }
 
 
@@ -117,7 +122,7 @@ $session-infobar: "session-infobar";
 
             @media (min-width:theme('breakpoints.md','value')) and (max-width:theme('breakpoints.xl','value')){
                 &{
-                    font-size: 1.2rem;
+                    font-size: 1.2rem; 
                 }
             }
 
@@ -129,7 +134,7 @@ $session-infobar: "session-infobar";
 
             @media (max-width:theme('breakpoints.sm','value')) {
                 &{
-                    font-size: 1.2rem;
+                    font-size: 1.4rem; font-weight: theme('font.weight.bold'); line-height: 1.6;
                 }
             }
 
@@ -189,6 +194,11 @@ $session-infobar: "session-infobar";
                     width: 48%;
                 }
             }
+
+            @media (max-width:theme('breakpoints.sm','value')) {
+                &:only-child{width: 100%; margin: 0; display: block;}
+            }
+
         }
     }
 }
@@ -388,7 +398,7 @@ $session__body: "session__body";
     }
 
     @media (max-width:theme('breakpoints.sm','value')) {
-        &{height: 100vh;}
+        &{height: 80vh;}
     }
 
 }
@@ -477,9 +487,9 @@ $flash-card: "flash-card";
 $session-status: "session-status";
 
 .#{&session-status} {
-    max-width: 452px;
+    max-width: 560px;
     position: relative;
-    color: #fff;
+    color: #fff; padding: theme('padding.4');
 
     p{
         color: inherit;

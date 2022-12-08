@@ -272,7 +272,7 @@ p {
         -ms-flex-pack: justify;
             justify-content: space-between;
     position: relative;
-    padding: var(--padding-4); } }
+    padding: var(--padding-3) var(--padding-4); } }
 
 .toggle {
   position: relative;
@@ -330,7 +330,7 @@ p {
   padding: var(--padding-6);
   margin: 0; }
   .logo img {
-    max-width: 150px; }
+    max-width: 130px; }
   @media (max-width: 1199px) {
     .logo {
       padding: 0 var(--padding-6); } }
@@ -477,8 +477,14 @@ p {
   margin-bottom: 1rem; }
 
 @media (max-width: 576px) {
-  .lessons.view .logo {
-    margin: 0 auto; } }
+  .lessons.view .sidebar__head, .classes.view .sidebar__head {
+    display: none; }
+  .lessons.view .logo, .classes.view .logo {
+    margin: 0 auto; }
+  .lessons.view .page__footer, .classes.view .page__footer {
+    display: none; }
+  .lessons.view .profile-meta h4, .classes.view .profile-meta h4 {
+    font-size: 14px; } }
 
 .menu--secondary {
   text-align: center;
@@ -3934,7 +3940,6 @@ div.tagsinput div {
 .session {
   margin: 0 auto;
   position: relative;
-  height: 100vh;
   max-width: 2000px;
   padding: var(--padding-3) var(--padding-10); }
   @media (max-width: 991px) {
@@ -3947,6 +3952,9 @@ div.tagsinput div {
       -webkit-box-direction: reverse;
           -ms-flex-direction: column-reverse;
               flex-direction: column-reverse; } }
+  @media (min-width: 576px) {
+    .session {
+      height: 100vh; } }
 
 .session-infobar {
   padding: var(--padding-4) 0;
@@ -3982,7 +3990,9 @@ div.tagsinput div {
           font-size: 1.4rem; } }
       @media (max-width: 576px) {
         .session-infobar .session-infobar__top h4 {
-          font-size: 1.2rem; } }
+          font-size: 1.4rem;
+          font-weight: var(--font-weight-bold);
+          line-height: 1.6; } }
     .session-infobar .session-infobar__top .profile-meta {
       margin-left: var(--margin-3); }
       @media (max-width: 576px) {
@@ -4015,6 +4025,11 @@ div.tagsinput div {
   @media (max-width: 991px) {
     .session-infobar .session-infobar__action .btn {
       width: 48%; } }
+  @media (max-width: 576px) {
+    .session-infobar .session-infobar__action .btn:only-child {
+      width: 100%;
+      margin: 0;
+      display: block; } }
 
 .session-time p {
   color: var(--color-dark);
@@ -4164,7 +4179,7 @@ div.tagsinput div {
       height: calc(100% - 150px); } }
   @media (max-width: 576px) {
     .session__body {
-      height: 100vh; } }
+      height: 80vh; } }
 
 @media (max-width: 1299px) {
   .sidebar--flashcard .sidebar__head {
@@ -4226,9 +4241,10 @@ div.tagsinput div {
     overflow: hidden; }
 
 .session-status {
-  max-width: 452px;
+  max-width: 560px;
   position: relative;
-  color: #fff; }
+  color: #fff;
+  padding: var(--padding-4); }
   .session-status p {
     color: inherit;
     font-size: var(--font-size-p);

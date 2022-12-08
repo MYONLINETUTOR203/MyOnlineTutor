@@ -1769,7 +1769,7 @@ p {
     .filters-layout__item-forth .filter-item__target {
       max-width: 435px;
       left: 0;
-      left: auto; } }
+      right: auto; } }
 
 .filters-layout__item-fifth {
   -webkit-box-flex: inherit;
