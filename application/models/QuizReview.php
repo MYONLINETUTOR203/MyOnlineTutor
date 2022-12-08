@@ -68,7 +68,7 @@ class QuizReview extends MyAppModel
         }
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('qulinqu_id as quizat_qulinqu_id');
+        $srch->addMultipleFields(['qulinqu_id as quizat_qulinqu_id', 'qulinqu_quilin_id']);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($data)) {
             $data = ['quizat_qulinqu_id' => 0];
@@ -76,7 +76,7 @@ class QuizReview extends MyAppModel
 
         /* setup question id */
         if ($this->userType == User::LEARNER) {
-            $_SESSION['current_ques_id'] = $data['quizat_qulinqu_id'];
+            $_SESSION['quiz'][$data['qulinqu_quilin_id']]['current_ques_id'] = $data['quizat_qulinqu_id'];
             return true;
         }
 
@@ -149,13 +149,13 @@ class QuizReview extends MyAppModel
             $this->error = Label::getLabel('LBL_EVALUATION_IS_PENDING._ACCESS_NOT_ALLOWED');
             return false;
         }
-
+        
         if ($this->userType == User::LEARNER) {
-            if (!isset($_SESSION['current_ques_id'])) {
+            if (!isset($_SESSION['quiz'][$data['quilin_id']]['current_ques_id'])) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
                 return false;
             }
-            $data['quizat_qulinqu_id'] = $_SESSION['current_ques_id'];
+            $data['quizat_qulinqu_id'] = $_SESSION['quiz'][$data['quilin_id']]['current_ques_id'];
         }
 
         $this->quiz = $data;

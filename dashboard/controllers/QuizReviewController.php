@@ -32,7 +32,8 @@ class QuizReviewController extends DashboardController
         }
 
         if ($this->siteUserType == User::LEARNER) {
-            $_SESSION['current_ques_id'] = 0;
+            $linkId = QuizAttempt::getAttributesById($id, 'quizat_quilin_id');
+            $_SESSION['quiz'][$linkId]['current_ques_id'] = 0;
         }
 
         $quiz = new QuizReview($id, $this->siteUserId, $this->siteUserType);
@@ -41,11 +42,12 @@ class QuizReviewController extends DashboardController
             $controller = ($this->siteUserType == User::LEARNER) ? 'Learner' : 'Teacher';
             FatApp::redirectUser(MyUtility::makeUrl($controller));
         }
+        
         $data = $quiz->get();
         if ($this->siteUserType == User::TEACHER) {
             $this->set('user', User::getAttributesById($data['quizat_user_id'], ['user_first_name', 'user_last_name']));
         }
-        $this->set('data', $quiz->get());
+        $this->set('data', $data);
 
         $attempt = new QuizAttempt(0, $data['quizat_user_id']);
         $this->set('attempts', $attempt->getAttemptCount($data['quizat_quilin_id']));
@@ -186,7 +188,8 @@ class QuizReviewController extends DashboardController
 
         if ($quesId > 0) {
             if ($this->siteUserType == User::LEARNER) {
-                $_SESSION['current_ques_id'] = $quesId;
+                $linkId = QuizAttempt::getAttributesById($id, 'quizat_quilin_id');
+                $_SESSION['quiz'][$linkId]['current_ques_id'] = $quesId;
             } else {
                 $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
                 if (!$quiz->save()) {
