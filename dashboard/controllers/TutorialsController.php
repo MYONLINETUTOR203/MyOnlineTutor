@@ -228,17 +228,24 @@ class TutorialsController extends DashboardController
         /* get lecture content */
         $srch = new LectureSearch($this->siteLangId);
         $srch->applyPrimaryConditions();
-        $srch->addMultipleFields([
-            'lecture_title',
-            'lecture_id',
-            'lecture_order'
-        ]);
+        $srch->addMultipleFields(['lecture_title', 'lecture_id', 'lecture_order', 'lecture_course_id']);
         $srch->addCondition('lecture.lecture_id', 'IN', [$lectureId, $lectureIds['next'], $lectureIds['previous']]);
         $lectures = $srch->fetchAndFormat();
+        $lecture = isset($lectures[$lectureId]) ? $lectures[$lectureId] : [];
+
+        /* get quiz id */
+        $quizLinkId = 0;
+        if ($lecture && !isset($lectures[$lectureIds['next']])) {
+            $quizLinkId = Course::getAttributesById($lecture['lecture_course_id'], 'course_quilin_id');
+            $this->set('quizTitle', QuizLinked::getAttributesById($quizLinkId, 'quilin_title'));
+        }
+
+
         $this->sets([
             'lecture' => isset($lectures[$lectureId]) ? $lectures[$lectureId]: [],
             'previousLecture' => isset($lectures[$lectureIds['previous']]) ? $lectures[$lectureIds['previous']] : [],
             'nextLecture' => isset($lectures[$lectureIds['next']]) ? $lectures[$lectureIds['next']] : [],
+            'quizLinkId' => $quizLinkId
         ]);
         /* get lecture video */
         $resource = new Lecture($lectureId);
