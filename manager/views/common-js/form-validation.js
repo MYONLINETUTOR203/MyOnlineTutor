@@ -372,10 +372,10 @@
                             if (field.parents('.form__list--check').length > 0) {
                                 field.parents('.form__list--check').find('ul').after(errorlist.empty());
                             } else {
-                                field.parent().find('ul').after(errorlist.empty());
+                                field.parent().before(errorlist.empty());
                             }
                         } else {
-                            field.find('ul').after(errorlist.empty());
+                            field.after(errorlist.empty());
                         }
                         break;
                     case 0:
