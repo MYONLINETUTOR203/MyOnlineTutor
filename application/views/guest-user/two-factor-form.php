@@ -136,6 +136,17 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
             }
         });
 
+        $(".digit-group input[type=text]").bind("paste", function(e) {
+            var pastedData = e.originalEvent.clipboardData.getData('text');
+            var dataLength = pastedData.length;
+            for (var i = 1; i <= dataLength; i++) {
+                $("input[name='digit_" + i + "']").val(pastedData[i - 1]);
+                if (this.value.length >= this.maxLength) {
+                    $("input[name='digit_" + i + "']").focus();
+                }
+            }
+        });
+
         timer(30);
 
         function timer(remaining) {
