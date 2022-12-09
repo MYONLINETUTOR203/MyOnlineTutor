@@ -91,6 +91,7 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
         resendOtp = function(userId) {
             fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
             $('.resendOtpJs').html('<?php echo addslashes($resendText2) ?>');
+            $(".digit-group input[type=text]").val('').removeClass('error');
             timer(30);
         };
 
@@ -169,3 +170,8 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
         }
     });
 </script>
+<style>
+    .two-factor-form .errorlist {
+        display: none;
+    }
+</style>
