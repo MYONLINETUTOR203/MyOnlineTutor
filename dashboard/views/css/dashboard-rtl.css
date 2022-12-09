@@ -3151,6 +3151,34 @@ iframe#st_gdpr_iframe {
 .ui-sortable-helper {
   display: table; }
 
+.source {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center; }
+  .source__media,
+  .source audio {
+    width: 100%; }
+  .source__field {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    min-width: 1%; }
+  .source__actions {
+    padding-right: 4px; }
+
+.source-view {
+  border-radius: var(--radius-1);
+  border: 1px solid var(--color-gray-200);
+  padding: var(--padding-5); }
+  @media (min-width: 576px) {
+    .source-view {
+      padding: var(--padding-4); } }
+
 .screen-chat {
   position: absolute;
   left: 0;

@@ -1741,3 +1741,39 @@ $course-progress: "course-progress";
 .container--narrow{max-width: 1000px;}
 
 .ui-sortable-helper {display: table;}
+
+$source: "source";
+
+.#{$source} {
+    
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &__media,
+    audio {
+        width: 100%;
+    }
+
+    &__field {
+        flex: 1;
+        min-width: 1%;
+    }
+
+    &__actions {
+        padding-#{theme('direction.left','value')}: 4px;
+    }
+}
+
+$source-view: "source-view";
+
+.#{$source-view} {
+    border-radius: theme('radius.1');
+    border: 1px solid theme('color.gray.200');
+    padding: theme('padding.5');
+
+    @media(min-width: theme('breakpoints.sm', 'value')) {
+        padding: theme('padding.4');
+    }
+}
+

@@ -158,8 +158,8 @@ $quesIdFld = $frm->getField('ques_id');
                 </div>
             </div>
         </div>
-        <div class="row recorderJs" style="display:<?php echo isset($file) ? 'block' : 'none' ?>;">
-            <div class="col-md-12">
+        <div class=" recorderJs" style="display:<?php echo isset($file) ? 'block' : 'none' ?>;">
+            <div class="source-view margin-top-5">
                 <?php
                 $class = $src = '';
                 $autoplay = 'autoplay=0';
@@ -169,27 +169,30 @@ $quesIdFld = $frm->getField('ques_id');
                     $autoplay = '';
                 }
                 ?>
-                <div class="recordrtc <?php echo $class; ?>">
-                    <div class="audioRecorderJs -float-left mx-2">
+                <div class="source recordrtc <?php echo $class; ?>">
+                    <div class="source__field audioRecorderJs">
                         <audio style="" <?php echo $src; ?> controls playsinline noplaybackrate volume=1 <?php echo $autoplay; ?>></audio>
                     </div>
-                    <div class="audioRecordingJs -float-left mx-2" style="display:none;">
+                    <div class="source__field audioRecordingJs" style="display:none;"></div>
+                    <div class="source__actions">
+                        <a href="javascript:void(0)" class="btn btn--equal btn--transparent color-black is-hover btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                            <svg class="icon icon--recording btnStartJs" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 1a5 5 0 0 1 5 5v4a5 5 0 0 1-10 0V6a5 5 0 0 1 5-5zM3.055 11H5.07a7.002 7.002 0 0 0 13.858 0h2.016A9.004 9.004 0 0 1 13 18.945V23h-2v-4.055A9.004 9.004 0 0 1 3.055 11z" />
+                            </svg>
+                            <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_START_RECORDING'); ?></div>
+                            <svg class="icon icon--stop btnStopJs" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16.425 17.839A8.941 8.941 0 0 1 13 18.945V23h-2v-4.055A9.004 9.004 0 0 1 3.055 11H5.07a7.002 7.002 0 0 0 9.87 5.354l-1.551-1.55A5 5 0 0 1 7 10V8.414L1.393 2.808l1.415-1.415 19.799 19.8-1.415 1.414-4.767-4.768zm2.95-2.679l-1.443-1.442c.509-.81.856-1.73.997-2.718h2.016a8.95 8.95 0 0 1-1.57 4.16zm-2.91-2.909l-8.78-8.78A5 5 0 0 1 17 6l.001 4a4.98 4.98 0 0 1-.534 2.251z" />
+                            </svg>
+                            <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_STOP_RECORDING'); ?></div>
+                        </a>
+                        <a href="javascript:void(0)" onclick="removeRecording('<?php echo $quesIdFld->value; ?>');" class="btn btn--equal btn--transparent color-black is-hover btnRemoveJs">
+                            <svg class="icon icon--sorting" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z" />
+                            </svg>
+                            <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_REMOVE_RECORDING'); ?></div>
+                        </a>
+                        <?php echo $frm->getFieldHtml('audio_filename'); ?>
                     </div>
-
-                    <div class="btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
-                        <svg class="icon icon--issue icon--small btnStartJs">
-                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#play"></use>
-                        </svg>
-                        <svg class="icon icon--issue icon--small btnStopJs" style="display:none;">
-                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#download"></use>
-                        </svg>
-                    </div>
-                    <div class="btnRemoveJs" onclick="removeRecording('<?php echo $quesIdFld->value; ?>');">
-                        <svg class="icon icon--issue icon--small">
-                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#trash"></use>
-                        </svg>
-                    </div>
-                    <?php echo $frm->getFieldHtml('audio_filename'); ?>
                 </div>
             </div>
         </div>
