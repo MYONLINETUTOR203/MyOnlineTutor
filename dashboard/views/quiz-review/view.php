@@ -7,6 +7,11 @@
                 <?php echo str_replace('{number}', $question['qulinqu_order'], Label::getLabel('LBL_Q{number}.')) . ' ' . $question['qulinqu_title']; ?>
             </h4>
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
+            <?php if (isset($quesFile)) { ?>
+                <div class="source">
+                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate nodownload volume=1 autoplay=false></audio>
+                </div>
+            <?php } ?>
         </div>
         <div class="box-view__body">
             <?php if (in_array($question['qulinqu_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]) && count($options) > 0) { ?>
@@ -61,12 +66,13 @@
                         <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
                             <p>
                                 <strong><?php echo Label::getLabel('LBL_RECORDING:') ?></strong>
-                                <?php if (isset($file)) { ?>
-                                    <audio src="<?php echo $file; ?>" controls playsinline noplaybackrate volume=1></audio>
-                                <?php } else { ?>
-                                    <?php echo Label::getLabel('LBL_NA'); ?>
-                                <?php } ?>
+                                <?php echo (!isset($file)) ? Label::getLabel('LBL_NA') : ''; ?>
                             </p>
+                            <?php if (isset($file)) { ?>
+                                <div class="source">
+                                    <audio src="<?php echo $file; ?>" controls playsinline noplaybackrate volume=1></audio>
+                                </div>
+                            <?php } ?>
                         <?php } ?>
                         <?php if ($siteUserType == User::TEACHER) { ?>
                             <div class="margin-top-10">

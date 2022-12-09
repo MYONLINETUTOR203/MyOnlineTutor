@@ -82,7 +82,6 @@ $aqIdFld = $frm->getField('quatqu_id');
                         </div>
                         <div class="source__field audioRecordingJs" style="display:none;"></div>
                         <div class="source__actions">
-
                             <a href="javascript:void(0)" class="btn btn--equal btn--transparent color-black is-hover btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
                                 <svg class="icon icon--recording btnStartJs" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path d="M12 1a5 5 0 0 1 5 5v4a5 5 0 0 1-10 0V6a5 5 0 0 1 5-5zM3.055 11H5.07a7.002 7.002 0 0 0 13.858 0h2.016A9.004 9.004 0 0 1 13 18.945V23h-2v-4.055A9.004 9.004 0 0 1 3.055 11z" />
@@ -120,26 +119,26 @@ $aqIdFld = $frm->getField('quatqu_id');
                 </span>
             </div>
         <?php } ?>
-    </div>
-    <div class="box-view__footer">
-        <div class="box-actions form">
-            <?php if ($question['qulinqu_order'] > 1) { ?>
-                <div class="box-actions__cell box-actions__cell-left">
-                    <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
-                </div>
-            <?php } ?>
-            <div class="box-actions__cell box-actions__cell-right">
-                <?php
-                if ($question['qulinqu_order'] < count($attemptedQues)) {
-                    echo $btnSkip->getHtml();
-                }
+        <div class="box-view__footer">
+            <div class="box-actions form">
+                <?php if ($question['qulinqu_order'] > 1) { ?>
+                    <div class="box-actions__cell box-actions__cell-left">
+                        <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
+                    </div>
+                <?php } ?>
+                <div class="box-actions__cell box-actions__cell-right">
+                    <?php
+                    if ($question['qulinqu_order'] < count($attemptedQues)) {
+                        echo $btnSkip->getHtml();
+                    }
 
-                echo $frm->getFieldHtml('ques_type');
-                echo $frm->getFieldHtml('ques_id');
-                echo $frm->getFieldHtml('ques_attempt_id');
-                echo $aqIdFld->getHtml();
-                echo $btnSubmit->getHtml();
-                ?>
+                    echo $frm->getFieldHtml('ques_type');
+                    echo $frm->getFieldHtml('ques_id');
+                    echo $frm->getFieldHtml('ques_attempt_id');
+                    echo $aqIdFld->getHtml();
+                    echo $btnSubmit->getHtml();
+                    ?>
+                </div>
             </div>
         </div>
     </div>

@@ -132,6 +132,7 @@ class QuizReviewController extends DashboardController
                     $this->set('file', MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO, $currentQues['quatqu_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time());
                 }
             }
+            $this->set('quesFile', (new Afile(Afile::TYPE_QUESTION_AUDIO))->getFile($question['qulinqu_ques_id']));
 
             /* evaluation form for Manual quiz */
             $frm = $this->getForm($question['qulinqu_marks']);

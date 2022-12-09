@@ -107,7 +107,7 @@ $box-view: "box-view";
     }
     &__footer{padding-top: theme('margin.10');}
     &__head{
-        & small{opacity: 1; font-size: 90%; margin: 0 0 10px;}
+        & small{opacity: 1; font-size: 90%; margin: 0 0 10px; display: block;}
         & p{margin-bottom: 0;}
     }
 }
@@ -452,7 +452,7 @@ $option-manual: 'option-manual';
     & textarea{height: 250px;}
 }
 
-.answer-view{background-color: theme('color.gray.100'); border-radius: theme('radius.1'); border: 1px solid theme('color.gray.200'); padding: theme('padding.5') theme('padding.8');
+.answer-view{ border-radius: theme('radius.1'); border: 1px solid theme('color.gray.200'); padding: theme('padding.5') theme('padding.8');
     & p{margin: 0;}
 }
 
