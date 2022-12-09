@@ -129,7 +129,7 @@ class Quiz extends MyAppModel
             $this->error = $db->getError();
             return false;
         }
-        if (!$this->updateMarks()) {
+        if (!$this->updateMarks([$quizId])) {
             $db->rollbackTransaction();
             return false;
         }
@@ -250,7 +250,7 @@ class Quiz extends MyAppModel
             }
         }
 
-        if (!$this->updateMarks()) {
+        if (!$this->updateMarks([$this->getMainTableRecordId()])) {
             $db->rollbackTransaction();
             return false;
         }
@@ -324,21 +324,27 @@ class Quiz extends MyAppModel
     /**
      * Get & update quiz total marks
      *
+     * @param array $quizIds
      * @return bool
      */
-    private function updateMarks()
+    public function updateMarks(array $quizIds)
     {
         $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
-        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quique_quiz_id', 'IN', $quizIds);
         $srch->applyPrimaryConditions();
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
+        $srch->addFld('quique_quiz_id');
         $srch->addFld('IFNULL(SUM(ques_marks), 0) as quiz_marks');
-        $marks = FatApp::getDb()->fetch($srch->getResultSet());
-        $this->assignValues($marks);
-        if (!$this->save()) {
-            $this->error = $this->getError();
-            return false;
+        $srch->addGroupBy('quique_quiz_id');
+        $quizMarks = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+        $db = FatApp::getDb();
+        foreach ($quizMarks as $quizId => $marks) {
+            $where = ['smt' => 'quiz_id = ?', 'vals' => [$quizId]];
+            if (!$db->updateFromArray(static::DB_TBL, ['quiz_marks' => $marks], $where)) {
+                $this->error = $db->getError();
+                return false;
+            }
         }
         return true;
     }

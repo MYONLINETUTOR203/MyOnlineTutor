@@ -15,12 +15,8 @@ $(function () {
         search(document.frmQuesSearch);
         getSubcategories(0, '#subCategories');
     };
-    remove = function (id, isBinded = false) {
-        var msg = langLbl.confirmRemove;
-        if (isBinded == true) {
-            msg = langLbl.confirmBindedQuesRemoval;
-        }
-        if (!confirm(msg)) {
+    remove = function (id) {
+        if (!confirm(langLbl.confirmRemove)) {
             return;
         }
         fcom.updateWithAjax(fcom.makeUrl('Questions', 'remove'), {quesId: id}, function (res) {

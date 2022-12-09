@@ -153,6 +153,7 @@ class QuestionsController extends DashboardController
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['ques_subcate_id', 'ques_cate_id'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
+
         if (in_array($post['ques_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE])) {
             $optionFrm = $this->getOptionsForm($post['ques_type']);
             if (!$optionFrm->getFormDataFromArray(FatApp::getPostedData())) {
@@ -308,6 +309,7 @@ class QuestionsController extends DashboardController
         $notReqCountFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
+<<<<<<< HEAD
             Question::TYPE_SINGLE,
             'eq',
             'ques_options_count',
@@ -316,6 +318,10 @@ class QuestionsController extends DashboardController
         $typeFld->requirements()->addOnChangerequirementUpdate(
             Question::TYPE_MULTIPLE,
             'eq',
+=======
+            Question::TYPE_TEXT,
+            'ne',
+>>>>>>> 50aa2734f292755e6930c8ef2aa288bace1fe6d9
             'ques_options_count',
             $reqCountFld
         );

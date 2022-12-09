@@ -61,7 +61,7 @@
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
                                 <dd>
                                     <div class="editor-content">
-                                        <iframe srcdoc="<?php echo $requestData['coapre_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
+                                        <iframe srcdoc="<?php echo $requestData['coapre_details']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
                                     </div>
                                 </dd>
                             </dl>
@@ -83,8 +83,26 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_CERTIFICATE'); ?></dt>
-                                <dd><?php echo AppConstant::getYesNoArr($requestData['coapre_certificate']); ?></dd>
+                                <dd>
+                                    <?php echo AppConstant::getYesNoArr($requestData['coapre_certificate']); ?>
+                                </dd>
                             </dl>
+                            <?php if ($requestData['coapre_certificate_type'] > 0) { ?>
+                                <dl class="list">
+                                    <dt><?php echo Label::getLabel('LBL_COURSE_CERTIFICATE_TYPE'); ?></dt>
+                                    <dd>
+                                        <?php echo Certificate::getTypes($requestData['coapre_certificate_type'], false); ?>
+                                    </dd>
+                                </dl>
+                            <?php } ?>
+                            <?php if ($requestData['coapre_quilin_id'] > 0) { ?>
+                                <dl class="list">
+                                    <dt><?php echo Label::getLabel('LBL_COURSE_QUIZ'); ?></dt>
+                                    <dd>
+                                        <?php echo CommonHelper::renderHtml($requestData['coapre_quiz_title']); ?>
+                                    </dd>
+                                </dl>
+                            <?php } ?>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_TAGS'); ?></dt>
                                 <dd><?php echo empty($requestData['coapre_srchtags']) ? Label::getLabel('LBL_NA') : implode(', ', $requestData['coapre_srchtags']); ?></dd>
@@ -92,14 +110,14 @@
 
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_CONTENT'); ?></dt>
-                                <dd>     
-                                    <?php if (!empty($requestData['coapre_learnings'])) { ?>      
+                                <dd>
+                                    <?php if (!empty($requestData['coapre_learnings'])) { ?>
                                         <ul>
                                             <?php foreach ($requestData['coapre_learnings'] as $content) { ?>
-                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                                <li><?php echo $content['coinle_response']; ?></li>
                                             <?php } ?>
                                         </ul>
-                                        <?php
+                                    <?php
                                     } else {
                                         echo Label::getLabel('LBL_NA');
                                     }
@@ -109,14 +127,14 @@
 
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_LEARNERS'); ?></dt>
-                                <dd>                                
+                                <dd>
                                     <?php if (!empty($requestData['coapre_learners'])) { ?>
                                         <ul>
                                             <?php foreach ($requestData['coapre_learners'] as $content) { ?>
-                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                                <li><?php echo $content['coinle_response']; ?></li>
                                             <?php } ?>
                                         </ul>
-                                        <?php
+                                    <?php
                                     } else {
                                         echo Label::getLabel('LBL_NA');
                                     }
@@ -125,14 +143,14 @@
                             </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_REQUIREMENTS'); ?></dt>
-                                <dd>                                
+                                <dd>
                                     <?php if (!empty($requestData['coapre_requirements'])) { ?>
                                         <ul>
                                             <?php foreach ($requestData['coapre_requirements'] as $content) { ?>
-                                                <li><?php echo $content['coinle_response']; ?></li>   
+                                                <li><?php echo $content['coinle_response']; ?></li>
                                             <?php } ?>
                                         </ul>
-                                        <?php
+                                    <?php
                                     } else {
                                         echo Label::getLabel('LBL_NA');
                                     }
@@ -176,7 +194,7 @@
     </div>
 </section>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         resetEditorHeight();
     });
 </script>

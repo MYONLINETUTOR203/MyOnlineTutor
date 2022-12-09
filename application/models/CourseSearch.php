@@ -89,6 +89,8 @@ class CourseSearch extends YocoachSearch
             'course.course_students' => 'course_students',
             'course.course_ratings' => 'course_ratings',
             'course.course_certificate' => 'course_certificate',
+            'course.course_certificate_type' => 'course_certificate_type',
+            'course.course_quilin_id' => 'course_quilin_id',
             'course.course_level' => 'course_level',
             'course.course_currency_id' => 'course_currency_id',
             'crsdetail.course_title' => 'course_title',

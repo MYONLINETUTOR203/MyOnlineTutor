@@ -112,6 +112,11 @@ class CourseRequestsController extends AdminBaseController
         $data['coapre_srchtags'] = json_decode($data['coapre_srchtags'], true); 
         $crsLang = (new CourseLanguage($data['coapre_clang_id'], $this->siteLangId))->getById();
         $data['coapre_clang_name'] = $crsLang['clang_name'] ?? Label::getLabel('LBL_NA');
+
+        $data['coapre_quiz_title'] = '';
+        if ($data['coapre_quilin_id'] > 0) {
+            $data['coapre_quiz_title'] = QuizLinked::getAttributesById($data['coapre_quilin_id'], 'quilin_title');
+        }
         $this->sets([
             'requestData' => $data
         ]);

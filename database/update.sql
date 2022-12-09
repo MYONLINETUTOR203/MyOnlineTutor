@@ -1665,10 +1665,33 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ('LBL_CERTIFICATE_REPLACEMENT_VARS', 1, 'Replacement Vars');
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.9.20221118' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
-ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 
 
+ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.0.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_MANUAL';
+
+
+UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"Tutor: {teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{course-name}\\\" \\\"{course-language}\\\" online course on {course-completed-date} in duration {course-duration} and has achieved {course-score} score.\", \"certificate_number\": \"Certificate No.: {certificate-number}\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'course_evaluation_certificate' AND `tbl_certificate_templates`.`certpl_lang_id` = 1; 
+UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"شهادة تقييم\", \"learner\": \"{learner-name}\", \"trainer\": \"Tutor: {teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"أكمل بنجاح دورة \\\"{course-name}\\\" \\\"{course-language}\\\" عبر الإنترنت في {course-completed-date} في المدة {course-duration} وحقق النتيجة {course-score}.\", \"certificate_number\": \"Certificate No.: {certificate-number}\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'course_evaluation_certificate' AND `tbl_certificate_templates`.`certpl_lang_id` = 2; 
+
+INSERT INTO `tbl_configurations` (`conf_name`, `conf_val`, `conf_common`) VALUES
+('CONF_COURSE_EVALUATION_CERTIFICATE_DEFAULT_CONTENT', '{"heading": "Certificate Of Completion", "learner": "{learner-name}", "trainer": "Tutor:  {teacher-name}", "content_part_1": "This is to certify that", "content_part_2": "has successfully completed \\"{course-name}\\" \\"{course-language}\\" online course on {course-completed-date} in duration {course-duration} and has achieved {course-score} score.", "certificate_number": "Certificate No.:  {certificate-number}"}', 0);
+
+UPDATE `tbl_configurations` SET `conf_val` = '{"heading": "Certificate Of Evaluation", "learner": "{learner-name}", "trainer": "Tutor:  {teacher-name}", "content_part_1": "This is to certify that", "content_part_2": "has successfully completed \\"{quiz-name}\\" online quiz on {quiz-completed-date} in {quiz-duration} and has achieved {quiz-score} score.", "certificate_number": "Certificate No.:  {certificate-number}"}' WHERE `conf_name` = 'CONF_EVALUATION_CERTIFICATE_DEFAULT_CONTENT';
+
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_QUIZ_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire quiz was completed as validated by the student. The quiz duration represents the total time spent by the student for the quiz completion.');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '2', 'LBL_QUIZ_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire quiz was completed as validated by the student. The quiz duration represents the total time spent by the student for the quiz completion.');
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT';
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '1', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire course was completed as validated by the student.');
+INSERT INTO `tbl_language_labels` (`label_id`, `label_lang_id`, `label_key`, `label_caption`) VALUES (NULL, '2', 'LBL_EVALUATION_CERTIFICATE_BOTTOM_TEXT', 'The certificate indicates the entire course was completed as validated by the student.');
+
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_certificate_type` TINYINT(4) NOT NULL AFTER `coapre_certificate`, ADD `coapre_quilin_id` INT NOT NULL AFTER `coapre_certificate_type`; 
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
+
 

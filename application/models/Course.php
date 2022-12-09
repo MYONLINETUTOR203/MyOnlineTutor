@@ -570,29 +570,67 @@ class Course extends MyAppModel
     {
         $quizLinked = QuizLinked::getQuizzes([$this->getMainTableRecordId()], AppConstant::COURSE);
         $quizLinked = current($quizLinked);
-        if ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) {
-            if (empty($quizLinked)) {
-                $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
-                if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
+        /**
+         * Delete if quiz is attached but certificate type is changed OR
+         * if quiz is attached & type is same but new quiz is selected
+         */
+        if (!empty($quizLinked)) {
+            if (
+                ($data['course_certificate_type'] != Certificate::TYPE_COURSE_EVALUATION) ||
+                ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $data['course_quilin_id'] != $quizLinked['quilin_id'])
+            ) {
+                $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
+                if (!$quiz->delete()) {
                     $this->error = $quiz->getError();
                     return false;
                 }
+
+                $this->setFldValue('course_quilin_id', 0);
+                if (!$this->save()) {
+                    $this->error = $this->getError();
+                    return false;
+                }
             }
-            return true;
         }
-        if (!empty($quizLinked)) {
-            $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
-            if (!$quiz->delete()) {
+        /* attach quiz if not attached yet or received different quiz */
+        if (($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) && (empty($quizLinked) || $data['course_quilin_id'] != $quizLinked['quilin_id'])) {
+            $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
+            if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
                 $this->error = $quiz->getError();
                 return false;
             }
-
-            $this->setFldValue('course_quilin_id', 0);
-            if (!$this->save()) {
-                $this->error = $this->getError();
-                return false;
-            }
         }
+        return true;
+    }
+
+    /**
+     * Remove attached quiz
+     *
+     * @param int $quilinId
+     * @return bool
+     */
+    public function removeQuiz(int $quilinId)
+    {
+        if (!$this->canEditCourse()) {
+            return false;
+        }
+        if ($this->getMainTableRecordId() != QuizLinked::getAttributesById($quilinId, 'quilin_record_id')) {
+            $this->error = Label::getLabel('LBL_INVALID_QUIZ');
+            return false;
+        }
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $quiz = new QuizLinked($quilinId, $this->userId, $this->userType, $this->langId);
+        if (!$quiz->delete()) {
+            $this->error = $quiz->getError();
+            return false;
+        }
+        $this->setFldValue('course_quilin_id', 0);
+        if (!$this->save()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+        $db->commitTransaction();
         return true;
     }
 
@@ -829,6 +867,8 @@ class Course extends MyAppModel
                 'coapre_clang_id' => $course['course_clang_id'],
                 'coapre_level' => $course['course_level'],
                 'coapre_certificate' => $course['course_certificate'],
+                'coapre_certificate_type' => $course['course_certificate_type'],
+                'coapre_quilin_id' => $course['course_quilin_id'],
                 'coapre_status' => static::REQUEST_PENDING,
                 'coapre_created' => date('Y-m-d H:i:s'),
                 'coapre_title' => $course['course_title'],
@@ -969,7 +1009,8 @@ class Course extends MyAppModel
             'course.course_price',
             'course_duration',
             'course_srchtags',
-            'course_quilin_id'
+            'course_quilin_id',
+            'course_certificate_type'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();

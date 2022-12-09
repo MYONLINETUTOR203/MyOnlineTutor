@@ -66,23 +66,25 @@
                                 <?php echo MyUtility::formatPercent($data['quilin_passmark']) ?>
                             </div>
                         </div>
-                        <div class="repeat-element">
-                            <div class="repeat-element__title">
-                                <?php echo Label::getLabel('LBL_VALID_TILL'); ?>
-                            </div>
-                            <div class="repeat-element__content">
-                                <?php echo MyDate::formatDate($data['quilin_validity'], 'Y-m-d H:i') ?>
-                            </div>
-                        </div>
-                        <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
+                        <?php if ($data['quilin_record_type'] != AppConstant::COURSE) { ?>
                             <div class="repeat-element">
                                 <div class="repeat-element__title">
-                                    <?php echo Label::getLabel('LBL_OFFER_CERTIFICATE'); ?>
+                                    <?php echo Label::getLabel('LBL_VALID_TILL'); ?>
                                 </div>
                                 <div class="repeat-element__content">
-                                    <?php echo AppConstant::getYesNoArr($data['quilin_certificate']) ?>
+                                    <?php echo MyDate::formatDate($data['quilin_validity'], 'Y-m-d H:i') ?>
                                 </div>
                             </div>
+                            <?php if ($data['quilin_certificate'] == AppConstant::YES) { ?>
+                                <div class="repeat-element">
+                                    <div class="repeat-element__title">
+                                        <?php echo Label::getLabel('LBL_OFFER_CERTIFICATE'); ?>
+                                    </div>
+                                    <div class="repeat-element__content">
+                                        <?php echo AppConstant::getYesNoArr($data['quilin_certificate']) ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         <?php } ?>
                     </div>
                     <a href="javascript:void(0);" onclick="start('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btn--wide">

@@ -39,15 +39,32 @@ class Certificate extends MyAppModel
      * Get Types
      *
      * @param int $key
+     * @param bool $active
      * @return string|array
      */
-    public static function getTypes(int $key = null)
+    public static function getTypes(int $key = null, bool $active = true)
     {
-        $arr = [
-            static::TYPE_QUIZ_EVALUATION => Label::getLabel('LBL_QUIZ_EVALUATION'),
-            static::TYPE_COURSE_COMPLETION => Label::getLabel('LBL_COURSE_COMPLETION'),
-            static::TYPE_COURSE_EVALUATION => Label::getLabel('LBL_COURSE_EVALUATION')
-        ];
+        $arr = [];
+        $srch = CertificateTemplate::getSearchObject(MyUtility::getSiteLangId());
+        if ($active == true) {
+            $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
+        }
+        $templates = FatApp::getDb()->fetchAll($srch->getResultSet());
+        if ($templates) {
+            foreach ($templates as $template) {
+                switch ($template['certpl_code']) {
+                    case 'course_completion_certificate':
+                        $arr[static::TYPE_COURSE_COMPLETION] = Label::getLabel('LBL_COURSE_COMPLETION');
+                        break;
+                    case 'evaluation_certificate':
+                        $arr[static::TYPE_QUIZ_EVALUATION] = Label::getLabel('LBL_QUIZ_EVALUATION');
+                        break;
+                    case 'course_evaluation_certificate':
+                        $arr[static::TYPE_COURSE_EVALUATION] = Label::getLabel('LBL_COURSE_EVALUATION');
+                        break;
+                }
+            }
+        }
         return AppConstant::returArrValue($arr, $key);
     }
 

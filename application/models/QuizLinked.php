@@ -65,13 +65,6 @@ class QuizLinked extends MyAppModel
                     $this->error = Label::getLabel('LBL_INVALID_COURSE');
                     return false;
                 }
-
-                $data = $this->getQuizzes([$recordId], $recordType);
-                $data = current($data);
-                if (($data['quiz_count'] ?? 0) > 0) {
-                    $this->error = Label::getLabel('LBL_ONLY_ONE_QUIZ_ATTACHMENT_IS_ALLOWED');
-                    return false;
-                }
                 break;
         }
         return true;
@@ -109,6 +102,15 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
+        $db = FatApp::getDb();
+        $db->startTransaction();
+
+        /* added marks update because there may be marks changes at question level but not updated in quiz */
+        if (!(new Quiz(0, $this->userId))->updateMarks($quizzes)) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
         /* validate quizzes list */
         $srch = new QuizSearch(0, $this->userId, $this->userType);
         $srch->addSearchListingFields();
@@ -123,8 +125,6 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        $db = FatApp::getDb();
-        $db->startTransaction();
         $quizzesData = $quizLinkedIds = [];
         foreach ($quizList as $quiz) {
             $quizLink = new TableRecord(static::DB_TBL);
@@ -202,7 +202,9 @@ class QuizLinked extends MyAppModel
         $srch->addCondition('quilin.quilin_record_type', '=', $type);
         $srch->addCondition('quilin.quilin_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
-        $srch->addMultipleFields(['quilin_record_id', 'COUNT(*) as quiz_count', 'quilin_id', 'quilin_title']);
+        $srch->addMultipleFields([
+            'quilin_record_id', 'COUNT(*) as quiz_count', 'quilin_id', 'quilin_title', 'quilin_quiz_id'
+        ]);
         $srch->addGroupBy('quilin_record_id');
         return FatApp::getDb()->fetchAll($srch->getResultSet(), 'quilin_record_id');
     }
@@ -295,13 +297,15 @@ class QuizLinked extends MyAppModel
             return false;
         }
 
-        $this->sendQuizRemovedNotification($data);
+        if (in_array($data['quilin_record_type'], [AppConstant::GCLASS, AppConstant::LESSON])) {
+            $this->sendQuizRemovedNotification($data);
 
-        /* delete user quiz */
-        if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
-            $db->rollbackTransaction();
-            $this->error = $db->getError();
-            return false;
+            /* delete user quiz */
+            if (!$db->deleteRecords(QuizAttempt::DB_TBL, ['smt' => 'quizat_quilin_id = ?', 'vals' => [$id]])) {
+                $db->rollbackTransaction();
+                $this->error = $db->getError();
+                return false;
+            }
         }
 
         $db->commitTransaction();
@@ -453,12 +457,16 @@ class QuizLinked extends MyAppModel
                 'tlanglang'
             );
             $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
+                'ordles_type'
             ]);
             $srch->setPageSize(1);
             $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            }
             $sessionTitle = str_replace(
                 ['{teach-lang}', '{n}'],
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
@@ -538,12 +546,16 @@ class QuizLinked extends MyAppModel
                 'tlanglang'
             );
             $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
+                'ordles_type'
             ]);
             $srch->setPageSize(1);
             $srch->addCondition('ordles_id', '=', $record['quilin_record_id']);
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            }
             $sessionTitle = str_replace(
                 ['{teach-lang}', '{n}'],
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],

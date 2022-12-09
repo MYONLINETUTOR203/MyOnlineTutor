@@ -17,23 +17,22 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
                 <h6><?php echo Label::getLabel('LBL_ATTACH_QUIZZES'); ?></h6>
             </div>
             <div>
-
-
                 <div class="buttons-group d-flex align-items-center">
                     <a href="javascript:void(0)" class="btn btn--secondary qsearch-toggle-js margin-1">
                         <svg class="icon icon--clock icon--small margin-right-2">
                             <use xlink:href="/dashboard/images/sprite.svg#search"></use>
                         </svg>
-                        Search </a>
-                    <a href="javascript:void(0);" onclick="attachQuizzes();" class="btn btn--bordered color-secondary margin-1">
-                        <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
-                        </svg>
-                        <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                        <?php echo Label::getLabel('LBL_SEARCH'); ?>
                     </a>
+                    <?php if ($recType->value != AppConstant::COURSE) { ?>
+                        <a href="javascript:void(0);" onclick="attachQuizzes();" class="btn btn--bordered color-secondary margin-1">
+                            <svg class="icon icon--add icon--small margin-right-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
+                            </svg>
+                            <?php echo Label::getLabel('LBL_ATTACH'); ?>
+                        </a>
+                    <?php } ?>
                 </div>
-
-
             </div>
         </div>
         <div class="qsearch-target-js" style="display:none;">
@@ -41,7 +40,7 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
 
                 <?php echo $frm->getFormTag(); ?>
                 <div class="row">
-                    <div class="col-lg-4 col-sm-12">
+                    <div class="col-lg-<?php echo ($recType->value != AppConstant::COURSE) ? '4' : '8' ?> col-sm-12">
                         <div class="field-set">
                             <div class="caption-wraper">
                                 <label class="field_label">
@@ -58,24 +57,25 @@ $btnClear->addFieldTagAttribute('onclick', 'clearQuizSearch(1)');
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-4 col-sm-12">
-                        <div class="field-set">
-                            <div class="caption-wraper">
-                                <label class="field_label">
-                                    <?php echo $type->getCaption(); ?>
-                                    <?php if ($type->requirement->isRequired()) { ?>
-                                        <span class="spn_must_field">*</span>
-                                    <?php } ?>
-                                </label>
-                            </div>
-                            <div class="field-wraper">
-                                <div class="field_cover">
-                                    <?php echo $type->getHtml(); ?>
+                    <?php if ($recType->value != AppConstant::COURSE) { ?>
+                        <div class="col-lg-4 col-sm-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
+                                        <?php echo $type->getCaption(); ?>
+                                        <?php if ($type->requirement->isRequired()) { ?>
+                                            <span class="spn_must_field">*</span>
+                                        <?php } ?>
+                                    </label>
+                                </div>
+                                <div class="field-wraper">
+                                    <div class="field_cover">
+                                        <?php echo $type->getHtml(); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php } ?>
                     <div class="col-lg-4 col-sm-4  form-buttons-group">
                         <div class="field-set">
                             <div class="caption-wraper"><label class="field_label"></label></div>

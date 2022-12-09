@@ -37,6 +37,7 @@ $(function () {
         $('#lectureJs' + lectureId).parents('.sectionListJs').addClass('is-active');
         $('#lectureJs' + lectureId).parents('.control-target-js').show();
         $('.lectureTitleJs').text($('#lectureJs' + lectureId + ' .lectureName').text());
+        $('.quizListJs').removeClass('is-active');
         currentLectureId = lectureId;
     };
     getLecture = function (lectureCompleted = 0, next = 1) {
@@ -49,7 +50,7 @@ $(function () {
             }
 
             if (res.next_lecture_id == 0 && $('.quizListJs').length > 0) {
-                $('.quizListJs .quizLectureJs').click();
+                $('.quizListJs').click();
                 return;
             }
 

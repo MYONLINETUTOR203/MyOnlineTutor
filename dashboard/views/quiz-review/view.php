@@ -182,12 +182,12 @@
             <div class="box-actions form">
                 <?php if ($question['qulinqu_order'] > 1) { ?>
                     <div class="box-actions__cell box-actions__cell-left">
-                        <input type="button" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
                     </div>
                 <?php } ?>
                 <?php if (count($attemptedQues) != $question['qulinqu_order']) { ?>
                     <div class="box-actions__cell box-actions__cell-right">
-                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
+                        <input type="button" value="<?php echo Label::getLabel('LBL_NEXT') ?>" onclick="next('<?php echo $data['quizat_id'] ?>')" class="btn btn--primary btnNextJs">
                     </div>
                 <?php } ?>
             </div>

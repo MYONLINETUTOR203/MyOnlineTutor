@@ -45,7 +45,14 @@ if ($lecture) {
                     <span href="javascript:void(0)" class="directions-prev__control"></span>
                 </a>
             <?php } ?>
-            <?php if ($nextLecture) { ?>
+            <?php if (!empty($quizLinkId)) { ?>
+                <a href="javascript:void(0);" onclick="openQuiz('<?php echo $quizLinkId; ?>')" class="directions-next">
+                    <span class="directions-title">
+                        <?php echo Label::getLabel('LBL_QUIZ') . ': ' . $quizTitle; ?>
+                    </span>
+                    <span href="javascript:void(0)" class="directions-next__control"></span>
+                </a>
+            <?php } elseif ($nextLecture) { ?>
                 <a href="javascript:void(0)" class="directions-next getNextJs">
                     <span class="directions-title">
                         <?php echo $nextLecture['lecture_order'] . '. ' . $nextLecture['lecture_title']; ?>
@@ -54,7 +61,7 @@ if ($lecture) {
                 </a>
             <?php } ?>
         </div>
-        <?php
+    <?php
     }
     ?>
     <script>

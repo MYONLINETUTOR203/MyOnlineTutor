@@ -220,7 +220,9 @@ class QuizAttempt extends MyAppModel
         }
         $db->commitTransaction();
 
-        $this->sendQuizCompletionNotification();
+        if ($this->quiz['quilin_record_type'] != AppConstant::COURSE) {
+            $this->sendQuizCompletionNotification();
+        }
         return true;
     }
 
@@ -554,11 +556,8 @@ class QuizAttempt extends MyAppModel
         $data = $this->getById();
         $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
-        $duration = Label::getLabel('LBL_NA');
-        if ($data['quilin_duration'] > 0) {
-            $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
-            $duration = MyUtility::convertDuration($duration, true, true, true);
-        }
+        $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+        $duration = MyUtility::convertDuration($duration, true, true, true);
 
         /* get session title */
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {
@@ -600,13 +599,6 @@ class QuizAttempt extends MyAppModel
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
                 Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
             );
-        } else {
-            $srch = new CourseSearch($this->langId, 0, 0);
-            $srch->setPageSize(1);
-            $srch->addCondition('course.course_id', '=', $data['quilin_record_id']);
-            $srch->addFld('course_title');
-            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
-            $sessionTitle = $sessionData['course_title'];
         }
 
         $srch = new SearchBase(User::DB_TBL);

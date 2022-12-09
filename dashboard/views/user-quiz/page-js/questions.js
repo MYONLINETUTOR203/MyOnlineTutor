@@ -25,10 +25,12 @@ $(function () {
         if (!$(frm).validate()) {
             return;
         }
+
         var data = new FormData(frm);
         if ($('.recordrtc').length > 0) {
             data = appendRecordedFile(data);
         }
+        $('.btnNextJs').attr('disabled', 'disabled');
         fcom.ajaxMultipart(fcom.makeUrl('UserQuiz', 'saveAndNext', [next]), data, function (res) {
             view(res.id);
         }, { fOutMode: 'json' });
@@ -39,7 +41,8 @@ $(function () {
         });
     };
     previous = function (id) {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0 }, function (res) {
+        $('.btnPrevJs').attr('disabled', 'disabled');
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
             view(id);
         });
     };
@@ -48,9 +51,11 @@ $(function () {
             view(id);
         });
     };
-    saveAndFinish = function () {
-        if (!confirm(langLbl.confirmQuizComplete)) {
-            return;
+    saveAndFinish = function (prompt = true) {
+        if (prompt) {
+            if (!confirm(langLbl.confirmQuizComplete)) {
+                return;
+            }
         }
         var frm = document.frmQuiz;
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), fcom.frmData(frm), function (res) {

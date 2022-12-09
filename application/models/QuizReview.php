@@ -39,6 +39,7 @@ class QuizReview extends MyAppModel
         }
         if (!$this->validate()) {
             $this->error = $this->getError();
+            return false;
         }
         if (!$this->setQuestion()) {
             $this->error = $this->getError();
@@ -67,7 +68,7 @@ class QuizReview extends MyAppModel
         }
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
-        $srch->addFld('qulinqu_id as quizat_qulinqu_id');
+        $srch->addMultipleFields(['qulinqu_id as quizat_qulinqu_id', 'qulinqu_quilin_id']);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($data)) {
             $data = ['quizat_qulinqu_id' => 0];
@@ -75,7 +76,7 @@ class QuizReview extends MyAppModel
 
         /* setup question id */
         if ($this->userType == User::LEARNER) {
-            $_SESSION['current_ques_id'] = $data['quizat_qulinqu_id'];
+            $_SESSION['quiz'][$data['qulinqu_quilin_id']]['current_ques_id'] = $data['quizat_qulinqu_id'];
             return true;
         }
 
@@ -148,13 +149,13 @@ class QuizReview extends MyAppModel
             $this->error = Label::getLabel('LBL_EVALUATION_IS_PENDING._ACCESS_NOT_ALLOWED');
             return false;
         }
-
+        
         if ($this->userType == User::LEARNER) {
-            if (!isset($_SESSION['current_ques_id'])) {
+            if (!isset($_SESSION['quiz'][$data['quilin_id']]['current_ques_id'])) {
                 $this->error = Label::getLabel('LBL_UNAUTHORIZED_ACCESS');
                 return false;
             }
-            $data['quizat_qulinqu_id'] = $_SESSION['current_ques_id'];
+            $data['quizat_qulinqu_id'] = $_SESSION['quiz'][$data['quilin_id']]['current_ques_id'];
         }
 
         $this->quiz = $data;
@@ -243,11 +244,8 @@ class QuizReview extends MyAppModel
         $data = $this->getById();
         $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
-        $duration = Label::getLabel('LBL_NA');
-        if ($data['quilin_duration'] > 0) {
-            $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
-            $duration = MyUtility::convertDuration($duration, true, true, true);
-        }
+        $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
+        $duration = MyUtility::convertDuration($duration, true, true, true);
 
         /* get session title */
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {
@@ -274,12 +272,16 @@ class QuizReview extends MyAppModel
                 'tlanglang'
             );
             $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name'
+                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
+                'ordles_type'
             ]);
             $srch->setPageSize(1);
             $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
             $srch->doNotCalculateRecords();
             $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
+                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
+            }
             $sessionTitle = str_replace(
                 ['{teach-lang}', '{n}'],
                 [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],

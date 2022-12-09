@@ -67,12 +67,7 @@ class CertificatesController extends DashboardController
         if (empty($certificateNo)) {
             /* get certificate html */
             $content = $this->getContent($code);
-            $cert = new Certificate(
-                $id,
-                $code,
-                $this->siteUserId,
-                $this->siteUserType
-            );
+            $cert = new Certificate($id, $code, $this->siteUserId, $this->siteLangId);
             if (!$cert->generate($content)) {
                 FatUtility::dieWithError($cert->getError());
             }

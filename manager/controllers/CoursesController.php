@@ -98,6 +98,10 @@ class CoursesController extends AdminBaseController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $course = current($courses);
+        $course['course_quiz_title'] = '';
+        if ($course['course_quilin_id'] > 0) {
+            $course['course_quiz_title'] = QuizLinked::getAttributesById($course['course_quilin_id'], 'quilin_title');
+        }
         $this->sets([
             'courseData' => $course,
             'canEdit' => $this->objPrivilege->canEditCourses(true),

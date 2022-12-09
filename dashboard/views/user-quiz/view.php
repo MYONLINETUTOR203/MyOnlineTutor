@@ -2,7 +2,7 @@
 <?php
 $frm->addFormTagAttribute('class', 'form height-100');
 $btnSubmit = $frm->getField('btn_submit');
-$btnSubmit->setFieldTagAttribute('class', 'btn btn--primary');
+$btnSubmit->setFieldTagAttribute('class', 'btn btn--primary btnNextJs');
 $btnSkip = $frm->getField('btn_skip');
 if (count($attemptedQues) == $question['qulinqu_order']) {
     $frm->addFormTagAttribute('onsubmit', 'save(this); return false;');
@@ -10,7 +10,7 @@ if (count($attemptedQues) == $question['qulinqu_order']) {
 } else {
     $frm->addFormTagAttribute('onsubmit', 'saveAndNext(this); return false;');
     $btnSkip->setFieldTagAttribute('onclick', 'skipAndNext(' . $data['quizat_id'] . ');');
-    $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic');
+    $btnSkip->setFieldTagAttribute('class', 'btn btn--transparent border-0 color-black style-italic ');
 }
 $fld = $frm->getField('ques_answer');
 $aqIdFld = $frm->getField('quatqu_id');
@@ -115,7 +115,7 @@ $aqIdFld = $frm->getField('quatqu_id');
             <div class="box-actions form">
                 <?php if ($question['qulinqu_order'] > 1) { ?>
                     <div class="box-actions__cell box-actions__cell-left">
-                        <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary">
+                        <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
                     </div>
                 <?php } ?>
                 <div class="box-actions__cell box-actions__cell-right">

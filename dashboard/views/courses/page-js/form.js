@@ -393,10 +393,10 @@ $(function () {
     getCertificates = function () {
         if ($("input[name='course_certificate']:checked").val() == 1) {
             $('.certTypeJs').show();
-            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": true }');
+            $("select[name='course_certificate_type'], input[name='course_quilin_id']").attr('data-fatreq', '{ "required": true }');
         } else {
             $('.certTypeJs, .quizSectionJs').hide();
-            $("select[name='course_certificate_type']").attr('data-fatreq', '{ "required": false }').val('');
+            $("select[name='course_certificate_type'], input[name='course_quilin_id']").attr('data-fatreq', '{ "required": false }').val('');
         }
     }
     showQuizSection = function (val) {
@@ -406,10 +406,18 @@ $(function () {
             $('.quizSectionJs').hide();
         }
     };
-    removeAttachedQuiz = function () {
-        $('.attachedQuizJs').hide();
-        $('input[name="course_quilin_id"]').val('');
-        $('.attachQuizLinkJs').show();
+    removeAttachedQuiz = function (quizLinkId) {
+        if ($('.quizSectionJs').hasClass('hasQuiz')) {
+            fcom.updateWithAjax(fcom.makeUrl('Courses', 'removeQuiz'), { courseId, quizLinkId }, function (res) {
+                $('.attachedQuizJs').hide();
+                $('input[name="course_quilin_id"]').val('');
+                $('.quizSectionJs').removeClass('hasQuiz');
+                getCourseEligibility();
+            });
+        } else {
+            $('.attachedQuizJs').hide();
+            $('input[name="course_quilin_id"]').val('');
+        }
     };
 });
 $(document).ready(function(){
