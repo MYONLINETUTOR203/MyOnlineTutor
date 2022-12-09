@@ -97,7 +97,7 @@ class QuestionsController extends AdminBaseController
         $data = $srch->fetchAndFormat();
         $questionData = current($data);
         $question = new Question($quesId);
-        $options = $question->getQuesOptions();
+        $options = $question->getOptions();
         $answerIds = json_decode($questionData['ques_answer'], true);
         $this->sets([
             'questionData' => $questionData,

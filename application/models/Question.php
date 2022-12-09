@@ -58,12 +58,13 @@ class Question extends MyAppModel
     /**
      * Get question by id
      *
+     * @param int $id
      * @return array
      */
-    public function getById()
+    public static function getById(int $id)
     {
         $srch = new SearchBase(self::DB_TBL, 'ques');
-        $srch->addCondition('ques_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('ques_id', '=', $id);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
@@ -71,47 +72,22 @@ class Question extends MyAppModel
     }
 
     /**
-     * get search base class object
-     *
-     * @return object
-     */
-    public static function getSearchObject()
-    {
-        $srch = new SearchBase(self::DB_TBL, 'ques');
-        return $srch;
-    }
-
-    /**
-     * Get Question Options
+     * Get Question Options Details
      *
      * @param array $optionsIds
      * @return array
      */
-    public function getQuesOptions(array $optionsIds = [])
-    {
-        $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
-        $srch->addMultipleFields(['queopt_id', 'queopt_title']);
-        $srch->addCondition('queopt_ques_id', '=', $this->mainTableRecordId);
-        if (!empty($optionsIds)) {
-            $srch->addCondition('queopt_id', 'IN', $optionsIds);
-        }
-        $srch->addOrder('queopt_order', 'ASC');
-        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'queopt_id');
-    }
-
-    /**
-     * Get Question Options Details
-     *
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(array $optionsIds = [])
     {
         $srch = new SearchBase(self::DB_TBL_OPTIONS, 'queopt');
         $srch->addMultipleFields(['queopt_id', 'queopt_title', 'queopt_order', 'queopt_detail']);
         $srch->addCondition('queopt_ques_id', '=', $this->getMainTableRecordId());
+        if (!empty($optionsIds)) {
+            $srch->addCondition('queopt_id', 'IN', $optionsIds);
+        }
         $srch->doNotCalculateRecords();
         $srch->addOrder('queopt_order', 'ASC');
-        return FatApp::getDb()->fetchAll($srch->getResultSet());
+        return FatApp::getDb()->fetchAll($srch->getResultSet(), 'queopt_id');
     }
 
     /**
@@ -119,9 +95,9 @@ class Question extends MyAppModel
      *
      * @return bool
      */
-    public function delete(): bool
+    public function remove(): bool
     {
-        if (!$question = $this->getById()) {
+        if (!$question = static::getById($this->getMainTableRecordId())) {
             $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
             return false;
         }
@@ -144,7 +120,6 @@ class Question extends MyAppModel
         $db->startTransaction();
         $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         if (!$this->updateCount([$question['ques_cate_id'], $question['ques_subcate_id']])) {
@@ -164,8 +139,9 @@ class Question extends MyAppModel
     public function setup(array $data)
     {
         $categories = [];
-        if ($this->mainTableRecordId > 0) {
-            if (!$question = $this->getById()) {
+        $quesId = $this->getMainTableRecordId();
+        if ($quesId > 0) {
+            if (!$question = static::getById($this->getMainTableRecordId())) {
                 $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
                 return false;
             }
@@ -179,7 +155,7 @@ class Question extends MyAppModel
             ) {
                 $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
                 $srch->addCondition('quiz_user_id', '=', $this->userId);
-                $srch->addCondition('quique_ques_id', '=', $this->mainTableRecordId);
+                $srch->addCondition('quique_ques_id', '=', $quesId);
                 $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
                 $srch->setPageSize(1);
                 if (FatApp::getDb()->fetch($srch->getResultSet())) {
@@ -205,12 +181,11 @@ class Question extends MyAppModel
             }
         }
         $this->assignValues($data);
-        if ($this->mainTableRecordId < 1) {
+        if ($this->getMainTableRecordId() < 1) {
             $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
         }
         $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         if (!$this->setupOptions($data, $this->getMainTableRecordId())) {
@@ -258,7 +233,6 @@ class Question extends MyAppModel
                     'queopt_order'   => $i,
                 ]);
                 if (!$queopt->addNew()) {
-                    $this->error = $this->getError();
                     return false;
                 }
                 if (in_array($key, $data['answers'])) {
@@ -269,7 +243,6 @@ class Question extends MyAppModel
             $this->setFldValue('ques_id', $quesId);
             $this->assignValues(['ques_answer' => json_encode($ques_answers)]);
             if (!$this->save()) {
-                $this->error = $this->getError();
                 return false;
             }
         }

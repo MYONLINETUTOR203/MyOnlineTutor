@@ -81,7 +81,7 @@ class QuestionsController extends DashboardController
     {
         $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);
         $question = new Question($quesId, $this->siteUserId);
-        if (!$question->delete()) {
+        if (!$question->remove()) {
             FatUtility::dieJsonError($question->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));
@@ -117,11 +117,11 @@ class QuestionsController extends DashboardController
         $question = $options = $answers = [];
         $type = 0;
         if (0 < $id) {
-            $quesObj = new Question($id);
-            $question = $quesObj->getById();
+            $question = Question::getById($id);
             if (empty($question) || $question['ques_user_id'] != $this->siteUserId) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
             }
+            $quesObj = new Question($id);
             $options = $quesObj->getOptions();
             $type = $question['ques_type'];
             $answers = json_decode($question['ques_answer']);
@@ -178,15 +178,15 @@ class QuestionsController extends DashboardController
 
         $options = $answers = [];
         if ($quesId > 0) {
-            $question = new Question($quesId, $this->siteUserId);
-            if (!$data = $question->getById()) {
+            if (!$data = Question::getById($quesId)) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
             }
             if ($this->siteUserId != $data['ques_user_id']) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
             }
             if ($count == $data['ques_options_count']) {
-                $options = $question->getQuesOptions();
+                $question = new Question($quesId, $this->siteUserId);
+                $options = $question->getOptions();
                 $answers = json_decode($data['ques_answer'], true);
             }
         }
@@ -213,8 +213,7 @@ class QuestionsController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         $status = ($status == AppConstant::ACTIVE) ? AppConstant::INACTIVE : AppConstant::ACTIVE;
-        $question = new Question($id);
-        if (!$data = $question->getById()) {
+        if (!$data = Question::getById($id)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
         }
         if ($this->siteUserId != $data['ques_user_id']) {
@@ -230,6 +229,7 @@ class QuestionsController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_QUESTIONS_ATTACHED_WITH_QUIZZES_CANNOT_BE_DEACTIVATED'));
         }
 
+        $question = new Question($id);
         $question->setFldValue('ques_status', $status);
         if (!$question->save()) {
             FatUtility::dieJsonError($question->getError());
