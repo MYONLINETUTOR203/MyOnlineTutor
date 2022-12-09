@@ -4,7 +4,7 @@ $(function () {
     questionForm = function (id, type = 0) {
         quizReq = type;
         fcom.ajax(fcom.makeUrl('Questions', 'form', [id, type]), '', function (response) {
-            $.facebox(response, 'facebox-medium');
+            $.facebox(response, 'facebox-large');
         });
     };
     showOptions = function (type) {

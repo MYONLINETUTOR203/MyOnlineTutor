@@ -11,7 +11,7 @@ $status = QuizAttempt::getStatuses();
             </div>
         </div>
     </div>
-    <div class="facebox-panel__body padding-0">
+    <div class="facebox-panel__body padding-0 overflow-visible">
         <div class="table-scroll">
             <table class="table table--styled table--responsive table--bordered">
                 <thead>

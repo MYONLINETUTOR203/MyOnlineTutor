@@ -529,7 +529,10 @@ class GuestUserController extends MyAppController
                 Message::addMessage(Label::getLabel($successMsgLabel));
                 FatApp::redirectUser($redirectUrl);
             }
-            FatApp::redirectUser($helper->getLoginUrl(MyUtility::makeFullUrl('GuestUser', 'facebookLogin'), ['email', 'public_profile']));
+            $redirectUrl = MyUtility::makeUrl('GuestUser', 'facebookLogin');
+            $protocol = FatUtility::int(FatApp::getConfig('CONF_USE_SSL')) ? 'https://' : 'http://';
+            $redirectUrl = $protocol . $_SERVER['SERVER_NAME'] . urldecode($redirectUrl);
+            FatApp::redirectUser($helper->getLoginUrl($redirectUrl, ['email', 'public_profile']));
         } catch (\Throwable $th) {
             Message::addErrorMessage(Label::getLabel('LBL_FACEBOOK_LOGIN_IS_NOT_AVAILABLE'));
             FatApp::redirectUser(MyUtility::makeUrl('GuestUser', 'loginForm'));
