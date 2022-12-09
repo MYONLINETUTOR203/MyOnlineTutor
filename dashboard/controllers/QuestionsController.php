@@ -309,7 +309,6 @@ class QuestionsController extends DashboardController
         $notReqCountFld->setRequired(false);
 
         $typeFld->requirements()->addOnChangerequirementUpdate(
-<<<<<<< HEAD
             Question::TYPE_SINGLE,
             'eq',
             'ques_options_count',
@@ -318,10 +317,6 @@ class QuestionsController extends DashboardController
         $typeFld->requirements()->addOnChangerequirementUpdate(
             Question::TYPE_MULTIPLE,
             'eq',
-=======
-            Question::TYPE_TEXT,
-            'ne',
->>>>>>> 50aa2734f292755e6930c8ef2aa288bace1fe6d9
             'ques_options_count',
             $reqCountFld
         );

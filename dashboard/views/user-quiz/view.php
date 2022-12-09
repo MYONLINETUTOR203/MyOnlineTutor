@@ -25,18 +25,18 @@ $aqIdFld = $frm->getField('quatqu_id');
             </h4>
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
             <?php if (isset($quesFile)) { ?>
-                <p>
+                <div class="source">
                     <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate nodownload volume=1 autoplay=false></audio>
-                </p>
+                </div>
             <?php } ?>
         </div>
         <div class="box-view__body">
-            <div class="option-list">
-                <?php
-                if (in_array($question['qulinqu_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]) && count($options) > 0) {
+            <?php if (in_array($question['qulinqu_type'], [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]) && count($options) > 0) { ?>
+                <div class="option-list">
+                    <?php
                     $type = ($question['qulinqu_type'] == Question::TYPE_SINGLE) ? 'radio' : 'checkbox';
                     foreach ($options as $option) {
-                ?>
+                    ?>
                         <label class="option">
                             <input type="<?php echo $type; ?>" name="ques_answer[]" class="option__input" value="<?php echo $option['queopt_id']; ?>" <?php echo (in_array($option['queopt_id'], $fld->value)) ? 'checked="checked"' : ''; ?>>
                             <span class="option__item">
@@ -61,81 +61,91 @@ $aqIdFld = $frm->getField('quatqu_id');
                             </span>
                         </label>
                     <?php } ?>
-                <?php } elseif ($question['qulinqu_type'] == Question::TYPE_TEXT) { ?>
+                </div>
+            <?php } elseif ($question['qulinqu_type'] == Question::TYPE_TEXT) { ?>
+                <div class="option-list">
                     <?php echo $fld->getHtml(); ?>
-                <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
-                    <?php
-                    $class = $src = '';
-                    if (isset($file)) {
-                        $class = 'hasFile';
-                        $src = 'src="' . $file . '"';
-                    }
-                    ?>
-                    <div class="recordrtc <?php echo $class; ?>">
-                        <div class="audioRecorderJs -float-left mx-2">
+                </div>
+            <?php } elseif ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
+                <?php
+                $class = $src = '';
+                if (isset($file)) {
+                    $class = 'hasFile';
+                    $src = 'src="' . $file . '"';
+                }
+                ?>
+                <div class="source-view margin-top-5">
+                    <h5><?php echo Label::getLabel('LBL_RECORD_YOUR_RESPONSE'); ?></h5>
+                    <div class="source recordrtc <?php echo $class; ?>">
+                        <div class="source__field audioRecorderJs">
                             <audio <?php echo $src; ?> controls playsinline noplaybackrate volume=1 autoplay=false></audio>
                         </div>
-                        <div class="audioRecordingJs -float-left mx-2" style="display:none;">
-                        </div>
+                        <div class="source__field audioRecordingJs" style="display:none;"></div>
+                        <div class="source__actions">
 
-                        <div class="btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
-                            <svg class="icon icon--issue icon--small btnStartJs">
-                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#play"></use>
-                            </svg>
-                            <svg class="icon icon--issue icon--small btnStopJs" style="display:none;">
-                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#download"></use>
-                            </svg>
-                        </div>
-                        <div class="btnRemoveJs" onclick="removeRecording('<?php echo $data['quizat_id'] ?>', '<?php echo $aqIdFld->value; ?>');">
-                            <svg class="icon icon--issue icon--small">
-                                <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#trash"></use>
-                            </svg>
-                        </div>
-                        <?php echo $frm->getFieldHtml('audio_filename'); ?>
-                    </div>
-                <?php } ?>
-            </div>
-            <?php if (!empty($question['qulinqu_hint'])) { ?>
-                <div class="option-hint">
-                    <span class="d-inline-flex align-items-center">
-                        <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
-                            <strong class="d-inline-flex align-items-center">
-                                <svg class="icon icon--dashboard margin-right-2 icon--small">
-                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
+                            <a href="javascript:void(0)" class="btn btn--equal btn--transparent color-black is-hover btnRecordJs" data-status="<?php echo Label::getLabel('LBL_START_RECORDING'); ?>">
+                                <svg class="icon icon--recording btnStartJs" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 1a5 5 0 0 1 5 5v4a5 5 0 0 1-10 0V6a5 5 0 0 1 5-5zM3.055 11H5.07a7.002 7.002 0 0 0 13.858 0h2.016A9.004 9.004 0 0 1 13 18.945V23h-2v-4.055A9.004 9.004 0 0 1 3.055 11z" />
                                 </svg>
-                                <?php echo Label::getLabel('LBL_HINT:'); ?>
-                            </strong>
-                        </span>
-                        <span class="option-hint__content"><?php echo CommonHelper::renderHtml($question['qulinqu_hint']) ?></span>
-                    </span>
+                                <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_START_RECORDING'); ?></div>
+                                <svg class="icon icon--stop btnStopJs" style="display:none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M16.425 17.839A8.941 8.941 0 0 1 13 18.945V23h-2v-4.055A9.004 9.004 0 0 1 3.055 11H5.07a7.002 7.002 0 0 0 9.87 5.354l-1.551-1.55A5 5 0 0 1 7 10V8.414L1.393 2.808l1.415-1.415 19.799 19.8-1.415 1.414-4.767-4.768zm2.95-2.679l-1.443-1.442c.509-.81.856-1.73.997-2.718h2.016a8.95 8.95 0 0 1-1.57 4.16zm-2.91-2.909l-8.78-8.78A5 5 0 0 1 17 6l.001 4a4.98 4.98 0 0 1-.534 2.251z" />
+                                </svg>
+                                <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_STOP_RECORDING'); ?></div>
+                            </a>
+                            <a href="javascript:void(0)" onclick="removeRecording('<?php echo $data['quizat_id'] ?>', '<?php echo $aqIdFld->value; ?>');" class="btn btn--equal btn--transparent color-black is-hover btnRemoveJs">
+                                <svg class="icon icon--sorting" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z" />
+                                </svg>
+                                <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_REMOVE_RECORDING'); ?></div>
+                            </a>
+                            <?php echo $frm->getFieldHtml('audio_filename'); ?>
+                        </div>
+                    </div>
                 </div>
             <?php } ?>
         </div>
-        <div class="box-view__footer">
-            <div class="box-actions form">
-                <?php if ($question['qulinqu_order'] > 1) { ?>
-                    <div class="box-actions__cell box-actions__cell-left">
-                        <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
-                    </div>
-                <?php } ?>
-                <div class="box-actions__cell box-actions__cell-right">
-                    <?php
-                    if ($question['qulinqu_order'] < count($attemptedQues)) {
-                        echo $btnSkip->getHtml();
-                    }
-
-                    echo $frm->getFieldHtml('ques_type');
-                    echo $frm->getFieldHtml('ques_id');
-                    echo $frm->getFieldHtml('ques_attempt_id');
-                    echo $aqIdFld->getHtml();
-                    echo $btnSubmit->getHtml();
-                    ?>
+        <?php if (!empty($question['qulinqu_hint'])) { ?>
+            <div class="option-hint">
+                <span class="d-inline-flex align-items-center">
+                    <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
+                        <strong class="d-inline-flex align-items-center">
+                            <svg class="icon icon--dashboard margin-right-2 icon--small">
+                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
+                            </svg>
+                            <?php echo Label::getLabel('LBL_HINT:'); ?>
+                        </strong>
+                    </span>
+                    <span class="option-hint__content"><?php echo CommonHelper::renderHtml($question['qulinqu_hint']) ?></span>
+                </span>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="box-view__footer">
+        <div class="box-actions form">
+            <?php if ($question['qulinqu_order'] > 1) { ?>
+                <div class="box-actions__cell box-actions__cell-left">
+                    <input type="button" name="back" value="<?php echo Label::getLabel('LBL_BACK') ?>" onclick="previous('<?php echo $data['quizat_id'] ?>')" class="btn btn--bordered-primary btnPrevJs">
                 </div>
+            <?php } ?>
+            <div class="box-actions__cell box-actions__cell-right">
+                <?php
+                if ($question['qulinqu_order'] < count($attemptedQues)) {
+                    echo $btnSkip->getHtml();
+                }
+
+                echo $frm->getFieldHtml('ques_type');
+                echo $frm->getFieldHtml('ques_id');
+                echo $frm->getFieldHtml('ques_attempt_id');
+                echo $aqIdFld->getHtml();
+                echo $btnSubmit->getHtml();
+                ?>
             </div>
         </div>
     </div>
-    </form>
-    <?php echo $frm->getExternalJs(); ?>
+</div>
+</form>
+<?php echo $frm->getExternalJs(); ?>
 </div>
 <div class="flex-layout__small">
     <div class="box-view box-view--space box-flex">

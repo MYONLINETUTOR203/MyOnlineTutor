@@ -471,3 +471,20 @@ $repeat-items: 'repeat-items';
         &__title{font-weight: theme('font.weight.medium'); display: block; margin-bottom: 0.5rem;}
     }
 }
+$source: "source";
+
+.#{$source}{ margin: theme('margin.4') 0 0;display: flex; flex-wrap: wrap; align-items: center;
+        &__media, audio{width: 100%;}
+        &__field{flex: 1; min-width: 1%;}
+        &__actions{padding-#{theme('direction.left','value')}: 4px;
+    }
+}
+
+$source-view: "source-view";
+
+.#{$source-view}{ border-radius: theme('radius.2'); border: 1px solid theme('color.gray.200'); padding: theme('padding.5');
+
+    @media(min-width: theme('breakpoints.sm','value')){
+        padding: theme('padding.8');
+    }
+}
