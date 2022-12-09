@@ -33,6 +33,16 @@ if ($lesson['ordles_type'] == Lesson::TYPE_FTRAIL) {
 <div class="session">
     <div class="session__head">
         <div class="session-infobar">
+
+        <div class="d-block d-sm-none">
+            <a href="<?php echo MyUtility::makeUrl('Lessons'); ?>" class="page-back d-inline-block padding-top-1 padding-bottom-3">
+                <svg class="icon icon--back margin-right-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M7.828,11H20v2H7.828l5.364,5.364-1.414,1.414L4,12l7.778-7.778,1.414,1.414Z"></path>
+                </svg>
+        
+             <?php echo Label::getLabel('LBL_Back_to_My_Lessons'); ?></a>
+        </div>
+
             <div class="row justify-content-between align-items-center">
                 <div class="col-xl-8 col-lg-8 col-sm-12">
                     <div class="session-infobar__top">

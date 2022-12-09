@@ -282,7 +282,7 @@ $filters-layout: "filters-layout";
     &__item-forth{
         @media (min-width:theme('breakpoints.sm','value')){
             .#{$filter-item}{position: static;
-                &__target{max-width: 435px; #{theme('direction.right','value')}: 0; left: auto;}
+                &__target{max-width: 435px; #{theme('direction.right','value')}: 0; #{theme('direction.left','value')}: auto;}
             }
         }
     }
