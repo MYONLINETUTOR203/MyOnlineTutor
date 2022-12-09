@@ -3200,6 +3200,15 @@ img {
 .bg-secondary {
   color: var(--color-secondary-inverse) !important; }
 
+.overflow-visible {
+  overflow: visible !important; }
+
+.overflow-hidden {
+  overflow: hidden !important; }
+
+.overflow-auto {
+  overflow: auto !important; }
+
 .-no-hover {
   -webkit-box-shadow: var(--shadow-none) !important;
           box-shadow: var(--shadow-none) !important;
