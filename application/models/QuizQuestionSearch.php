@@ -32,10 +32,10 @@ class QuizQuestionSearch extends YocoachSearch
      */
     public function applyPrimaryConditions(): void
     {
-        $this->addCondition('ques_status', '=', AppConstant::ACTIVE);
-        $this->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $this->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
+        $this->addCondition('ques.ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         if ($this->userType == User::TEACHER) {
-            $this->addCondition('quiz_user_id', '=', $this->userId);
+            $this->addCondition('quiz.quiz_user_id', '=', $this->userId);
         }
     }
 
@@ -70,10 +70,8 @@ class QuizQuestionSearch extends YocoachSearch
         foreach ($rows as $key => $row) {
             $cateId = $row['ques_cate_id'];
             $subcateId = $row['ques_subcate_id'];
-
-            $row['cate_name'] = isset($categories[$cateId]) ? $categories[$cateId] : '-';
-            $row['subcate_name'] = isset($categories[$subcateId]) ? $categories[$subcateId] : '-';
-
+            $row['cate_name'] = $categories[$cateId] ?? '-';
+            $row['subcate_name'] = $categories[$subcateId] ?? '-';
             $rows[$key] = $row;
         }
         return $rows;
@@ -115,15 +113,7 @@ class QuizQuestionSearch extends YocoachSearch
             'ques.ques_status' => 'ques_status',
         ];
     }
-
-    /**
-     * Set order
-     */
-    public function setOrder()
-    {
-        $this->addOrder('quique_order', 'ASC');
-    }
-
+    
     /**
      * Join category table
      */

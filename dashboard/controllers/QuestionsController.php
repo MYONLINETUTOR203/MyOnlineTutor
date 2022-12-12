@@ -45,18 +45,7 @@ class QuestionsController extends DashboardController
         $srch = new QuestionSearch($this->siteLangId, $this->siteUserId, User::SUPPORT);
         $srch->applySearchConditions($post);
         $srch->applyPrimaryConditions();
-        $srch->addMultipleFields(
-            [
-                'CONCAT(teacher.user_first_name, " ", teacher.user_last_name) as full_name',
-                'ques.ques_id',
-                'ques.ques_cate_id',
-                'ques.ques_subcate_id',
-                'ques.ques_title',
-                'ques.ques_status',
-                'ques.ques_type',
-                'ques.ques_created',
-            ]
-        );
+        $srch->addSearchListingFields();
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('ques_status', 'DESC');

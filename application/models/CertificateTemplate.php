@@ -63,7 +63,6 @@ class CertificateTemplate extends MyAppModel
         $this->assignValues($data);
         $this->setFldValue('certpl_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -87,8 +86,9 @@ class CertificateTemplate extends MyAppModel
     public function updateStatus(string $certTplCode, int $status)
     {
         $whr = ['smt' => 'certpl_code = ?', 'vals' => [$certTplCode]];
-        if (!FatApp::getDb()->updateFromArray(static::DB_TBL, ['certpl_status' => $status], $whr)) {
-            $this->error = $this->getError();
+        $db = FatApp::getDb();
+        if (!$db->updateFromArray(static::DB_TBL, ['certpl_status' => $status], $whr)) {
+            $this->error = $db->getError();
             return false;
         }
 

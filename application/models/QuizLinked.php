@@ -42,7 +42,7 @@ class QuizLinked extends MyAppModel
             ]);
             $srch->setPageSize(1);
             $srch->doNotCalculateRecords();
-            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
+            if (!FatApp::getDb()->fetch($srch->getResultSet())) {
                 $this->error = Label::getLabel('LBL_INVALID_LESSON');
                 return false;
             }
@@ -57,13 +57,10 @@ class QuizLinked extends MyAppModel
                 'teacher.user_last_name as teacher_last_name', 'learner.user_lang_id', 'learner.user_email'
             ]);
             $srch->setPageSize(1);
-            if (!$data = FatApp::getDb()->fetch($srch->getResultSet())) {
+            if (!FatApp::getDb()->fetch($srch->getResultSet())) {
                 $this->error = Label::getLabel('LBL_INVALID_CLASS');
                 return false;
             }
-        }
-        if ($recordType == AppConstant::COURSE) {
-            return true;
         }
         return true;
     }
@@ -96,7 +93,7 @@ class QuizLinked extends MyAppModel
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);
         if (FatApp::getDb()->fetch($srch->getResultSet())) {
-            $this->error = Label::getLabel('LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST');
+            $this->error = Label::getLabel('LBL_QUIZ_ALREADY_ATTACHED_MESSAGE');
             return false;
         }
 
@@ -249,7 +246,7 @@ class QuizLinked extends MyAppModel
      *
      * @return bool
      */
-    public function delete()
+    public function remove()
     {
         $id = $this->getMainTableRecordId();
         $data = QuizLinked::getAttributesById($id, [
@@ -279,7 +276,6 @@ class QuizLinked extends MyAppModel
         $db->startTransaction();
         $this->setFldValue('quilin_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -294,24 +290,6 @@ class QuizLinked extends MyAppModel
 
         $db->commitTransaction();
         return true;
-    }
-
-    /**
-     * Get Linked Quiz Details
-     *
-     * @return array
-     */
-    public function getById(): array
-    {
-        $srch = new SearchBase(static::DB_TBL);
-        $srch->addCondition('quilin_id', '=', $this->getMainTableRecordId());
-        $srch->setPageSize(1);
-        $srch->doNotCalculateRecords();
-        $quiz = FatApp::getDb()->fetch($srch->getResultSet());
-        if (empty($quiz)) {
-            return [];
-        }
-        return $quiz;
     }
 
     /**
@@ -654,7 +632,7 @@ class QuizLinked extends MyAppModel
             foreach ($data as $id) {
                 $attempt = new QuizAttempt(0, $user['user_id']);
                 if (!$attempt->setupUserQuiz($id)) {
-                    $this->error = $this->getError();
+                    $this->error = $attempt->getError();
                     return false;
                 }
             }
@@ -676,7 +654,7 @@ class QuizLinked extends MyAppModel
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         $srch->addOrder('quique_quiz_id', 'ASC');
-        $srch->setOrder();
+        $srch->addOrder('quique_order', 'ASC');
         $srch->joinCategory();
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (count($questions) < 1) {

@@ -89,13 +89,11 @@ class QuizAttempt extends MyAppModel
             'quizat_started' => date('Y-m-d H:i:s'),
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
         if (!$this->setQuestion()) {
             $db->rollbackTransaction();
-            $this->error = $this->getError();
             return false;
         }
 
@@ -126,10 +124,6 @@ class QuizAttempt extends MyAppModel
             return false;
         }
 
-        $db = FatApp::getDb();
-        $db->startTransaction();
-
-        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $answer = $data['ques_answer'];
         if ($data['ques_type'] == Question::TYPE_TEXT) {
             $answer = [$data['ques_answer']];
@@ -140,6 +134,10 @@ class QuizAttempt extends MyAppModel
             'quatqu_qulinqu_id' => $data['ques_id'],
             'quatqu_answer' => json_encode($answer),
         ];
+
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $quesAttempt->assignValues($assignValues);
         if (!$quesAttempt->addNew([], $assignValues)) {
             $this->error = $quesAttempt->getError();
@@ -194,7 +192,6 @@ class QuizAttempt extends MyAppModel
             'quizat_updated' => $endTime
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -231,7 +228,6 @@ class QuizAttempt extends MyAppModel
             'quizat_created' => date('Y-m-d H:i:s'),
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -259,13 +255,14 @@ class QuizAttempt extends MyAppModel
     /**
      * Get data by id
      *
+     * @param int $id
      * @return array
      */
-    public function getById()
+    public static function getById(int $id)
     {
         $srch = new SearchBase(static::DB_TBL);
         $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
-        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quizat_id', '=', $id);
         $srch->addMultipleFields([
             'quilin_title', 'quilin_detail', 'quilin_type', 'quilin_questions', 'quilin_duration', 'quilin_record_type',
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
@@ -312,7 +309,6 @@ class QuizAttempt extends MyAppModel
         /* setup question id */
         $this->assignValues($data);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -327,7 +323,7 @@ class QuizAttempt extends MyAppModel
      */
     public function validate(int $status)
     {
-        $quiz = $this->getById();
+        $quiz = static::getById($this->getMainTableRecordId());
         if (empty($quiz)) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
             return false;
@@ -361,16 +357,13 @@ class QuizAttempt extends MyAppModel
     public function retake()
     {
         if (!$this->validate(QuizAttempt::STATUS_COMPLETED)) {
-            $this->error = $this->getError();
             return false;
         }
         if (!$this->canRetake()) {
-            $this->error = $this->getError();
             return false;
         }
         $this->mainTableRecordId = 0;
         if (!$this->setupUserQuiz($this->quiz['quizat_quilin_id'])) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -471,7 +464,6 @@ class QuizAttempt extends MyAppModel
                     $this->langId = $quiz['user_lang_id'];
                     $this->mainTableRecordId = $quiz['quizat_id'];
                     if (!$this->markComplete()) {
-                        $this->error = $this->getError();
                         return false;
                     }
                 } else {
@@ -532,7 +524,7 @@ class QuizAttempt extends MyAppModel
      */
     private function sendQuizCompletionNotification()
     {
-        $data = $this->getById();
+        $data = static::getById($this->getMainTableRecordId());
         $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
         $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
@@ -688,7 +680,6 @@ class QuizAttempt extends MyAppModel
             'quizat_marks' => $score,
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -720,7 +711,6 @@ class QuizAttempt extends MyAppModel
             'quizat_evaluation' => $evaluation,
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;

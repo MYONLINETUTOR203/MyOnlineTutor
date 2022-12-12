@@ -30,8 +30,7 @@ class UserQuizController extends DashboardController
      */
     public function index(int $id)
     {
-        $quiz = new QuizAttempt($id);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
@@ -87,8 +86,7 @@ class UserQuizController extends DashboardController
      */
     public function questions(int $id)
     {
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
@@ -108,6 +106,7 @@ class UserQuizController extends DashboardController
             Message::addErrorMessage(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
             $redirect = true;
         } elseif ($data['quilin_duration'] > 0 && strtotime(date('Y-m-d H:i:s')) > $endtime) {
+            $quiz = new QuizAttempt($id, $this->siteUserId);
             if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
                 Message::addErrorMessage($quiz->getError());
                 $redirect = true;
@@ -142,8 +141,7 @@ class UserQuizController extends DashboardController
         }
 
         /* get quiz details */
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
@@ -233,8 +231,7 @@ class UserQuizController extends DashboardController
         }
 
         /* get quiz details */
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
@@ -244,6 +241,7 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
         
+        $quiz = new QuizAttempt($id, $this->siteUserId);
         if ($quesId > 0) {
             $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
             if (!$quiz->save()) {

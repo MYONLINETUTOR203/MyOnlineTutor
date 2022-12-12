@@ -53,7 +53,6 @@ class Category extends MyAppModel
         }
         $parent = FatUtility::int($data['cate_parent']);
         if (!$this->checkUnique($data['cate_identifier'], $parent)) {
-            $this->error = $this->getError();
             return false;
         }
         $status = $data['cate_status'];
@@ -72,12 +71,10 @@ class Category extends MyAppModel
         }
         $this->setFldValue('cate_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         /* update sub categories count */
         if (!$this->updateSubCatCount()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -119,7 +116,6 @@ class Category extends MyAppModel
             return false;
         }
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -146,7 +142,6 @@ class Category extends MyAppModel
         }
         $this->setFldValue('cate_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         /* update sub categories count */
@@ -333,5 +328,58 @@ class Category extends MyAppModel
         $srch->addCondition('cate.cate_id', 'IN', $catgIds);
         $srch->doNotCalculateRecords();
         return FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
+    }
+
+    /**
+     * Update Questions Count In Categories
+     *
+     * @param array $cateIds
+     * @return bool
+     */
+    public function updateCount(array $cateIds)
+    {
+        if (count($cateIds) < 1) {
+            $this->error = Label::getLabel('LBL_INVALID_DATA_SENT_FOR_QUESTION_COUNT_UPDATE');
+            return false;
+        }
+        $cateIds = array_filter($cateIds);
+        $db = FatApp::getDb();
+        if (
+            !$db->query(
+                "UPDATE " . Category::DB_TBL . "
+                LEFT JOIN(
+                    SELECT ques.ques_cate_id AS catId,
+                        COUNT(*) AS totalRecord
+                    FROM
+                        " . Question::DB_TBL . " AS ques
+                    WHERE 
+                        ques.ques_cate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques.ques_deleted IS NULL
+                    GROUP BY
+                        ques.ques_cate_id 
+                ) mainCat
+                ON
+                    mainCat.catId = " . Category::DB_TBL . ".cate_id
+                LEFT JOIN(
+                    SELECT
+                        ques1.ques_subcate_id AS catId,
+                        COUNT(*) AS totalRecord
+                    FROM
+                        " . Question::DB_TBL . " AS ques1
+                    WHERE ques1.ques_subcate_id IN (" . implode(',', $cateIds) . ") AND
+                        ques1.ques_deleted IS NULL
+                    GROUP BY
+                        ques1.ques_subcate_id
+                ) catChild
+                ON
+                    catChild.catId = cate_id
+                SET cate_records = (IFNULL(mainCat.totalRecord, 0) + IFNULL(catChild.totalRecord, 0)) 
+                WHERE cate_id IN (" . implode(',', $cateIds) . ")"
+            )
+        ) {
+            $this->error = $db->getError();
+            return false;
+        }
+        return true;
     }
 }

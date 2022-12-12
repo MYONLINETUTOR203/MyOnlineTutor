@@ -466,3 +466,7 @@ ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT 
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_MANUAL';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_QUIZ_ALREADY_ATTACHED_MESSAGE', 'Some quiz(s) are already attached. Please try refreshing the list');

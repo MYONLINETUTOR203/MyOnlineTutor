@@ -90,8 +90,7 @@ class CertificatesController extends MyAppController
      */
     public function evaluation(int $attemptId)
     {
-        $quiz = new QuizAttempt($attemptId);
-        if (!$data = $quiz->getById()) {
+        if (!$data = QuizAttempt::getById($attemptId)) {
             FatUtility::exitWithErrorCode(404);
         }
         if ($data['quizat_active'] == AppConstant::NO) {

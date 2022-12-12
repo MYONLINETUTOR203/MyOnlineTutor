@@ -1,7 +1,5 @@
 <?php
 
-use GuzzleHttp\Psr7\Query;
-
 /**
  * This Controller is used for user quiz solving
  *

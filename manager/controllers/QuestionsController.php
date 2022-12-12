@@ -47,17 +47,7 @@ class QuestionsController extends AdminBaseController
         $srch = new QuestionSearch($this->siteLangId, 0, User::SUPPORT);
         $srch->applySearchConditions($post);
         $srch->applyPrimaryConditions();
-        $srch->addMultipleFields(
-            [
-                'CONCAT(teacher.user_first_name, " ", teacher.user_last_name) as full_name',
-                'ques.ques_id',
-                'ques.ques_cate_id',
-                'ques.ques_subcate_id',
-                'ques.ques_title',
-                'ques.ques_status',
-                'ques.ques_created'
-            ]
-        );
+        $srch->addSearchListingFields();
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['page']);
         $srch->addOrder('ques_status', 'DESC');
@@ -94,6 +84,7 @@ class QuestionsController extends AdminBaseController
             'catg_l'
         );
         $srch->addSearchListingFields();
+        $srch->addFld('catg_l.cate_name as ques_cate_name');
         $data = $srch->fetchAndFormat();
         $questionData = current($data);
         $question = new Question($quesId);

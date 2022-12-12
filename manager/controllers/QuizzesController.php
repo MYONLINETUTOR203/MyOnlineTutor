@@ -88,8 +88,7 @@ class QuizzesController extends AdminBaseController
      */
     public function questions(int $quizId)
     {
-        $quiz = new Quiz($quizId);
-        $data = $quiz->getById();
+        $data = Quiz::getById($quizId);
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
@@ -99,7 +98,7 @@ class QuizzesController extends AdminBaseController
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         $srch->joinCategory();
-        $srch->setOrder();
+        $srch->addOrder('quique_order', 'ASC');
         $this->set('questions', $srch->fetchAndFormat());
         $this->_template->render(false, false);
     }
