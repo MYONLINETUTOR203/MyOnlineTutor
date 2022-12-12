@@ -445,6 +445,14 @@ class CoursesController extends DashboardController
                 $label = str_replace('{currency}', MyUtility::getSystemCurrency()['currency_code'], $label);
                 FatUtility::dieJsonError($label);
             }
+            $maxPrice = 9999999;
+            if ($price >= $maxPrice) {
+                $label = Label::getLabel('LBL_COURSE_PRICE_CANNOT_BE_GREATER_THAN_{max-price}_{currency}');
+                $label = str_replace(
+                    ['{currency}', '{max-price}'], [MyUtility::getSystemCurrency()['currency_code'], $maxPrice], $label
+                );
+                FatUtility::dieJsonError($label);
+            }
         }
         $course->assignValues([
             'course_type' => $post['course_type'],
