@@ -128,9 +128,9 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
-                                        <?php echo Label::getLabel('LBL_ADDED_ON'); ?>
+                                        <?php echo Label::getLabel('LBL_PUBLISHED_ON'); ?>
                                     </label>
-                                    : <strong><?php echo MyDate::formatDate($courseData['course_created']); ?></strong>
+                                    : <strong><?php echo MyDate::formatDate($courseData['coapre_updated']); ?></strong>
                                 </div>
                             </div>
                         </div>
