@@ -1340,3 +1340,4 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ('LBL_CERTIFICATE_REPLACEMENT_VARS', 1, 'Replacement Vars');
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.9.20221118' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.11.20221213' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
