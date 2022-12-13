@@ -144,7 +144,8 @@ class QuizzesController extends DashboardController
         $srch->addCondition('quique_quiz_id', '=', $id);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
-        $srch->joinCategory();
+        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addOrder('quique_order', 'ASC');
         $questions = $srch->fetchAndFormat();
         $this->sets([

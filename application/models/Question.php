@@ -110,7 +110,7 @@ class Question extends MyAppModel
         $db = FatApp::getDb();
         $db->startTransaction();
         $this->setFldValue('ques_deleted', date('Y-m-d H:i:s'));
-        if (!$this->save()) {
+        if (!$this->saveData()) {
             return false;
         }
         $category = new Category();
@@ -121,6 +121,21 @@ class Question extends MyAppModel
         }
         $db->commitTransaction();
         return true;
+    }
+
+    /**
+     * Save data
+     *
+     * @return bool
+     */
+    public function saveData()
+    {
+        if ($this->getMainTableRecordId() < 1) {
+            $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
+        } else {
+            $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
+        }
+        return $this->save();
     }
 
     /**
@@ -167,17 +182,13 @@ class Question extends MyAppModel
             }
         }
         $this->assignValues($data);
-        if ($this->getMainTableRecordId() < 1) {
-            $this->setFldValue('ques_created', date('Y-m-d H:i:s'));
-        }
-        $this->setFldValue('ques_updated', date('Y-m-d H:i:s'));
         
         $db = FatApp::getDb();
         $db->startTransaction();
-        if (!$this->save()) {
+        if (!$this->saveData()) {
             return false;
         }
-        if (!$this->setupOptions($data, $this->getMainTableRecordId())) {
+        if (!$this->setupOptions($data)) {
             $db->rollbackTransaction();
             return false;
         }
@@ -196,11 +207,11 @@ class Question extends MyAppModel
      * Setup question options
      *
      * @param array $data
-     * @param int   $quesId
      * @return bool
      */
-    private function setupOptions(array $data, int $quesId): bool
+    private function setupOptions(array $data): bool
     {
+        $quesId = $this->getMainTableRecordId();
         $db = FatApp::getDb();
 
         /* delete old questions */

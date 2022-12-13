@@ -97,7 +97,8 @@ class QuizzesController extends AdminBaseController
         $srch->addCondition('quique_quiz_id', '=', $quizId);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
-        $srch->joinCategory();
+        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addOrder('quique_order', 'ASC');
         $this->set('questions', $srch->fetchAndFormat());
         $this->_template->render(false, false);

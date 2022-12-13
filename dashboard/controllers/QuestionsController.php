@@ -146,7 +146,6 @@ class QuestionsController extends DashboardController
         }
         
         $question = new Question($post['ques_id'], $this->siteUserId);
-        unset($post['ques_id']);
         if (!$question->setup($post)) {
             FatUtility::dieJsonError($question->getError());
         }

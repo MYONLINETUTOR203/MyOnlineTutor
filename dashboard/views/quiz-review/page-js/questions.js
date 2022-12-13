@@ -2,7 +2,7 @@ $(function () {
     view = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('QuizReview', 'view'), { id }, function (response) {
             $('.quizPanelJs').html(response.html);
-            $('.questionInfoJs').html(response.questionsInfo);
+            $('.quesNumJs').html(response.questionNumber);
         });
     };
     getQuestion = function (id, next, quesId) {

@@ -5,7 +5,19 @@
             <div class="d-sm-flex align-items-center justify-content-between">
                 <div>
                     <div class="page-meta">
-                        <span class="page-meta__item page-meta__item-first questionInfoJs"></span>
+                        <span class="page-meta__item page-meta__item-first questionInfoJs">
+                            <?php
+                            $quesInfoLabel = Label::getLabel('LBL_QUESTION_{current-question}_OF_{total-questions}');
+                            echo str_replace(
+                                ['{current-question}', '{total-questions}'],
+                                [
+                                    '<strong class="quesNumJs">0</strong>',
+                                    '<strong>' . $data['quilin_questions'] . '</strong>'
+                                ],
+                                $quesInfoLabel
+                            );
+                            ?>
+                        </span>
                         <span class="page-meta__item page-meta__item-second">
                             <?php echo Label::getLabel('LBL_TOTAL_MARKS'); ?> <strong class="totalMarksJs"></strong>
                         </span>

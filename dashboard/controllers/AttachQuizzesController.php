@@ -36,7 +36,7 @@ class AttachQuizzesController extends DashboardController
 
         /* validate record id */
         $quizLinked = new QuizLinked(0, $this->siteUserId, $this->siteUserType, $this->siteLangId);
-        if (!$quizLinked->validateRecordId($recordId, $recordType)) {
+        if (!$quizLinked->validateRecord($recordId, $recordType)) {
             FatUtility::dieJsonError($quizLinked->getError());
         }
 

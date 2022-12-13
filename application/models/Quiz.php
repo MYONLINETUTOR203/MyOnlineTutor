@@ -503,7 +503,8 @@ class Quiz extends MyAppModel
         }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
-        $srch->joinCategory();
+        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         $this->assignValues($data);
         if (!$this->save()) {

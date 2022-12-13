@@ -74,7 +74,7 @@ class CertificatesController extends DashboardController
         if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
             FatUtility::exitWithErrorCode(404);
         }
-        $data = $quiz->get();
+        $data = $quiz->getData();
         if ($data['quizat_active'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }

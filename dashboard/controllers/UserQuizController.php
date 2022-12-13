@@ -197,19 +197,9 @@ class UserQuizController extends DashboardController
             'expired' => 0
         ]);
 
-        /* Set quiz stats data */
-        $quesInfoLabel = Label::getLabel('LBL_QUESTION_{current-question}_OF_{total-questions}');
-        $quesInfoLabel = str_replace(
-            ['{current-question}', '{total-questions}'],
-            [
-                '<strong>' . $question['qulinqu_order'] . '</strong>',
-                '<strong>' . $data['quilin_questions'] . '</strong>'
-            ],
-            $quesInfoLabel
-        );
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'user-quiz/view.php', true),
-            'questionsInfo' => $quesInfoLabel,
+            'questionNumber' => $question['qulinqu_order'],
             'totalMarks' => floatval($data['quilin_marks']),
             'progressPercent' => MyUtility::formatPercent($data['quizat_progress']),
             'progress' => $data['quizat_progress'],
@@ -316,7 +306,7 @@ class UserQuizController extends DashboardController
             Message::addErrorMessage($quiz->getError());
             $this->redirect();
         }
-        $data = $quiz->get();
+        $data = $quiz->getData();
         if ($data['quizat_active'] == AppConstant::NO) {
             Message::addErrorMessage($error);
             $this->redirect();

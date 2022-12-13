@@ -41,7 +41,7 @@ class QuizReviewController extends DashboardController
             FatApp::redirectUser(MyUtility::makeUrl($controller));
         }
         
-        $data = $quiz->get();
+        $data = $quiz->getData();
         if ($this->siteUserType == User::TEACHER) {
             $this->set('user', User::getAttributesById($data['quizat_user_id'], ['user_first_name', 'user_last_name']));
         }
@@ -81,11 +81,11 @@ class QuizReviewController extends DashboardController
             $controller = ($this->siteUserType == User::LEARNER) ? 'Learner' : 'Teacher';
             FatApp::redirectUser(MyUtility::makeUrl($controller));
         }
-        $data = $quiz->get();
+        $data = $quiz->getData();
         if ($this->siteUserType == User::TEACHER) {
             $this->set('user', User::getAttributesById($data['quizat_user_id'], ['user_first_name', 'user_last_name']));
         }
-        $this->set('data', $quiz->get());
+        $this->set('data', $data);
         $this->_template->render();
     }
 
@@ -105,7 +105,7 @@ class QuizReviewController extends DashboardController
         if (!$quiz->validate()) {
             FatUtility::dieJsonError($quiz->getError());
         }
-        $data = $quiz->get();
+        $data = $quiz->getData();
 
         /* get current question & options data */
         $question = QuizLinked::getQuestionById($data['quizat_qulinqu_id']);
@@ -148,19 +148,9 @@ class QuizReviewController extends DashboardController
             'options' => json_decode($question['qulinqu_options'], true)
         ]);
 
-        /* Set quiz stats data */
-        $quesInfoLabel = Label::getLabel('LBL_QUESTION_{current-question}_OF_{total-questions}');
-        $quesInfoLabel = str_replace(
-            ['{current-question}', '{total-questions}'],
-            [
-                '<strong>' . $question['qulinqu_order'] . '</strong>',
-                '<strong>' . $data['quilin_questions'] . '</strong>'
-            ],
-            $quesInfoLabel
-        );
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'quiz-review/view.php', true),
-            'questionsInfo' => $quesInfoLabel,
+            'questionNumber' => $question['qulinqu_order'],
             'totalMarks' => $data['quilin_marks']
         ]);
     }
@@ -262,7 +252,7 @@ class QuizReviewController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
 
-        $quizData = $quiz->get();
+        $quizData = $quiz->getData();
         if ($quizData['quizat_evaluation'] != QuizAttempt::EVALUATION_PENDING) {
             FatUtility::dieJsonError(Label::getLabel('LBL_EVALUATION_IS_ALREADY_SUBMITTED'));
         }
