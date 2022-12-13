@@ -67,22 +67,14 @@ class QuizQuestionsController extends DashboardController
         $srch->doNotCalculateRecords();
         $srch->addFld('quique_ques_id');
         $questions = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quique_ques_id');
-        $questions = array_keys($questions);
-        
+        $post['questions'] = array_keys($questions);
+
         /* get questions list */
-        $type = Quiz::getAttributesById($post['quiz_id'], 'quiz_type');
+        $post['type'] = Quiz::getAttributesById($post['quiz_id'], 'quiz_type');
         $srch = new QuestionSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
-        if ($type == Quiz::TYPE_AUTO_GRADED) {
-            $srch->addCondition('ques_type', 'IN', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
-        } else {
-            $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
-        }
         $srch->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
-        if (count($questions) > 0) {
-            $srch->addDirectCondition('ques.ques_id NOT IN (' . implode(',', $questions) . ')');
-        }
         $srch->addMultipleFields([
             'ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title'
         ]);
