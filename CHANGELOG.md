@@ -162,3 +162,61 @@ Fixes:
     #068166 - Quiz instructions should display properly everywhere
     #068160 - Show the no. of attempts(5/5) on the user quiz page and quiz review page
     #068124 - Multiple answers choice question marks calculation is not correct
+
+
+## TV-1.4.1.20221213
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+    #069045 - Help text should come under the 2-factor authentication setting
+    #069043 - Two scroll bar are coming in the quiz attached popup
+    #069042 - Show quiz-related details on the frontend course detail page
+    #069041 - The teacher should not get a course quiz completion email
+    #069040 - The processing loader is coming twice when uploading certificate background image
+    #069038 - After course quiz timer completion result page is not opening directly after processing loader
+    #069034 - User is unable to paste the OTP in the verification code field
+    #069031 - Some of the content is not correct in the verification code popup
+    #069027 - Resend OTP link should not come if timer is running and if timer is 0 then timer should not come
+    #069025 - The cursor is not going to the next or previous field after submitting the incorrect code
+    #069023 - 2-factor authentication is not working if the user doing login from the dashboard pages
+    #069019 - Search criteria are getting removed in teacher, courses and classes listing after login with 2-factor authentication
+    #069018 - Unable to submit the code again if once submitted the incorrect code
+    #069016 - No error is coming if submit special characters in the verification code
+    #069013 - Code field size is decreasing if submit invalid code and then delete the entered code
+    #069011 - Nothing is happening when clicking on validate button without entering the code
+    #069007 - "Question not found" error is coming if reviewing the same/different quiz in multiple tabs
+    #069001 - Show the certificate type and which quiz is attached to a course in the admin panel
+    #069000 - Simplify the quiz attachment to the course process
+    #068997 - The next button should come on the last lecture video if the quiz is available after that
+    #068995 - There are some differences in all certificates
+    #068992 - Content under the course evaluation certificate is not relevant to the certificate
+    #068990 - Change the message as now quiz attached question can not be deleted
+    #068989 - The quiz section is remains active if the learner goes to a lecture using the previous button
+    #068988 - "Valid till" and "Offer certificate" values are coming on the course attached quiz
+    #068986 - Course completion and evaluation certificates content is not coming in Arabic language
+    #068985 - "Reset to default" content is not coming correct of course evaluation certificate
+    #068984 - Due to cache, updated content is not coming in the certificate preview
+    #068983 - When clicking on corners of the quiz section, the quiz is not getting open
+    #068982 - Question not found error is coming if press multiple clicks on next and back buttons
+    #068981 - Search form UI is distorted when coming back to quiz question attach listing
+    #068980 - Success message should be more accurate when teacher provide marks of manual question
+    #068979 - Notices are coming if reviewing the quiz which is reattempted
+    #068977 - Sometimes fatal error is coming when downloading the quiz certificate
+    #068972 - The cross(x) icon is coming over the user profile image in quiz header
+    #068926 - Cross(x) icon is coming which is not clickable when opens the quiz on course learning page
+    #068925 - Download certificate option is not coming on course if quiz "offer certificate" setting is no
+    #068924 - The "offer certificate" setting is not updating correctly
+    #068894 - Common "attach" button should not come as multiple quizzes attachment is not allowed
+    #068893 - "Type" filter should not come in search section if only auto-graded quizzes will come
+    #068892 - Teacher is unable to change the quiz attached to the course after saving the settings
+    #068891 - "Offer certificate" setting is not coming if the course completion certificate is inactive
+    #068890 - Course evaluation certificate option is coming although its inactive from admin panel
+    #068889 - Quiz total marks are not updated if the question marks updated
+    #068620 - Show alert message before ending the quiz so that learner can save his quiz answers
+    #068618 - Quiz time spent is not coming if the quiz has no duration
+    #068478 - The latest added questions should come on the top in quiz question listing
+    #068407 - Free trial lesson detail is coming incorrect in related emails
