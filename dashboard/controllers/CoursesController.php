@@ -48,18 +48,6 @@ class CoursesController extends DashboardController
             $srch->addSearchListingFields();
             $srch->applyPrimaryConditions();
             $srch->applySearchConditions($post);
-            $srch->addMultipleFields([
-                'course.course_id',
-                'course.course_price',
-                'course.course_currency_id',
-                'course.course_lectures',
-                'course.course_type',
-                'course.course_students',
-                'crsdetail.course_subtitle',
-                'crsdetail.course_title',
-                'course.course_ratings',
-                'ordcrs.ordcrs_teacher_paid',
-            ]);
             $srch->addOrder('crspro_status', 'ASC');
             $srch->addOrder('ordcrs_id', 'DESC');
         } else {

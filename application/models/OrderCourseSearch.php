@@ -137,7 +137,12 @@ class OrderCourseSearch extends YocoachSearch
             'crspro.crspro_progress' => 'crspro_progress',
             'crspro.crspro_ordcrs_id' => 'crspro_ordcrs_id',
             'crspro.crspro_id' => 'crspro_id',
-            'IFNULL(crspro.crspro_status, ' . CourseProgress::PENDING . ')' => 'crspro_status'
+            'IFNULL(crspro.crspro_status, ' . CourseProgress::PENDING . ')' => 'crspro_status',
+            'course.course_price' => 'course_price',
+            'course.course_currency_id' => 'course_currency_id',
+            'course.course_type' => 'course_type',
+            'course.course_students' => 'course_students',
+            'crsdetail.course_subtitle' => 'course_subtitle',
         ];
     }
 
