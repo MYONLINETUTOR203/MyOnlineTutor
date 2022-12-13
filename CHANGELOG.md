@@ -166,7 +166,9 @@ Fixes:
 
 ## TV-1.4.1.20221213
 
-Features: N/A
+Features:
+
+    Task-103957 - Audio Recording in Manual Grading Questions
 
 Updates: N/A
 
