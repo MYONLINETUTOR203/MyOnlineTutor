@@ -48,18 +48,6 @@ class CoursesController extends DashboardController
             $srch->addSearchListingFields();
             $srch->applyPrimaryConditions();
             $srch->applySearchConditions($post);
-            $srch->addMultipleFields([
-                'course.course_id',
-                'course.course_price',
-                'course.course_currency_id',
-                'course.course_lectures',
-                'course.course_type',
-                'course.course_students',
-                'crsdetail.course_subtitle',
-                'crsdetail.course_title',
-                'course.course_ratings',
-                'ordcrs.ordcrs_teacher_paid',
-            ]);
             $srch->addOrder('crspro_status', 'ASC');
             $srch->addOrder('ordcrs_id', 'DESC');
         } else {
@@ -447,6 +435,14 @@ class CoursesController extends DashboardController
             if ($price < 1) {
                 $label = Label::getLabel('LBL_COURSE_PRICE_CANNOT_BE_LESS_THAN_1_{currency}');
                 $label = str_replace('{currency}', MyUtility::getSystemCurrency()['currency_code'], $label);
+                FatUtility::dieJsonError($label);
+            }
+            $maxPrice = 9999999;
+            if ($price >= $maxPrice) {
+                $label = Label::getLabel('LBL_COURSE_PRICE_CANNOT_BE_GREATER_THAN_{max-price}_{currency}');
+                $label = str_replace(
+                    ['{currency}', '{max-price}'], [MyUtility::getSystemCurrency()['currency_code'], $maxPrice], $label
+                );
                 FatUtility::dieJsonError($label);
             }
         }

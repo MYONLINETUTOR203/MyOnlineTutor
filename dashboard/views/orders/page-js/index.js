@@ -40,7 +40,7 @@ $(function () {
             $('.target-data-js').removeClass('is-active').removeClass('is-expanded').hide();
             fcom.ajax(fcom.makeUrl('Orders', 'view'), {orderId: orderId, orderType: orderType}, function (response) {
                 $('.target-data-' + orderId).html(response).addClass('is-active').addClass('is-expanded').show();
-                $('html, body').animate({scrollTop: $('.target-data-' + orderId).offset().top - 100}, );
+                $('html, body').animate({scrollTop: $('.target-data-' + orderId).prev().offset().top - 100}, );
             });
         }
     };

@@ -10,13 +10,13 @@ class Restore extends FatModel
 {
     /* setup db names used for restoration */
 
-    const DATABASE_BASE = 'yocoach87h1y172_v3demo_3';
-    const DATABASE_FIRST = 'yocoach87h1y172_v3demo_1';
-    const DATABASE_SECOND = 'yocoach87h1y172_v3demo_2';
+    const DATABASE_BASE = 'yocoach87h1y172_elearning_3';
+    const DATABASE_FIRST = 'yocoach87h1y172_elearning_1';
+    const DATABASE_SECOND = 'yocoach87h1y172_elearning_2';
 
     /* set restoration duration */
     const RESTORE_TIME_INTERVAL_HOURS = 4;
-    const RESTORATION_SETUP_DATE = '2022-06-09 00:00:00';
+    const RESTORATION_SETUP_DATE = '2022-11-10 13:00:00';
 
     private $db;
     private $restoreDb;

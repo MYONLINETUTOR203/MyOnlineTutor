@@ -1,5 +1,21 @@
 # YoCoach V4 (YoCoach RV-3.0)
 
+## TV-4.1.11.20221213
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+	#069146	Course dates are different on listing and detail page
+	#069142	Under Admin > Manage Courses > Courses Label of the status row incorrect 'Active'
+	#069099	Course tags are available of teacher whose profile is not completed
+	#069098	Order detail main panel is hiding behind the header when viewing order details
+	#069097	Subcategories are not coming in the category filter in frontend course listing
+	#068611	Student count is still coming in the course listing after course cancellation
+	#066272	Course price is coming 0 when entering rupee value less than 79(conversion value)
+
 ## TV-4.1.10.20221124
 
 Features: N/A
