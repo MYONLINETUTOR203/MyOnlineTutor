@@ -7,7 +7,7 @@ $(function () {
                 }, 2000);
             } else {
                 $('.quizPanelJs').html(response.html);
-                $('.questionInfoJs').html(response.questionsInfo);
+                $('.quesNumJs').html(response.questionNumber);
                 $('.totalMarksJs').html(response.totalMarks);
                 $('.progressJs').html(response.progressPercent);
                 $('.progressBarJs').css({ 'width': response.progressPercent });

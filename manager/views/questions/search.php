@@ -36,7 +36,7 @@ foreach ($arrListing as $sn => $row) {
                     $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_subcate_name']));
                 break; 
             case 'full_name':
-                $td->appendElement('plaintext', [], $row['full_name']);
+                $td->appendElement('plaintext', [], ucwords($row['teacher_first_name'] . ' ' . $row['teacher_last_name']));
                 break;
             case 'ques_created':
                 $td->appendElement('plaintext', [], MyDate::formatDate($row['ques_created']));

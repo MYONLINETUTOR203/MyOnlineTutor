@@ -22,6 +22,7 @@ class QuizQuestionSearch extends YocoachSearch
         parent::__construct($langId, $userId, $userType);
         $this->joinTable(Quiz::DB_TBL, 'INNER JOIN', 'quiz_id = quique_quiz_id', 'quiz');
         $this->joinTable(Question::DB_TBL, 'INNER JOIN', 'ques_id = quique_ques_id', 'ques');
+        $this->joinTable(Category::DB_TBL, 'LEFT JOIN', 'ques_cate_id = cate.cate_id', 'cate');
     }
 
 
@@ -32,10 +33,10 @@ class QuizQuestionSearch extends YocoachSearch
      */
     public function applyPrimaryConditions(): void
     {
-        $this->addCondition('ques_status', '=', AppConstant::ACTIVE);
-        $this->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $this->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
+        $this->addCondition('ques.ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         if ($this->userType == User::TEACHER) {
-            $this->addCondition('quiz_user_id', '=', $this->userId);
+            $this->addCondition('quiz.quiz_user_id', '=', $this->userId);
         }
     }
 
@@ -60,20 +61,14 @@ class QuizQuestionSearch extends YocoachSearch
         if (count($rows) == 0) {
             return [];
         }
-        $categoryIds = [];
-        array_map(function ($val) use (&$categoryIds) {
-            $categoryIds = array_merge($categoryIds, [$val['ques_cate_id'], $val['ques_subcate_id']]);
-        }, $rows);
-        $categoryIds = array_unique($categoryIds);
+        $categoryIds = static::getCategoryIds($rows);
         $categories = Category::getNames($categoryIds, $this->langId);
 
         foreach ($rows as $key => $row) {
             $cateId = $row['ques_cate_id'];
             $subcateId = $row['ques_subcate_id'];
-
-            $row['cate_name'] = isset($categories[$cateId]) ? $categories[$cateId] : '-';
-            $row['subcate_name'] = isset($categories[$subcateId]) ? $categories[$subcateId] : '-';
-
+            $row['cate_name'] = $categories[$cateId] ?? '-';
+            $row['subcate_name'] = $categories[$subcateId] ?? '-';
             $rows[$key] = $row;
         }
         return $rows;
@@ -117,20 +112,17 @@ class QuizQuestionSearch extends YocoachSearch
     }
 
     /**
-     * Set order
+     * Get category & sub category ids
+     *
+     * @param array $data
+     * @return array
      */
-    public function setOrder()
+    private static function getCategoryIds(array $data)
     {
-        $this->addOrder('quique_order', 'ASC');
-    }
-
-    /**
-     * Join category table
-     */
-    public function joinCategory()
-    {
-        $this->joinTable(Category::DB_TBL, 'INNER JOIN', 'ques_cate_id = cate.cate_id', 'cate');
-        $this->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
-        $this->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $categoryIds = [];
+        array_map(function ($val) use (&$categoryIds) {
+            $categoryIds = array_merge($categoryIds, [$val['ques_cate_id'], $val['ques_subcate_id']]);
+        }, $data);
+        return array_unique($categoryIds);
     }
 }

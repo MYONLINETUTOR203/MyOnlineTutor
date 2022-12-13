@@ -1744,3 +1744,10 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOV
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.11.20221213' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_QUIZ_ALREADY_ATTACHED_MESSAGE', 'Some quiz(s) are already attached. Please try refreshing the list');
+

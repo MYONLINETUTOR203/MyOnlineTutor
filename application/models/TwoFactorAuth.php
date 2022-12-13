@@ -141,17 +141,14 @@ class TwoFactorAuth extends MyAppModel
             return true;
         }
         if (!$this->removeCode()) {
-            $this->error = $this->getError();
             return false;
         }       
         $auth_code = rand(100000, 999999);
         if (!$this->addCode($auth_code)) {
-            $this->error = $this->getError();
             return false;
         }
        
         if (!$this->sendTwoFactorAuthenticationEmail($user, $auth_code)) {
-            $this->error = $this->getError();
             return false;
         }       
         return true;
@@ -164,7 +161,6 @@ class TwoFactorAuth extends MyAppModel
             return true;
         }
         if (!$this->validateCode($authCode)) {
-            $this->error = $this->getError();
             return false;
         }
         if (!$this->updateStatus()) {
