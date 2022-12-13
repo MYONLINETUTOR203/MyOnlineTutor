@@ -89,8 +89,7 @@ class QuizzesController extends DashboardController
         $id = FatApp::getPostedData('id');
         $data = [];
         if ($id > 0) {
-            $quiz = new Quiz($id);
-            if (!$data = $quiz->getById()) {
+            if (!$data = Quiz::getById($id)) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
             }
             if ($data['quiz_user_id'] != $this->siteUserId) {
@@ -147,8 +146,9 @@ class QuizzesController extends DashboardController
         $srch->addCondition('quique_quiz_id', '=', $id);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
-        $srch->joinCategory();
-        $srch->setOrder();
+        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
+        $srch->addOrder('quique_order', 'ASC');
         $questions = $srch->fetchAndFormat();
         $this->sets([
             'questions' => $questions,
@@ -250,7 +250,7 @@ class QuizzesController extends DashboardController
     {
         $id = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
         $quiz = new Quiz($id, $this->siteUserId);
-        if (!$quiz->delete()) {
+        if (!$quiz->remove()) {
             FatUtility::dieJsonError($quiz->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_DELETED_SUCCESSFULLY!'));

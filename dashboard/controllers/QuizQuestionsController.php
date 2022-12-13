@@ -75,9 +75,7 @@ class QuizQuestionsController extends DashboardController
         $srch->applyPrimaryConditions();
         $srch->applySearchConditions($post);
         $srch->addCondition('ques.ques_status', '=', AppConstant::ACTIVE);
-        $srch->addMultipleFields([
-            'ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title'
-        ]);
+        $srch->addMultipleFields(['ques_id', 'ques_cate_id', 'ques_subcate_id', 'ques_type', 'ques_title']);
         $srch->setPageSize($post['pagesize']);
         $srch->setPageNumber($post['pageno']);
         $srch->addOrder('ques_id', 'DESC');
@@ -140,7 +138,7 @@ class QuizQuestionsController extends DashboardController
      *
      * @return void
      */
-    public function delete()
+    public function remove()
     {
         $quizId = FatApp::getPostedData('quizId', FatUtility::VAR_INT, 0);
         $quesId = FatApp::getPostedData('quesId', FatUtility::VAR_INT, 0);

@@ -79,20 +79,18 @@ class CoursesController extends AdminBaseController
     public function view(int $courseId)
     {
         $srch = new CourseSearch($this->siteLangId, 0, User::SUPPORT);
-
         $srch->addCondition('course.course_id', '=', $courseId);
         $srch->applyPrimaryConditions();
-
         $srch->joinTable(Category::DB_TBL, 'LEFT JOIN', 'subcate.cate_id = course.course_subcate_id', 'subcate');
+        $srch->joinTable(Course::DB_TBL_APPROVAL_REQUEST, 'LEFT JOIN', 'coapre.coapre_course_id = course.course_id', 'coapre');
         $srch->joinTable(
             Category::DB_LANG_TBL,
             'LEFT JOIN',
             'subcate.cate_id = subcatelang.catelang_cate_id AND subcatelang.catelang_lang_id = ' . $this->siteLangId,
             'subcatelang'
         );
-        
         $srch->addSearchListingFields();
-        $srch->addFld('subcatelang.cate_name AS subcate_name');
+        $srch->addMultipleFields(['subcatelang.cate_name AS subcate_name', 'coapre_updated']);
         $courses = $srch->fetchAndFormat();
         if (empty($courses)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));

@@ -354,8 +354,7 @@ class Certificate extends MyAppModel
                 $data = $data + $learner + $teacher;
                 break;
             case 'evaluation_certificate':
-                $quiz = new QuizAttempt($this->id);
-                $data = $quiz->getById();
+                $data = QuizAttempt::getById($this->id);
                 $data['completed_date'] = $data['quizat_updated'];
                 $learner = User::getAttributesById($data['quizat_user_id'], [
                     'user_first_name as learner_first_name', 'user_last_name as learner_last_name'

@@ -65,12 +65,12 @@ class QuestionSearch extends YocoachSearch
             $teacher = 'mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)';
             $this->addCondition($teacher, 'LIKE', '%' . trim($post['teacher']) . '%', 'AND', true);
         }
-        if ($post['type'] == Quiz::TYPE_AUTO_GRADED) {
+        if (isset($post['type']) && $post['type'] == Quiz::TYPE_AUTO_GRADED) {
             $this->addCondition('ques_type', 'IN', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
         } else {
             $this->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         }
-        if (count($post['questions']) > 0) {
+        if (isset($post['questions']) && count($post['questions']) > 0) {
             $this->addDirectCondition('ques.ques_id NOT IN (' . implode(',', $post['questions']) . ')');
         }
     }
@@ -164,7 +164,6 @@ class QuestionSearch extends YocoachSearch
             'ques.ques_marks' => 'ques_marks',
             'ques.ques_created' => 'ques_created',
             'cate.cate_type' => 'ques_cate_type',
-            'catg_l.cate_name' => 'ques_cate_name',
             'teacher.user_id' => 'teacher_id',
             'teacher.user_first_name' => 'teacher_first_name',
             'teacher.user_last_name' => 'teacher_last_name',

@@ -30,8 +30,7 @@ class UserQuizController extends DashboardController
      */
     public function index(int $id)
     {
-        $quiz = new QuizAttempt($id);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
@@ -84,8 +83,7 @@ class UserQuizController extends DashboardController
      */
     public function questions(int $id)
     {
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::exitWithErrorCode(404);
         }
@@ -103,6 +101,7 @@ class UserQuizController extends DashboardController
         if ($data['quizat_status'] == QuizAttempt::STATUS_CANCELED) {
             FatUtility::dieWithError(Label::getLabel('LBL_ACCESS_TO_CANCELED_QUIZ_IS_NOT_ALLOWED'));
         } elseif ($data['quilin_duration'] > 0 && strtotime(date('Y-m-d H:i:s')) > $endtime) {
+            $quiz = new QuizAttempt($id, $this->siteUserId);
             if (!$quiz->markComplete(date('Y-m-d H:i:s', $endtime))) {
                 FatUtility::dieWithError($quiz->getError());
             }
@@ -137,8 +136,7 @@ class UserQuizController extends DashboardController
         }
 
         /* get quiz details */
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
@@ -203,19 +201,9 @@ class UserQuizController extends DashboardController
             'expired' => 0
         ]);
 
-        /* Set quiz stats data */
-        $quesInfoLabel = Label::getLabel('LBL_QUESTION_{current-question}_OF_{total-questions}');
-        $quesInfoLabel = str_replace(
-            ['{current-question}', '{total-questions}'],
-            [
-                '<strong>' . $question['qulinqu_order'] . '</strong>',
-                '<strong>' . $data['quilin_questions'] . '</strong>'
-            ],
-            $quesInfoLabel
-        );
         FatUtility::dieJsonSuccess([
             'html' => $this->_template->render(false, false, 'user-quiz/view.php', true),
-            'questionsInfo' => $quesInfoLabel,
+            'questionNumber' => $question['qulinqu_order'],
             'totalMarks' => floatval($data['quilin_marks']),
             'progressPercent' => MyUtility::formatPercent($data['quizat_progress']),
             'progress' => $data['quizat_progress'],
@@ -237,8 +225,7 @@ class UserQuizController extends DashboardController
         }
 
         /* get quiz details */
-        $quiz = new QuizAttempt($id, $this->siteUserId);
-        $data = $quiz->getById();
+        $data = QuizAttempt::getById($id);
         if (empty($data)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUIZ_NOT_FOUND'));
         }
@@ -247,7 +234,8 @@ class UserQuizController extends DashboardController
         if ($data['quizat_user_id'] != $this->siteUserId || $data['quizat_active'] == AppConstant::NO) {
             FatUtility::dieJsonError(Label::getLabel('LBL_UNAUTHORIZED_ACCESS'));
         }
-
+        
+        $quiz = new QuizAttempt($id, $this->siteUserId);
         if ($quesId > 0) {
             $quiz->assignValues(['quizat_qulinqu_id' => $quesId]);
             if (!$quiz->save()) {
@@ -321,7 +309,7 @@ class UserQuizController extends DashboardController
         if (!$quiz->validate(QuizAttempt::STATUS_COMPLETED)) {
             FatUtility::dieWithError($quiz->getError());
         }
-        $data = $quiz->get();
+        $data = $quiz->getData();
         if ($data['quizat_active'] == AppConstant::NO) {
             FatUtility::dieWithError(Label::getLabel('LBL_INVALID_ACCESS'));
         }

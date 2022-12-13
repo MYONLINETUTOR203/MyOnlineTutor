@@ -446,6 +446,7 @@ class CoursesController extends MyAppController
                 'crsdetail.course_id = course.course_id',
                 'course'
         );
+        $srch->joinTable(User::DB_TBL, 'INNER JOIN', 'course.course_user_id = teacher.user_id', 'teacher');
         $srch->doNotCalculateRecords();
         $srch->setPageSize(5);
         $srch->addCondition('mysql_func_LOWER(course_srchtags)', 'LIKE', '%' . strtolower($keyword) . '%', 'AND', true);
@@ -453,6 +454,11 @@ class CoursesController extends MyAppController
         $srch->addCondition('course.course_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addCondition('course.course_status', '=', Course::PUBLISHED);
         $srch->addCondition('course.course_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('teacher.user_username', '!=', "");
+        $srch->addDirectCondition('teacher.user_deleted IS NULL');
+        $srch->addDirectCondition('teacher.user_verified IS NOT NULL');
+        $srch->addCondition('teacher.user_active', '=', AppConstant::ACTIVE);
+        $srch->addCondition('teacher.user_is_teacher', '=', AppConstant::YES);
         $tagsList = FatApp::getDb()->fetchAll($srch->getResultSet());
         if (!empty($tagsList)) {
             return $tagsList;

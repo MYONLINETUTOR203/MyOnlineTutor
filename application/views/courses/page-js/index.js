@@ -71,7 +71,7 @@ $(document).ready(function () {
     clearCategorySearch = function (close = 0) {
         $('input[name="course_cate_id[]"]').prop('checked', false);
         $('input[name="category"]').val('');
-        $('.categorySelectJs li').show();
+        $('.categOptParentJS, .categOptParentJS li').show();
         $('.catgPlaceholderJs').html(categoryLbl);
         searchByFilters(close);
         countCatgFilters();
@@ -217,7 +217,7 @@ $(document).ready(function () {
     };
     clearAllFiltersWeb = function () {
         $('.moreFiltersJs').find('input[type="checkbox"]').prop('checked', false);
-        $('.categorySelectJs li, .levelFiltersJs li, .langFiltersJs li').show();
+        $('.categOptParentJS, .categOptParentJS li, .levelFiltersJs li, .langFiltersJs li').show();
         searchByFilters();
         countSelectedFilters();
     };

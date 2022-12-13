@@ -615,7 +615,7 @@ class MyUtility extends FatUtility
      */
     public static function isDemoUrl(): bool
     {
-        return (strtolower($_SERVER['SERVER_NAME']) === 'teach.yo-coach.com');
+        return (strtolower($_SERVER['SERVER_NAME']) === 'elearning.yo-coach.com');
     }
 
     /**

@@ -59,12 +59,13 @@ class Quiz extends MyAppModel
     /**
      * Get quiz by id
      *
+     * @param int $id
      * @return array
      */
-    public function getById(): array
+    public static function getById(int $id): array
     {
         $srch = new SearchBase(self::DB_TBL, 'quiz');
-        $srch->addCondition('quiz_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quiz_id', '=', $id);
         $srch->addCondition('quiz_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $srch->addMultipleFields([
             'quiz_id', 'quiz_type', 'quiz_user_id', 'quiz_title', 'quiz_detail',
@@ -84,14 +85,13 @@ class Quiz extends MyAppModel
      *
      * @return bool
      */
-    public function delete(): bool
+    public function remove(): bool
     {
         if (!$this->validate()) {
             return false;
         }
         $this->setFldValue('quiz_deleted', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -152,7 +152,6 @@ class Quiz extends MyAppModel
         $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
-            $this->error = $this->getError();
             return false;
         }
         $db->commitTransaction();
@@ -190,7 +189,6 @@ class Quiz extends MyAppModel
         }
         /* check completion status */
         if (!$quizStatus = $this->getCompletedStatus()) {
-            $this->error = $this->getError();
             return false;
         }
         if ($quizStatus['is_complete'] == AppConstant::YES) {
@@ -199,7 +197,6 @@ class Quiz extends MyAppModel
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -275,7 +272,6 @@ class Quiz extends MyAppModel
         $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
             $db->rollbackTransaction();
-            $this->error = $this->getError();
             return false;
         }
 
@@ -303,7 +299,6 @@ class Quiz extends MyAppModel
         $this->assignValues($data);
         $this->setFldValue('quiz_updated', date('Y-m-d H:i:s'));
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -315,7 +310,6 @@ class Quiz extends MyAppModel
             $this->setFldValue('quiz_status', static::STATUS_DRAFTED);
         }
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -417,7 +411,8 @@ class Quiz extends MyAppModel
     public function getCompletedStatus()
     {
         $criteria = ['general' => 0, 'settings' => 0, 'questions' => 0, 'is_complete' => AppConstant::NO];
-        if (!$data = $this->getById()) {
+        $quizId = $this->getMainTableRecordId();
+        if (!$data = static::getById($quizId)) {
             return $criteria;
         }
         if ($this->userId != $data['quiz_user_id']) {
@@ -432,7 +427,7 @@ class Quiz extends MyAppModel
 
         /* get questions count */
         $srch = new QuizQuestionSearch(0, $this->userId, User::TEACHER);
-        $srch->addCondition('quique_quiz_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quique_quiz_id', '=', $quizId);
         $srch->applyPrimaryConditions();
         $srch->addSearchListingFields();
         $srch->setPageSize(1);
@@ -469,7 +464,6 @@ class Quiz extends MyAppModel
         $status = ($status == AppConstant::ACTIVE) ? AppConstant::INACTIVE : AppConstant::ACTIVE;
         $this->setFldValue('quiz_active', $status);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -482,7 +476,7 @@ class Quiz extends MyAppModel
      */
     public function validate(): bool
     {
-        if (!$quiz = $this->getById()) {
+        if (!$quiz = static::getById($this->getMainTableRecordId())) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
             return false;
         }
@@ -509,11 +503,11 @@ class Quiz extends MyAppModel
         }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
-        $srch->joinCategory();
+        $srch->addCondition('cate.cate_status', '=', AppConstant::ACTIVE);
+        $srch->addCondition('cate.cate_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         $this->assignValues($data);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;

@@ -89,13 +89,11 @@ class QuizAttempt extends MyAppModel
             'quizat_started' => date('Y-m-d H:i:s'),
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
         if (!$this->setQuestion()) {
             $db->rollbackTransaction();
-            $this->error = $this->getError();
             return false;
         }
 
@@ -142,6 +140,10 @@ class QuizAttempt extends MyAppModel
             'quatqu_qulinqu_id' => $data['ques_id'],
             'quatqu_answer' => json_encode($answer),
         ];
+
+        $db = FatApp::getDb();
+        $db->startTransaction();
+        $quesAttempt = new TableRecord(static::DB_TBL_QUESTIONS);
         $quesAttempt->assignValues($assignValues);
         if (!$quesAttempt->addNew([], $assignValues)) {
             $this->error = $quesAttempt->getError();
@@ -209,7 +211,6 @@ class QuizAttempt extends MyAppModel
             'quizat_updated' => $endTime
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -248,7 +249,6 @@ class QuizAttempt extends MyAppModel
             'quizat_created' => date('Y-m-d H:i:s'),
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -276,13 +276,14 @@ class QuizAttempt extends MyAppModel
     /**
      * Get data by id
      *
-     * @return array
+     * @param int $id
+     * @return array|null
      */
-    public function getById()
+    public static function getById(int $id)
     {
         $srch = new SearchBase(static::DB_TBL);
         $srch->joinTable(QuizLinked::DB_TBL, 'INNER JOIN', 'quizat_quilin_id = quilin_id');
-        $srch->addCondition('quizat_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quizat_id', '=', $id);
         $srch->addMultipleFields([
             'quilin_title', 'quilin_detail', 'quilin_type', 'quilin_questions', 'quilin_duration', 'quilin_record_type',
             'quilin_attempts', 'quilin_marks', 'quilin_passmark', 'quilin_validity', 'quilin_certificate',
@@ -329,7 +330,6 @@ class QuizAttempt extends MyAppModel
         /* setup question id */
         $this->assignValues($data);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
 
@@ -344,7 +344,7 @@ class QuizAttempt extends MyAppModel
      */
     public function validate(int $status)
     {
-        $quiz = $this->getById();
+        $quiz = static::getById($this->getMainTableRecordId());
         if (empty($quiz)) {
             $this->error = Label::getLabel('LBL_QUIZ_NOT_FOUND');
             return false;
@@ -378,16 +378,13 @@ class QuizAttempt extends MyAppModel
     public function retake()
     {
         if (!$this->validate(QuizAttempt::STATUS_COMPLETED)) {
-            $this->error = $this->getError();
             return false;
         }
         if (!$this->canRetake()) {
-            $this->error = $this->getError();
             return false;
         }
         $this->mainTableRecordId = 0;
         if (!$this->setupUserQuiz($this->quiz['quizat_quilin_id'])) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -449,7 +446,7 @@ class QuizAttempt extends MyAppModel
      *
      * @return array
      */
-    public function get()
+    public function getData()
     {
         return $this->quiz;
     }
@@ -484,25 +481,22 @@ class QuizAttempt extends MyAppModel
 
         $srch->addOrder('quizat_id');
         $quizzes = FatApp::getDb()->fetchAll($srch->getResultSet(), 'quizat_id');
-        if (!empty($quizzes)) {
-            foreach ($quizzes as $quiz) {
-                if ($quiz['status'] == QuizAttempt::STATUS_COMPLETED) {
-                    $this->userId = $quiz['quizat_user_id'];
-                    $this->userType = User::LEARNER;
-                    $this->langId = $quiz['user_lang_id'];
-                    $this->mainTableRecordId = $quiz['quizat_id'];
-                    if (!$this->markComplete()) {
-                        $this->error = $this->getError();
-                        return false;
-                    }
-                } else {
-                    $data = ['quizat_status' => $quiz['status'], 'quizat_updated' => date('Y-m-d H:i:s')];
-                    $where = ['smt' => 'quizat_id = ?', 'vals' => [$quiz['quizat_id']]];
-                    $db = FatApp::getDb();
-                    if (!$db->updateFromArray(QuizAttempt::DB_TBL, $data, $where)) {
-                        $this->error = $db->getError();
-                        return false;
-                    }
+        foreach ($quizzes as $quiz) {
+            if ($quiz['status'] == QuizAttempt::STATUS_COMPLETED) {
+                $this->userId = $quiz['quizat_user_id'];
+                $this->userType = User::LEARNER;
+                $this->langId = $quiz['user_lang_id'];
+                $this->mainTableRecordId = $quiz['quizat_id'];
+                if (!$this->markComplete()) {
+                    return false;
+                }
+            } else {
+                $data = ['quizat_status' => $quiz['status'], 'quizat_updated' => date('Y-m-d H:i:s')];
+                $where = ['smt' => 'quizat_id = ?', 'vals' => [$quiz['quizat_id']]];
+                $db = FatApp::getDb();
+                if (!$db->updateFromArray(QuizAttempt::DB_TBL, $data, $where)) {
+                    $this->error = $db->getError();
+                    return false;
                 }
             }
         }
@@ -553,7 +547,7 @@ class QuizAttempt extends MyAppModel
      */
     private function sendQuizCompletionNotification()
     {
-        $data = $this->getById();
+        $data = static::getById($this->getMainTableRecordId());
         $sessionType = AppConstant::getSessionTypes($data['quilin_record_type']);
         $score = ($data['quizat_scored']) ? $data['quizat_scored'] : 0;
         $duration = strtotime($data['quizat_updated']) - strtotime($data['quizat_started']);
@@ -561,44 +555,11 @@ class QuizAttempt extends MyAppModel
 
         /* get session title */
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {
-            $srch = new SearchBase(GroupClass::DB_TBL, 'grpcls');
-            $srch->joinTable(
-                GroupClass::DB_TBL_LANG,
-                'LEFT JOIN',
-                'gclang.gclang_grpcls_id = grpcls.grpcls_id AND gclang.gclang_lang_id = ' . $this->langId,
-                'gclang'
-            );
-            $srch->addFld('IFNULL(gclang.grpcls_title, grpcls.grpcls_title) as grpcls_title');
-            $srch->setPageSize(1);
-            $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
-            $srch->doNotCalculateRecords();
-            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
+            $sessionData = QuizLinked::getClassData($data['quilin_record_id'], $this->langId);
             $sessionTitle = $sessionData['grpcls_title'];
         } elseif ($data['quilin_record_type'] == AppConstant::LESSON) {
-            $srch = new SearchBase(Lesson::DB_TBL, 'ordles');
-            $srch->joinTable(TeachLanguage::DB_TBL, 'LEFT JOIN', 'tlang.tlang_id = ordles.ordles_tlang_id', 'tlang');
-            $srch->joinTable(
-                TeachLanguage::DB_TBL_LANG,
-                'LEFT JOIN',
-                'tlanglang.tlanglang_tlang_id = tlang.tlang_id and tlanglang.tlanglang_lang_id =' . $this->langId,
-                'tlanglang'
-            );
-            $srch->addMultipleFields([
-                'ordles_duration', 'IFNULL(tlanglang.tlang_name, tlang.tlang_identifier) as ordles_tlang_name',
-                'ordles_type'
-            ]);
-            $srch->setPageSize(1);
-            $srch->addCondition('ordles_id', '=', $data['quilin_record_id']);
-            $srch->doNotCalculateRecords();
-            $sessionData = FatApp::getDb()->fetch($srch->getResultSet());
-            if ($sessionData['ordles_type'] == Lesson::TYPE_FTRAIL) {
-                $sessionData['ordles_tlang_name'] = Label::getLabel('LBL_FREE_TRIAL');
-            }
-            $sessionTitle = str_replace(
-                ['{teach-lang}', '{n}'],
-                [$sessionData['ordles_tlang_name'], $sessionData['ordles_duration']],
-                Label::getLabel('LBL_{teach-lang},_{n}_minutes_of_Lesson')
-            );
+            $sessionData = QuizLinked::getLessonData($data['quilin_record_id'], $this->langId);
+            $sessionTitle = $sessionData['lesson_title'];
         }
 
         $srch = new SearchBase(User::DB_TBL);
@@ -709,7 +670,6 @@ class QuizAttempt extends MyAppModel
             'quizat_marks' => $score,
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;
@@ -741,7 +701,6 @@ class QuizAttempt extends MyAppModel
             'quizat_evaluation' => $evaluation,
         ]);
         if (!$this->save()) {
-            $this->error = $this->getError();
             return false;
         }
         return true;

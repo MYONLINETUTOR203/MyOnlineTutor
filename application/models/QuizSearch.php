@@ -72,11 +72,7 @@ class QuizSearch extends YocoachSearch
      */
     public function fetchAndFormat(): array
     {
-        $rows = FatApp::getDb()->fetchAll($this->getResultSet(), 'quiz_id');
-        if (count($rows) == 0) {
-            return [];
-        }
-        return $rows;
+        return FatApp::getDb()->fetchAll($this->getResultSet(), 'quiz_id');
     }
 
     /**

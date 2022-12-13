@@ -72,7 +72,7 @@ $(function () {
         if (!confirm(langLbl.confirmRemove)) {
             return;
         }
-        fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'delete'), { quizId, quesId }, function (res) {
+        fcom.updateWithAjax(fcom.makeUrl('QuizQuestions', 'remove'), { quizId, quesId }, function (res) {
             questions(quizId);
             getCompletedStatus(quizId);
         });

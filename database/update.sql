@@ -1665,7 +1665,6 @@ INSERT INTO `tbl_language_labels` (`label_key`, `label_lang_id`, `label_caption`
 ('LBL_CERTIFICATE_REPLACEMENT_VARS', 1, 'Replacement Vars');
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.9.20221118' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
-
 ALTER TABLE `tbl_quiz_attempts_questions` ADD `quatqu_comment` VARCHAR(255) NOT NULL AFTER `quatqu_answer`; 
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.0.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
@@ -1694,4 +1693,11 @@ UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_con
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
 
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.10.20221124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-4.1.11.20221213' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOVAL_CONFIRMATION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
+(1, 'LBL_QUIZ_ALREADY_ATTACHED_MESSAGE', 'Some quiz(s) are already attached. Please try refreshing the list');

@@ -162,4 +162,3 @@ Fixes:
     #068166 - Quiz instructions should display properly everywhere
     #068160 - Show the no. of attempts(5/5) on the user quiz page and quiz review page
     #068124 - Multiple answers choice question marks calculation is not correct
-

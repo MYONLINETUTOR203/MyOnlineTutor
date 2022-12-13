@@ -8,7 +8,7 @@ $arr_flds = [
     'cate_name' => Label::getLabel('LBL_CATEGORY'),
     'subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'coapre_updated' => Label::getLabel('LBL_PUBLISHED_ON'),
-    'course_active' => Label::getLabel('LBL_ACTIVE'),
+    'course_active' => Label::getLabel('LBL_STATUS'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive table--hovered']);
