@@ -224,7 +224,7 @@ class Quiz extends MyAppModel
         if ($quizType == Quiz::TYPE_NON_GRADED) {
             $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         } else {
-            $srch->addCondition('ques_type', '=', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_SINGLE, Question::TYPE_MULTIPLE]);
         }
         $srch->addCondition('ques_status', '=', AppConstant::ACTIVE);
         $srch->addCondition('ques_deleted', 'IS', 'mysql_func_NULL', 'AND', true);
@@ -499,7 +499,7 @@ class Quiz extends MyAppModel
         if (Quiz::TYPE_NON_GRADED == Quiz::getAttributesById($this->getMainTableRecordId(), 'quiz_type')) {
             $srch->addCondition('ques_type', 'IN', [Question::TYPE_TEXT, Question::TYPE_AUDIO]);
         } else {
-            $srch->addCondition('ques_type', '=', [Question::TYPE_MULTIPLE, Question::TYPE_SINGLE]);
+            $srch->addCondition('ques_type', 'IN', [Question::TYPE_MULTIPLE, Question::TYPE_SINGLE]);
         }
         $srch->applyPrimaryConditions();
         $srch->addFld('COUNT(quique_ques_id) as quiz_questions');
