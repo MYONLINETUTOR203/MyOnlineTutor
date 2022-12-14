@@ -236,7 +236,7 @@ class Question extends MyAppModel
         }
         $ques_answers = [];
 
-        if (!in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
+        if (in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
             return true;
         }
         $i = 1;
