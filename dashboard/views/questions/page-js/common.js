@@ -18,6 +18,8 @@ $(function () {
             if (type == TYPE_AUDIO) {
                 $('.recorderJs').show();
                 getPlayer();
+            } else {
+                $('.recorderJs').hide();
             }
         }
     };
