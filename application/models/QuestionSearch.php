@@ -65,13 +65,13 @@ class QuestionSearch extends YocoachSearch
             $teacher = 'mysql_func_CONCAT(teacher.user_first_name, " ", teacher.user_last_name)';
             $this->addCondition($teacher, 'LIKE', '%' . trim($post['teacher']) . '%', 'AND', true);
         }
-        if (isset($post['type']) && $post['type'] == Quiz::TYPE_AUTO_GRADED) {
-            $this->addCondition('ques_type', '!=', Question::TYPE_TEXT);
-        } else {
-            $this->addCondition('ques_type', '=', Question::TYPE_TEXT);
-        }
-        if (isset($post['questions']) && count($post['questions']) > 0) {
-            $this->addDirectCondition('ques.ques_id NOT IN (' . implode(',', $post['questions']) . ')');
+
+        if (isset($post['type'])) {
+            if ($post['type'] == Quiz::TYPE_AUTO_GRADED) {
+                $this->addCondition('ques_type', '!=', Question::TYPE_TEXT);
+            } else {
+                $this->addCondition('ques_type', '=', Question::TYPE_TEXT);
+            }
         }
     }
 

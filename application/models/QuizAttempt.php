@@ -185,6 +185,9 @@ class QuizAttempt extends MyAppModel
 
         if (empty($endTime)) {
             $endTime = date('Y-m-d H:i:s');
+            if (strtotime($endTime) > strtotime($this->quiz['quilin_validity'])) {
+                $endTime = $this->quiz['quilin_validity'];
+            }
         }
         $this->assignValues([
             'quizat_qulinqu_id' => 0,
