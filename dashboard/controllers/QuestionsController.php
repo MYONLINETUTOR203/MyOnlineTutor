@@ -168,8 +168,7 @@ class QuestionsController extends DashboardController
     public function removeRecording()
     {
         $quesId = FatApp::getPostedData('id', FatUtility::VAR_INT, 0);
-        $question = new Question($quesId);
-        if (!$question = $question->getById()) {
+        if (!$question = Question::getById($quesId)) {
             FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
         }
         if ($this->siteUserId != $question['ques_user_id']) {
