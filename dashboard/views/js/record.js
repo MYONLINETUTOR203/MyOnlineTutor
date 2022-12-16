@@ -48,8 +48,8 @@ $(document).ready(function () {
 
         var button = this;
         if ($(button).data('status') === langLbl.stopRecording) {
-            $(button).find('.btnStartJs').show();
-            $(button).find('.btnStopJs').hide();
+            $(button).find('.btnStartJs, .labelStartJs').show();
+            $(button).find('.btnStopJs, .labelStopJs').hide();
             button.disableStateWaiting = true;
             setTimeout(function () {
                 button.disabled = false;
@@ -91,8 +91,8 @@ $(document).ready(function () {
             return;
         }
 
-        $(button).find('.btnStartJs').hide();
-        $(button).find('.btnStopJs').show();
+        $(button).find('.btnStartJs, .labelStartJs').hide();
+        $(button).find('.btnStopJs, .labelStopJs').show();
 
 
         var commonConfig = {
