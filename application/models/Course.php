@@ -580,7 +580,7 @@ class Course extends MyAppModel
                 ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $data['course_quilin_id'] != $quizLinked['quilin_id'])
             ) {
                 $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
-                if (!$quiz->delete()) {
+                if (!$quiz->remove()) {
                     $this->error = $quiz->getError();
                     return false;
                 }
@@ -621,7 +621,7 @@ class Course extends MyAppModel
         $db = FatApp::getDb();
         $db->startTransaction();
         $quiz = new QuizLinked($quilinId, $this->userId, $this->userType, $this->langId);
-        if (!$quiz->delete()) {
+        if (!$quiz->remove()) {
             $this->error = $quiz->getError();
             return false;
         }
