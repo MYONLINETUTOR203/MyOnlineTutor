@@ -202,6 +202,11 @@ class Question extends MyAppModel
                 $db->rollbackTransaction();
                 return false;
             }
+        } else {
+            $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
+            if ($quesId > 0 && $file->getFile($quesId)) {
+                $file->removeFile($quesId, true);
+            }
         }
         if (!$this->setupOptions($data)) {
             $db->rollbackTransaction();
