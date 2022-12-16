@@ -143,6 +143,7 @@ class OrderCourseSearch extends YocoachSearch
             'course.course_type' => 'course_type',
             'course.course_students' => 'course_students',
             'crsdetail.course_subtitle' => 'course_subtitle',
+            'ordcrs.ordcrs_teacher_paid' => 'ordcrs_teacher_paid'
         ];
     }
 
