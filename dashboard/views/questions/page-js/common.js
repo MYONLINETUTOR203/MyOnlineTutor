@@ -18,6 +18,9 @@ $(function () {
             if (type == TYPE_AUDIO) {
                 $('.recorderJs').show();
                 getPlayer();
+                setTimeout(function () {
+                    $('.recorderJs audio').attr('autoplay', '0');
+                }, 3000);
             } else {
                 $('.recorderJs').hide();
             }
