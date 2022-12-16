@@ -195,12 +195,14 @@ class Question extends MyAppModel
         }
 
         /* setup audio file */
-        if ($data['ques_type'] == Question::TYPE_AUDIO && !empty($data['audio_file']['name'])) {
-            $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
-            if (!$file->saveFile($data['audio_file'], $this->getMainTableRecordId(), true)) {
-                $this->error = $file->getError();
-                $db->rollbackTransaction();
-                return false;
+        if ($data['ques_type'] == Question::TYPE_AUDIO) {
+            if (!empty($data['audio_file']['name'])) {
+                $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
+                if (!$file->saveFile($data['audio_file'], $this->getMainTableRecordId(), true)) {
+                    $this->error = $file->getError();
+                    $db->rollbackTransaction();
+                    return false;
+                }
             }
         } else {
             $file = new Afile(Afile::TYPE_QUESTION_AUDIO);
