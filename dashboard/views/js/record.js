@@ -23,7 +23,7 @@ var button;
 })();
 function getPlayer() {
     recordingPlayer = document.querySelector('.audioRecorderJs audio');
-    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen autoplay";
+    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen";
     recordedPlayer = document.querySelector('.audioRecordingJs');
 }
 function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
@@ -149,7 +149,7 @@ $(document).ready(function () {
                 audio.controls = true;
                 recordingPlayer.parentNode.style.display = 'none';
                 $(recordedPlayer).append(audio);
-                $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen autoplay");
+                $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen");
                 $(recordedPlayer).css('display', 'block');
                 $('input[name="audio_filename"]').val(1);
 
@@ -212,7 +212,7 @@ function removeRecordedFile() {
     $(recordingPlayer).attr('src', '').parent().show();
     recordingPlayer.pause();
     recordingPlayer.load();
-    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen autoplay=false";
+    recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen";
     $('.recordrtc').removeClass('hasFile');
     var recordedAudio = $(recordedPlayer).find('audio');
     $(recordedAudio).parent().hide();

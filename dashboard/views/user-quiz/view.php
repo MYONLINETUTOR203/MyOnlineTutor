@@ -26,7 +26,7 @@ $aqIdFld = $frm->getField('quatqu_id');
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
             <?php if (isset($quesFile)) { ?>
                 <div class="source">
-                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate nodownload volume=1 autoplay=false></audio>
+                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate controlsList="nodownload" volume=1 autostart=0></audio>
                 </div>
             <?php } ?>
         </div>
@@ -78,7 +78,7 @@ $aqIdFld = $frm->getField('quatqu_id');
                     <h5><?php echo Label::getLabel('LBL_RECORD_YOUR_RESPONSE'); ?></h5>
                     <div class="source recordrtc <?php echo $class; ?>">
                         <div class="source__field audioRecorderJs">
-                            <audio <?php echo $src; ?> controls playsinline noplaybackrate volume=1 autoplay=false></audio>
+                            <audio <?php echo $src; ?> controls playsinline noplaybackrate volume=1 controlsList="nodownload" id="audio1" autostart=0></audio>
                         </div>
                         <div class="source__field audioRecordingJs" style="display:none;"></div>
                         <div class="source__actions">
@@ -197,5 +197,11 @@ $aqIdFld = $frm->getField('quatqu_id');
 <?php if ($question['qulinqu_type'] == Question::TYPE_AUDIO) { ?>
     <script>
         getPlayer();
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#audio1').attr('autoplay', '0'); 
+            }, 3000); 
+            
+        });
     </script>
 <?php } ?>

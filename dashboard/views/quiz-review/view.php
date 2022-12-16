@@ -9,7 +9,7 @@
             <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
             <?php if (isset($quesFile)) { ?>
                 <div class="source">
-                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate nodownload volume=1 autoplay=false></audio>
+                    <audio src="<?php echo MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $question['qulinqu_ques_id']], CONF_WEBROOT_FRONTEND) . '?time=' . time() ?>" controls playsinline noplaybackrate controlsList="nodownload" volume=1 autostart="0"></audio>
                 </div>
             <?php } ?>
         </div>
@@ -70,7 +70,7 @@
                             </p>
                             <?php if (isset($file)) { ?>
                                 <div class="source">
-                                    <audio src="<?php echo $file; ?>" controls playsinline noplaybackrate volume=1></audio>
+                                    <audio src="<?php echo $file; ?>" controls playsinline noplaybackrate controlsList="nodownload" volume=1 autostart="0"></audio>
                                 </div>
                             <?php } ?>
                         <?php } ?>
