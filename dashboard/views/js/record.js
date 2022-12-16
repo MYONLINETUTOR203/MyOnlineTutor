@@ -25,6 +25,7 @@ function getPlayer() {
     recordingPlayer = document.querySelector('.audioRecorderJs audio');
     recordingPlayer.controlsList = "noplaybackrate nodownload nofullscreen";
     recordedPlayer = document.querySelector('.audioRecordingJs');
+    recordedStream = '';
 }
 function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
     navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
