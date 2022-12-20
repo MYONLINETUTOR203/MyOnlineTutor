@@ -14,7 +14,6 @@
       width: 100%; } }
 
 .home.home-index .header {
-  position: -webkit-sticky;
   position: sticky;
   top: 0; }
 
@@ -1494,7 +1493,6 @@ p {
       pointer-events: none; } }
   @media (min-width: 1199px) {
     .section-filters {
-      position: -webkit-sticky;
       position: sticky;
       top: 0; } }
   @media (min-width: 576px) {
@@ -2870,7 +2868,7 @@ body.sort-active {
       top: 0;
       content: "";
       pointer-events: none;
-      background-color: currentColor;
+      background-color: var(--color-black);
       opacity: 0.06; }
     @media (max-width: 991px) {
       .service .service__media {
@@ -3732,6 +3730,25 @@ body.sort-active {
 @media (min-width: 1199px) {
   .section .container--narrow {
     width: 92%; } }
+
+.home.home-index .service {
+  display: block;
+  text-align: center;
+  padding: 0; }
+  .home.home-index .service__media:before {
+    display: none; }
+  .home.home-index .service__content {
+    margin-right: 0;
+    padding-top: 2rem; }
+    .home.home-index .service__content h3 {
+      font-weight: var(--font-weight-bold); }
+
+@media (min-width: 576px) {
+  .home.home-index .section.section--services .row [class*="col-"] {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 33.3%;
+            flex: 0 0 33.3%;
+    max-width: 33.3%; } }
 
 .box.box--narrow .field_label {
   display: block;
@@ -5884,7 +5901,6 @@ body.sort-active {
 .group-secondary {
   text-align: center;
   border: 1px solid var(--color-gray-300);
-  position: -webkit-sticky;
   position: sticky;
   top: 144px; }
   @media (min-width: 1299px) {
@@ -6243,7 +6259,6 @@ body.sort-active {
 
 @media (min-width: 767px) {
   .sticky-side-panel {
-    position: -webkit-sticky;
     position: sticky;
     top: 60px;
     z-index: 1; } }
@@ -7280,7 +7295,6 @@ body.sort-active {
 
 @media (mIN-width: 1199px) {
   .blog-sidebar {
-    position: -webkit-sticky;
     position: sticky;
     top: 115px; } }
 
@@ -8081,7 +8095,6 @@ body.sort-active {
     width: 100%; } }
 
 .profile-secondary .right-panel {
-  position: -webkit-sticky;
   position: sticky;
   top: 60px; }
 
@@ -8471,7 +8484,6 @@ body.sort-active {
 .section--mission {
   background: var(--color-gray-100); }
   .section--mission .primary-content {
-    position: -webkit-sticky;
     position: sticky;
     top: 140px; }
 
