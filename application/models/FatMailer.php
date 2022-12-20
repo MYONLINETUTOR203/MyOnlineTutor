@@ -120,6 +120,9 @@ class FatMailer extends FatModel
             $this->error = Label::getLabel('LBL_EMAIL_TEMPLATE_NOT_FOUND!');
             return false;
         }
+        if (empty($tempalte['etpl_status'])) {
+            return true;
+        }
         if (empty($this->fromArr)) {
             $this->fromArr = [
                 FatApp::getConfig('CONF_FROM_EMAIL'),
@@ -393,6 +396,10 @@ class FatMailer extends FatModel
         $tempalte = $this->getTemplate();
         if ($tempalte == null) {
             $this->error = Label::getLabel('LBL_EMAIL_TEMPLATE_NOT_FOUND!');
+            return false;
+        }
+        if (empty($tempalte['etpl_status'])) {
+            $this->error = Label::getLabel('LBL_EMAIL_TEMPLATE_INACTIVE!');
             return false;
         }
         $mail = new PHPMailer();
