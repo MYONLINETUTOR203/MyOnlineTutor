@@ -304,19 +304,15 @@ $service: 'service';
             top: 0;
             content: "";
             pointer-events: none;
-            background-color: currentColor;
+            background-color: theme('color.black');
             opacity: 0.06;
         }
 
         @media (max-width:theme('breakpoints.lg','value')){
             &{
-                min-width: 56px;
-                min-height: 56px;
+               
                 margin: 0 auto theme('margin.6');
-                img{
-                    max-width: 30px;
-                    max-height: 30px;
-                }
+                
             }
         }
 
@@ -354,68 +350,54 @@ $service: 'service';
 
 $flag-wrapper: 'flag-wrapper';
 
-.#{$flag-wrapper} {
-    display: flex;
-    flex-wrap: wrap;
-    flex: 1;
-    justify-content: center;
-    @media(max-width: theme('breakpoints.md','value')) {
-        justify-content: space-between;
+.#{$flag-wrapper} { margin-bottom: theme('margin.10');
+    @media(min-width: theme('breakpoints.xl','value')){
+        &{display: grid; grid-template-columns: repeat(6, 1fr); grid-gap:1.4rem;}
     }
+
+    @media(max-width: theme('breakpoints.xl','value')){
+        &{display: grid; grid-template-columns: repeat(6, 1fr); grid-gap:1rem;}
+    }
+    @media(max-width: theme('breakpoints.lg','value')){
+        &{ grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media(max-width: theme('breakpoints.sm','value')){
+        &{display: grid; grid-template-columns: repeat(2, 1fr); grid-gap:1rem;}
+    }
+
     .flag__box{
-        width: 148px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        margin: 0 theme('margin.3') theme('margin.6');
-        position: relative;
-        transition: .3s all ease-in-out;
-        color: #111;
-        border: 1px solid transparent;
-        padding: theme('padding.6') 0;
+        width: 100%; border: 1px solid theme('color.gray.200'); border-radius: theme('radius.2'); padding:theme('padding.4') theme('padding.4'); transition: all 0.4s;margin: 0;  max-width: 100%; margin: 0; background-color:theme('color.white'); position: relative;
+
+        @media(min-width: theme('breakpoints.xl','value')) {
+            &{ padding: theme('padding.8') theme('padding.4'); }
+        }
 
         @media(max-width: theme('breakpoints.xl','value')) {
             &{
                 background-color: theme('color.white');
             }
         }
-        @media(max-width: theme('breakpoints.md','value')) {
-            &{
-                margin: 0 0 theme('margin.6');
-                flex: 0 0 48%;
-                max-width: 48%;
-                flex-direction: row;
-                align-items: center;
-                justify-content: flex-start;
-                padding: theme('padding.4');
-                border: 1px solid theme('color.gray.200');
-            }
-        }
+       
         .flag__media{
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            width:80px;
+            height: 80px;
+           
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: theme('margin.6');
+            margin: 0 auto; margin-bottom: theme('margin.6'); 
             background: #fff;
-            @media(max-width: theme('breakpoints.md','value')) {
-                width: 40px;
-                height: 40px;
-                margin-bottom: 0;
-                margin-right: theme('margin.4');
-            }
+
+            & img{max-width: 100%;}
+           
         }
 
         .flag__name{
             text-align: center;
             font-weight: 600;
-            @media(max-width: theme('breakpoints.md','value')){
-                text-align: #{theme('direction.left','value')};
-            }
+           
             .lesson-count {
                 margin-top: 4px;
                 line-height: 30px;
@@ -441,13 +423,8 @@ $flag-wrapper: 'flag-wrapper';
             right: 0;
         }
 
-        &:hover{
-            box-shadow: 0px 10px 10px #00000008;
-            border: 1px solid #E6E6E6;
-            background: #fff;
-            .lesson-count {
-                color: theme('color.gray.700');
-            }
+        @media(min-width: theme('breakpoints.xl','value')){
+            &:hover{box-shadow:0 10px 10px 0 rgba(0,0,0,0.1); transform: translateY(-1px); border-color: theme('color.gray.400');}
         }
     }
 }
@@ -1438,4 +1415,26 @@ $card: 'card';
             &{width: 92%}
         }
     }
+}
+
+.home.home-index {
+    .#{$service} {display: block; text-align: center; padding: 0;
+        &__media{
+            &:before{display: none;}
+            
+        }
+        &__content{margin-#{theme('direction.left','value')}:0;padding-top: 2rem;
+           & h3{ font-weight:theme('font.weight.bold');}
+        }
+    }
+    
+    
+    .section.section--services{
+         @media(min-width: theme('breakpoints.sm','value')){
+            .row{
+                [class*="col-"]{flex: 0 0 33.3%;max-width: 33.3%;}
+            }
+         }
+    }
+    
 }
