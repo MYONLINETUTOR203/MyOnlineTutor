@@ -1,3 +1,4 @@
+var $skip = true;
 $(function () {
     view = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'view'), { id }, function (response) {
@@ -31,9 +32,13 @@ $(function () {
         });
     };
     skipAndNext = function (id) {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
-            view(id);
-        });
+        if ($skip == true) {
+            $skip = false;
+            fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
+                view(id);
+                $skip = true;
+            });
+        }
     };
     previous = function (id) {
         $('.btnPrevJs').attr('disabled', 'disabled');
