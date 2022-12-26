@@ -483,10 +483,10 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
             }
         }, 1000);
     }
-    requestDemoPopup('DEMO_REQUEST1', 5);
-    requestDemoPopup('DEMO_REQUEST2', 10);
-    requestDemoPopup('DEMO_REQUEST3', 15);
-    requestDemoPopup('DEMO_REQUEST4', 20);
+    requestDemoPopup('DEMO_REQUEST1', 30);
+    requestDemoPopup('DEMO_REQUEST2', 2 * 60);
+    requestDemoPopup('DEMO_REQUEST3', 4 * 60);
+    requestDemoPopup('DEMO_REQUEST4', 8 * 60);
 
     function closePreview() {
         $('.preview-header').slideUp();
