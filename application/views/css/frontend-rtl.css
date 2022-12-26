@@ -1265,7 +1265,7 @@ p {
         .footer .section-copyright .copyright .footer__logo {
           margin-bottom: var(--margin-3); }
           .footer .section-copyright .copyright .footer__logo img {
-            max-width: 120px; } }
+            max-width: 180px; } }
     .footer .section-copyright .copyright p {
       margin-bottom: 0; }
       .footer .section-copyright .copyright p .copyright-action {
@@ -1429,7 +1429,7 @@ p {
       background-position: center -16px; } }
 
 .footer__logo {
-  max-width: 140px; }
+  max-width: 240px; }
 
 .footer_social-links li a {
   display: -webkit-box;
