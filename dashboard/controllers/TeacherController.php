@@ -42,7 +42,7 @@ class TeacherController extends DashboardController
         ]);
         $this->_template->addJs([
             'js/moment.min.js', 'js/fullcalendar-luxon.min.js',
-            'js/fateventcalendar.js', 'js/jquery.cookie.js', 'js/app.timer.js',
+            'js/fateventcalendar.js', 'js/app.timer.js',
             'js/fullcalendar.min.js', 'js/fullcalendar-luxon-global.min.js',
         ]);
         $this->_template->render();

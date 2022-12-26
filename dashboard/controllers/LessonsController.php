@@ -39,7 +39,6 @@ class LessonsController extends DashboardController
         $this->_template->addJs([
             'js/jquery.datetimepicker.js',
             'js/jquery.barrating.min.js',
-            'js/jquery.cookie.js',
             'js/app.timer.js',
             'js/moment.min.js',
             'js/fullcalendar-luxon.min.js',
@@ -165,7 +164,6 @@ class LessonsController extends DashboardController
             'issues/page-js/common.js',
             'lessons/page-js/common.js',
             'js/jquery.barrating.min.js',
-            'js/jquery.cookie.js',
             'js/app.timer.js',
             'js/moment.min.js',
             'js/fullcalendar-luxon.min.js',

@@ -150,8 +150,8 @@
     }
 
     /* preview header */
-    .preview-header {
-        background-color: #000;
+    .preview-header{
+        background-color:#000;
         color: #fff;
         position: sticky;
         top: 0;
@@ -159,25 +159,22 @@
         width: 100%;
         height: 60px;
     }
-
     .preview-header a {
         color: inherit;
     }
-
-    .preview-progress__head {
+    .preview-progress__head{
         display: flex;
         align-items: center;
         justify-content: space-between;
         font-size: 0.85rem;
         padding-bottom: 0.4rem;
     }
-
-    .progress-count {
+    .progress-count{
         font-weight: 800;
         color: #ff793d;
     }
 
-    .preview-container {
+    .preview-container{
         min-height: 40px;
         display: -webkit-box;
         display: -ms-flexbox;
@@ -190,20 +187,15 @@
         justify-content: space-between;
     }
 
-    @media(min-width:576px) {
-
+    @media(min-width:576px){
         /* .is-preview-on .header.nav-up,.is-preview-on .header.nav-down{transform: translateY(inherit);-webkit-transform: translateY(inherit);} */
-        .is-preview-on .header.nav-down,
-        .is-preview-on #header {
+        .is-preview-on .header.nav-down, .is-preview-on #header{
             top: 60px;
         }
-
-        .is-preview-on.teachers.teachers-index .header.nav-down,
-        .groupclasses.groupclasses-index .header.nav-down {
+        .is-preview-on.teachers.teachers-index .header.nav-down, .groupclasses.groupclasses-index .header.nav-down{
             top: 0;
         }
-
-        .is-preview-on.teacherrequest.teacherrequest-form .header {
+        .is-preview-on.teacherrequest.teacherrequest-form .header{
             top: 8.6rem;
             transition: none;
         }
@@ -219,15 +211,14 @@
     }
 
     /* .is-preview-on #header, .is-preview-on.is-filter-fixed #header{top: 60px;} */
-    .is-preview-on .leftside {
+    .is-preview-on .leftside{
         padding-top: 132px;
     }
 
-    @media(min-width:1199px) {
-
+    @media(min-width:1199px){
         /* .is-preview-on.is-filter-fixed .header{top: 60px;} */
-        .is-preview-on.is-filter-fixed .section-filters {
-            top: 60px;
+        .is-preview-on.is-filter-fixed .section-filters{
+            top:60px;
         }
     }
 
@@ -240,7 +231,7 @@
        
     } */
 
-    .preview-container__cell {
+    .preview-container__cell{
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
@@ -249,14 +240,14 @@
         align-items: center;
     }
 
-    .preview-progress {
+    .preview-progress{
         min-width: 240px;
         max-width: 240px;
         padding: 0.4rem 1rem;
     }
 
 
-    .preview-controls {
+    .preview-controls{
         position: relative;
         margin: 0 auto;
         display: -webkit-box;
@@ -269,8 +260,7 @@
         -ms-flex-pack: center;
         justify-content: center;
     }
-
-    .preview-controls__action {
+    .preview-controls__action{
         width: 60px;
         height: 60px;
         position: relative;
@@ -285,56 +275,49 @@
         justify-content: center;
         margin: 0 0.3rem;
     }
-
-    .preview-controls__action .control-svg {
+    .preview-controls__action .control-svg{
         opacity: 0.6;
     }
-
-    .preview-controls__action.is-active {
-        background-color: rgba(255, 255, 255, 0.3);
+    .preview-controls__action.is-active{
+        background-color:rgba(255,255,255,0.3);
     }
-
-    .preview-controls__action.is-active .control-svg {
+    .preview-controls__action.is-active .control-svg{
+        opacity: 1;
+    }
+    .preview-controls__action:hover .control-svg{
         opacity: 1;
     }
 
-    .preview-controls__action:hover .control-svg {
-        opacity: 1;
-    }
-
-    .control-svg {
+    .control-svg{
         width: 32px;
         height: 32px;
         position: relative;
         overflow: hidden;
     }
-
-    .control-svg svg {
-        width: 100%;
-        height: 100%;
+    .control-svg svg{
+        width:100%;
+        height:100%;
         display: block;
         overflow: hidden;
         fill: currentColor;
     }
 
-    .preview-button {
+    .preview-button{
         display: inline-flex;
         padding: 0.7rem 1.2rem;
         background-color: #ff5317;
         border: 1px solid transparent;
         font-size: 13px;
-        border-radius: 3px;
+        border-radius:3px;
     }
-
-    .preview-button:hover {
-        background-color: #0037B4;
+    .preview-button:hover{
+        background-color:#0037B4;
     }
-
-    .buttons-bucket {
+    .buttons-bucket{
         margin-left: auto;
     }
 
-    .preview-close {
+    .preview-close{
         width: 60px;
         height: 60px;
         position: relative;
@@ -343,8 +326,7 @@
         line-height: 60px;
         overflow: hidden;
     }
-
-    .preview-close::before {
+    .preview-close::before{
         position: absolute;
         left: 0;
         right: 0;
@@ -352,7 +334,7 @@
         bottom: 0;
         margin: auto;
         content: "+";
-        font-size: 3rem;
+        font-size:3rem;
         font-weight: 500;
         transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
@@ -361,12 +343,11 @@
     .progress-ui {
         width: 100%;
         height: 0.3rem;
-        background-color: #eee;
+        background-color:#eee;
         min-width: 120px;
         overflow: hidden;
         border-radius: 60px;
     }
-
     .progress-ui__bar {
         -webkit-transition: width .6s ease;
         -o-transition: width .6s ease;
@@ -387,32 +368,34 @@
     }
 
 
-    .preview-controls__action--admin .control-svg {
+    .preview-controls__action--admin .control-svg{
         width: 30px;
         height: 30px;
     }
 
-    @media(max-width:1199px) {
-        .preview-container__cell.preview-container__middle {
+    @media(max-width:1199px){
+        .preview-container__cell.preview-container__middle{
             display: none;
         }
     }
 
-    @media(max-width:767px) {
-        .preview-header {
+    @media(max-width:767px){
+        .preview-header{
             display: none;
         }
     }
 
-    body[dir='rtl'] .buttons-bucket {
+    body[dir='rtl'] .buttons-bucket{
         margin-right: auto;
         margin-left: 0;
     }
-
-    body[dir='rtl'] .preview-closet {
+    body[dir='rtl'] .preview-closet{
         margin-left: 0;
         margin-right: 1rem;
     }
+
+
+
 </style>
 <?php
 $backendUrl = MyUtility::makeFullUrl('', '', [], CONF_WEBROOT_BACKEND);
@@ -451,27 +434,21 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
                 <?php $view = explode("/", trim($_SERVER['REQUEST_URI'], "/"))[0] ?? ''; ?>
                 <a href="<?php echo MyUtility::makeUrl('', '', [], CONF_WEBROOT_BACKEND); ?>" class="preview-controls__action preview-controls__action--admin <?php echo $backendView; ?>" title="Admin View">
                     <span class="control-svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -16 384 384">
+                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 -16 384 384">
                             <path d="m80 0h-80v352h384v-352zm-48 32h48v40h-48zm320 288h-320v-216h320zm0-248h-240v-40h240zm0 0" />
-                            <path d="m64 192h32v96h-32zm0 0" />
-                            <path d="m120 160h32v128h-32zm0 0" />
-                            <path d="m232 224h32v64h-32zm0 0" />
-                            <path d="m288 136h32v152h-32zm0 0" />
+                            <path d="m64 192h32v96h-32zm0 0" /><path d="m120 160h32v128h-32zm0 0" />
+                            <path d="m232 224h32v64h-32zm0 0" /><path d="m288 136h32v152h-32zm0 0" />
                         </svg>
                     </span>
                 </a>
                 <a href="<?php echo MyUtility::makeUrl('', '', [], CONF_WEBROOT_FRONTEND); ?>" class="preview-controls__action <?php echo $frontendView; ?>" title="Desktop View">
                     <span class="control-svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M4 16h16V5H4v11zm9 2v2h4v2H7v-2h4v-2H2.992A.998.998 0 0 1 2 16.993V4.007C2 3.451 2.455 3 2.992 3h18.016c.548 0 .992.449.992 1.007v12.986c0 .556-.455 1.007-.992 1.007H13z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 16h16V5H4v11zm9 2v2h4v2H7v-2h4v-2H2.992A.998.998 0 0 1 2 16.993V4.007C2 3.451 2.455 3 2.992 3h18.016c.548 0 .992.449.992 1.007v12.986c0 .556-.455 1.007-.992 1.007H13z"/></svg>
                     </span>
                 </a>
                 <a href="<?php echo MyUtility::makeUrl('Mobile', '', [], CONF_WEBROOT_FRONTEND); ?>" class="preview-controls__action <?php echo $mobileView; ?>" title="Mobile View">
                     <span class="control-svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M7 4v16h10V4H7zM6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm6 15a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4v16h10V4H7zM6 2h12a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm6 15a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
                     </span>
                 </a>
             </div>
@@ -480,66 +457,84 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
             <div class="buttons-bucket">
                 <a target="_blank" href="https://www.fatbit.com/online-learning-consultation-marketplace-platform.html" class="preview-button"><?php echo Label::getLabel('LBL_START_YOUR_MARKETPLACE'); ?></a>
                 <a target="_blank" href="https://www.yo-coach.com/?demo_form" class="preview-button"><?php echo Label::getLabel('LBL_Get_A_Personalized_Demo'); ?></a>
-                <a target="_blank" href="https://www.yo-coach.com/clients.html" class="preview-button"><?php echo Label::getLabel('LBL_OUR_CLIENTS') ?></a>
+                <!-- <a target="_blank" href="https://www.yo-coach.com/clients.html" class="preview-button"><?php echo Label::getLabel('LBL_OUR_CLIENTS') ?></a> -->
             </div>
             <a href="javascript:void(0)" class="preview-close" onclick="closePreview();"></a>
         </div>
     </div>
 </div>
 <script>
+    function requestDemoPopup(key, seconds) {
+        if ($.cookie(key)) {
+            return;
+        }
+        var showtime = new Date();
+        showtime.setSeconds(showtime.getSeconds() + seconds);
+        $.cookie(key, showtime.getTime() / 1000);
+        var interval = setInterval(function () {
+            var startTime = parseInt($.cookie(key));
+            var currentTime = parseInt((new Date()).getTime() / 1000);
+            if (startTime - currentTime < 1) {
+                clearInterval(interval);
+                fcom.ajax(fcom.makeUrl('Home', 'requestDemo', []), '', function (res) {
+                    $.facebox(res);
+                });
+                return;
+            }
+        }, 1000);
+    }
+    requestDemoPopup('DEMO_REQUEST1', 5);
+    requestDemoPopup('DEMO_REQUEST2', 10);
+    requestDemoPopup('DEMO_REQUEST3', 15);
+    requestDemoPopup('DEMO_REQUEST4', 20);
+
     function closePreview() {
         $('.preview-header').slideUp();
         $('body').removeClass('is-preview-on');
     }
 
-    $(document).on("click", "#demoBoxClose", function(e) {
+    function showRestorePopup() {
+        $.facebox('<div class="demo-data-inner"><div class="heading">Yo!Coach<span></span></div> <p>To enhance your demo experience, we periodically  restore our database every 24 hours.</p><br> <p>For technical issues :-</p> <ul> <li><strong>Call us at: </strong>+1 469 844 3346, +91 85919 19191, +91 95555 96666, +91 73075 70707, +91 93565 35757</li> <li><strong>Mail us at : </strong> <a href="mailto:sales@fatbit.com">sales@fatbit.com</a></li> </ul> <br> Create Your Online Tutoring & Consultation Platform With Yo!Coach <a href="https://www.fatbit.com/website-design-company/requestaquote.html" target="_blank">Click here</a></li></div>', 'restore-demo restore-demo-bg fbminwidth');
+    }
+
+    function restoreSystem() {
+        fcom.process('Restore is in process..');
+        fcom.updateWithAjax(fcom.makeUrl('RestoreSystem', 'index', '', '/'), '', function (resp) {
+            window.location.reload();
+        }, false, false);
+    }
+
+    $(document).on("click", "#demoBoxClose", function (e) {
         $('.demo-header').hide();
         $('html').removeClass('sticky-demo-header');
     });
-    <?php if (FatApp::getConfig('CONF_RESTORED_SUCCESSFULLY') == 1) { ?>
+    // Set the date we're counting down to
+    var countDownDate = new Date('<?php echo FatApp::getConfig('CONF_RESTORE_SCHEDULE_TIME'); ?>').getTime();
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+        // Get today's date and time
+        //var now = new Date().getTime();
+        var date = new Date();
+        var utcDate = new Date(date.toLocaleString('en-US', {timeZone: "UTC"}));
+        var now = utcDate.getTime();
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now - 65000;
 
-        function showRestorePopup() {
-            $.facebox('<div class="demo-data-inner"><div class="heading">Yo!Coach<span></span></div> <p>To enhance your demo experience, we periodically  restore our database every 24 hours.</p><br> <p>For technical issues :-</p> <ul> <li><strong>Call us at: </strong>+1 469 844 3346, +91 85919 19191, +91 95555 96666, +91 73075 70707, +91 93565 35757</li> <li><strong>Mail us at : </strong> <a href="mailto:sales@fatbit.com">sales@fatbit.com</a></li> </ul> <br> Create Your Online Tutoring & Consultation Platform With Yo!Coach <a href="https://www.fatbit.com/website-design-company/requestaquote.html" target="_blank">Click here</a></li></div>', 'restore-demo restore-demo-bg fbminwidth');
+        // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        var str = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
+        // Display the result in the element with id="demo"
+        document.getElementById("restoreCounter").innerHTML = str;
+        var progressPercentage = 100 - (parseFloat(hours + '.' + parseFloat(minutes / 15 * 25)) * 100 / 4);
+        $('.progress-ui__bar').css('width', progressPercentage + '%');
+        // If the count down is finished, write some text
+        if (distance < 0) {
+            document.getElementById("restoreCounter").innerHTML = 'Restoring...';
+            clearInterval(x);
+            restoreSystem();
         }
-
-        function restoreSystem() {
-            fcom.process('Restore is in process..');
-            fcom.updateWithAjax(fcom.makeUrl('RestoreSystem', 'index', '', '/'), '', function(resp) {
-                window.location.reload();
-            }, false, false);
-        }
-
-
-        // Set the date we're counting down to
-        var countDownDate = new Date('<?php echo FatApp::getConfig('CONF_RESTORE_SCHEDULE_TIME'); ?>').getTime();
-        // Update the count down every 1 second
-        var x = setInterval(function() {
-            // Get today's date and time
-            //var now = new Date().getTime();
-            var date = new Date();
-            var utcDate = new Date(date.toLocaleString('en-US', {
-                timeZone: "UTC"
-            }));
-            var now = utcDate.getTime();
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now - 65000;
-
-            // Time calculations for days, hours, minutes and seconds
-            // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            var str = ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
-            // Display the result in the element with id="demo"
-            document.getElementById("restoreCounter").innerHTML = str;
-            var progressPercentage = 100 - (parseFloat(hours + '.' + parseFloat(minutes / 15 * 25)) * 100 / 4);
-            $('.progress-ui__bar').css('width', progressPercentage + '%');
-            // If the count down is finished, write some text
-            if (distance < 0) {
-                document.getElementById("restoreCounter").innerHTML = 'Restoring...';
-                clearInterval(x);
-                restoreSystem();
-            }
-        }, 1000);
-    <?php } ?>
+    }, 1000);
 </script>

@@ -609,7 +609,7 @@ class MyUtility extends FatUtility
      */
     public static function isDemoUrl(): bool
     {
-        return (strtolower($_SERVER['SERVER_NAME']) === 'elearning.yo-coach.com');
+        return true; //(strtolower($_SERVER['SERVER_NAME']) === 'elearning.yo-coach.com');
     }
 
     /**

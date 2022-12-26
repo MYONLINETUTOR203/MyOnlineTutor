@@ -29,7 +29,6 @@ class ClassesController extends DashboardController
             'js/jquery.datetimepicker.js',
             'issues/page-js/common.js',
             'classes/page-js/common.js',
-            'js/jquery.cookie.js',
             'js/app.timer.js',
             'plans/page-js/common.js',
             'js/jquery.barrating.min.js',
@@ -140,7 +139,6 @@ class ClassesController extends DashboardController
             'flashcardEnabled' => $flashcardEnabled
         ]);
         $this->_template->addJs([
-            'js/jquery.cookie.js',
             'js/app.timer.js',
             'issues/page-js/common.js',
             'js/jquery.barrating.min.js',
