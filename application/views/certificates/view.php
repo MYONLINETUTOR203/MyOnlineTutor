@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="sidebox border-bottom padding-bottom-10">
-                    <div class="sidebox__head border-top">
+                    <div class="sidebox__head border-top margin-top-5 padding-top-5">
                         <h5><?php echo Label::getLabel('LBL_COURSE_DETAILS'); ?> </h5>
                     </div>
                     <div class="sidebox__body">
