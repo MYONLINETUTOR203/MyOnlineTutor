@@ -97,10 +97,6 @@
                                 <dd><?php echo empty($requestData['user_last_name']) ? '-' : $requestData['user_last_name']; ?></dd>
                             </dl>
                             <dl class="list">
-                                <dt><?php echo Label::getLabel('LBL_GENDER'); ?></dt>
-                                <dd><?php echo!empty($requestData['user_gender']) ? User::getGenderTypes()[$requestData['user_gender']] : '-'; ?></dd>
-                            </dl>
-                            <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_EMAIL'); ?></dt>
                                 <dd><?php echo $requestData['user_email']; ?></dd>
                             </dl>
