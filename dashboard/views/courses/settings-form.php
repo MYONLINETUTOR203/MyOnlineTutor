@@ -5,10 +5,12 @@ $frm->setFormTagAttribute('class', 'form');
 $frm->setFormTagAttribute('id', 'frmCourses');
 $frm->setFormTagAttribute('onsubmit', 'setupSettings(this); return false;');
 $certFld = $frm->getField('course_certificate');
-$typeFld = $frm->getField('course_certificate_type');
-$typeFld->addFieldTagAttribute('onchange', 'showQuizSection(this.value);');
-if ($certFld->value == AppConstant::YES) {
-    $typeFld->requirements()->setRequired();
+if ($offerCetificate == true) {
+    $typeFld = $frm->getField('course_certificate_type');
+    $typeFld->addFieldTagAttribute('onchange', 'showQuizSection(this.value);');
+    if ($certFld->value == AppConstant::YES) {
+        $typeFld->requirements()->setRequired();
+    }
 }
 $tagFld = $frm->getField('course_tags');
 $tagFld->addFieldTagAttribute('id', "tagsinput");
@@ -68,62 +70,59 @@ $quizId->value = ($quizId->value < 1) ? '' : $quizId->value;
                                         </div>
                                     </div>
                                 </div>
-                            <?php } else {
-                                echo $certFld->getHtml();
-                            }
-                            ?>
-                            <div class="row certTypeJs" style="display:<?php echo ($certFld->value == AppConstant::YES) ? 'block' : 'none'; ?>">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="caption-wraper">
-                                            <label class="field_label">
-                                                <?php echo $typeFld->getCaption(); ?>
-                                                <span class="spn_must_field">*</span>
-                                            </label>
-                                        </div>
-                                        <div class="field-wraper">
-                                            <div class="field_cover">
-                                                <?php echo $typeFld->getHtml(); ?>
+                                <div class="row certTypeJs" style="display:<?php echo ($certFld->value == AppConstant::YES) ? 'block' : 'none'; ?>">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="caption-wraper">
+                                                <label class="field_label">
+                                                    <?php echo $typeFld->getCaption(); ?>
+                                                    <span class="spn_must_field">*</span>
+                                                </label>
+                                            </div>
+                                            <div class="field-wraper">
+                                                <div class="field_cover">
+                                                    <?php echo $typeFld->getHtml(); ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row quizSectionJs <?php echo (!empty($quiz)) ? 'hasQuiz' : ''; ?>" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
-                                <div class="col-md-12">
-                                    <div class="field-set">
-                                        <div class="attachQuizLinkJs">
-                                            <a class="d-inline-flex align-items-center margin-bottom-8" href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
-                                                <svg class="icon icon--issue icon--small margin-right-2">
-                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
-                                                </svg>
-                                                <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
-                                                <?php echo $quizId->getHtml(); ?>
-                                            </a>
-                                        </div>
-                                        <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
-                                            <span class="attachment margin-bottom-8">
-                                                <span class="attachment-item margin-bottom-3">
-                                                    <span class="attachment-item__media">
-                                                        <svg class="icon icon--attachment icon--small">
-                                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
-                                                        </svg>
-                                                    </span>
-                                                    <div class="attachment-item__content">
-                                                        <span class="attachment-item__title">
-                                                            <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
+                                <div class="row quizSectionJs <?php echo (!empty($quiz)) ? 'hasQuiz' : ''; ?>" style="display:<?php echo ($typeFld->value == Certificate::TYPE_COURSE_EVALUATION) ? 'block' : 'none'; ?>">
+                                    <div class="col-md-12">
+                                        <div class="field-set">
+                                            <div class="attachQuizLinkJs">
+                                                <a class="d-inline-flex align-items-center margin-bottom-8" href="javascript:void(0);" onclick="quizListing('<?php echo $courseId; ?>', '<?php echo AppConstant::COURSE; ?>')">
+                                                    <svg class="icon icon--issue icon--small margin-right-2">
+                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                                    </svg>
+                                                    <?php echo Label::getLabel('LBL_ATTACH_QUIZ'); ?>
+                                                    <?php echo $quizId->getHtml(); ?>
+                                                </a>
+                                            </div>
+                                            <div class="attachedQuizJs" style="display:<?php echo (!empty($quiz)) ? 'block' : 'none'; ?>;">
+                                                <span class="attachment margin-bottom-8">
+                                                    <span class="attachment-item margin-bottom-3">
+                                                        <span class="attachment-item__media">
+                                                            <svg class="icon icon--attachment icon--small">
+                                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#attach'; ?>"></use>
+                                                            </svg>
                                                         </span>
-                                                    </div>
-                                                    <a href="javascript:void(0);" class="attachment-item__close margin-left-3" onclick="removeAttachedQuiz('<?php echo $quiz['quilin_id'] ?? 0; ?>');"></a>
+                                                        <div class="attachment-item__content">
+                                                            <span class="attachment-item__title">
+                                                                <span class="quizTitleJs"><?php echo $quiz['quilin_title'] ?? '' ?></span>
+                                                            </span>
+                                                        </div>
+                                                        <a href="javascript:void(0);" class="attachment-item__close margin-left-3" onclick="removeAttachedQuiz('<?php echo $quiz['quilin_id'] ?? 0; ?>');"></a>
+                                                    </span>
                                                 </span>
-                                            </span>
+                                            </div>
                                         </div>
                                     </div>
-
-
-
                                 </div>
-                            </div>
+                            <?php } else {
+                                echo $certFld->getHtml();
+                            }
+                            ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="field-set">

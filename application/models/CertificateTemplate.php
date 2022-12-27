@@ -94,4 +94,16 @@ class CertificateTemplate extends MyAppModel
 
         return true;
     }
+
+    /**
+     * Check course certificates available or not
+     *
+     * @return bool
+     */
+    public static function checkCourseCertificatesAvailable()
+    {
+        $templates = Certificate::getTypes();
+        unset($templates[Certificate::TYPE_QUIZ_EVALUATION]);
+        return (count($templates) > 0);
+    }
 }

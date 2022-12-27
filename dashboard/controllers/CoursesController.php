@@ -524,17 +524,12 @@ class CoursesController extends DashboardController
             $course['course_tags'] = implode(',', $crsTags);
             $data = array_merge($data, $course);
         }
+
         /* check certificate available or not */
-        $srch = CertificateTemplate::getSearchObject($this->siteLangId);
-        $cnd = $srch->addCondition('certpl_code', '=', 'course_completion_certificate');
-        $cnd->attachCondition('certpl_code', '=', 'course_evaluation_certificate');
-        $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
-        $offerCetificate = false;
-        if (FatApp::getDb()->fetch($srch->getResultSet())) {
-            $offerCetificate = true;
-        }
+        $offerCertificate = CertificateTemplate::checkCourseCertificatesAvailable();
+        $data['course_certificate'] = ($offerCertificate == true) ? $data['course_certificate'] : 0;
         /* get form and fill */
-        $frm = $this->getSettingForm($offerCetificate);
+        $frm = $this->getSettingForm($offerCertificate);
         $frm->fill($data);
         $this->set('frm', $frm);
 
@@ -542,7 +537,7 @@ class CoursesController extends DashboardController
         $data = QuizLinked::getQuizzes([$courseId], AppConstant::COURSE);
         $this->set('quiz', current($data));
 
-        $this->set('offerCetificate', $offerCetificate);
+        $this->set('offerCetificate', $offerCertificate);
         $this->set('courseId', $courseId);
         $this->_template->render(false, false);
     }
@@ -554,12 +549,12 @@ class CoursesController extends DashboardController
      */
     public function setupSettings()
     {
-        $frm = $this->getSettingForm();
+        $frm = $this->getSettingForm(CertificateTemplate::checkCourseCertificatesAvailable());
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData(), ['course_certificate_type'])) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
         if ($post['course_certificate'] == AppConstant::YES) {
-            if ($post['course_certificate_type'] < 1) {
+            if (!isset($post['course_certificate_type']) || $post['course_certificate_type'] < 1) {
                 FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_SELECT_CERTIFICATE'));
             } else {
                 $code = 'course_completion_certificate';
@@ -573,9 +568,9 @@ class CoursesController extends DashboardController
                     FatUtility::dieJsonError(Label::getLabel('LBL_CERTIFICATE_NOT_AVIALABLE'));
                 }
             }
-        }
-        if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_QUIZ'));
+            if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
+                FatUtility::dieJsonError(Label::getLabel('LBL_PLEASE_ATTACH_QUIZ'));
+            }
         }
         $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
         if (!$course->setupSettings($post)) {
@@ -871,23 +866,12 @@ class CoursesController extends DashboardController
     /**
      * Get Setting Form
      *
-     * @param bool $offerCetificate
+     * @param bool $offerCertificate
      */
-    private function getSettingForm(bool $offerCetificate = true): Form
+    private function getSettingForm(bool $offerCertificate = true): Form
     {
         $frm = new Form('frmCourses');
-        if ($offerCetificate == true) {
-            $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
-            $fld->requirements()->setRequired();
 
-        } else {
-            $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
-        }
-        $types = Certificate::getTypes();
-        unset($types[Certificate::TYPE_QUIZ_EVALUATION]);
-        $typeFld = $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
-
-        
         $fld = $frm->addHiddenField(Label::getLabel('LBL_QUIZ'), 'course_quilin_id');
         $fld->requirements()->setInt();
         $fld->requirements()->setRequired(false);
@@ -897,18 +881,31 @@ class CoursesController extends DashboardController
         $notReqFld = new FormFieldRequirement('course_quilin_id', '');
         $notReqFld->setRequired(false);
 
-        $typeFld->requirements()->addOnChangerequirementUpdate(
-            Certificate::TYPE_COURSE_EVALUATION,
-            'eq',
-            'course_quilin_id',
-            $reqFld
-        );
-        $typeFld->requirements()->addOnChangerequirementUpdate(
-            Certificate::TYPE_COURSE_EVALUATION,
-            'ne',
-            'course_quilin_id',
-            $notReqFld
-        );
+        if ($offerCertificate == true) {
+            $fld = $frm->addRadioButtons(Label::getLabel('LBL_OFFER_CERTIFICATE'), 'course_certificate', AppConstant::getYesNoArr(), AppConstant::NO);
+            $fld->requirements()->setRequired();
+
+            $types = Certificate::getTypes();
+            unset($types[Certificate::TYPE_QUIZ_EVALUATION]);
+            $typeFld = $frm->addSelectBox(Label::getLabel('LBL_CERTIFICATE'), 'course_certificate_type', $types);
+
+            
+
+            $typeFld->requirements()->addOnChangerequirementUpdate(
+                Certificate::TYPE_COURSE_EVALUATION,
+                'eq',
+                'course_quilin_id',
+                $reqFld
+            );
+            $typeFld->requirements()->addOnChangerequirementUpdate(
+                Certificate::TYPE_COURSE_EVALUATION,
+                'ne',
+                'course_quilin_id',
+                $notReqFld
+            );
+        } else {
+            $frm->addHiddenField('', 'course_certificate', AppConstant::NO);
+        }
 
         $frm->addTextBox(Label::getLabel('LBL_COURSE_TAGS'), 'course_tags')->requirements()->setRequired();
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
