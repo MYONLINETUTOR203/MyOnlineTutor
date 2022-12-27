@@ -1704,3 +1704,6 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 
 
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.1.20221213' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_PASSWORD_MUST_BE_EIGHT_ALPHANUMERIC';
+INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES ('1', 'MSG_PASSWORD_VALIDATION_ERROR', 'Password must contain alphanumerics, a symbol and should be 8 to 20 characters long'), ('2', 'MSG_PASSWORD_VALIDATION_ERROR', 'Password must contain alphanumerics, a symbol and should be 8 to 20 characters long');

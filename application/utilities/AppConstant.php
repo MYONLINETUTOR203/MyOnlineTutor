@@ -59,9 +59,9 @@ class AppConstant
     const CLASS_TYPE_1_TO_1 = '1to1';
     const INTRODUCTION_VIDEO_LINK_REGEX = "^(?:https?:)?(?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]{7,15})(?:[\?&][a-zA-Z0-9\_-]+=[a-zA-Z0-9\_-]+)*(?:[&\/\#].*)?$";
     const DATE_TIME_REGEX = "(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})";
-    const PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&_-])[A-Za-z\d@$!%*#?&_-]{8,20}$";
+    const PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#~^()+=|\?&_-])[A-Za-z\d@$~^()+=|\!%*#?&_-]{8,20}$";
     const URL_REGEX = "(?=.{5,253}$)((http|https):\/\/)(www.)?[a-zA-Z0-9@:%._\\+~#?&\/\/=-]{2,253}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&\/\/=]*)";
-    const PASSWORD_CUSTOM_ERROR_MSG = "MSG_PASSWORD_MUST_BE_EIGHT_ALPHANUMERIC";
+    const PASSWORD_CUSTOM_ERROR_MSG = "MSG_PASSWORD_VALIDATION_ERROR";
 
     /* Display View */
     const VIEW_LISTING = 1;
