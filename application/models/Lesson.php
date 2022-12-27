@@ -1102,6 +1102,7 @@ class Lesson extends MyAppModel
             return ($row['totalCount'] > 0);
         }
         $srch->addMultipleFields(['ordles_teacher_id', 'COUNT(*) AS totalCount']);
+        $srch->addGroupBy('ordles_teacher_id');
         return $row = FatApp::getDb()->fetchAllAssoc($srch->getResultSet());
     }
 
