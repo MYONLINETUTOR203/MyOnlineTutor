@@ -93,7 +93,7 @@ class CertificatesController extends MyAppController
         if (!$data = QuizAttempt::getById($attemptId)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_active'] == AppConstant::NO) {
+        if ($data['quizat_active'] == AppConstant::NO || $data['quilin_certificate'] == AppConstant::NO) {
             FatUtility::exitWithErrorCode(404);
         }
 
