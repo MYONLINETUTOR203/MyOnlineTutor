@@ -28,8 +28,8 @@ $(function () {
         }
         $('.btnNextJs').attr('disabled', 'disabled');
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndNext', [next]), fcom.frmData(frm), function (res) {
-            view(res.id);
-        });
+            (res.status == 1) ? view(res.id) : $('.btnNextJs').attr('disabled', false);
+        }, { 'failed' : true });
     };
     skipAndNext = function (id) {
         if ($skip == true) {
@@ -43,8 +43,8 @@ $(function () {
     previous = function (id) {
         $('.btnPrevJs').attr('disabled', 'disabled');
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
-            view(id);
-        });
+            (res.status == 1) ? view(id) : $('.btnPrevJs').attr('disabled', false);
+        }, { 'failed' : true });
     };
     getByQuesId = function (id, quesId) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0, 'ques_id': quesId }, function (res) {

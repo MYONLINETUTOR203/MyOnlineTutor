@@ -73,7 +73,9 @@ class QuizReview extends MyAppModel
 
         /* setup question id */
         if ($this->userType == User::LEARNER) {
-            $_SESSION['quiz'][$data['qulinqu_quilin_id']]['current_ques_id'] = $data['quizat_qulinqu_id'];
+            if (isset($data['qulinqu_quilin_id'])) {
+                $_SESSION['quiz'][$data['qulinqu_quilin_id']]['current_ques_id'] = $data['quizat_qulinqu_id'];
+            }
             return true;
         }
 
