@@ -218,4 +218,5 @@ function removeRecordedFile() {
     var recordedAudio = $(recordedPlayer).find('audio');
     $(recordedAudio).parent().hide();
     $(recordedAudio).remove();
+    $('input[name="audio_filename"]').val('');
 }
