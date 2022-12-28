@@ -153,6 +153,7 @@ $(document).ready(function () {
                 $(recordedPlayer).find('audio').attr('controlsList', "noplaybackrate nodownload nofullscreen");
                 $(recordedPlayer).css('display', 'block');
                 $('input[name="audio_filename"]').val(1);
+                $('.btnRemoveJs').show();
 
                 audio.onended = function () {
                     audio.pause();
@@ -201,4 +202,5 @@ function removeRecordedFile() {
     $(recordedAudio).parent().hide();
     $(recordedAudio).remove();
     $('input[name="audio_filename"]').val('');
+    $('.btnRemoveJs').hide();
 }
