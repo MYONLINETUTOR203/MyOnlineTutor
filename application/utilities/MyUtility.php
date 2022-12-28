@@ -758,5 +758,14 @@ class MyUtility extends FatUtility
         }
         return trim($slug, "-");
     }
+    
+    public static function openGraphImage(int $id): string
+    {
+        if (static::isDemoUrl()) {
+            return MyUtility::makeFullUrl('images', 'og.png');
+        } else {
+            return MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_OPENGRAPH_IMAGE, $id]);
+        }
+    }
 
 }

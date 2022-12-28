@@ -176,7 +176,7 @@ if (!empty($browseTutorPage)) {
 }
 if (count($classes) > 0) {
     ?>
-    <section class="section section--gray section--upcoming-class">
+    <section class="section section--gray section--upcoming-class padding-bottom-0">
         <div class="container container--narrow">
             <div class="section__head d-flex justify-content-between align-items-center">
                 <h2><?php echo Label::getLabel('LBL_UPCOMING_GROUP_CLASSES'); ?></h2>

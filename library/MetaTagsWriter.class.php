@@ -46,7 +46,7 @@ class MetaTagsWriter
                 echo '<meta property="og:url" content="' . $metas['meta_og_url'] . '" />';
             if (isset($metas['meta_og_description']))
                 echo '<meta property="og:description" content="' . $metas['meta_og_description'] . '" />';
-            echo '<meta property="og:image" content="' . MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_OPENGRAPH_IMAGE, $metas['meta_id'], Afile::SIZE_MEDIUM]) . '" />';
+            echo '<meta property="og:image" content="' . MyUtility::openGraphImage($metas['meta_id']) . '" />';
         } else {
             $defSearch->addCondition('meta_type', '=', MetaTag::META_GROUP_DEFAULT);
             if ($metas = FatApp::getDb()->fetch($defSearch->getResultSet())) {
@@ -64,7 +64,7 @@ class MetaTagsWriter
                     echo '<meta property="og:url" content="' . $metas['meta_og_url'] . '" />';
                 if (isset($metas['meta_og_description']))
                     echo '<meta property="og:description" content="' . $metas['meta_og_description'] . '" />';
-                echo '<meta property="og:image" content="' . MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_OPENGRAPH_IMAGE, $metas['meta_id'], Afile::SIZE_MEDIUM]) . '" />';
+                echo '<meta property="og:image" content="' . MyUtility::openGraphImage($metas['meta_id']) . '" />';
             } else {
                 return '<title>' . $websiteName . '</title>';
             }

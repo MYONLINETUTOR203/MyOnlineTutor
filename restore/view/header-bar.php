@@ -257,6 +257,10 @@
         border: 1px solid transparent;
         font-size: 13px;
         border-radius:3px;
+        background: #FC6760;
+    }
+    .btn-preview:hover{
+        background: #12805C;
     }
     .buttons-bucket{
         margin-left: auto;
@@ -389,9 +393,9 @@ if (strpos($requestUrl, $mobileUrl) > -1) {
         </div>
         <div class="preview-container__cell preview-container__right">
             <div class="buttons-bucket">
-                <a target="_blank" href="https://www.fatbit.com/online-learning-consultation-marketplace-platform.html" class="btn-preview btn btn--secondary"><?php echo Label::getLabel('LBL_START_YOUR_MARKETPLACE'); ?></a>
-                <a target="_blank" href="https://www.yo-coach.com/?demo_form" class="btn-preview btn btn--secondary"><?php echo Label::getLabel('LBL_Get_A_Personalized_Demo'); ?></a>
-                <!-- <a target="_blank" href="https://www.yo-coach.com/clients.html" class="btn-preview btn btn--secondary"><?php echo Label::getLabel('LBL_OUR_CLIENTS') ?></a> -->
+                <a target="_blank" href="https://www.fatbit.com/online-learning-consultation-marketplace-platform.html" class="btn-preview"><?php echo Label::getLabel('LBL_START_YOUR_MARKETPLACE'); ?></a>
+                <a target="_blank" href="https://www.yo-coach.com/?demo_form" class="btn-preview"><?php echo Label::getLabel('LBL_Get_A_Personalized_Demo'); ?></a>
+                <!-- <a target="_blank" href="https://www.yo-coach.com/clients.html" class="btn-preview"><?php echo Label::getLabel('LBL_OUR_CLIENTS') ?></a> -->
             </div>
             <a href="javascript:void(0)" class="preview-close" onclick="closePreview();"></a>
         </div>
