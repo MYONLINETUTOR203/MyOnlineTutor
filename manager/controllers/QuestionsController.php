@@ -91,6 +91,10 @@ class QuestionsController extends AdminBaseController
         $question = new Question($quesId);
         $options = $question->getOptions();
         $answerIds = json_decode($questionData['ques_answer'], true);
+
+        if ((new Afile(Afile::TYPE_QUESTION_AUDIO))->getFile($quesId)) {
+            $this->set('file', MyUtility::makeUrl('Image', 'showVideo', [Afile::TYPE_QUESTION_AUDIO, $quesId], CONF_WEBROOT_FRONTEND) . '?time=' . time());
+        }
         $this->sets([
             'questionData' => $questionData,
             'options' => $options,

@@ -63,5 +63,7 @@ $(document).ready(function () {
         });
     };
 
- 
+    $(document).bind('afterClose.facebox', function () {
+        $('#facebox .content').html('');
+    });
 })();

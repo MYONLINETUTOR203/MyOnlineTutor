@@ -123,6 +123,22 @@ $yesNoArr = AppConstant::getYesNoArr();
                             </div>
                         </div>
                     </div>
+                    <?php if (isset($file)) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="field-set">
+                                    <div class="caption-wraper">
+                                        <label class="field_label">
+                                            <?php echo Label::getLabel('LBL_AUDIO'); ?>
+                                        </label>
+                                        <div class="source">
+                                            <audio src="<?php echo $file; ?>" controls playsinline noplaybackrate controlsList="nodownload" volume=1 autostart="0" style="width:100%"></audio>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
                 <?php if (in_array($questionData['ques_type'], [Question::TYPE_MULTIPLE, Question::TYPE_SINGLE])) { ?>
                     <div class="sectionhead">
