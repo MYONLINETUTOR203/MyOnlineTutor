@@ -470,3 +470,5 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BINDED_QUESTION_REMOV
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_SOME_QUIZ(S)_ARE_ALREADY_ATTACHED._PLEASE_TRY_REFRESHING_THE_LIST';
 INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES
 (1, 'LBL_QUIZ_ALREADY_ATTACHED_MESSAGE', 'Some quiz(s) are already attached. Please try refreshing the list');
+
+ALTER TABLE `tbl_quiz_linked_questions` CHANGE `qulinqu_detail` `qulinqu_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 

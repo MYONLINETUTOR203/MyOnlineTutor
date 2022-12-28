@@ -22,7 +22,7 @@ $fld = $frm->getField('ques_answer');
             <h4 class="margin-bottom-2">
                 <?php echo str_replace('{number}', $question['qulinqu_order'], Label::getLabel('LBL_Q{number}.')) . ' ' . $question['qulinqu_title']; ?>
             </h4>
-            <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']) ?></p>
+            <p><?php echo CommonHelper::renderHtml($question['qulinqu_detail']); ?></p>
         </div>
         <div class="box-view__body">
             <div class="option-list">
