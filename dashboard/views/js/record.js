@@ -27,12 +27,13 @@ function getPlayer() {
     recordedPlayer = document.querySelector('.audioRecordingJs');
     recordedStream = '';
 }
-function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
-    navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
-}
 function captureAudio(config) {
+
     captureUserMedia({ audio: true }, function (audioStream) {
+        $(button).find('.btnStartJs, .labelStartJs').hide();
+        $(button).find('.btnStopJs, .labelStopJs').show();
         recordingPlayer.srcObject = audioStream;
+
         config.onMediaCaptured(audioStream);
 
         audioStream.onended = function () {
@@ -43,10 +44,15 @@ function captureAudio(config) {
     });
 }
 
+
+function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+    navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+}
+
 $(document).ready(function () {
     $('body').on('click', '.btnRecordJs', function () {
 
-        var button = this;
+        button = this;
         if ($(button).data('status') === langLbl.stopRecording) {
             $(button).find('.btnStartJs, .labelStartJs').show();
             $(button).find('.btnStopJs, .labelStopJs').hide();
@@ -91,10 +97,6 @@ $(document).ready(function () {
             return;
         }
 
-        $(button).find('.btnStartJs, .labelStartJs').hide();
-        $(button).find('.btnStopJs, .labelStopJs').show();
-
-
         var commonConfig = {
             onMediaCaptured: function (stream) {
                 button.stream = stream;
@@ -116,16 +118,14 @@ $(document).ready(function () {
                 }
             },
             onMediaCapturingFailed: function (error) {
-                if (error.name === 'PermissionDeniedError' && !!navigator.mozGetUserMedia) {
-                    InstallTrigger.install({
-                        'Foo': {
-                            // https://addons.mozilla.org/firefox/downloads/latest/655146/addon-655146-latest.xpi?src=dp-btn-primary
-                            URL: 'https://addons.mozilla.org/en-US/firefox/addon/enable-screen-capturing/',
-                            toString: function () {
-                                return this.URL;
-                            }
-                        }
-                    });
+                if (error.name == 'NotFoundError') {
+                    $(button).find('.btnStartJs, .labelStartJs').show();
+                    $(button).find('.btnStopJs, .labelStopJs').hide();
+                    fcom.error(langLbl.noDeviceDetected);
+                } else if (error.name === 'PermissionDeniedError' && !!navigator.mozGetUserMedia) {
+                    $(button).find('.btnStartJs, .labelStartJs').show();
+                    $(button).find('.btnStopJs, .labelStopJs').hide();
+                    fcom.error(langLbl.noDeviceDetected);
                 }
 
                 commonConfig.onMediaStopped();
@@ -168,25 +168,7 @@ $(document).ready(function () {
 
 
 
-function captureAudio(config) {
 
-    captureUserMedia({ audio: true }, function (audioStream) {
-        recordingPlayer.srcObject = audioStream;
-
-        config.onMediaCaptured(audioStream);
-
-        audioStream.onended = function () {
-            config.onMediaStopped();
-        };
-    }, function (error) {
-        config.onMediaCapturingFailed(error);
-    });
-}
-
-
-function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
-    navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
-}
 
 
 function appendRecordedFile(formData) {
