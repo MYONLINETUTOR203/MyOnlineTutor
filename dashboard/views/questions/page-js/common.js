@@ -7,6 +7,9 @@ $(function () {
             $.facebox(response, 'facebox-large');
         });
     };
+    $(document).bind('afterClose.facebox', function () {
+        $('#facebox .content').html('');
+    });
     showOptions = function (type) {
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
             $('.options-container').show();
