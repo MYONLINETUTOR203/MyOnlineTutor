@@ -4,13 +4,14 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
 $arrFlds = [
     'listserial' => Label::getLabel('LBL_Sr._No'),
     'ques_title' => Label::getLabel('LBL_QUESTION_TITLE'),
+    'ques_type' => Label::getLabel('LBL_TYPE'),
     'ques_cate_name' => Label::getLabel('LBL_CATEGORY'),
     'ques_subcate_name' => Label::getLabel('LBL_SUBCATEGORY'),
     'full_name' => Label::getLabel('LBL_TEACHER'),
     'ques_created' => Label::getLabel('LBL_ADDED_ON'),
     'action' => Label::getLabel('LBL_ACTION'),
 ];
-
+$types = Question::getTypes();
 $tbl = new HtmlElement('table', ['width' => '100%', 'class' => 'table table-responsive', 'id' => 'questionsList']);
 $th = $tbl->appendElement('thead')->appendElement('tr');
 foreach ($arrFlds as $val) {
@@ -28,6 +29,9 @@ foreach ($arrListing as $sn => $row) {
                 break;
             case 'ques_title':
                 $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_title']));
+                break;
+            case 'ques_type':
+                $td->appendElement('plaintext', [], $types[$row['ques_type']]);
                 break;
             case 'ques_cate_name':
                 $td->appendElement('plaintext', [], CommonHelper::renderHtml($row['ques_cate_name']));

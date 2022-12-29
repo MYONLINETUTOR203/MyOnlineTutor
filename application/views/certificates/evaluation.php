@@ -29,7 +29,7 @@
                                 <p class="bold-600 color-black margin-bottom-1">
                                     <?php echo ucwords($session['learner_first_name'] . ' ' . $session['learner_last_name']) ?>
                                 </p>
-                                <span class="font-small"><?php echo $session['country_name'] ?? '' ?></span>
+                                <span class="font-small"><?php echo $session['country_name'] ?? ''; ?></span>
                             </div>
                         </div>
                     </div>

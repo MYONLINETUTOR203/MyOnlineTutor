@@ -89,10 +89,11 @@ $btn_submit->setFieldTagAttribute('disabled', 'disabled');
     $(document).ready(function() {
         let timerOn = true;
         resendOtp = function(userId) {
-            fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId]));
-            $('.resendOtpJs').html('<?php echo addslashes($resendText2) ?>');
-            $(".digit-group input[type=text]").val('').removeClass('error');
-            timer(30);
+            fcom.updateWithAjax(fcom.makeUrl('GuestUser', 'resendTwoFactorAuthenticationCode', [userId], confFrontEndUrl), '', function () {
+                $('.resendOtpJs').html('<?php echo addslashes($resendText2) ?>');
+                $(".digit-group input[type=text]").val('').removeClass('error');
+                timer(30);
+            });
         };
 
         var otpFieldNo = $('.digit-group').find(':input[type=text]').length;

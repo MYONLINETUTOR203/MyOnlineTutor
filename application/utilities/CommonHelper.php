@@ -13,7 +13,7 @@ class CommonHelper
 
     public static function renderHtml($content = '', $stripJs = false)
     {
-        $str = html_entity_decode($content);
+        $str = nl2br(html_entity_decode($content));
         return $stripJs ? static::stripJavascript($str) : $str;
     }
 
