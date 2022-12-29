@@ -139,7 +139,7 @@
                 .footer__logo{
                     margin-bottom: theme('margin.3');
                     img{
-                        max-width: 120px;
+                        max-width: 180px;
                     }
                 }
             }
@@ -281,7 +281,7 @@
                     background-color: theme('color.gray.100');
                 }
                 a{
-                    padding: theme('padding.3');
+                    padding: theme('padding.4')  theme('padding.3');
                     display: block;
                     color: theme('color.dark');
                     width: 100%;
@@ -358,7 +358,7 @@
 
 
 .footer__logo{
-    max-width: 140px;
+    max-width: 240px;
 }
 
 .footer_social-links{

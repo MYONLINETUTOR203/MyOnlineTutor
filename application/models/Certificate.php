@@ -198,7 +198,7 @@ class Certificate extends MyAppModel
             'mirrorMargins' => 0,
             'autoLangToFont' => true,
             'autoScriptToLang' => true,
-            'tempDir' => CONF_INSTALLATION_PATH . 'public/cache'
+            'tempDir' => CONF_INSTALLATION_PATH . 'vendor/mpdf/mpdf/cache'
         ]);
         $mpdf->SetDirectionality(Language::getAttributesById($this->langId, 'language_direction'));
         $mpdf->WriteHTML($content);

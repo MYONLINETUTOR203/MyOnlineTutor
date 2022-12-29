@@ -38,14 +38,14 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                 <ul class="footer_contact_details">
                                     <li>
                                         <svg class="icon icon--email">
-                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#email'; ?>"></use>
+                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#email'; ?>"></use>
                                         </svg>
                                         <span><a href="mailto:<?php echo $siteEmail; ?>"> : <?php echo $siteEmail; ?></a></span>
                                     </li>
                                     <?php if (!empty($sitePhone)) { ?>
                                         <li>
                                             <svg class="icon icon--phone">
-                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#phone'; ?>"></use>
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#phone'; ?>"></use>
                                             </svg>
                                             <span><a href="tel:<?php echo $sitePhone; ?>"> : <?php echo $sitePhone; ?></a></span>
                                         </li>
@@ -66,7 +66,7 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                     <ul class="footer_contact_details">
                                         <li>
                                             <svg class="icon icon--pin">
-                                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#pin'; ?>"></use>
+                                            <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#pin'; ?>"></use>
                                             </svg>
                                             <span><?php echo FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRING, ''); ?></span>
                                         </li>
@@ -89,7 +89,7 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                             <li>
                                                 <a href="<?php echo $link; ?>" target="_blank">
                                                     <svg class="icon icon--email">
-                                                        <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#' . strtolower($name); ?>"></use>
+                                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#' . strtolower($name); ?>"></use>
                                                     </svg>
                                                     <span><?php echo Label::getLabel('LBL_' . $name); ?></span>
                                                 </a>
@@ -154,11 +154,11 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                             if ($nav['pages']) {
                                                 foreach ($nav['pages'] as $link) {
                                                     $navUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id']);
-                                        ?>
+                                                    ?>
                                                     <li>
                                                         <a target="<?php echo $link['nlink_target']; ?>" href="<?php echo $navUrl; ?>" class="bullet-list__action"><?php echo $link['nlink_caption']; ?></a>
                                                     </li>
-                                        <?php
+                                                    <?php
                                                 }
                                             }
                                         }
@@ -183,11 +183,11 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                             if ($nav['pages']) {
                                                 foreach ($nav['pages'] as $link) {
                                                     $navUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id']);
-                                        ?>
+                                                    ?>
                                                     <li>
                                                         <a target="<?php echo $link['nlink_target']; ?>" href="<?php echo $navUrl; ?>" class="bullet-list__action"><?php echo $link['nlink_caption']; ?></a>
                                                     </li>
-                                        <?php
+                                                    <?php
                                                 }
                                             }
                                         }
@@ -212,11 +212,11 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                                             if ($nav['pages']) {
                                                 foreach ($nav['pages'] as $link) {
                                                     $navUrl = CommonHelper::getnavigationUrl($link['nlink_type'], $link['nlink_url'], $link['nlink_cpage_id']);
-                                        ?>
+                                                    ?>
                                                     <li>
                                                         <a target="<?php echo $link['nlink_target']; ?>" href="<?php echo $navUrl; ?>" class="bullet-list__action"><?php echo $link['nlink_caption']; ?></a>
                                                     </li>
-                                        <?php
+                                                    <?php
                                                 }
                                             }
                                         }
@@ -265,13 +265,7 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
         <div class="container container--narrow">
             <div class="copyright">
                 <div class="footer__logo">
-                    <a href="<?php echo MyUtility::makeUrl(); ?>">
-                        <?php if (MyUtility::isDemoUrl()) { ?>
-                            <img src="<?php echo CONF_WEBROOT_FRONTEND . 'images/yocoach-logo.svg'; ?>" alt="" />
-                        <?php } else { ?>
-                            <img src="<?php echo MyUtility::makeFullUrl('Image', 'show', [Afile::TYPE_FRONT_LOGO, 0, Afile::SIZE_MEDIUM]); ?>" alt="<?php echo FatApp::getConfig('CONF_WEBSITE_NAME_' . $siteLangId, FatUtility::VAR_STRING, ''); ?>">
-                        <?php } ?>
-                    </a>
+                    <img src="<?php echo CONF_WEBROOT_FRONTEND . 'images/payment.jpg'; ?>" alt="" />
                 </div>
                 <p>
                     <?php
@@ -285,12 +279,9 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
             </div>
         </div>
     </div>
-    </div>
+</div>
 </footer>
-
 <a href="#top" class="gototop" title="Back to Top"></a>
-
-
 <?php if (FatApp::getConfig('CONF_ENABLE_COOKIES', FatUtility::VAR_INT, 1) && empty($cookieConsent)) { ?>
     <div class="cc-window cc-banner cc-type-info cc-theme-block cc-bottom cookie-alert no-print">
         <?php if (FatApp::getConfig('CONF_COOKIES_TEXT_' . $siteLangId, FatUtility::VAR_STRING, '')) { ?>
@@ -300,12 +291,12 @@ $address = FatApp::getConfig('CONF_ADDRESS_' . $siteLangId, FatUtility::VAR_STRI
                     <?php
                     $readMorePage = FatApp::getConfig('CONF_COOKIES_BUTTON_LINK', FatUtility::VAR_INT);
                     if ($readMorePage) {
-                    ?>
+                        ?>
                         <a href="<?php echo MyUtility::makeUrl('cms', 'view', [$readMorePage]); ?>"><?php echo Label::getLabel('LBL_READ_MORE'); ?></a></span>
-            <?php } ?>
-            </span>
-            <a href="javascript:void(0)" class="cc-close" onClick="acceptAllCookies();"><?php echo Label::getLabel('LBL_ACCEPT_COOKIES'); ?></a>
-            <a href="javascript:void(0)" class="cc-close" onClick="cookieConsentForm();"><?php echo Label::getLabel('LBL_CHOOSE_COOKIES'); ?></a>
+                <?php } ?>
+                </span>
+                <a href="javascript:void(0)" class="cc-close" onClick="acceptAllCookies();"><?php echo Label::getLabel('LBL_ACCEPT_COOKIES'); ?></a>
+                <a href="javascript:void(0)" class="cc-close" onClick="cookieConsentForm();"><?php echo Label::getLabel('LBL_CHOOSE_COOKIES'); ?></a>
             </div>
         <?php } ?>
     </div>
@@ -319,5 +310,4 @@ if (FatApp::getConfig('CONF_SITE_TRACKER_CODE', FatUtility::VAR_STRING, '') && !
 }
 ?>
 </body>
-
 </html>

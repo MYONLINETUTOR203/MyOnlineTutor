@@ -43,7 +43,6 @@ class LearnerController extends DashboardController
             'lessons/page-js/common.js',
             'plans/page-js/common.js',
             'js/moment.min.js',
-            'js/jquery.cookie.js',
             'js/app.timer.js',
             'js/fullcalendar-luxon.min.js',
             'js/fullcalendar.min.js',
