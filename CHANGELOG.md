@@ -222,3 +222,38 @@ Fixes:
     #068618 - Quiz time spent is not coming if the quiz has no duration
     #068478 - The latest added questions should come on the top in quiz question listing
     #068407 - Free trial lesson detail is coming incorrect in related emails
+
+## TV-1.4.2.20221229
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+    #069322 - The error message color is green if user verifies email and account is inactive
+    #069321 - Book free trial button is coming in the teacher listing even after the free trial booking
+    #069320 - Gender value row is coming in the course approval and course refund requests detail
+    #069319 - Some of the special characters are not allowed in the password field
+    #069318 - The error message is not relevant according to the password strength
+    #069299 - Extra space is coming before the question hint on quiz attempt page
+    #069297 - The recording icon and label are changing without allowing the microphone
+    #069296 - Sometimes 1 second is coming extra in quiz time spent if quiz duration is defined
+    #069293 - Certificate setting is coming if both course completion and evaluation certificates are inactive
+    #069290 - “Available” spelling is incorrect in the course certificate setup
+    #069288 - Question full description is not coming in quiz pages
+    #069285 - Resend OTP is not working when doing 2-factor authentication login from dashboard pages
+    #069235 - Show the question type and add its filter in the admin question listing page
+    #069230 - Quiz score and quiz percentage should come when reviewing the manual quiz after the evaluation
+    #069229 - After removing the audio, audio player play button change to pause button
+    #069228 - Audio type questions recorded audio should available for the admin
+    #069227 - The learner is able to save questions without any answer after removing the recorded audio
+    #069226 - Show an alert/message on starting the recording if the microphone is not available
+    #069224 - The error message should come under the audio player
+    #069217 - Audio is playing in the background after closing the question setup popup
+    #069215 - The “Remove recording” icon is coming always irrespective of whether audio is available or not
+    #069007 - "Question not found" error is coming if reviewing the same/different quiz in multiple tabs
+    #068995 - There are some differences in all certificates
+    #068985 - "Reset to default" content is not coming correct of course evaluation certificate
+    #068982 - Question not found error is coming if press multiple clicks on next and back buttons
+    #068977 - Sometimes fatal error is coming when downloading the quiz certificate

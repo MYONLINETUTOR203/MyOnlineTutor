@@ -1717,3 +1717,5 @@ UPDATE `tbl_configurations` SET `conf_val` = '{"heading": "Certificate Of Evalua
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_CERTIFICATE_NOT_AVIALABLE';
 
 ALTER TABLE `tbl_quiz_linked_questions` CHANGE `qulinqu_detail` `qulinqu_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.2.20221229' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
