@@ -29,13 +29,13 @@
                                 <p class="bold-600 color-black margin-bottom-1">
                                     <?php echo ucwords($order['learner_first_name'] . ' ' . $order['learner_last_name']) ?>
                                 </p>
-                                <span class="font-small"><?php echo $order['country_name'] ?></span>
+                                <span class="font-small"><?php echo $order['country_name'] ?? '' ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="sidebox border-bottom padding-bottom-10">
-                    <div class="sidebox__head">
+                    <div class="sidebox__head border-top margin-top-5 padding-top-5">
                         <h5><?php echo Label::getLabel('LBL_COURSE_DETAILS'); ?> </h5>
                     </div>
                     <div class="sidebox__body">

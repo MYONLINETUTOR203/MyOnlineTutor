@@ -1,3 +1,4 @@
+var $skip = true;
 $(function () {
     view = function (id) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'view'), { id }, function (response) {
@@ -32,19 +33,23 @@ $(function () {
         }
         $('.btnNextJs').attr('disabled', 'disabled');
         fcom.ajaxMultipart(fcom.makeUrl('UserQuiz', 'saveAndNext', [next]), data, function (res) {
-            view(res.id);
-        }, { fOutMode: 'json' });
+            (res.status == 1) ? view(res.id) : $('.btnNextJs').attr('disabled', false);
+        }, { fOutMode: 'json', 'failed': true });
     };
     skipAndNext = function (id) {
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
-            view(id);
-        });
+        if ($skip == true) {
+            $skip = false;
+            fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
+                view(id);
+                $skip = true;
+            });
+        }
     };
     previous = function (id) {
         $('.btnPrevJs').attr('disabled', 'disabled');
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
-            view(id);
-        });
+            (res.status == 1) ? view(id) : $('.btnPrevJs').attr('disabled', false);
+        }, { 'failed' : true });
     };
     getByQuesId = function (id, quesId) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0, 'ques_id': quesId }, function (res) {

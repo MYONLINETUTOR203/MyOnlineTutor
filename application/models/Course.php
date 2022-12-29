@@ -531,7 +531,7 @@ class Course extends MyAppModel
         }
         $this->setFldValue('course_updated', date('Y-m-d H:i:s'));
         $this->setFldValue('course_certificate', $data['course_certificate']);
-        $this->setFldValue('course_certificate_type', $data['course_certificate_type']);
+        $this->setFldValue('course_certificate_type', ($data['course_certificate_type'] ?? 0));
         if (!$this->save()) {
             $db->rollbackTransaction();
             $this->error = $this->getError();
@@ -593,7 +593,7 @@ class Course extends MyAppModel
             }
         }
         /* attach quiz if not attached yet or received different quiz */
-        if (($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) && (empty($quizLinked) || $data['course_quilin_id'] != $quizLinked['quilin_id'])) {
+        if (isset($data['course_certificate_type']) && ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION) && (empty($quizLinked) || $data['course_quilin_id'] != $quizLinked['quilin_id'])) {
             $quiz = new QuizLinked(0, $this->userId, $this->userType, $this->langId);
             if (!$quiz->setup($this->getMainTableRecordId(), AppConstant::COURSE, [$data['course_quilin_id']])) {
                 $this->error = $quiz->getError();

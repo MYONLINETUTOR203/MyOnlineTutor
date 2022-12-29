@@ -142,6 +142,7 @@ class QuestionsController extends AdminBaseController
         $frm->addSelectBox(Label::getLabel('LBL_SUBCATEGORY'), 'ques_subcate_id', $subcategories, '', [], Label::getLabel('LBL_SELECT'));
 
         $frm->addTextBox(Label::getLabel('LBL_TEACHER'), 'teacher', '', ['id' => 'teacher', 'autocomplete' => 'off']);
+        $frm->addSelectBox(Label::getLabel('LBL_TYPE'), 'ques_type', Question::getTypes());
         $fld = $frm->addHiddenField('', 'pagesize', FatApp::getConfig('CONF_ADMIN_PAGESIZE'));
         $fld->requirements()->setIntPositive();
         $frm->addHiddenField('', 'page', 1)->requirements()->setIntPositive();

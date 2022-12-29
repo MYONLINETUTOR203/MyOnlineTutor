@@ -13,7 +13,7 @@
                         <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 35px;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
-                        <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED) { ?>
+                        <?php if ($data['quilin_type'] == Quiz::TYPE_AUTO_GRADED || $data['quizat_evaluation'] != QuizAttempt::EVALUATION_PENDING) { ?>
                             <div class="repeat-element">
                                 <div class="repeat-element__title">
                                     <?php echo Label::getLabel('LBL_QUIZ_SCORE'); ?>

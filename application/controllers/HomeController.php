@@ -40,8 +40,8 @@ class HomeController extends MyAppController
             'topRatedTeachers' => $this->getTopRatedTeachers()
         ]);
         $class = new GroupClassSearch($this->siteLangId, $this->siteUserId, $this->siteUserType);
+        $course = new CourseSearch($this->siteLangId, $this->siteUserId, 0);
         $this->set('classes', $class->getUpcomingClasses());
-        $course = new CourseSearch($this->siteLangId, $this->siteUserId, 0);        
         $this->set('courses', $course->getPopularCourses());
         $this->_template->render();
     }
@@ -107,6 +107,11 @@ class HomeController extends MyAppController
             $records[$key]['full_name'] = $record['user_first_name'] . ' ' . $record['user_last_name'];
         }
         return $records;
+    }
+
+    public function requestDemo()
+    {
+        $this->_template->render(false, false);
     }
 
 }

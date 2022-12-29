@@ -174,8 +174,6 @@ class Question extends MyAppModel
             return false;
         }
 
-        $db = FatApp::getDb();
-        $db->startTransaction();
         $this->setFldValue('ques_user_id', $this->userId);
         $this->setFldValue('ques_status', AppConstant::ACTIVE);
         if (in_array($data['ques_type'], [Question::TYPE_TEXT, Question::TYPE_AUDIO])) {
@@ -210,6 +208,7 @@ class Question extends MyAppModel
                 $file->removeFile($quesId, true);
             }
         }
+
         if (!$this->setupOptions($data)) {
             $db->rollbackTransaction();
             return false;
@@ -255,7 +254,7 @@ class Question extends MyAppModel
                 'queopt_order'   => $i,
             ]);
             if (!$queopt->addNew()) {
-                $this->error =  $queopt->getError();
+                $this->error = $queopt->getError();
                 return false;
             }
             if (in_array($key, $data['answers'])) {
