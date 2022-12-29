@@ -98,9 +98,9 @@ $aqIdFld = $frm->getField('quatqu_id');
                                 </svg>
                                 <div class="tooltip tooltip--top bg-black"><?php echo Label::getLabel('LBL_REMOVE_RECORDING'); ?></div>
                             </a>
-                            <?php echo $frm->getFieldHtml('audio_filename'); ?>
                         </div>
                     </div>
+                    <?php echo $frm->getFieldHtml('audio_filename'); ?>
                 </div>
             <?php } ?>
         </div>
