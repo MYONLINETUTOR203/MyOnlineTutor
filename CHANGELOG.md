@@ -257,3 +257,4 @@ Fixes:
     #068985 - "Reset to default" content is not coming correct of course evaluation certificate
     #068982 - Question not found error is coming if press multiple clicks on next and back buttons
     #068977 - Sometimes fatal error is coming when downloading the quiz certificate
+    #069418 - Showing an error of missing file
