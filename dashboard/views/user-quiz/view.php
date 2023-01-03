@@ -103,22 +103,22 @@ $aqIdFld = $frm->getField('quatqu_id');
                     <?php echo $frm->getFieldHtml('audio_filename'); ?>
                 </div>
             <?php } ?>
-        </div>
-        <?php if (!empty($question['qulinqu_hint'])) { ?>
-            <div class="option-hint">
-                <span class="d-inline-flex align-items-center">
-                    <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
-                        <strong class="d-inline-flex align-items-center">
-                            <svg class="icon icon--dashboard margin-right-2 icon--small">
-                                <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
-                            </svg>
-                            <?php echo Label::getLabel('LBL_HINT:'); ?>
-                        </strong>
+            <?php if (!empty($question['qulinqu_hint'])) { ?>
+                <div class="option-hint">
+                    <span class="d-inline-flex align-items-center">
+                        <span class="option-hint__title d-inline-flex align-items-center margin-right-1">
+                            <strong class="d-inline-flex align-items-center">
+                                <svg class="icon icon--dashboard margin-right-2 icon--small">
+                                    <use xlink:href="<?php echo CONF_WEBROOT_URL . 'images/sprite.svg#hint'; ?>"></use>
+                                </svg>
+                                <?php echo Label::getLabel('LBL_HINT:'); ?>
+                            </strong>
+                        </span>
+                        <span class="option-hint__content"><?php echo CommonHelper::renderHtml($question['qulinqu_hint']) ?></span>
                     </span>
-                    <span class="option-hint__content"><?php echo CommonHelper::renderHtml($question['qulinqu_hint']) ?></span>
-                </span>
-            </div>
-        <?php } ?>
+                </div>
+            <?php } ?>
+        </div>
         <div class="box-view__footer">
             <div class="box-actions form">
                 <?php if ($question['qulinqu_order'] > 1) { ?>
