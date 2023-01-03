@@ -115,7 +115,7 @@ class QuizAttempt extends MyAppModel
         }
 
         $question = QuizLinked::getQuestionById($data['ques_id']);
-        if (empty($question) || $data['ques_id'] != $this->quiz['quizat_qulinqu_id']) {
+        if (empty($question)) {
             $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
             return false;
         }
@@ -309,7 +309,7 @@ class QuizAttempt extends MyAppModel
         $srch->addFld('qulinqu_id as quizat_qulinqu_id');
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($data)) {
-            $data = ['quizat_qulinqu_id' => 0];
+            $data = ['quizat_qulinqu_id' => $this->quiz['quizat_qulinqu_id']];
         }
 
         /* setup question id */
