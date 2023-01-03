@@ -163,7 +163,8 @@ class CertificatesController extends MyAppController
             ]);
             $session = FatApp::getDb()->fetch($srch->getResultSet());
             $learner = User::getAttributesById($data['quizat_user_id'], [
-                'user_first_name as learner_first_name', 'user_last_name as learner_last_name'
+                'user_first_name as learner_first_name', 'user_last_name as learner_last_name',
+                'user_country_id'
             ]);
             $teacher = User::getAttributesById($data['quilin_user_id'], [
                 'user_first_name as teacher_first_name', 'user_last_name as teacher_last_name',
