@@ -565,7 +565,7 @@ class CoursesController extends DashboardController
                 $srch->addCondition('certpl_code', '=', $code);
                 $srch->addCondition('certpl_status', '=', AppConstant::ACTIVE);
                 if (!FatApp::getDb()->fetch($srch->getResultSet())) {
-                    FatUtility::dieJsonError(Label::getLabel('LBL_CERTIFICATE_NOT_AVIALABLE'));
+                    FatUtility::dieJsonError(Label::getLabel('LBL_CERTIFICATE_NOT_AVAILABLE'));
                 }
             }
             if ($post['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $post['course_quilin_id'] < 1) {
