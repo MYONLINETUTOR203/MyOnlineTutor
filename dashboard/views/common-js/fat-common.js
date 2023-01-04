@@ -222,7 +222,7 @@ var fcom = {
                             (response.status == 1) ? fcom.success(response.msg) : fcom.error(response.msg);
                         }
                         if (response.status != 1) {
-                            return;
+                            return (options && options.failed) ? callback(res) : false;
                         }
                     }
                     callback(res);
