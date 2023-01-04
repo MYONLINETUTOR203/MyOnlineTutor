@@ -78,6 +78,7 @@ $(function () {
         if (hasFile) {
             fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'removeRecording'), { id, qaId }, function (res) {
                 removeRecordedFile();
+                view(id);
             });
         } else {
             removeRecordedFile();

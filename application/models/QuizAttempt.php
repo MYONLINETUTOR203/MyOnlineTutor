@@ -188,6 +188,52 @@ class QuizAttempt extends MyAppModel
     }
 
     /**
+     * Remove recording & details
+     *
+     * @param int $attemptQuesId
+     * @return bool
+     */
+    public function removeRecording(int $attemptQuesId)
+    {
+        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
+        $srch->addCondition('quatqu_quizat_id', '=', $this->getMainTableRecordId());
+        $srch->addCondition('quatqu_id', '=', $attemptQuesId);
+        $srch->setPageSize(1);
+        $srch->doNotCalculateRecords();
+        $srch->addFld('quatqu_id');
+        if (!$question = FatApp::getDb()->fetch($srch->getResultSet())) {
+            $this->error = Label::getLabel('LBL_QUESTION_NOT_FOUND');
+            return false;
+        }
+
+        $db = FatApp::getDb();
+        $db->startTransaction();
+
+        /* delete attempted question */
+        if (!$db->deleteRecords(QuizAttempt::DB_TBL_QUESTIONS, ['smt' => 'quatqu_id = ?', 'vals' => [$question['quatqu_id']]])) {
+            $this->error = $db->getError();
+            return false;
+        }
+
+        /* remove uploaded file */
+        $file = new Afile(Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO);
+        if (!$file->removeFile($attemptQuesId, true)) {
+            $db->rollbackTransaction();
+            $this->error = $file->getError();
+            return false;
+        }
+
+        /* setup quiz progress stats */
+        if (!$this->setupQuizProgress()) {
+            $db->rollbackTransaction();
+            return false;
+        }
+
+        $db->commitTransaction();
+        return true;
+    }
+
+    /**
      * Mark quiz complete
      *
      * @param string $endTime
@@ -663,7 +709,8 @@ class QuizAttempt extends MyAppModel
         $srch->addFld('COUNT(quatqu_quizat_id) as attempted_questions');
         $srch->addFld('SUM(quatqu_scored) as total_score');
         $srch->addFld('quizat_quilin_id');
-        if ($quesCount = FatApp::getDb()->fetch($srch->getResultSet())) {
+        $quesCount = FatApp::getDb()->fetch($srch->getResultSet());
+        if ($quesCount && $quesCount['attempted_questions'] > 0) {
             $questions = QuizLinked::getAttributesById($quesCount['quizat_quilin_id'], 'quilin_questions');
             $progress = ($quesCount['attempted_questions'] * 100) / $questions;
             $score = $quesCount['total_score'];

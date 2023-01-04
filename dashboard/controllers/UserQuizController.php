@@ -398,20 +398,10 @@ class UserQuizController extends DashboardController
             FatUtility::dieJsonError($quiz->getError());
         }
 
-        /* validate question */
-        $srch = new SearchBase(QuizAttempt::DB_TBL_QUESTIONS);
-        $srch->addCondition('quatqu_quizat_id', '=', $id);
-        $srch->addCondition('quatqu_id', '=', $quesAtmptId);
-        $srch->setPageSize(1);
-        $srch->doNotCalculateRecords();
-        if (!FatApp::getDb()->fetch($srch->getResultSet())) {
-            FatUtility::dieJsonError(Label::getLabel('LBL_QUESTION_NOT_FOUND'));
+        if (!$quiz->removeRecording($quesAtmptId)) {
+            FatUtility::dieJsonError($quiz->getError());
         }
 
-        $file = new Afile(Afile::TYPE_QUIZ_ANSWER_TYPE_AUDIO);
-        if (!$file->removeFile($quesAtmptId, true)) {
-            FatUtility::dieJsonError($file->getError());
-        }
         FatUtility::dieJsonSuccess(Label::getLabel('LBL_RECORDING_REMOVED_SUCCESSFULLY'));
     }
 
