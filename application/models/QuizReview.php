@@ -68,7 +68,7 @@ class QuizReview extends MyAppModel
         $srch->addMultipleFields(['qulinqu_id as quizat_qulinqu_id', 'qulinqu_quilin_id']);
         $data = FatApp::getDb()->fetch($srch->getResultSet());
         if (empty($data)) {
-            $data = ['quizat_qulinqu_id' => 0];
+            $data = ['quizat_qulinqu_id' => $this->quiz['quizat_qulinqu_id']];
         }
 
         /* setup question id */
