@@ -198,10 +198,10 @@ $aqIdFld = $frm->getField('quatqu_id');
     <script>
         getPlayer();
         $(document).ready(function() {
-            setTimeout(function() {
-                $('#audio1').attr('autoplay', '0');
-            }, 3000);
-
+            var obj = $('#audio1');
+            $(obj).attr('autoplay', '0');
+            obj[0].load();
+            obj[0].pause();
         });
     </script>
 <?php } ?>
