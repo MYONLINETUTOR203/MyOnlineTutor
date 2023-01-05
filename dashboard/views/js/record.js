@@ -51,7 +51,9 @@ function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
 
 $(document).ready(function () {
     $('body').on('click', '.btnRecordJs', function () {
-
+        recordingPlayer.addEventListener('pause', () => {
+            recordingPlayer.play();
+        });
         button = this;
         if ($(button).data('status') === langLbl.stopRecording) {
             $(button).find('.btnStartJs, .labelStartJs').show();
