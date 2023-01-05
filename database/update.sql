@@ -472,3 +472,6 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 (1, 'LBL_QUIZ_ALREADY_ATTACHED_MESSAGE', 'Some quiz(s) are already attached. Please try refreshing the list');
 
 ALTER TABLE `tbl_quiz_linked_questions` CHANGE `qulinqu_detail` `qulinqu_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
+
+UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation' WHERE `label_key` = 'NOTIFI_TITLE_TYPE_QUIZ_EVALUATION_SUBMITTED';
+UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation submitted' WHERE `label_key` = 'NOTIFI_DESC_TYPE_QUIZ_EVALUATION_SUBMITTED';
