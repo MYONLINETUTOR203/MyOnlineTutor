@@ -1704,11 +1704,14 @@ INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`
 
 
 
+<<<<<<< HEAD
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.1.20221213' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'MSG_PASSWORD_MUST_BE_EIGHT_ALPHANUMERIC';
 INSERT INTO `tbl_language_labels` (`label_lang_id`, `label_key`, `label_caption`) VALUES ('1', 'MSG_PASSWORD_VALIDATION_ERROR', 'Password must contain alphanumerics, a symbol and should be 8 to 20 characters long'), ('2', 'MSG_PASSWORD_VALIDATION_ERROR', 'Password must contain alphanumerics, a symbol and should be 8 to 20 characters long');
 
+=======
+>>>>>>> 8e8a5b3ae4af75d996724792923be042f2a86c2c
 UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"Certificate Of Evaluation\", \"learner\": \"{learner-name}\", \"trainer\": \"Tutor: {teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"has successfully completed \\\"{course-name}\\\" \\\"{course-language}\\\" online course on {course-completed-date} and has achieved {course-score} score.\", \"certificate_number\": \"Certificate No.: {certificate-number}\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'course_evaluation_certificate' AND `tbl_certificate_templates`.`certpl_lang_id` = 1; 
 UPDATE `tbl_certificate_templates` SET `certpl_body` = '{\"heading\": \"شهادة تقييم\", \"learner\": \"{learner-name}\", \"trainer\": \"Tutor: {teacher-name}\", \"content_part_1\": \"This is to certify that\", \"content_part_2\": \"أكمل بنجاح دورة \\\"{course-name}\\\" \\\"{course-language}\\\" عبر الإنترنت في {course-completed-date} وحقق النتيجة {course-score}.\", \"certificate_number\": \"Certificate No.: {certificate-number}\"}' WHERE `tbl_certificate_templates`.`certpl_code` = 'course_evaluation_certificate' AND `tbl_certificate_templates`.`certpl_lang_id` = 2; 
 
@@ -1718,4 +1721,9 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_CERTIFICATE_NOT_AVIAL
 
 ALTER TABLE `tbl_quiz_linked_questions` CHANGE `qulinqu_detail` `qulinqu_detail` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL; 
 
+
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.2.20221229' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+
+UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation' WHERE `label_key` = 'NOTIFI_TITLE_TYPE_QUIZ_EVALUATION_SUBMITTED';
+UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation submitted' WHERE `label_key` = 'NOTIFI_DESC_TYPE_QUIZ_EVALUATION_SUBMITTED';
+
