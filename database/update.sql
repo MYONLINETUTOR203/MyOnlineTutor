@@ -1732,3 +1732,5 @@ ALTER TABLE `tbl_course_approval_requests` ADD `coapre_preview_video` VARCHAR(25
 
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BROWSER_VIDEO_NOT_SUPPORTED_INFO';
 DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_COURSE_PREVIEW_VIDEO_GUIDELINES';
+
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.3.20230117' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';

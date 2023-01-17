@@ -258,3 +258,29 @@ Fixes:
     #068982 - Question not found error is coming if press multiple clicks on next and back buttons
     #068977 - Sometimes fatal error is coming when downloading the quiz certificate
     #069418 - Showing an error of missing file
+
+
+## TV-1.4.3.20230117
+
+Features: N/A
+
+Updates:
+
+    Task-105434 Patch Fixing- Preview Video
+
+Fixes:
+
+    #069506 - The user is unable to access the course evaluation certificate
+    #069494 - The quiz progress remains the same and question is coming as answered after removing the audio answer
+    #069493 - "Quiz evaluation submitted" notification content should be accurate
+    #069487 - The time spent value is not coming on the non duration quiz
+    #069485 - Emails view is distorted when viewing email in the admin panel
+    #069319 - Some of the special characters are not allowed in the password field
+    #069309 - Audio recording time is not impacted if pause audio for sometime
+    #069300 - Question and Answer audios are getting played automatically
+    #069299 - Extra space is coming before the question hint on quiz attempt page
+    #069293 - Certificate setting is coming if both course completion and evaluation certificates are inactive
+    #069290 - “Available” spelling is incorrect in the course certificate setup
+    #069007 - "Question not found" error is coming if reviewing the same/different quiz in multiple tabs
+    #068995 - There are some differences in all certificates
+    #068977 - Sometimes fatal error is coming when downloading the quiz certificate
