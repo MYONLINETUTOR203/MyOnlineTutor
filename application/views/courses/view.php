@@ -713,3 +713,4 @@ $levels = Course::getCourseLevels();
     </section>
 <?php } ?>
 <?php echo $this->includeTemplate('_partial/shareThisScript.php'); ?>
+<script src="//www.youtube.com/player_api"></script>

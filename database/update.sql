@@ -1727,3 +1727,8 @@ UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.2.20221229' WHERE `tbl_conf
 UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation' WHERE `label_key` = 'NOTIFI_TITLE_TYPE_QUIZ_EVALUATION_SUBMITTED';
 UPDATE `tbl_language_labels` set `label_caption` = 'Quiz evaluation submitted' WHERE `label_key` = 'NOTIFI_DESC_TYPE_QUIZ_EVALUATION_SUBMITTED';
 
+ALTER TABLE `tbl_courses` ADD `course_preview_video` VARCHAR(255) NOT NULL AFTER `course_certificate`; 
+ALTER TABLE `tbl_course_approval_requests` ADD `coapre_preview_video` VARCHAR(255) NOT NULL AFTER `coapre_learnings`;
+
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_BROWSER_VIDEO_NOT_SUPPORTED_INFO';
+DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_COURSE_PREVIEW_VIDEO_GUIDELINES';

@@ -699,17 +699,6 @@ class Course extends MyAppModel
                 }
             }
         }
-        /* delete course preview video */
-        $files = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
-        $filesList = $files->getFilesByType($courseId);
-        if ($filesList) {
-            foreach ($filesList as $file) {
-                if (!$files->removeById($file['file_id'], true)) {
-                    $this->error = $files->getError();
-                    return false;
-                }
-            }
-        }
         return true;
     }
 
@@ -740,7 +729,8 @@ class Course extends MyAppModel
                 (course_certificate =' . AppConstant::YES . ' AND course_certificate_type = ' . Certificate::TYPE_COURSE_EVALUATION . ' AND course_quilin_id < 1) OR 
                 (course_certificate =' . AppConstant::YES . ' AND course_certificate_type = 0)
                 , 0, 1
-            ) AS course_quiz'
+            ) AS course_quiz',
+            "IF(course_preview_video != '', 1, 0) course_preview_video"
         ]);
         $srch->addCondition('course.course_id', '=', $courseId);
         $srch->setPageSize(1);
@@ -789,8 +779,6 @@ class Course extends MyAppModel
         /* get course image and video */
         $afile = new Afile(Afile::TYPE_COURSE_IMAGE);
         $criteria['course_image'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
-        $afile = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
-        $criteria['course_preview_video'] = ($afile->getFilesByType($courseId)) ? 1 : 0;
 
         $criteria['course_is_eligible'] = true;
         if (!empty(array_search(0, $criteria))) {
@@ -880,6 +868,7 @@ class Course extends MyAppModel
                 'coapre_learners' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNERS]),
                 'coapre_learnings' => json_encode($intendedLearnerData[IntendedLearner::TYPE_LEARNING]),
                 'coapre_requirements' => json_encode($intendedLearnerData[IntendedLearner::TYPE_REQUIREMENTS]),
+                'coapre_preview_video' => $course['course_preview_video'],
             ];
         } else {
             $data = [
@@ -1010,7 +999,8 @@ class Course extends MyAppModel
             'course_duration',
             'course_srchtags',
             'course_quilin_id',
-            'course_certificate_type'
+            'course_certificate_type',
+            'course_preview_video'
         ]);
         $srch->setPageSize(1);
         $srch->doNotCalculateRecords();

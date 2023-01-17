@@ -12,13 +12,13 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
         <div class="row align-items-center justify-content-between">
             <div class="col-sm-8">
                 <h1 id="mainHeadingJs">
-                <?php
-                if ($courseId > 0) {
-                    echo $courseTitle;
-                } else {
-                    echo Label::getLabel('LBL_MANAGE_COURSE_DETAILS');
-                }
-                ?>
+                    <?php
+                    if ($courseId > 0) {
+                        echo $courseTitle;
+                    } else {
+                        echo Label::getLabel('LBL_MANAGE_COURSE_DETAILS');
+                    }
+                    ?>
                 </h1>
                 <p class="margin-0"><?php echo Label::getLabel('LBL_MANAGE_COURSE_SUB_HEADING'); ?></p>
             </div>
@@ -30,3 +30,4 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
         var courseId = "<?php echo $courseId ?>";
         var siteLangId = "<?php echo $siteLangId; ?>";
     </script>
+    <script src="//www.youtube.com/player_api"></script>

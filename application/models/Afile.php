@@ -50,7 +50,6 @@ class Afile extends FatModel
     const TYPE_GROUP_CLASS_BANNER = 55;
     const TYPE_CERTIFICATE_BACKGROUND_IMAGE = 56;
     const TYPE_COURSE_IMAGE = 57;
-    const TYPE_COURSE_PREVIEW_VIDEO = 58;
     const TYPE_CERTIFICATE_IMAGE = 59;
     const TYPE_CERTIFICATE_PDF = 60;
     const TYPE_CERTIFICATE_LOGO = 61;
@@ -652,8 +651,6 @@ class Afile extends FatModel
                 return ['png', 'jpeg', 'jpg', 'gif', 'pdf', 'doc', 'docx', 'zip', 'txt'];
             case static::TYPE_COURSE_IMAGE:
                 return ['png', 'jpeg', 'jpg', 'gif'];
-            case static::TYPE_COURSE_PREVIEW_VIDEO:
-                return ['mp4'];
             case static::TYPE_QUIZ_ANSWER_TYPE_AUDIO:
             case static::TYPE_QUESTION_AUDIO:
                 return ['ogg', 'wav'];
@@ -861,7 +858,6 @@ class Afile extends FatModel
                 static::SIZE_MEDIUM => [500, 281],
                 static::SIZE_LARGE => [1000, 563]
             ],
-            static::TYPE_COURSE_PREVIEW_VIDEO => [],
             static::TYPE_GROUP_CLASS_BANNER => [
                 static::SIZE_SMALL => [300, 169],
                 static::SIZE_MEDIUM => [500, 281],
@@ -1000,7 +996,6 @@ class Afile extends FatModel
             case static::TYPE_CERTIFICATE_BACKGROUND_IMAGE:
             case static::TYPE_ORDER_PAY_RECEIPT:
             case static::TYPE_COURSE_IMAGE:
-            case static::TYPE_COURSE_PREVIEW_VIDEO:
             case static::TYPE_GROUP_CLASS_BANNER:
             case static::TYPE_CERTIFICATE_LOGO:
             default:

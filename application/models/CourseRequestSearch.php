@@ -94,6 +94,7 @@ class CourseRequestSearch extends YocoachSearch
             'coapre.coapre_learnings' => 'coapre_learnings',
             'coapre.coapre_requirements' => 'coapre_requirements',
             'coapre.coapre_srchtags' => 'coapre_srchtags',
+            'coapre.coapre_preview_video' => 'coapre_preview_video',
             'u.user_id' => 'user_id',
             'u.user_first_name' => 'user_first_name',
             'u.user_last_name' => 'user_last_name',

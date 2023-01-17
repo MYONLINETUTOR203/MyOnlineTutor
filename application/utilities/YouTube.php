@@ -24,7 +24,7 @@ class YouTube extends FatUtility
             ([\w-]{10,12})  # Allow 10-12 for 11 char youtube id.
             ($|&).*         # if additional parameters are also in query string after video id.
             $%x';
-        if (!$result = preg_match($pattern, $url, $matches)) {
+        if (!preg_match($pattern, $url, $matches)) {
             return 0;
         }
         if (!isset($matches[1])) {

@@ -171,7 +171,7 @@ $quesIdFld = $frm->getField('ques_id');
                 ?>
                 <div class="source recordrtc <?php echo $class; ?>">
                     <div class="source__field audioRecorderJs">
-                        <audio style="" <?php echo $src; ?> controls playsinline noplaybackrate volume=1 <?php echo $autoplay; ?>></audio>
+                        <audio style="" <?php echo $src; ?> controls playsinline noplaybackrate preload="metadata" volume=1 <?php echo $autoplay; ?>></audio>
                     </div>
                     <div class="source__field audioRecordingJs" style="display:none;"></div>
                     <div class="source__actions">

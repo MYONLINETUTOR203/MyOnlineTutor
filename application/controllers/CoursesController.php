@@ -174,7 +174,7 @@ class CoursesController extends MyAppController
                 'crsdetail.course_id = course.course_id',
                 'crsdetail'
         );
-        $srch->addFld('crsdetail.course_title');
+        $srch->addMultipleFields(['crsdetail.course_title', 'course.course_preview_video']);
         $srch->addCondition('course.course_id', '=', $courseId);
         $srch->doNotCalculateRecords();
         $srch->setPageSize(1);

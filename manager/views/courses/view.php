@@ -239,6 +239,22 @@ $yesNoArr = AppConstant::getYesNoArr();
                             <div class="field-set">
                                 <div class="caption-wraper">
                                     <label class="field_label">
+                                        <?php echo Label::getLabel('LBL_PREVIEW_VIDEO'); ?>
+                                    </label>:
+                                    <strong>
+                                        <a href="<?php echo $courseData['course_preview_video']; ?>" target="_blank">
+                                            <?php echo $courseData['course_preview_video']; ?>
+                                        </a>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="field-set">
+                                <div class="caption-wraper">
+                                    <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
                                 </div>

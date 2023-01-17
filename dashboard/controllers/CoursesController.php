@@ -203,30 +203,45 @@ class CoursesController extends DashboardController
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /* validate course id */
-        if (!Course::getAttributesById($courseId, 'course_id')) {
+        if (!$course = Course::getAttributesById($courseId, ['course_id', 'course_preview_video'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_INVALID_REQUEST'));
         }
         /* get form and fill */
         $frm = $this->getMediaForm();
-        $frm->fill(['course_id' => $courseId]);
+        $frm->fill($course);
         /* get course image required dimensions */
         $file = new Afile(Afile::TYPE_COURSE_IMAGE);
         $image = $file->getFile($courseId);
         $dimensions = $file->getImageSizes(Afile::SIZE_LARGE);
-        /* get video url */
-        $file = new Afile(Afile::TYPE_COURSE_PREVIEW_VIDEO);
-        $previewVideo = $file->getFile($courseId);
+
         $this->sets([
             'frm' => $frm,
             'courseId' => $courseId,
             'extensions' => Afile::getAllowedExts(Afile::TYPE_COURSE_IMAGE),
-            'videoFormats' => Afile::getAllowedExts(Afile::TYPE_COURSE_PREVIEW_VIDEO),
             'dimensions' => $dimensions,
             'filesize' => MyUtility::convertBitesToMb(Afile::getAllowedUploadSize()),
-            'previewVideo' => $previewVideo,
             'image' => $image,
         ]);
         $this->_template->render(false, false);
+    }
+
+    /**
+     * Setup course preview video
+     *
+     * @return json
+     */
+    public function setupPreviewVideo()
+    {
+        $frm = $this->getMediaForm();
+        if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
+            FatUtility::dieJsonError(current($frm->getValidationErrors()));
+        }
+        $course = new Course($post['course_id'], $this->siteUserId, $this->siteUserType, $this->siteLangId);
+        $course->setFldValue('course_preview_video', $post['course_preview_video']);
+        if (!$course->save()) {
+            FatUtility::dieJsonError($course->getError());
+        }
+        FatUtility::dieJsonSuccess(Label::getLabel('LBL_SETUP_SUCCESSFUL'));
     }
 
     /**
@@ -237,6 +252,7 @@ class CoursesController extends DashboardController
     public function setupMedia()
     {
         $frm = $this->getMediaForm();
+        $frm->getField('course_preview_video')->requirements()->setRequired(false);
         if (!$post = $frm->getFormDataFromArray(FatApp::getPostedData())) {
             FatUtility::dieJsonError(current($frm->getValidationErrors()));
         }
@@ -244,21 +260,11 @@ class CoursesController extends DashboardController
         if (!$course->canEditCourse()) {
             FatUtility::dieWithError($course->getError());
         }
-        if (empty($_FILES['course_image']['name']) && empty($_FILES['course_preview_video']['name'])) {
+        if (empty($_FILES['course_image']['name'])) {
             FatUtility::dieJsonError(Label::getLabel('LBL_NO_MEDIA_SELECTED'));
         }
-        $type = '';
-        $files = [];
-        if (!empty($_FILES['course_image']['name'])) {
-            $type = Afile::TYPE_COURSE_IMAGE;
-            $files = $_FILES['course_image'];
-        }
-        if (!empty($_FILES['course_preview_video']['name'])) {
-            $type = Afile::TYPE_COURSE_PREVIEW_VIDEO;
-            $files = $_FILES['course_preview_video'];
-        }
-        $file = new Afile($type);
-        if (!$file->saveFile($files, $post['course_id'], true)) {
+        $file = new Afile(Afile::TYPE_COURSE_IMAGE);
+        if (!$file->saveFile($_FILES['course_image'], $post['course_id'], true)) {
             FatUtility::dieJsonError($file->getError());
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_FILE_UPLOADED_SUCCESSFULLY'));
@@ -276,9 +282,16 @@ class CoursesController extends DashboardController
             FatUtility::dieWithError($course->getError());
         }
         $type = FatApp::getPostedData('type');
-        $file = new Afile($type);
-        if (!$file->removeFile($courseId, 0, true)) {
-            FatUtility::dieJsonError($file->getError());
+        if ($type == Afile::TYPE_COURSE_IMAGE) {
+            $file = new Afile($type);
+            if (!$file->removeFile($courseId, 0, true)) {
+                FatUtility::dieJsonError($file->getError());
+            }
+        } else {
+            $course->setFldValue('course_preview_video', '');
+            if (!$course->save()) {
+                FatUtility::dieJsonError($course->getError());
+            }
         }
         FatUtility::dieJsonSuccess(Label::getLabel('MSG_FILE_REMOVED_SUCCESSFULLY'));
     }
@@ -804,9 +817,12 @@ class CoursesController extends DashboardController
     {
         $frm = new Form('frmCourses');
         $frm->addFileUpload(Label::getLabel('LBl_COURSE_IMAGE'), 'course_image');
-        $frm->addFileUpload(Label::getLabel('LBl_PREVIEW_VIDEO'), 'course_preview_video');
+        $fld = $frm->addTextBox(Label::getLabel('LBl_YOUTUBE_URL'), 'course_preview_video');
+        $fld->requirements()->setRequired();
+        $fld->requirements()->setRegularExpressionToValidate(AppConstant::INTRODUCTION_VIDEO_LINK_REGEX);
+        $fld->requirements()->setCustomErrorMessage(Label::getLabel('MSG_PLEASE_ENTER_VALID_VIDEO_LINK'));
         $frm->addHiddenField('', 'course_id')->requirements()->setInt();
-        $frm->addButton('', 'btn_next', Label::getLabel('LBL_SAVE_&_NEXT'));
+        $frm->addSubmitButton('', 'btn_submit', Label::getLabel('LBL_SAVE_&_NEXT'));
         return $frm;
     }
 

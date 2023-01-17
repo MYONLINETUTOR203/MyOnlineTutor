@@ -138,7 +138,17 @@ $(function () {
             }
         }, { fOutMode: 'json' });
     };
-    removeMedia = function(type) {
+    setupPreviewVideo = function () {
+        var frm = $('#frmCourses')[0];
+        if (!$(frm).validate()) {
+            return;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('Courses', 'setupPreviewVideo'), fcom.frmData(frm), function (res) {
+            intendedLearnersForm();
+            getCourseEligibility();
+        }, { fOutMode: 'json' });
+    };
+    removeMedia = function(type = '') {
         if (confirm(langLbl.confirmRemove)) {
             fcom.updateWithAjax(fcom.makeUrl('Courses', 'removeMedia', [courseId]), {type}, function (res) {
                 mediaForm();

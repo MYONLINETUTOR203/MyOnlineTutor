@@ -107,7 +107,14 @@
                                 <dt><?php echo Label::getLabel('LBL_COURSE_TAGS'); ?></dt>
                                 <dd><?php echo empty($requestData['coapre_srchtags']) ? Label::getLabel('LBL_NA') : implode(', ', $requestData['coapre_srchtags']); ?></dd>
                             </dl>
-
+                            <dl class="list">
+                                <dt><?php echo Label::getLabel('LBL_COURSE_PREVIEW_VIDEO'); ?></dt>
+                                <dd>
+                                    <a href="<?php echo $requestData['coapre_preview_video']; ?>" target="_blank">
+                                        <?php echo $requestData['coapre_preview_video']; ?>
+                                    </a>
+                                </dd>
+                            </dl>
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_CONTENT'); ?></dt>
                                 <dd>

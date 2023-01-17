@@ -93,6 +93,7 @@ class CourseSearch extends YocoachSearch
             'course.course_quilin_id' => 'course_quilin_id',
             'course.course_level' => 'course_level',
             'course.course_currency_id' => 'course_currency_id',
+            'course.course_preview_video' => 'course_preview_video',
             'crsdetail.course_title' => 'course_title',
             'crsdetail.course_subtitle' => 'course_subtitle',
             'crsdetail.course_srchtags' => 'course_srchtags',

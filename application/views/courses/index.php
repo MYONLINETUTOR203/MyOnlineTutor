@@ -477,3 +477,4 @@ $priceTill->setFieldTagAttribute('class', 'price-till-js');
         }
     });
 </script>
+<script src="//www.youtube.com/player_api"></script>
