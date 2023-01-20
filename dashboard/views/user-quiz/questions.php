@@ -72,7 +72,7 @@
             recordId: <?php echo $attemptId; ?>,
             recordType: 'QUIZ',
             callback: function() {
-                window.location.reload();
+                finish();
             },
             notify: function() {
                 fcom.error("<?php echo Label::getLabel('LBL_FEW_SECONDS_LEFT._PLEASE_KEEP_YOUR_ANSWERS_SAVED') ?>");
