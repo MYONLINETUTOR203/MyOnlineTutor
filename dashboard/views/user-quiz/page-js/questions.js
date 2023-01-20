@@ -47,9 +47,9 @@ $(function () {
     };
     previous = function (id) {
         $('.btnPrevJs').attr('disabled', 'disabled');
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id' : id, 'next' : 0 }, function (res) {
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0 }, function (res) {
             (res.status == 1) ? view(id) : $('.btnPrevJs').attr('disabled', false);
-        }, { 'failed' : true });
+        }, { 'failed': true });
     };
     getByQuesId = function (id, quesId) {
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0, 'ques_id': quesId }, function (res) {
@@ -63,7 +63,13 @@ $(function () {
             }
         }
         var frm = document.frmQuiz;
-        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), fcom.frmData(frm), function (res) {
+        finish(fcom.frmData(frm));
+    };
+    finish = function (data = '') {
+        if (data == '') {
+            data = 'ques_attempt_id=' + document.frmQuiz.ques_attempt_id.value;
+        }
+        fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'saveAndFinish'), data, function (res) {
             window.location = fcom.makeUrl('UserQuiz', 'completed', [res.id]);
         });
     };

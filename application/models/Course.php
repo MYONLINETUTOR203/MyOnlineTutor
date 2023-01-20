@@ -575,10 +575,7 @@ class Course extends MyAppModel
          * if quiz is attached & type is same but new quiz is selected
          */
         if (!empty($quizLinked)) {
-            if (
-                ($data['course_certificate_type'] != Certificate::TYPE_COURSE_EVALUATION) ||
-                ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $data['course_quilin_id'] != $quizLinked['quilin_id'])
-            ) {
+            if ((!isset($data['course_certificate_type'])) || ($data['course_certificate_type'] != Certificate::TYPE_COURSE_EVALUATION) || ($data['course_certificate_type'] == Certificate::TYPE_COURSE_EVALUATION && $data['course_quilin_id'] != $quizLinked['quilin_id'])) {
                 $quiz = new QuizLinked($quizLinked['quilin_id'], $this->userId, $this->userType, $this->langId);
                 if (!$quiz->remove()) {
                     $this->error = $quiz->getError();
