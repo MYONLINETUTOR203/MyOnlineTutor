@@ -242,9 +242,13 @@ $yesNoArr = AppConstant::getYesNoArr();
                                         <?php echo Label::getLabel('LBL_PREVIEW_VIDEO'); ?>
                                     </label>:
                                     <strong>
-                                        <a href="<?php echo $courseData['course_preview_video']; ?>" target="_blank">
-                                            <?php echo $courseData['course_preview_video']; ?>
-                                        </a>
+                                        <?php if (!empty($courseData['course_preview_video'])) { ?>
+                                            <a href="<?php echo $courseData['course_preview_video']; ?>" target="_blank">
+                                                <?php echo $courseData['course_preview_video']; ?>
+                                            </a>
+                                        <?php } else { ?>
+                                            <?php echo Label::getLabel('LBL_NA'); ?>
+                                        <?php } ?>
                                     </strong>
                                 </div>
                             </div>

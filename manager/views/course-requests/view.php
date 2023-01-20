@@ -110,9 +110,13 @@
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_PREVIEW_VIDEO'); ?></dt>
                                 <dd>
-                                    <a href="<?php echo $requestData['coapre_preview_video']; ?>" target="_blank">
-                                        <?php echo $requestData['coapre_preview_video']; ?>
-                                    </a>
+                                    <?php if (!empty($requestData['coapre_preview_video'])) { ?>
+                                        <a href="<?php echo $requestData['coapre_preview_video']; ?>" target="_blank">
+                                            <?php echo $requestData['coapre_preview_video']; ?>
+                                        </a>
+                                    <?php } else { ?>
+                                        <?php echo Label::getLabel('LBL_NA'); ?>
+                                    <?php } ?>
                                 </dd>
                             </dl>
                             <dl class="list">
