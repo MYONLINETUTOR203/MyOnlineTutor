@@ -9,6 +9,8 @@ $(function () {
     };
     $(document).bind('afterClose.facebox', function () {
         $('#facebox .content').html('');
+        $('.btnRecordJs').trigger('click');
+        removeRecordedFile();
     });
     showOptions = function (type) {
         if (type == TYPE_SINGLE || type == TYPE_MULTIPLE) {
