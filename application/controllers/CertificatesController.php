@@ -93,12 +93,16 @@ class CertificatesController extends MyAppController
         if (!$data = QuizAttempt::getById($attemptId)) {
             FatUtility::exitWithErrorCode(404);
         }
+
         if (
             $data['quizat_active'] == AppConstant::NO || ($data['quilin_record_type'] != AppConstant::COURSE && $data['quilin_certificate'] == AppConstant::NO) || empty($data['quizat_certificate_number']) ||
             $data['quizat_status'] != QuizAttempt::STATUS_COMPLETED ||
             $data['quizat_evaluation'] != QuizAttempt::EVALUATION_PASSED
         ) {
 
+            FatUtility::exitWithErrorCode(404);
+        }
+        if (!(new Afile(Afile::TYPE_CERTIFICATE_PDF, $attemptId))->getFile()) {
             FatUtility::exitWithErrorCode(404);
         }
         
