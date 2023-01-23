@@ -93,10 +93,12 @@ class CertificatesController extends MyAppController
         if (!$data = QuizAttempt::getById($attemptId)) {
             FatUtility::exitWithErrorCode(404);
         }
-        if ($data['quizat_active'] == AppConstant::NO || $data['quilin_certificate'] == AppConstant::NO) {
+        if ($data['quizat_active'] == AppConstant::NO || $data['quilin_certificate'] == AppConstant::NO || empty($data['quizat_certificate_number']) || $data['quizat_status'] != QuizAttempt::STATUS_COMPLETED || $data['quizat_evaluation'] != QuizAttempt::EVALUATION_PASSED) {
             FatUtility::exitWithErrorCode(404);
         }
-
+        if (!(new Afile(Afile::TYPE_CERTIFICATE_PDF, $attemptId))->getFile()) {
+            FatUtility::exitWithErrorCode(404);
+        }
         if ($data['quilin_record_type'] == AppConstant::GCLASS) {
             $srch = new GroupClassSearch($this->siteLangId, 0, 0);
             $srch->addCondition('grpcls_id', '=', $data['quilin_record_id']);
