@@ -284,3 +284,20 @@ Fixes:
     #069007 - "Question not found" error is coming if reviewing the same/different quiz in multiple tabs
     #068995 - There are some differences in all certificates
     #068977 - Sometimes fatal error is coming when downloading the quiz certificate
+
+## TV-1.4.4.20230124
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+    #069913 - If the course preview video is not available then content is not aligned properly
+    #069903 - Audio recording remains continue if started an audio recording and close the question popup
+    #069901 - After quiz time completion non saved question is also getting saved
+    #069317 - Recorded audio is not clear when playing the audio in the question setup
+    #069315 - When recording a question or answer audio, the voice listening to myself
+    #069293 - Certificate setting is coming if both course completion and evaluation certificates are inactive
+    #068977 - Sometimes fatal error is coming when downloading the quiz certificate
+    #068166 - Quiz instructions should display properly everywhere
