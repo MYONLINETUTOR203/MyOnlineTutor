@@ -8,8 +8,8 @@ if ($lecture) {
     <div class="row justify-content-between">
         <div class="<?php echo $containerClass; ?>">
             <div class="cms-container">
-                <div class="editor-content">
-                    <iframe srcdoc="<?php echo $lecture['lecture_details']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
+                <div class="editor-content iframe-content">
+                    <iframe onload="resetIframe(this);" srcdoc="<?php echo $lecture['lecture_details']; ?>" style="border:none; width:100%; height:30px;"></iframe>
                 </div>
             </div>
         </div>
@@ -98,8 +98,3 @@ if ($lecture) {
         </div>
     </div>
 <?php } ?>
-<script>
-    $(document).ready(function() {
-        resetEditorHeight();
-    });
-</script>

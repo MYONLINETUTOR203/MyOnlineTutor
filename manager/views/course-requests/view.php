@@ -60,8 +60,8 @@
                             <dl class="list">
                                 <dt><?php echo Label::getLabel('LBL_COURSE_DETAIL'); ?></dt>
                                 <dd>
-                                    <div class="editor-content">
-                                        <iframe srcdoc="<?php echo $requestData['coapre_details']; ?>" style="border:none;width: 100%;height: 100%;"></iframe>
+                                    <div class="editor-content iframe-content">
+                                        <iframe onload="resetIframe(this);" srcdoc="<?php echo $requestData['coapre_details']; ?>" style="border:none; width:100%; height:30px;"></iframe>
                                     </div>
                                 </dd>
                             </dl>
@@ -193,8 +193,3 @@
         </div>
     </div>
 </section>
-<script>
-    $(document).ready(function() {
-        resetEditorHeight();
-    });
-</script>

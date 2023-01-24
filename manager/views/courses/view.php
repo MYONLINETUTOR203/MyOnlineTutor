@@ -245,7 +245,7 @@ $yesNoArr = AppConstant::getYesNoArr();
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="editor-content"><iframe srcdoc="<?php echo $courseData['course_details']; ?>" style="border:none;width: 100%;height: 100%;"></iframe></div>
+                            <div class="editor-content iframe-content"><iframe onload="resetIframe(this);" srcdoc="<?php echo $courseData['course_details']; ?>" style="border:none; width:100%; height:30px;"></iframe></div>
                         </div>
                     </div>
                 </div>
@@ -253,8 +253,3 @@ $yesNoArr = AppConstant::getYesNoArr();
         </div>
     </div>
 </section>
-<script>
-    $(document).ready(function() {
-        resetEditorHeight();
-    });
-</script>
