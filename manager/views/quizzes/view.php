@@ -27,12 +27,12 @@ defined('SYSTEM_INIT') or die('Invalid Usage.');
                     <div class="row">
                         <div class="col-md-12">
                             <div class="field-set">
-                                <div class="caption-wraper editorContentJs">
+                                <div class="caption-wraper">
                                     <label class="field_label">
                                         <?php echo Label::getLabel('LBL_DESCRIPTION'); ?>
                                     </label>
-                                    : <strong>
-                                        <iframe srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none;width: 100%;height: 35px;"></iframe>
+                                    : <strong class="iframe-content">
+                                        <iframe onload="resetIframe(this);" srcdoc="<?php echo $quiz['quiz_detail']; ?>" style="border:none; width:100%; height:30px;"></iframe>
                                     </strong>
                                 </div>
                             </div>

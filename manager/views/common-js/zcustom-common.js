@@ -209,17 +209,11 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
         }
     }
 }
-function resizeIframe(time = 0) {
-    setTimeout(function () {
-        var $iframe = $('.editorContentJs').find('iframe');
-        var height = $iframe.contents().height();
-        $iframe.css({ height: height + 'px' });
-        $('.editorContentJs').css('height', height + 35 + 'px');
-        if ($('#facebox').length > 0) {
-            fcom.resetFaceboxHeight();
-        }
-    }, time);
-}
+resetIframe = function (frame) {
+    var height = $(frame).contents().height();
+    $(frame).css({ height: height + 'px' });
+    $(frame).parent('.iframe-content').css('height', height + 'px');
+};
 (function () {
     Slugify = function (str, str_val_id, is_slugify) {
         var str = str.toString().toLowerCase()
