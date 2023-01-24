@@ -9,8 +9,8 @@
                             <?php echo Label::getLabel('LBL_QUIZ_SOLVING_INSTRUCTIONS_HEADING'); ?>
                         </h4>
                     </hgroup>
-                    <div class="check-list margin-bottom-10 editorContentJs">
-                        <iframe srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none;width: 100%;height: 35px;"></iframe>
+                    <div class="check-list margin-bottom-10 iframe-content">
+                        <iframe onload="resetIframe(this);" srcdoc="<?php echo $data['quilin_detail']; ?>" style="border:none; width:100%; height:30px;"></iframe>
                     </div>
                     <div class="repeat-items margin-bottom-10">
                         <div class="repeat-element">

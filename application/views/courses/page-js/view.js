@@ -110,7 +110,6 @@ $(document).ready(function () {
             $('.lecturesListJs' + id).slideDown();
         }
     };
-    resetEditorHeight();
 });
 
 function checkActiveSection() {

@@ -465,15 +465,11 @@ function bindDatetimePicker(selector) {
         },
     });
 }
-function resizeIframe(time = 0)
-{
-    setTimeout(function () {
-        var $iframe = $('.editorContentJs').find('iframe');
-        var height = $iframe.contents().height();
-        $iframe.css({ height: height + 'px' });
-        $('.editorContentJs').css('height', height + 35 + 'px');
-    }, time);
-}
+resetIframe = function (frame) {
+    var height = $(frame).contents().height();
+    $(frame).css({ height: height + 'px' });
+    $(frame).parent('.iframe-content').css('height', height + 'px');
+};
 $(document).ready(function () {
     var userTimezone = getCookie('CONF_SITE_TIMEZONE');
     var tz = jstz.determine();
@@ -482,12 +478,3 @@ $(document).ready(function () {
         setCookie('CONF_SITE_TIMEZONE', timezone);
     }
 });
-
-function resetEditorHeight() {
-    setTimeout(function () {
-        $('.editor-content').each(function (i, div) {
-            var height = $(div).children('iframe').contents().height() + 20;
-            $(div).css('height', height + 'px');
-        });
-    }, 200);
-}

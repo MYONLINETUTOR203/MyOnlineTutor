@@ -4,8 +4,8 @@
     <div class="row justify-content-between">
         <div class="<?php echo $containerClass; ?>">
             <div class="cms-container">
-                <div class="editor-content">
-                    <iframe srcdoc="<?php echo $lecture['lecture_details']; ?>" style="border:none;width: 100%;height: 100%;" ></iframe>
+                <div class="editor-content iframe-content">
+                    <iframe onload="resetIframe(this);" srcdoc="<?php echo $lecture['lecture_details']; ?>" style="border:none; width:100%; height:30px;"></iframe>
                 </div>
             </div>
         </div>
@@ -20,7 +20,9 @@
                             <?php foreach ($resources as $resource) { ?>
                                 <a href="<?php echo MyUtility::makeUrl('CoursePreview', 'downloadResource', [$resource['lecsrc_id']]); ?>" target="_blank" class="lecture-attachment__item">
                                     <figure class="lecture-attachment__media">
-                                        <svg class="attached-media"><use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#pdf-attachment"></use></svg>
+                                        <svg class="attached-media">
+                                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#pdf-attachment"></use>
+                                        </svg>
                                     </figure>
                                     <span class="lecture-attachment__content">
                                         <p class="margin-bottom-0 color-black"><?php echo $resource['resrc_name']; ?></p>
@@ -47,7 +49,7 @@
                     <?php $display = ($previousLecture) ? '' : 'btn--disabled'; ?>
                     <a href="javascript:void(0);" class="btn btn--primary-bordered margin-right-1 getPrevJs <?php echo $display; ?>">
                         <svg class="icon icon--arrow icon--xsmall margin-right-2">
-                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#prev"></use>
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#prev"></use>
                         </svg>
                         <?php echo Label::getLabel('LBL_PREV') ?>
                     </a>
@@ -55,7 +57,7 @@
                     <a href="javascript:void(0);" class="btn btn--primary-bordered margin-left-1 getNextJs <?php echo $display; ?>">
                         <?php echo Label::getLabel('LBL_NEXT') ?>
                         <svg class="icon icon--arrow icon--xsmall margin-left-2">
-                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#next"></use>
+                            <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#next"></use>
                         </svg>
                     </a>
                 </div>
@@ -68,7 +70,7 @@
             <div class="message-display no-skin">
                 <div class="message-display__media">
                     <svg>
-                    <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#stuck"></use>
+                        <use xlink:href="<?php echo CONF_WEBROOT_DASHBOARD ?>images/sprite.svg#stuck"></use>
                     </svg>
                 </div>
                 <h4 class="margin-bottom-4">
@@ -82,8 +84,3 @@
         </div>
     </div>
 <?php } ?>
-<script>
-    $(document).ready(function () {
-        resetEditorHeight();
-    });
-</script>

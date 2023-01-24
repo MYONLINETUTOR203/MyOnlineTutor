@@ -209,17 +209,11 @@ function getSlickSliderSettings(slidesToShow, slidesToScroll, layoutDirection) {
         }
     }
 }
-function resizeIframe(time = 0) {
-    setTimeout(function () {
-        var $iframe = $('.editorContentJs').find('iframe');
-        var height = $iframe.contents().height();
-        $iframe.css({ height: height + 'px' });
-        $('.editorContentJs').css('height', height + 35 + 'px');
-        if ($('#facebox').length > 0) {
-            fcom.resetFaceboxHeight();
-        }
-    }, time);
-}
+resetIframe = function (frame) {
+    var height = $(frame).contents().height();
+    $(frame).css({ height: height + 'px' });
+    $(frame).parent('.iframe-content').css('height', height + 'px');
+};
 (function () {
     Slugify = function (str, str_val_id, is_slugify) {
         var str = str.toString().toLowerCase()
@@ -288,13 +282,14 @@ function resizeIframe(time = 0) {
             $(field).val('');
         }
     };
+    resetIframe = function (frame) {
+        var height = $(frame).contents().height();
+        $(frame).css({ height: height + 'px' });
+        $(frame).parent('.iframe-content').css('height', height + 'px');
+        if ($('#facebox').is(':visible')) {
+            if ($('#facebox').height() + height > 700) {
+                $('#facebox .content').css({'overflow-y' : 'auto', 'max-height' : '700px'});
+            }
+        }
+    };
 })();
-
-function resetEditorHeight() {
-    setTimeout(function () {
-        $('.editor-content').each(function (i, div) {
-            var height = $(div).children('iframe').contents().height() + 20;
-            $(div).css('height', height + 'px');
-        });
-    }, 200);
-}

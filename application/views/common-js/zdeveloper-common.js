@@ -394,7 +394,11 @@ $(document).ready(function () {
             newsletterAjaxRuning = false;
         }, {fOutMode: 'json', failed: true});
     }
-
+    resetIframe = function (frame) {
+        var height = $(frame).contents().height();
+        $(frame).css({ height: height + 'px' });
+        $(frame).parent('.iframe-content').css('height', height + 'px');
+    };
 })(jQuery);
 function toggleOffers(element) {
     $(element).toggleClass("is-active");
@@ -448,12 +452,3 @@ $(document).ready(function () {
         $.facebox('<iframe id="ytplayer" type="text/html" width="1000" height="460" src="' + $(this).attr('data-src') + '" frameborder="2"></iframe>');
     });
 });
-
-function resetEditorHeight() {
-    setTimeout(function () {
-        $('.editor-content').each(function (i, div) {
-            var height = $(div).children('iframe').contents().height() + 20;
-            $(div).css('height', height + 'px');
-        });
-    }, 100);
-}
