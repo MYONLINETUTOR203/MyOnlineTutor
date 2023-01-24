@@ -213,6 +213,12 @@ resetIframe = function (frame) {
     var height = $(frame).contents().height();
     $(frame).css({ height: height + 'px' });
     $(frame).parent('.iframe-content').css('height', height + 'px');
+    if ($('#facebox').is(':visible')) {
+        if ($('#facebox').height() + height > 700) {
+            $('#facebox .content').css({ 'overflow-y': 'auto', 'max-height': '700px' });
+        }
+    }
+
 };
 (function () {
     Slugify = function (str, str_val_id, is_slugify) {
