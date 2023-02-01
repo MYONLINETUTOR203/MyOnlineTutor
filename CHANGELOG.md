@@ -301,3 +301,16 @@ Fixes:
     #069293 - Certificate setting is coming if both course completion and evaluation certificates are inactive
     #068977 - Sometimes fatal error is coming when downloading the quiz certificate
     #068166 - Quiz instructions should display properly everywhere
+
+## TV-1.4.5.20230201
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+    #069903 - Audio recording remains continue if started an audio recording and close the question popup
+    #069317 - Recorded audio is not clear when playing the audio in the question setup
+    #069315 - When recording a question or answer audio, the voice listening to myself
+    #068977 - Sometimes fatal error is coming when downloading the quiz certificate
