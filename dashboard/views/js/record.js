@@ -33,6 +33,7 @@ function captureAudio(config) {
         $(button).find('.btnStartJs, .labelStartJs').hide();
         $(button).find('.btnStopJs, .labelStopJs').show();
         recordingPlayer.srcObject = audioStream;
+        recordingPlayer.muted = true;
 
         config.onMediaCaptured(audioStream);
 
