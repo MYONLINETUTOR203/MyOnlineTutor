@@ -99,10 +99,9 @@ class CertificatesController extends MyAppController
             $data['quizat_status'] != QuizAttempt::STATUS_COMPLETED ||
             $data['quizat_evaluation'] != QuizAttempt::EVALUATION_PASSED
         ) {
-
             FatUtility::exitWithErrorCode(404);
         }
-        if (!(new Afile(Afile::TYPE_CERTIFICATE_PDF, $attemptId))->getFile()) {
+        if (!(new Afile(Afile::TYPE_CERTIFICATE_PDF, 0))->getFile($attemptId)) {
             FatUtility::exitWithErrorCode(404);
         }
         
