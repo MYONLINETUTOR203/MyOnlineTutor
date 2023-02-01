@@ -38,6 +38,7 @@ $(function () {
     };
     skipAndNext = function (id) {
         if ($skip == true) {
+            removeRecordedFile();
             $skip = false;
             fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 1 }, function (res) {
                 view(id);
@@ -47,11 +48,13 @@ $(function () {
     };
     previous = function (id) {
         $('.btnPrevJs').attr('disabled', 'disabled');
+        removeRecordedFile();
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0 }, function (res) {
             (res.status == 1) ? view(id) : $('.btnPrevJs').attr('disabled', false);
         }, { 'failed': true });
     };
     getByQuesId = function (id, quesId) {
+        removeRecordedFile();
         fcom.updateWithAjax(fcom.makeUrl('UserQuiz', 'setQuestion'), { 'id': id, 'next': 0, 'ques_id': quesId }, function (res) {
             view(id);
         });
