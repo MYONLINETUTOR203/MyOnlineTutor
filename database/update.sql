@@ -1733,3 +1733,4 @@ DELETE FROM `tbl_language_labels` WHERE `label_key` = 'LBL_COURSE_PREVIEW_VIDEO_
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.3.20230117' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.4.20230124' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
 UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.5.20230201' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';
+UPDATE `tbl_configurations` SET `conf_val` = 'TV-1.4.6.20230202' WHERE `tbl_configurations`.`conf_name` = 'CONF_YOCOACH_VERSION';

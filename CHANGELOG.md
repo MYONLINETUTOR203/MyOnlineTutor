@@ -314,3 +314,14 @@ Fixes:
     #069317 - Recorded audio is not clear when playing the audio in the question setup
     #069315 - When recording a question or answer audio, the voice listening to myself
     #068977 - Sometimes fatal error is coming when downloading the quiz certificate
+
+## TV-1.4.6.20230202
+
+Features: N/A
+
+Updates: N/A
+
+Fixes:
+
+    #070096 - After saving the last audio answer it plays automatically
+    #070095 - The error is coming in the console when adding a question
