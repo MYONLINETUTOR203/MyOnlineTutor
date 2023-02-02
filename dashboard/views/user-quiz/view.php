@@ -201,7 +201,9 @@ $aqIdFld = $frm->getField('quatqu_id');
             var obj = $('#audio1');
             $(obj).attr('autoplay', '0');
             obj[0].load();
-            obj[0].pause();
+            obj[0].addEventListener("loadeddata", function() {
+                obj[0].pause();
+            }, true);
         });
     </script>
 <?php } ?>
