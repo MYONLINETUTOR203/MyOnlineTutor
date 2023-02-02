@@ -196,6 +196,9 @@ function appendRecordedFile(formData) {
 
 function removeRecordedFile() {
     recordedStream = '';
+    if (!recordingPlayer) {
+        return;
+    }
     $(recordingPlayer).attr('src', '').parent().show();
     recordingPlayer.load();
     recordingPlayer.pause();
